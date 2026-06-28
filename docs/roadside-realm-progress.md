@@ -246,3 +246,52 @@ Known limitations after this checkpoint:
 - Sightline depth is three cells, not a full raycaster.
 - Side passages are not drawn yet.
 - Browser screenshot QA is still needed.
+
+## 2026-06-28 Checkpoint: Side-Passage View Pass
+
+This checkpoint adds left/right corridor awareness to the first-person renderer.
+
+Version changes:
+
+- Visible version badge: `App v0.2.4 · Roadside Realm 0.2.4`.
+- Roadside Realm game data version: `0.2.4`.
+- Save wrapper remains version `1`.
+
+Implemented in this checkpoint:
+
+- Added side-vector helpers based on current facing direction.
+- Added side-cell checks for the visible three-cell sightline.
+- Side passages now draw when walkable cells exist to the left or right of visible corridor cells.
+- Locked doors and unopened hidden walls do not appear as open side passages.
+- This improves maze readability without changing movement, collision, map data, save format, or combat.
+
+Validation required:
+
+- Run the normal syntax/data/path checks.
+- Browser-play a few turns in corridors with side branches to confirm openings read correctly.
+
+## 2026-06-28 Checkpoint: Pixel Dungeon Art Direction Pass
+
+This checkpoint responds to the reference image showing a classic pixel-art first-person dungeon crawler screen with gray stone walls, torch lighting, tiled floor, centered enemy, and chunky bottom controls.
+
+Version changes:
+
+- Visible version badge: `App v0.2.5 · Roadside Realm 0.2.5`.
+- Roadside Realm game data version: `0.2.5`.
+- Save wrapper remains version `1`.
+
+Implemented in this checkpoint:
+
+- Reworked the canvas corridor toward gray block masonry.
+- Added repeated stone courses and staggered brick seams on wall panels.
+- Added ceiling block hints.
+- Added floor tile rows and perspective tile lines.
+- Added a left-wall torch with warm radial glow.
+- Strengthened the bottom control deck with darker framed, arcade-like command buttons.
+- Preserved original Roadside Realm theme and content while moving the broad visual language closer to the provided dungeon crawler reference.
+
+Known limitations after this checkpoint:
+
+- Still needs browser screenshot review because this environment does not have a local browser.
+- Monsters are still mixed between generated sprites and primitive silhouettes.
+- The whole screen is not yet a single 224x336-style portrait viewport; the layout remains responsive web-first.

@@ -368,7 +368,8 @@ input {
   justify-content: space-between;
   align-items: center;
   border: 3px solid #050609;
-  background: #090b10;
+  background:
+    linear-gradient(180deg, #30313b, #151720);
   padding: 0.75rem;
 }
 
@@ -387,9 +388,31 @@ input {
 
 .realm-action-pad .realm-button,
 .realm-dpad .realm-button {
-  background: linear-gradient(#29313f, #111722);
-  border: 2px solid rgba(244, 230, 193, 0.32);
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.6);
+  background:
+    linear-gradient(180deg, #4a4b52, #202127);
+  border: 4px solid #111217;
+  outline: 2px solid #5d5f67;
+  color: #f2f0df;
+  text-shadow: 0 2px 0 #000;
+  box-shadow:
+    inset 0 0 0 3px #2e3036,
+    inset 0 -8px 0 rgba(0, 0, 0, 0.28);
+}
+
+.realm-action-pad {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(74px, 1fr));
+  max-width: 360px;
+  width: 100%;
+}
+
+.realm-action-pad .realm-button {
+  min-height: 64px;
+  padding: 0.55rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: 0.84rem;
 }
 
 .realm-dpad__up { grid-column: 2; grid-row: 1; }

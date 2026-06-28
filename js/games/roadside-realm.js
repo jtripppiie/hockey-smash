@@ -998,20 +998,21 @@
 
   function themeForMap(mapId) {
     if (mapId === 'forgotten-underpass') {
-      return { sky: '#121923', floor: '#263342', wall: '#42566c', accent: '#9de8ff', shadow: '#0b1018' };
+      return { sky: '#121923', floor: '#263342', wall: '#4b5b68', accent: '#9de8ff', shadow: '#0b1018', mortar: '#1f2832' };
     }
     if (mapId === 'never-finished-mansion') {
-      return { sky: '#2d2235', floor: '#3e3028', wall: '#806f82', accent: '#f3c64e', shadow: '#17111d' };
+      return { sky: '#2d2235', floor: '#3e3028', wall: '#726a75', accent: '#f3c64e', shadow: '#17111d', mortar: '#2d2632' };
     }
     if (mapId === 'hidden-conservatory') {
-      return { sky: '#18342f', floor: '#2d4a3d', wall: '#5f8a70', accent: '#c9f7d5', shadow: '#0f1d1a' };
+      return { sky: '#18342f', floor: '#2d4a3d', wall: '#607d67', accent: '#c9f7d5', shadow: '#0f1d1a', mortar: '#21372f' };
     }
-    return { sky: '#24314a', floor: '#5b4632', wall: '#7d7462', accent: '#f3c64e', shadow: '#17191f' };
+    return { sky: '#202532', floor: '#3f3f4e', wall: '#6f7378', accent: '#f3c64e', shadow: '#11131a', mortar: '#2d3036' };
   }
 
   function drawCorridor(ctx, tile, event, theme) {
     drawPerspectiveTunnel(ctx, theme);
     const cells = getViewCells();
+    drawSidePassages(ctx, theme, cells);
     const blockedCell = cells.find((cell) => cell.blocked);
     const focusCell = cells.find((cell) => cell.event && shouldDrawEvent(cell));
 
@@ -1076,20 +1077,83 @@
     return ['exit', 'mansionDoor', 'hiddenConservatory'].includes(cell.event.type);
   }
 
+  function drawSidePassages(ctx, theme, cells) {
+    const dirs = sideVectors();
+    cells.forEach((cell) => {
+      if (cell.depth > 3 || cell.blocked) return;
+      const left = sideCell(cell, dirs.left);
+      const right = sideCell(cell, dirs.right);
+      if (left.open) drawSideOpening(ctx, theme, cell.depth, 'left');
+      if (right.open) drawSideOpening(ctx, theme, cell.depth, 'right');
+    });
+  }
+
+  function sideVectors() {
+    const index = DIRECTIONS.indexOf(state.player.facing);
+    return {
+      left: VECTORS[DIRECTIONS[(index + DIRECTIONS.length - 1) % DIRECTIONS.length]],
+      right: VECTORS[DIRECTIONS[(index + 1) % DIRECTIONS.length]],
+    };
+  }
+
+  function sideCell(cell, vector) {
+    const map = currentMap();
+    const x = cell.x + vector.x;
+    const y = cell.y + vector.y;
+    const tile = getTile(map, x, y);
+    const event = getEvent(map, x, y);
+    return { x, y, tile, event, open: isOpenForView(tile, event) };
+  }
+
+  function isOpenForView(tile, event) {
+    if (!tile || tile === '#') return false;
+    if (event?.type === 'lockedDoor' && !state.flags[event.flag]) return false;
+    if (event?.type === 'hiddenWall' && !state.flags[event.flag]) return false;
+    return true;
+  }
+
+  function drawSideOpening(ctx, theme, depth, side) {
+    const shapes = {
+      1: {
+        left: [[50, 88], [130, 52], [130, 368], [50, 332]],
+        right: [[670, 88], [590, 52], [590, 368], [670, 332]],
+      },
+      2: {
+        left: [[142, 116], [218, 96], [218, 310], [142, 286]],
+        right: [[578, 116], [502, 96], [502, 310], [578, 286]],
+      },
+      3: {
+        left: [[246, 154], [282, 142], [282, 262], [246, 244]],
+        right: [[474, 154], [438, 142], [438, 262], [474, 244]],
+      },
+    };
+    const points = shapes[depth]?.[side];
+    if (!points) return;
+    ctx.save();
+    ctx.fillStyle = 'rgba(5, 7, 11, 0.68)';
+    fillPoly(ctx, points);
+    ctx.strokeStyle = theme.accent;
+    ctx.lineWidth = Math.max(2, 5 - depth);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(244,230,193,0.16)';
+    const [p0, p1] = points;
+    ctx.fillRect(Math.min(p0[0], p1[0]) + 8, (p0[1] + p1[1]) / 2, Math.max(10, Math.abs(p0[0] - p1[0]) - 16), Math.max(4, 12 - depth * 2));
+    ctx.restore();
+  }
+
   function drawPerspectiveTunnel(ctx, theme) {
     const near = { x: 52, y: 26, w: 616, h: 368 };
     const mid = { x: 142, y: 76, w: 436, h: 268 };
     const far = { x: 246, y: 132, w: 228, h: 154 };
     ctx.save();
-    ctx.fillStyle = shade(theme.wall, -24);
-    fillPoly(ctx, [[0, 0], [near.x, near.y], [near.x, near.y + near.h], [0, 420]]);
-    fillPoly(ctx, [[720, 0], [near.x + near.w, near.y], [near.x + near.w, near.y + near.h], [720, 420]]);
-    ctx.fillStyle = shade(theme.wall, -10);
-    fillPoly(ctx, [[near.x, near.y], [mid.x, mid.y], [mid.x, mid.y + mid.h], [near.x, near.y + near.h]]);
-    fillPoly(ctx, [[near.x + near.w, near.y], [mid.x + mid.w, mid.y], [mid.x + mid.w, mid.y + mid.h], [near.x + near.w, near.y + near.h]]);
-    ctx.fillStyle = shade(theme.wall, 4);
-    fillPoly(ctx, [[mid.x, mid.y], [far.x, far.y], [far.x, far.y + far.h], [mid.x, mid.y + mid.h]]);
-    fillPoly(ctx, [[mid.x + mid.w, mid.y], [far.x + far.w, far.y], [far.x + far.w, far.y + far.h], [mid.x + mid.w, mid.y + mid.h]]);
+    drawStonePanel(ctx, [[0, 0], [near.x, near.y], [near.x, near.y + near.h], [0, 420]], shade(theme.wall, -28), theme, 'left-near');
+    drawStonePanel(ctx, [[720, 0], [near.x + near.w, near.y], [near.x + near.w, near.y + near.h], [720, 420]], shade(theme.wall, -28), theme, 'right-near');
+    drawStonePanel(ctx, [[near.x, near.y], [mid.x, mid.y], [mid.x, mid.y + mid.h], [near.x, near.y + near.h]], shade(theme.wall, -12), theme, 'left-mid');
+    drawStonePanel(ctx, [[near.x + near.w, near.y], [mid.x + mid.w, mid.y], [mid.x + mid.w, mid.y + mid.h], [near.x + near.w, near.y + near.h]], shade(theme.wall, -12), theme, 'right-mid');
+    drawStonePanel(ctx, [[mid.x, mid.y], [far.x, far.y], [far.x, far.y + far.h], [mid.x, mid.y + mid.h]], shade(theme.wall, 4), theme, 'left-far');
+    drawStonePanel(ctx, [[mid.x + mid.w, mid.y], [far.x + far.w, far.y], [far.x + far.w, far.y + far.h], [mid.x + mid.w, mid.y + mid.h]], shade(theme.wall, 4), theme, 'right-far');
+    drawCeilingBlocks(ctx, theme, near, mid, far);
+    drawFloorTiles(ctx, theme, near, mid, far);
     ctx.strokeStyle = 'rgba(244,230,193,0.22)';
     ctx.lineWidth = 4;
     [near, mid, far].forEach((rect) => ctx.strokeRect(rect.x, rect.y, rect.w, rect.h));
@@ -1102,6 +1166,126 @@
     ctx.moveTo(396, 420);
     ctx.lineTo(370, 292);
     ctx.stroke();
+    drawTorch(ctx, theme);
+    ctx.restore();
+  }
+
+  function drawStonePanel(ctx, points, fill, theme, key) {
+    ctx.save();
+    ctx.fillStyle = fill;
+    fillPoly(ctx, points);
+    ctx.clip();
+    const minX = Math.min(...points.map(([x]) => x));
+    const maxX = Math.max(...points.map(([x]) => x));
+    const minY = Math.min(...points.map(([, y]) => y));
+    const maxY = Math.max(...points.map(([, y]) => y));
+    const rowH = key.includes('far') ? 22 : key.includes('mid') ? 30 : 38;
+    const colW = key.includes('far') ? 48 : key.includes('mid') ? 62 : 78;
+    ctx.strokeStyle = theme.mortar;
+    ctx.lineWidth = 3;
+    for (let y = minY - rowH; y <= maxY + rowH; y += rowH) {
+      ctx.beginPath();
+      ctx.moveTo(minX, y);
+      ctx.lineTo(maxX, y + (key.includes('left') ? 12 : -12));
+      ctx.stroke();
+    }
+    let row = 0;
+    for (let y = minY - rowH; y <= maxY + rowH; y += rowH) {
+      const offset = row % 2 ? colW / 2 : 0;
+      for (let x = minX - colW; x <= maxX + colW; x += colW) {
+        ctx.beginPath();
+        ctx.moveTo(x + offset, y);
+        ctx.lineTo(x + offset + (key.includes('left') ? 18 : -18), y + rowH);
+        ctx.stroke();
+      }
+      row += 1;
+    }
+    ctx.fillStyle = 'rgba(255,255,255,0.10)';
+    for (let y = minY + 8; y <= maxY; y += rowH * 2) {
+      ctx.fillRect(minX + 12, y, Math.max(18, (maxX - minX) * 0.12), 4);
+    }
+    ctx.restore();
+  }
+
+  function drawCeilingBlocks(ctx, theme, near, mid, far) {
+    ctx.save();
+    ctx.fillStyle = shade(theme.wall, -36);
+    fillPoly(ctx, [[near.x, near.y], [near.x + near.w, near.y], [mid.x + mid.w, mid.y], [mid.x, mid.y]]);
+    fillPoly(ctx, [[mid.x, mid.y], [mid.x + mid.w, mid.y], [far.x + far.w, far.y], [far.x, far.y]]);
+    ctx.strokeStyle = theme.mortar;
+    ctx.lineWidth = 3;
+    [42, 62, 82, 102, 122].forEach((y) => {
+      ctx.beginPath();
+      ctx.moveTo(near.x + 40, y);
+      ctx.lineTo(near.x + near.w - 40, y);
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
+  function drawFloorTiles(ctx, theme, near, mid, far) {
+    ctx.save();
+    ctx.fillStyle = shade(theme.floor, -8);
+    fillPoly(ctx, [[near.x, near.y + near.h], [near.x + near.w, near.y + near.h], [mid.x + mid.w, mid.y + mid.h], [mid.x, mid.y + mid.h]]);
+    fillPoly(ctx, [[mid.x, mid.y + mid.h], [mid.x + mid.w, mid.y + mid.h], [far.x + far.w, far.y + far.h], [far.x, far.y + far.h]]);
+    ctx.strokeStyle = '#1b1e27';
+    ctx.lineWidth = 4;
+    [300, 324, 350, 380, 412].forEach((y) => {
+      ctx.beginPath();
+      ctx.moveTo(80, y);
+      ctx.lineTo(640, y);
+      ctx.stroke();
+    });
+    [260, 310, 360, 410, 460].forEach((x) => {
+      ctx.beginPath();
+      ctx.moveTo(x, 292);
+      ctx.lineTo(x - 56, 420);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, 292);
+      ctx.lineTo(x + 56, 420);
+      ctx.stroke();
+    });
+    ctx.strokeStyle = theme.accent;
+    ctx.globalAlpha = 0.42;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(338, 420);
+    ctx.lineTo(356, 294);
+    ctx.moveTo(382, 420);
+    ctx.lineTo(364, 294);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawTorch(ctx, theme) {
+    ctx.save();
+    const glow = ctx.createRadialGradient(134, 126, 4, 134, 126, 86);
+    glow.addColorStop(0, 'rgba(255, 247, 89, 0.72)');
+    glow.addColorStop(0.45, 'rgba(246, 166, 48, 0.22)');
+    glow.addColorStop(1, 'rgba(246, 166, 48, 0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(42, 34, 190, 190);
+    ctx.strokeStyle = '#1b1207';
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.moveTo(132, 146);
+    ctx.lineTo(116, 196);
+    ctx.stroke();
+    ctx.fillStyle = '#70431a';
+    ctx.fillRect(108, 192, 22, 42);
+    ctx.fillStyle = theme.accent;
+    ctx.beginPath();
+    ctx.moveTo(132, 92);
+    ctx.quadraticCurveTo(162, 124, 132, 158);
+    ctx.quadraticCurveTo(104, 126, 132, 92);
+    ctx.fill();
+    ctx.fillStyle = '#fff95a';
+    ctx.beginPath();
+    ctx.moveTo(132, 110);
+    ctx.quadraticCurveTo(148, 128, 130, 148);
+    ctx.quadraticCurveTo(116, 128, 132, 110);
+    ctx.fill();
     ctx.restore();
   }
 
@@ -1125,7 +1309,7 @@
     ctx.strokeStyle = 'rgba(244,230,193,0.32)';
     ctx.lineWidth = 2;
     ctx.strokeRect(rect.x + 14, rect.y + 14, rect.w - 28, rect.h - 28);
-    drawWallTexture(ctx, rect.x, rect.y, rect.w, rect.h);
+    drawWallTexture(ctx, rect.x, rect.y, rect.w, rect.h, theme);
     ctx.fillStyle = theme.accent;
     ctx.globalAlpha = 0.72;
     ctx.fillRect(rect.x + rect.w * 0.1, rect.y + rect.h * 0.1, rect.w * 0.2, Math.max(5, rect.h * 0.04));
@@ -1176,23 +1360,28 @@
     ctx.restore();
   }
 
-  function drawWallTexture(ctx, x, y, width, height) {
+  function drawWallTexture(ctx, x, y, width, height, theme) {
     ctx.save();
-    ctx.globalAlpha = 0.25;
-    ctx.strokeStyle = '#17191f';
-    for (let row = 1; row < 5; row += 1) {
-      const ly = y + (height / 5) * row;
+    ctx.globalAlpha = 0.9;
+    ctx.strokeStyle = theme?.mortar || '#17191f';
+    const rowH = Math.max(18, height / 7);
+    for (let ly = y + rowH; ly < y + height; ly += rowH) {
       ctx.beginPath();
       ctx.moveTo(x, ly);
       ctx.lineTo(x + width, ly);
       ctx.stroke();
     }
-    for (let col = 1; col < 7; col += 1) {
-      const lx = x + (width / 7) * col;
-      ctx.beginPath();
-      ctx.moveTo(lx, y);
-      ctx.lineTo(lx, y + height);
-      ctx.stroke();
+    let row = 0;
+    for (let ly = y; ly < y + height; ly += rowH) {
+      const colW = Math.max(34, width / 7);
+      const offset = row % 2 ? colW / 2 : 0;
+      for (let lx = x + offset; lx < x + width; lx += colW) {
+        ctx.beginPath();
+        ctx.moveTo(lx, ly);
+        ctx.lineTo(lx, Math.min(y + height, ly + rowH));
+        ctx.stroke();
+      }
+      row += 1;
     }
     ctx.restore();
   }
