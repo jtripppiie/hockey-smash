@@ -52,6 +52,12 @@ Follow-up stabilization after the v0.5.0 pivot:
 - Kept D-pad left/right at the bottom in portrait with smaller thumb targets.
 - Updated static verification to fail if the rotate guidance is missing.
 
+## 2026-06-28 Checkpoint: Hockey Smash Visible Build Badge
+
+- Added a persistent top-right overlay badge: `Hockey Smash v0.5.0 · Build 2026-06-28.5`.
+- The badge appears on splash, transition, gameplay, and retry screens so GitHub Pages cache state is visible without opening devtools.
+- Updated static verification to fail if the visible build badge is missing or stale.
+
 ## Current Branch
 
 `codex/roadside-realm-plan-assets`

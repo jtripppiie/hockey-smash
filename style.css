@@ -46,6 +46,23 @@ button {
   min-height: 100vh;
 }
 
+.hockey-build-badge {
+  position: fixed;
+  top: max(0.45rem, env(safe-area-inset-top));
+  right: max(0.45rem, env(safe-area-inset-right));
+  z-index: 30;
+  border: 1px solid rgba(255,242,207,0.34);
+  border-radius: 999px;
+  padding: 0.35rem 0.6rem;
+  background: rgba(5,8,13,0.74);
+  color: rgba(255,242,207,0.92);
+  font-size: clamp(0.68rem, 1.6vw, 0.82rem);
+  font-weight: 900;
+  letter-spacing: 0;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+}
+
 .hockey-splash,
 .hockey-transition,
 .hockey-try-again {
@@ -329,7 +346,7 @@ button {
   .hockey-try-again {
     align-content: start;
     min-height: 100svh;
-    padding: 0.85rem;
+    padding: 2.55rem 0.85rem 0.85rem;
     gap: 0.85rem;
   }
 
