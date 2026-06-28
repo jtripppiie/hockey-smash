@@ -6510,7 +6510,7 @@ Roadside Realm should have these visible UI regions:
 
 | Region | Purpose | Notes |
 |---|---|---|
-| Title panel | Start, continue, reset if save exists | Avoid a marketing page; this is the game entry. |
+| Splash / title panel | Start, continue, reset if save exists, options, credit | Avoid a marketing page; this is the game entry. |
 | Canvas viewport | First-person dungeon view | Include `aria-label`; do not rely on canvas for critical text. |
 | Status row | HP, attack, defense, level, gold/score, objective | Must update after every action. |
 | Inventory row/panel | Quest items and usable items | Empty state should be compact and readable. |
@@ -6520,6 +6520,18 @@ Roadside Realm should have these visible UI regions:
 | Summary | Ending text, score, badges, stats | Distinguish normal and true endings clearly. |
 
 Do not put instructions as long permanent text blocks inside the play surface. Teach through first-room events, button labels, tooltips, and log messages.
+
+Splash screen requirements:
+
+- Show **Roadside Realm** as the game title.
+- Include Start New Quest.
+- Include Continue Quest only when a valid save exists.
+- Include Options.
+- Include Reset Quest only when a save exists or after the player starts.
+- Include a small credit line: "Made by TripperDeeLabs."
+- Options must include at least reduced motion, high contrast, large text, and sound on/off if sound is implemented.
+- The splash screen must be keyboard accessible and usable on mobile.
+- Starting or continuing should transition directly into the playable game, not a marketing page.
 
 ### 5.8 Writing And Dialogue Guidelines
 
@@ -7410,6 +7422,7 @@ Polish checklist:
 - Reset confirmation copy is friendly and clear.
 - Corrupt save fallback copy does not blame the player.
 - All repeated lines have variants to avoid feeling robotic.
+- Splash screen credit reads "Made by TripperDeeLabs."
 
 ### 6.16 Failure, Recovery, And Edge Cases
 
@@ -9992,8 +10005,4 @@ Kept:
 - The expanded game content add-on.
 - The concrete build-detail spec with maps and tables.
 - One complete technical appendix.
-
-
-
-
 

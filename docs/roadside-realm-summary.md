@@ -284,7 +284,7 @@ Target enemy roles:
 
 Required UI regions:
 
-- title/start/continue panel
+- splash/title screen with Start, Continue when valid, Options, Reset when relevant, and "Made by TripperDeeLabs" credit
 - first-person canvas
 - status row
 - inventory area
