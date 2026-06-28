@@ -307,6 +307,57 @@ input {
   border-radius: 2px;
   background: #0d1119;
   image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.realm-pixel-art {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.realm-pickup-card {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  border: 3px solid #050609;
+  outline: 2px solid rgba(243, 198, 78, 0.8);
+  background: rgba(17, 19, 26, 0.94);
+  color: #fff7df;
+  padding: 0.75rem;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.42);
+}
+
+.realm-pickup-card[hidden] {
+  display: none;
+}
+
+.realm-pickup-card__icon,
+.realm-item-chip__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  aspect-ratio: 1;
+  border: 2px solid #050609;
+  background: #3a3d45;
+  color: var(--realm-route-yellow);
+  font-weight: 900;
+}
+
+.realm-pickup-card strong {
+  display: block;
+  color: var(--realm-route-yellow);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.realm-pickup-card p {
+  margin: 0.2rem 0 0;
+  color: rgba(244, 230, 193, 0.8);
 }
 
 .realm-side-panel {
@@ -344,6 +395,21 @@ input {
   padding: 0.35rem 0.65rem;
   background: rgba(243, 198, 78, 0.12);
   border: 1px solid rgba(243, 198, 78, 0.28);
+}
+
+.realm-item-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 3px;
+  padding: 0.35rem 0.55rem;
+  background: rgba(243, 198, 78, 0.12);
+  border: 1px solid rgba(243, 198, 78, 0.32);
+}
+
+.realm-item-chip__icon {
+  width: 1.45rem;
+  font-size: 0.78rem;
 }
 
 .realm-log {

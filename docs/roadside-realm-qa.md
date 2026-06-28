@@ -4,8 +4,8 @@ Use this checklist for every pushed preview checkpoint. Roadside Realm is not V1
 
 ## Current Preview
 
-- App version: `v0.2.5`
-- Game version: `0.2.5`
+- App version: `v0.2.6`
+- Game version: `0.2.6`
 - Save version: `1`
 - Preview branch: `codex/roadside-realm-plan-assets`
 - GitHub Pages URL: `https://jtripppiie.github.io/roadside-realmo/`
@@ -15,11 +15,12 @@ Use this checklist for every pushed preview checkpoint. Roadside Realm is not V1
 
 1. Open the Pages URL.
 2. Confirm the Roadside Realm splash screen appears.
-3. Confirm the visible version reads `App v0.2.5 · Roadside Realm 0.2.5`.
+3. Confirm the visible version reads `App v0.2.6 · Roadside Realm 0.2.6`.
 4. Confirm Start New Quest works.
 5. Confirm the canvas renders.
 6. Confirm the D-pad, action buttons, inventory, log, and objective are visible.
-7. Confirm no console errors appear.
+7. Pick up an item and confirm the pickup card appears briefly.
+8. Confirm no console errors appear.
 
 ## Main Route Test
 

@@ -1,5 +1,6 @@
 (function () {
   const DATA = window.RTA_ROADSIDE_REALM_DATA;
+  const ART = window.RTA_ROADSIDE_REALM_ART || { sprites: {}, monsterSprites: {}, layers: [] };
   const SAVE_VERSION = 1;
   const DEBUG = new URLSearchParams(window.location.search).get('realmDebug') === '1';
   const DIRECTIONS = ['north', 'east', 'south', 'west'];
@@ -116,6 +117,10 @@
       continue: document.getElementById('realm-continue'),
       resetSave: document.getElementById('realm-reset-save'),
       canvas: document.getElementById('realm-canvas'),
+      pickupCard: document.getElementById('realm-pickup-card'),
+      pickupIcon: document.getElementById('realm-pickup-icon'),
+      pickupTitle: document.getElementById('realm-pickup-title'),
+      pickupText: document.getElementById('realm-pickup-text'),
       objective: document.getElementById('realm-objective'),
       hp: document.getElementById('realm-hp'),
       atk: document.getElementById('realm-atk'),
@@ -602,6 +607,8 @@
     }
     if (itemId === 'glass-rose') state.flags.glassRoseFound = true;
     addLog(text || `You found ${item.name}.`);
+    showPickupCard(itemId, item);
+    emitRealmEvent('item-collected', { itemId, itemName: item.name, mapId: map.id, x: state.player.x, y: state.player.y });
     debugLog('item', { pickedUp: itemId, key, inventory: state.player.inventory });
     if (map.id === 'forgotten-underpass' && itemId === 'moon-toll-token') {
       addLog('A secret star appears on your map.');
@@ -721,6 +728,10 @@
     state.log = state.log.slice(0, 8);
   }
 
+  function emitRealmEvent(type, detail = {}) {
+    debugLog(type, detail);
+  }
+
   function saveGame() {
     try {
       localStorage.setItem(DATA.saveKey, JSON.stringify({
@@ -829,10 +840,47 @@
     elements.gold.textContent = state.player.gold;
     elements.objective.textContent = objectiveText();
     elements.inventory.innerHTML = state.player.inventory.length
-      ? state.player.inventory.map((id) => `<span class="realm-chip">${DATA.items[id]?.name || id}</span>`).join('')
+      ? state.player.inventory.map((id) => renderInventoryChip(id)).join('')
       : '<span class="realm-chip">No items yet</span>';
     elements.log.innerHTML = state.log.map((message) => `<li>${message}</li>`).join('');
     elements.live.textContent = `Facing ${state.player.facing}. ${aheadDescription()}`;
+  }
+
+  function renderInventoryChip(itemId) {
+    const item = DATA.items[itemId];
+    const sprite = ART.sprites[itemId] || {};
+    return [
+      '<span class="realm-item-chip">',
+      `<span class="realm-item-chip__icon" aria-hidden="true">${iconGlyph(sprite.icon || itemId)}</span>`,
+      `<span>${item?.name || itemId}</span>`,
+      '</span>',
+    ].join('');
+  }
+
+  function showPickupCard(itemId, item) {
+    if (!elements.pickupCard) return;
+    const sprite = ART.sprites[itemId] || {};
+    elements.pickupIcon.textContent = iconGlyph(sprite.icon || itemId);
+    elements.pickupTitle.textContent = `Found: ${item.name}`;
+    elements.pickupText.textContent = item.description || 'Added to your inventory.';
+    elements.pickupCard.hidden = false;
+    window.clearTimeout(showPickupCard.timer);
+    showPickupCard.timer = window.setTimeout(() => {
+      if (elements.pickupCard) elements.pickupCard.hidden = true;
+    }, 2800);
+  }
+
+  function iconGlyph(icon) {
+    const glyphs = {
+      key: 'K',
+      juice: '+',
+      mapstone: 'M',
+      'moon-token': 'C',
+      'blueprint-key': 'B',
+      'star-map': '*',
+      'glass-rose': 'R',
+    };
+    return glyphs[icon] || '?';
   }
 
   function renderDebug() {

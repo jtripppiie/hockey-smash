@@ -37,7 +37,7 @@
               <label><input id="realm-option-sound" type="checkbox"> Sound</label>
             </fieldset>
             <p class="realm-credit">Made by TripperDeeLabs.</p>
-            <p class="realm-version">App v0.2.5 · Roadside Realm 0.2.5</p>
+            <p class="realm-version">App v0.2.6 · Roadside Realm 0.2.6</p>
           </div>
         </div>
 
@@ -69,6 +69,13 @@
                 height="420"
                 aria-label="First-person dungeon view for Roadside Realm"
               ></canvas>
+              <div id="realm-pickup-card" class="realm-pickup-card" hidden aria-live="polite">
+                <span id="realm-pickup-icon" class="realm-pickup-card__icon" aria-hidden="true"></span>
+                <div>
+                  <strong id="realm-pickup-title">Found item</strong>
+                  <p id="realm-pickup-text"></p>
+                </div>
+              </div>
               <div id="realm-live" class="visually-hidden" aria-live="polite"></div>
             </div>
 
@@ -135,6 +142,7 @@
     </main>
 
     <script src="js/games/roadside-realm-data.js"></script>
+    <script src="js/games/roadside-realm-art.js"></script>
     <script src="js/games/roadside-realm.js"></script>
     <script src="script.js"></script>
   </body>

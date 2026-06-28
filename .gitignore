@@ -6,3 +6,6 @@ build/
 .env
 .env.*
 
+# Local reference material only; do not publish tutorial source/assets.
+Canvas RPG Kit - Starting Code/
+Canvas RPG Kit - YouTube Ending Code/

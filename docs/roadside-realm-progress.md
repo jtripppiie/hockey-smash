@@ -295,3 +295,42 @@ Known limitations after this checkpoint:
 - Still needs browser screenshot review because this environment does not have a local browser.
 - Monsters are still mixed between generated sprites and primitive silhouettes.
 - The whole screen is not yet a single 224x336-style portrait viewport; the layout remains responsive web-first.
+
+## 2026-06-28 Checkpoint: Canvas RPG Kit-Inspired HUD Systems
+
+This checkpoint uses the newly added Canvas RPG Kit reference folders and pasted transcript as implementation inspiration only. The folders are local reference material and are ignored by git so the project does not publish tutorial source/assets or add a build system.
+
+Reference folders seen locally:
+
+- `Canvas RPG Kit - Starting Code/`
+- `Canvas RPG Kit - YouTube Ending Code/`
+
+Version changes:
+
+- Visible version badge: `App v0.2.6 · Roadside Realm 0.2.6`.
+- Roadside Realm game data version: `0.2.6`.
+- Roadside Realm art metadata version: `0.2.6`.
+- Save wrapper remains version `1`.
+
+Implemented in this checkpoint:
+
+- Added `js/games/roadside-realm-art.js`.
+- Added `window.RTA_ROADSIDE_REALM_ART` sprite/icon metadata for items and monsters.
+- Added a lightweight local `emitRealmEvent(type, detail)` hook for engine-style event flow.
+- Added item pickup cards over the canvas.
+- Inventory chips now include small pixel-style icon cells from art metadata.
+- Added `.realm-pixel-art` and `crisp-edges` image rendering hints.
+- Added `.gitignore` entries for the two local Canvas RPG Kit reference folders.
+
+Rules kept from the project plan:
+
+- No Vite.
+- No npm dependency.
+- No ES-module migration.
+- No external asset loading.
+- No copying tutorial assets into the shipped app.
+
+Known limitations after this checkpoint:
+
+- The event hook currently feeds debug logging only; later passes can attach save, HUD, and animation listeners.
+- Sprite metadata is structural; most icons still render as simple glyphs.
