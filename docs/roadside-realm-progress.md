@@ -213,3 +213,36 @@ Known limitations after this checkpoint:
 - Still needs true browser screenshot review on desktop and mobile.
 - Canvas perspective is hand-drawn rather than raycasted.
 - It is closer to the old-school dungeon crawler feel, but still not final art direction.
+
+## 2026-06-28 Checkpoint: Depth-Aware Viewport Pass
+
+This checkpoint makes the first-person dungeon view read more like a grid-based crawler by using the map ahead of the player, not only the immediate tile.
+
+Version changes:
+
+- Visible version badge: `App v0.2.3 · Roadside Realm 0.2.3`.
+- Roadside Realm game data version: `0.2.3`.
+- Save wrapper remains version `1`.
+
+Implemented in this checkpoint:
+
+- Added a three-cell sightline renderer for the canvas view.
+- Added depth-scaled wall, door, hidden scratch, item, monster, exit, mansion door, and Conservatory doorway rendering.
+- Open corridors now show farther passage frames instead of always drawing the same nearest rectangle.
+- Farther monsters/items are drawn smaller when visible down a corridor.
+- Locked doors and hidden walls scale with distance.
+- Kept movement/collision rules unchanged; this is a visual interpretation of the existing grid state.
+
+Validation performed:
+
+- `node --check script.js`
+- `node --check js/games/roadside-realm-data.js`
+- `node --check js/games/roadside-realm.js`
+- Data validation for maps/events/items/monsters/target maps.
+- Reachability checks for main, secret, mansion, and Conservatory routes.
+
+Known limitations after this checkpoint:
+
+- Sightline depth is three cells, not a full raycaster.
+- Side passages are not drawn yet.
+- Browser screenshot QA is still needed.

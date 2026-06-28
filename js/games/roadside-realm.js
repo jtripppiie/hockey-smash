@@ -1011,23 +1011,69 @@
 
   function drawCorridor(ctx, tile, event, theme) {
     drawPerspectiveTunnel(ctx, theme);
+    const cells = getViewCells();
+    const blockedCell = cells.find((cell) => cell.blocked);
+    const focusCell = cells.find((cell) => cell.event && shouldDrawEvent(cell));
 
-    if (!tile || tile === '#' || event?.type === 'lockedDoor' || event?.type === 'hiddenWall') {
-      drawFrontWall(ctx, theme);
-      if (event?.type === 'lockedDoor' && !state.flags[event.flag]) drawTollGate(ctx);
-      if (event?.type === 'hiddenWall' && state.flags[event.requiredFlag]) drawMoonScratch(ctx);
-      return;
+    if (blockedCell && isSolidBlock(blockedCell)) {
+      drawDepthWall(ctx, theme, blockedCell.depth);
+      if (blockedCell.event?.type === 'lockedDoor' && !state.flags[blockedCell.event.flag]) drawTollGate(ctx, blockedCell.depth);
+      if (blockedCell.event?.type === 'hiddenWall' && state.flags[blockedCell.event.requiredFlag]) drawMoonScratch(ctx, blockedCell.depth);
     }
 
-    drawOpenPassage(ctx, theme);
-    if (event?.type === 'mansionDoor') drawMansionDoor(ctx, theme);
-    if (event?.type === 'hiddenConservatory') drawConservatoryDoor(ctx, theme);
+    if (!blockedCell || blockedCell.depth > 1) drawOpenPassage(ctx, theme, blockedCell ? blockedCell.depth : 4);
+    if (focusCell && (!blockedCell || focusCell.depth <= blockedCell.depth)) {
+      if (focusCell.event.type === 'mansionDoor') drawMansionDoor(ctx, theme, focusCell.depth);
+      if (focusCell.event.type === 'hiddenConservatory') drawConservatoryDoor(ctx, theme, focusCell.depth);
+      if (focusCell.event.type === 'monster') {
+        const monster = state.monsters[focusCell.event.monsterId];
+        if (monster?.hp > 0) drawMonster(ctx, monster, focusCell.depth);
+      }
+      if (focusCell.event.type === 'item') drawItem(ctx, focusCell.event.itemId, focusCell.depth);
+      if (focusCell.event.type === 'exit') drawExit(ctx, focusCell.depth);
+    }
+  }
+
+  function getViewCells() {
+    const vector = VECTORS[state.player.facing];
+    const map = currentMap();
+    const cells = [];
+    let viewBlocked = false;
+    for (let depth = 1; depth <= 3; depth += 1) {
+      const x = state.player.x + vector.x * depth;
+      const y = state.player.y + vector.y * depth;
+      const event = getEvent(map, x, y);
+      const tile = getTile(map, x, y);
+      const blocked = viewBlocked || isBlockedForView(tile, event);
+      cells.push({ depth, x, y, tile, event, blocked });
+      if (blocked) viewBlocked = true;
+    }
+    return cells;
+  }
+
+  function isBlockedForView(tile, event) {
+    if (!tile || tile === '#') return true;
+    if (event?.type === 'lockedDoor' && !state.flags[event.flag]) return true;
+    if (event?.type === 'hiddenWall' && !state.flags[event.flag]) return true;
     if (event?.type === 'monster') {
       const monster = state.monsters[event.monsterId];
-      if (monster?.hp > 0) drawMonster(ctx, monster);
+      return Boolean(monster && monster.hp > 0);
     }
-    if (event?.type === 'item') drawItem(ctx, event.itemId);
-    if (event?.type === 'exit') drawExit(ctx);
+    return false;
+  }
+
+  function isSolidBlock(cell) {
+    if (!cell.tile || cell.tile === '#') return true;
+    return ['lockedDoor', 'hiddenWall'].includes(cell.event?.type);
+  }
+
+  function shouldDrawEvent(cell) {
+    if (cell.event.type === 'monster') {
+      const monster = state.monsters[cell.event.monsterId];
+      return Boolean(monster && monster.hp > 0);
+    }
+    if (cell.event.type === 'item') return !state.collectedItems[`${state.player.mapId}:${cell.x},${cell.y}`];
+    return ['exit', 'mansionDoor', 'hiddenConservatory'].includes(cell.event.type);
   }
 
   function drawPerspectiveTunnel(ctx, theme) {
@@ -1059,33 +1105,44 @@
     ctx.restore();
   }
 
-  function drawFrontWall(ctx, theme) {
+  function depthRect(depth) {
+    const rects = {
+      1: { x: 128, y: 48, w: 464, h: 324 },
+      2: { x: 218, y: 96, w: 284, h: 214 },
+      3: { x: 282, y: 142, w: 156, h: 120 },
+    };
+    return rects[depth] || rects[1];
+  }
+
+  function drawDepthWall(ctx, theme, depth) {
+    const rect = depthRect(depth);
     ctx.save();
     ctx.fillStyle = theme.wall;
-    ctx.fillRect(128, 48, 464, 324);
+    ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
     ctx.strokeStyle = '#08090d';
-    ctx.lineWidth = 8;
-    ctx.strokeRect(128, 48, 464, 324);
+    ctx.lineWidth = depth === 1 ? 8 : 5;
+    ctx.strokeRect(rect.x, rect.y, rect.w, rect.h);
     ctx.strokeStyle = 'rgba(244,230,193,0.32)';
     ctx.lineWidth = 2;
-    ctx.strokeRect(144, 64, 432, 292);
-    drawWallTexture(ctx, 128, 48, 464, 324);
+    ctx.strokeRect(rect.x + 14, rect.y + 14, rect.w - 28, rect.h - 28);
+    drawWallTexture(ctx, rect.x, rect.y, rect.w, rect.h);
     ctx.fillStyle = theme.accent;
     ctx.globalAlpha = 0.72;
-    ctx.fillRect(174, 82, 90, 14);
-    ctx.fillRect(456, 326, 86, 12);
+    ctx.fillRect(rect.x + rect.w * 0.1, rect.y + rect.h * 0.1, rect.w * 0.2, Math.max(5, rect.h * 0.04));
+    ctx.fillRect(rect.x + rect.w * 0.7, rect.y + rect.h * 0.86, rect.w * 0.18, Math.max(5, rect.h * 0.035));
     ctx.restore();
   }
 
-  function drawOpenPassage(ctx, theme) {
+  function drawOpenPassage(ctx, theme, maxDepth) {
     ctx.save();
-    ctx.fillStyle = 'rgba(8,9,13,0.58)';
-    ctx.fillRect(246, 132, 228, 154);
+    const rect = depthRect(Math.min(3, maxDepth - 1));
+    ctx.fillStyle = 'rgba(8,9,13,0.50)';
+    ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
     ctx.strokeStyle = theme.accent;
     ctx.lineWidth = 3;
-    ctx.strokeRect(246, 132, 228, 154);
+    ctx.strokeRect(rect.x, rect.y, rect.w, rect.h);
     ctx.fillStyle = 'rgba(244,230,193,0.10)';
-    ctx.fillRect(300, 184, 120, 74);
+    ctx.fillRect(rect.x + rect.w * 0.25, rect.y + rect.h * 0.35, rect.w * 0.5, rect.h * 0.38);
     ctx.restore();
   }
 
@@ -1140,69 +1197,86 @@
     ctx.restore();
   }
 
-  function drawTollGate(ctx) {
+  function drawTollGate(ctx, depth = 1) {
+    const rect = depthRect(depth);
+    const barH = Math.max(12, rect.h * 0.1);
+    const y = rect.y + rect.h * 0.48;
+    const x = rect.x + rect.w * 0.07;
+    const width = rect.w * 0.86;
     ctx.fillStyle = '#e56b2f';
-    ctx.fillRect(170, 205, 380, 34);
+    ctx.fillRect(x, y, width, barH);
     ctx.fillStyle = '#f4e6c1';
-    for (let x = 180; x < 540; x += 48) {
-      ctx.fillRect(x, 205, 24, 34);
+    for (let sx = x + 10; sx < x + width; sx += Math.max(20, width / 8)) {
+      ctx.fillRect(sx, y, Math.max(10, width / 16), barH);
     }
   }
 
-  function drawMansionDoor(ctx, theme) {
+  function drawMansionDoor(ctx, theme, depth = 1) {
+    const rect = depthRect(depth);
+    const doorW = rect.w * 0.34;
+    const doorH = rect.h * 0.74;
+    const x = rect.x + (rect.w - doorW) / 2;
+    const y = rect.y + rect.h * 0.18;
     ctx.save();
     ctx.fillStyle = '#3a2633';
     ctx.strokeStyle = theme.accent;
-    ctx.lineWidth = 5;
-    ctx.fillRect(302, 125, 116, 175);
-    ctx.strokeRect(302, 125, 116, 175);
+    ctx.lineWidth = Math.max(3, 6 - depth);
+    ctx.fillRect(x, y, doorW, doorH);
+    ctx.strokeRect(x, y, doorW, doorH);
     ctx.fillStyle = '#f4e6c1';
-    ctx.fillRect(352, 198, 16, 16);
+    ctx.fillRect(x + doorW * 0.43, y + doorH * 0.42, Math.max(6, doorW * 0.12), Math.max(6, doorW * 0.12));
     ctx.strokeStyle = 'rgba(244,230,193,0.5)';
     ctx.beginPath();
-    ctx.moveTo(320, 145);
-    ctx.lineTo(400, 145);
-    ctx.moveTo(320, 175);
-    ctx.lineTo(400, 175);
+    ctx.moveTo(x + doorW * 0.18, y + doorH * 0.12);
+    ctx.lineTo(x + doorW * 0.82, y + doorH * 0.12);
+    ctx.moveTo(x + doorW * 0.18, y + doorH * 0.28);
+    ctx.lineTo(x + doorW * 0.82, y + doorH * 0.28);
     ctx.stroke();
     ctx.restore();
   }
 
-  function drawConservatoryDoor(ctx, theme) {
+  function drawConservatoryDoor(ctx, theme, depth = 1) {
+    const rect = depthRect(depth);
+    const doorW = rect.w * 0.36;
+    const doorH = rect.h * 0.72;
+    const x = rect.x + (rect.w - doorW) / 2;
+    const y = rect.y + rect.h * 0.18;
     ctx.save();
     ctx.strokeStyle = theme.accent;
-    ctx.lineWidth = 5;
+    ctx.lineWidth = Math.max(3, 6 - depth);
     ctx.beginPath();
-    ctx.moveTo(310, 130);
-    ctx.bezierCurveTo(350, 95, 410, 130, 410, 205);
-    ctx.lineTo(410, 300);
-    ctx.lineTo(310, 300);
+    ctx.moveTo(x, y + doorH * 0.12);
+    ctx.bezierCurveTo(x + doorW * 0.35, y - doorH * 0.1, x + doorW, y + doorH * 0.12, x + doorW, y + doorH * 0.45);
+    ctx.lineTo(x + doorW, y + doorH);
+    ctx.lineTo(x, y + doorH);
     ctx.closePath();
     ctx.stroke();
     ctx.fillStyle = 'rgba(201,247,213,0.16)';
     ctx.fill();
     ctx.fillStyle = '#c9f7d5';
-    ctx.font = '800 18px sans-serif';
+    ctx.font = `800 ${Math.max(10, 18 - depth * 2)}px sans-serif`;
     ctx.textAlign = 'center';
-    ctx.fillText('Glass path', 360, 326);
+    ctx.fillText('Glass path', x + doorW / 2, y + doorH + 26 / depth);
     ctx.restore();
   }
 
-  function drawMoonScratch(ctx) {
+  function drawMoonScratch(ctx, depth = 1) {
+    const rect = depthRect(depth);
     if (assets.moonScratch.complete && assets.moonScratch.naturalWidth) {
-      ctx.drawImage(assets.moonScratch, 278, 125, 164, 164);
+      const size = rect.w * 0.36;
+      ctx.drawImage(assets.moonScratch, rect.x + rect.w * 0.32, rect.y + rect.h * 0.26, size, size);
       return;
     }
     ctx.strokeStyle = '#8fd3ff';
-    ctx.lineWidth = 8;
+    ctx.lineWidth = Math.max(3, 9 - depth * 2);
     [0, 34, 68].forEach((offset) => {
       ctx.beginPath();
-      ctx.arc(320 + offset, 215, 55, -1.1, 1.1);
+      ctx.arc(rect.x + rect.w * 0.42 + offset / depth, rect.y + rect.h * 0.52, rect.w * 0.12, -1.1, 1.1);
       ctx.stroke();
     });
   }
 
-  function drawMonster(ctx, monster) {
+  function drawMonster(ctx, monster, depth = 1) {
     const sprite = monster.type === 'signpost-ogre'
       ? assets.signpostOgre
       : monster.type === 'moonlit-warden'
@@ -1214,19 +1288,23 @@
       let frame = 0;
       if (monster.hp <= monster.maxHp * 0.35) frame = 2;
       if (monster.boss && monster.hp <= monster.maxHp * 0.5) frame = 5;
-      const drawWidth = monster.boss ? 255 : 225;
-      const drawHeight = monster.boss ? 208 : 225;
-      ctx.drawImage(sprite, frame * frameWidth, 0, frameWidth, sprite.naturalHeight, 360 - drawWidth / 2, 112, drawWidth, drawHeight);
+      const scale = depth === 1 ? 1 : depth === 2 ? 0.68 : 0.46;
+      const drawWidth = (monster.boss ? 255 : 225) * scale;
+      const drawHeight = (monster.boss ? 208 : 225) * scale;
+      const y = depth === 1 ? 112 : depth === 2 ? 145 : 174;
+      ctx.drawImage(sprite, frame * frameWidth, 0, frameWidth, sprite.naturalHeight, 360 - drawWidth / 2, y, drawWidth, drawHeight);
       ctx.fillStyle = '#fff';
-      ctx.font = '700 18px sans-serif';
+      ctx.font = `700 ${Math.max(11, 18 * scale)}px sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillText(monster.name, 360, 338);
-      ctx.fillText(`${monster.hp}/${monster.maxHp} HP`, 360, 363);
+      ctx.fillText(monster.name, 360, y + drawHeight + 22 * scale);
+      ctx.fillText(`${monster.hp}/${monster.maxHp} HP`, 360, y + drawHeight + 46 * scale);
       return;
     }
 
     ctx.save();
-    ctx.translate(360, 245);
+    const scale = depth === 1 ? 1 : depth === 2 ? 0.68 : 0.46;
+    ctx.translate(360, depth === 1 ? 245 : depth === 2 ? 228 : 214);
+    ctx.scale(scale, scale);
     drawPrimitiveMonster(ctx, monster);
     ctx.fillStyle = '#fff';
     ctx.font = '700 18px sans-serif';
@@ -1348,21 +1426,24 @@
     ctx.restore();
   }
 
-  function drawItem(ctx, itemId) {
+  function drawItem(ctx, itemId, depth = 1) {
     const item = DATA.items[itemId];
+    const scale = depth === 1 ? 1 : depth === 2 ? 0.68 : 0.46;
+    const y = depth === 1 ? 142 : depth === 2 ? 170 : 190;
     if (assets.items.complete && assets.items.naturalWidth && ITEM_FRAMES[itemId] !== undefined) {
       const frameWidth = assets.items.naturalWidth / 8;
       const frame = ITEM_FRAMES[itemId];
-      ctx.drawImage(assets.items, frame * frameWidth, 0, frameWidth, assets.items.naturalHeight, 292, 142, 136, 136);
+      ctx.drawImage(assets.items, frame * frameWidth, 0, frameWidth, assets.items.naturalHeight, 360 - (136 * scale) / 2, y, 136 * scale, 136 * scale);
       ctx.fillStyle = '#fff';
-      ctx.font = '800 18px sans-serif';
+      ctx.font = `800 ${Math.max(11, 18 * scale)}px sans-serif`;
       ctx.textAlign = 'center';
-      ctx.fillText(item.name, 360, 310);
+      ctx.fillText(item.name, 360, y + 168 * scale);
       return;
     }
 
     ctx.save();
-    ctx.translate(360, 240);
+    ctx.translate(360, depth === 1 ? 240 : depth === 2 ? 220 : 205);
+    ctx.scale(scale, scale);
     ctx.fillStyle = itemId === 'moon-toll-token' ? '#8fd3ff' : '#f3c64e';
     ctx.strokeStyle = '#17191f';
     ctx.lineWidth = 5;
@@ -1377,12 +1458,13 @@
     ctx.restore();
   }
 
-  function drawExit(ctx) {
+  function drawExit(ctx, depth = 1) {
+    const rect = depthRect(depth);
     ctx.strokeStyle = '#f3c64e';
-    ctx.lineWidth = 10;
+    ctx.lineWidth = Math.max(4, 12 - depth * 2);
     ctx.beginPath();
-    ctx.moveTo(250, 330);
-    ctx.bezierCurveTo(300, 245, 420, 245, 470, 125);
+    ctx.moveTo(rect.x + rect.w * 0.18, rect.y + rect.h * 0.9);
+    ctx.bezierCurveTo(rect.x + rect.w * 0.35, rect.y + rect.h * 0.55, rect.x + rect.w * 0.65, rect.y + rect.h * 0.55, rect.x + rect.w * 0.82, rect.y + rect.h * 0.18);
     ctx.stroke();
   }
 
