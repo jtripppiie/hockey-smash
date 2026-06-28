@@ -6,6 +6,7 @@
   const DEBUG = QUERY.get('realmDebug') === '1' || QUERY.get('computerMode') === '1';
   const COMPUTER_MODE = QUERY.get('computerMode') === '1';
   const COMPUTER_FAST = QUERY.get('speed') === 'fast';
+  const COMPUTER_DEEP = QUERY.get('debugDeep') === '1';
   const DIRECTIONS = ['north', 'east', 'south', 'west'];
   const VECTORS = {
     north: { x: 0, y: -1 },
@@ -25,6 +26,7 @@
   const keyedImageCache = new Map();
   const computerReport = {
     enabled: COMPUTER_MODE,
+    mode: COMPUTER_DEEP ? 'debug-deep-check' : 'real-playthrough',
     running: false,
     passed: 0,
     failed: 0,
@@ -249,6 +251,7 @@
     });
 
     Object.entries(elements.options).forEach(([key, input]) => {
+      if (!input) return;
       input.addEventListener('change', () => {
         localStorage.setItem(`realmOption:${key}`, input.checked ? '1' : '0');
         applyOptions();
@@ -1062,6 +1065,8 @@
     elements.neoDoor.className = `realm-neo__door realm-neo__door--${presentation.door || 'none'}`;
     elements.neoObject.className = `realm-neo__object realm-neo__object--${presentation.object || 'none'}`;
     elements.neoEntity.className = `realm-neo__entity realm-neo__entity--${presentation.entity || 'none'}`;
+    elements.neoObject.dataset.label = presentation.object && presentation.object !== 'none' ? presentation.label : '';
+    elements.neoEntity.dataset.label = presentation.entity && presentation.entity !== 'none' ? presentation.label : '';
     safeText(elements.neoEntityIcon, presentation.icon || '');
     safeText(elements.neoLocation, `${map.name} · ${state.player.x},${state.player.y} · ${titleCase(state.player.facing)}`);
     safeText(elements.neoAhead, presentation.label);
@@ -1220,6 +1225,7 @@
     safeText(elements.computerStatus, [
       `Status: ${status}`,
       `Step: ${computerReport.step}/${computerReport.total || '?'}`,
+      `Mode: ${computerReport.mode}`,
       `Pass: ${computerReport.passed}`,
       `Fail: ${computerReport.failed}`,
       `Runtime errors: ${runtimeErrors.length}`,
@@ -1245,7 +1251,14 @@
     runtimeErrors.length = 0;
     localStorage.removeItem(DATA.saveKey);
     newGame();
-    const sequence = [
+    const sequence = COMPUTER_DEEP ? debugDeepSequence() : realComputerSequence();
+    computerReport.total = sequence.length;
+    renderComputerReport();
+    runComputerStep(sequence);
+  }
+
+  function realComputerSequence() {
+    return [
       ['Launch creates playable state', () => assertComputer(Boolean(state && !elements.play.hidden), 'Play screen did not open.')],
       ['Initial render completes', () => assertComputer(renderCount > 0 && Boolean(elements.neoView?.dataset.sceneSignature), 'Visible viewport did not render.')],
       ['Forward changes position', () => {
@@ -1276,6 +1289,44 @@
         handleAction('inspect');
         assertComputer(state.log.length >= before, 'Inspect did not produce log feedback.');
       }],
+      ['Walk to the Rusty Road Key through real movement', () => {
+        computerGoTo('map-kiosk-dungeon', 2, 3);
+        assertComputer(hasItem('rusty-road-key'), 'Rusty Road Key was not collected by walking.');
+      }],
+      ['Walk to Apple Juice Potion through real movement', () => {
+        computerGoTo('map-kiosk-dungeon', 6, 6);
+        assertComputer(hasItem('apple-juice-potion'), 'Apple Juice Potion was not collected by walking.');
+      }],
+      ['Walk to Signpost Court and face boss', () => {
+        computerGoTo('map-kiosk-dungeon', 5, 9);
+        computerFace('south');
+        const event = eventAhead();
+        assertComputer(event?.type === 'monster', 'Boss encounter was not ahead.');
+      }],
+      ['Fight Signpost Ogre using real attacks, item use, and Big Spin dodge', () => {
+        computerAttackAheadUntilClear('signpost-ogre-1');
+        assertComputer(state.flags.bossDefeated, 'Signpost Ogre was not defeated.');
+      }],
+      ['Walk to Mapstone and collect it', () => {
+        computerGoTo('map-kiosk-dungeon', 10, 1);
+        assertComputer(hasItem('mapstone'), 'Mapstone was not collected.');
+      }],
+      ['Walk to exit and trigger normal ending', () => {
+        computerGoTo('map-kiosk-dungeon', 1, 1);
+        assertComputer(state.ending === 'normal', `Expected normal ending, got ${state.ending || 'none'}.`);
+      }],
+      ['HUD and scene report final route state', () => {
+        assertComputer((elements.objective?.textContent || '').length > 0, 'Objective HUD is empty.');
+        assertComputer(Boolean(elements.neoView?.dataset.sceneSignature), 'Scene signature missing at end.');
+      }],
+      ['No runtime errors recorded', () => assertComputer(runtimeErrors.length === 0, `${runtimeErrors.length} runtime errors recorded.`)],
+    ];
+  }
+
+  function debugDeepSequence() {
+    return [
+      ['Launch creates playable state', () => assertComputer(Boolean(state && !elements.play.hidden), 'Play screen did not open.')],
+      ['Initial render completes', () => assertComputer(renderCount > 0 && Boolean(elements.neoView?.dataset.sceneSignature), 'Visible viewport did not render.')],
       ['Hidden Underpass transition works', () => {
         state.flags.secretSwitchPressed = true;
         jumpTo('map-kiosk-dungeon', 9, 6, 'east');
@@ -1307,9 +1358,6 @@
       }],
       ['No runtime errors recorded', () => assertComputer(runtimeErrors.length === 0, `${runtimeErrors.length} runtime errors recorded.`)],
     ];
-    computerReport.total = sequence.length;
-    renderComputerReport();
-    runComputerStep(sequence);
   }
 
   function runComputerStep(sequence) {
@@ -1367,6 +1415,112 @@
       state.flags.impossibleRouteEndingUnlocked = true;
     }
     if (itemId === 'glass-rose') state.flags.glassRoseFound = true;
+  }
+
+  function eventAhead() {
+    const target = tileAhead(1);
+    return getEvent(currentMap(), target.x, target.y);
+  }
+
+  function computerGoTo(mapId, x, y) {
+    assertComputer(state.player.mapId === mapId, `Computer route expected ${mapId}, got ${state.player.mapId}.`);
+    let guard = 0;
+    while ((state.player.x !== x || state.player.y !== y) && guard < 120) {
+      const path = findComputerPath({ x: state.player.x, y: state.player.y }, { x, y });
+      assertComputer(path && path.length > 1, `No real route from ${state.player.x},${state.player.y} to ${x},${y}.`);
+      const next = path[1];
+      computerFace(directionBetween({ x: state.player.x, y: state.player.y }, next));
+      const before = snapshotPlayer();
+      handleAction('forward');
+      assertComputer(state.player.mapId === mapId, `Unexpected map transition to ${state.player.mapId}.`);
+      assertComputer(before.x !== state.player.x || before.y !== state.player.y, `Move toward ${x},${y} was blocked.`);
+      guard += 1;
+    }
+    assertComputer(state.player.x === x && state.player.y === y, `Computer route stopped at ${state.player.x},${state.player.y}, not ${x},${y}.`);
+  }
+
+  function computerFace(direction) {
+    assertComputer(DIRECTIONS.includes(direction), `Invalid computer facing ${direction}.`);
+    let guard = 0;
+    while (state.player.facing !== direction && guard < 4) {
+      const current = DIRECTIONS.indexOf(state.player.facing);
+      const target = DIRECTIONS.indexOf(direction);
+      const clockwise = (target - current + DIRECTIONS.length) % DIRECTIONS.length;
+      handleAction(clockwise <= 2 ? 'turnRight' : 'turnLeft');
+      guard += 1;
+    }
+    assertComputer(state.player.facing === direction, `Could not face ${direction}.`);
+  }
+
+  function findComputerPath(start, goal) {
+    const map = currentMap();
+    const queue = [start];
+    const previous = new Map([[targetKey(start), null]]);
+    while (queue.length) {
+      const point = queue.shift();
+      if (point.x === goal.x && point.y === goal.y) break;
+      Object.values(VECTORS).forEach((vector) => {
+        const next = { x: point.x + vector.x, y: point.y + vector.y };
+        const key = targetKey(next);
+        if (previous.has(key)) return;
+        if (!isComputerTraversable(map, next)) return;
+        previous.set(key, point);
+        queue.push(next);
+      });
+    }
+    const goalKey = targetKey(goal);
+    if (!previous.has(goalKey)) return null;
+    const path = [];
+    for (let point = goal; point; point = previous.get(targetKey(point))) {
+      path.push(point);
+    }
+    return path.reverse();
+  }
+
+  function isComputerTraversable(map, point) {
+    const tile = getTile(map, point.x, point.y);
+    if (!tile || tile === '#') return false;
+    const event = getEvent(map, point.x, point.y);
+    if (event?.type === 'hiddenWall' && !state.flags[event.flag]) return false;
+    if (event?.type === 'lockedDoor' && !state.flags[event.flag] && !hasItem(event.requiredItem)) return false;
+    if (event?.type === 'monster') {
+      const monster = state.monsters[event.monsterId];
+      if (monster?.hp > 0) return false;
+    }
+    return true;
+  }
+
+  function directionBetween(from, to) {
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    if (dx === 1 && dy === 0) return 'east';
+    if (dx === -1 && dy === 0) return 'west';
+    if (dx === 0 && dy === 1) return 'south';
+    if (dx === 0 && dy === -1) return 'north';
+    throw new Error(`Tiles are not adjacent: ${targetKey(from)} -> ${targetKey(to)}`);
+  }
+
+  function computerAttackAheadUntilClear(expectedMonsterId) {
+    let guard = 0;
+    while (guard < 40) {
+      const event = eventAhead();
+      assertComputer(event?.type === 'monster', 'No monster ahead to fight.');
+      assertComputer(!expectedMonsterId || event.monsterId === expectedMonsterId, `Expected ${expectedMonsterId}, got ${event.monsterId}.`);
+      const monster = state.monsters[event.monsterId];
+      if (!monster || monster.hp <= 0) return;
+      if (monster.pendingSpin) {
+        const before = snapshotPlayer();
+        handleAction('backward');
+        assertComputer(before.x !== state.player.x || before.y !== state.player.y, 'Big Spin dodge did not move backward.');
+        handleAction('forward');
+      } else if (state.player.hp <= 8 && state.player.inventory.some((id) => DATA.items[id]?.type === 'consumable')) {
+        handleAction('useItem');
+      } else {
+        handleAction('attack');
+      }
+      guard += 1;
+    }
+    throw new Error('Combat did not resolve within 40 actions.');
   }
 
   function handleDebugAction(action) {

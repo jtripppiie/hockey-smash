@@ -1,13 +1,14 @@
 # Changelog
 
-## 0.7.0 - Game Loop Verification Pass
+## 0.8.0 - Release Quality And Real Verification Pass
 
-- Hardened the input/render loop so missing or stale DOM targets cannot freeze the playable view.
-- Made the visible first-person viewport update with map, coordinates, facing, step count, and scene signature.
-- Added local-only Computer Mode with `?computerMode=1` and fast mode with `?computerMode=1&speed=fast`.
-- Added a visible auto-play verification overlay that checks launch, movement, turning, item pickup, inspect feedback, map transitions, ending trigger, and runtime errors.
-- Added runtime error capture for browser errors and unhandled promise rejections.
-- Updated version badges, README, QA notes, and progress documentation.
+- Split verification into Real Computer Mode and Debug Deep Check Mode.
+- Real Computer Mode now uses actual player actions to walk the normal route, collect required items, fight the Signpost Ogre, dodge Big Spin, use a healing item, collect the Mapstone, and reach the normal ending.
+- Debug Deep Check Mode covers underpass, mansion, conservatory, and Glass Rose ending regressions with clearly labeled debug jumps.
+- Improved the first-person viewport with stronger atmospheric framing, route signage, central object/encounter labels, encounter presentation, scanline treatment, and position/facing-driven scene shifts.
+- Improved mobile layout with sticky thumb controls directly below the viewport, larger touch targets, compact status readouts, and a responsive verification overlay.
+- Added Playwright browser verification scaffolding plus Node-based syntax, data, and VM verification scripts.
+- Updated version badges, README, QA notes, changelog, and progress documentation.
 
 ## 0.3.0 - WarClass-Inspired Visual Overhaul
 

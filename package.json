@@ -1,0 +1,17 @@
+{
+  "name": "roadside-realmo",
+  "version": "0.8.0",
+  "private": true,
+  "description": "Static Roadside Realm browser game verification helpers.",
+  "scripts": {
+    "verify": "npm run verify:syntax && npm run verify:data && npm run verify:vm",
+    "verify:syntax": "node --check js/games/roadside-realm-data.js && node --check js/games/roadside-realm-art.js && node --check js/games/roadside-realm.js",
+    "verify:data": "node scripts/verify-realm-data.js",
+    "verify:vm": "node scripts/verify-realm-vm.js",
+    "test:browser": "playwright test",
+    "test:browser:install": "npx playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0"
+  }
+}

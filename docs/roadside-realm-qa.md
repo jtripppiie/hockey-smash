@@ -4,20 +4,21 @@ Use this checklist for every pushed preview checkpoint. Roadside Realm is not V1
 
 ## Current Preview
 
-- App version: `v0.7.0`
-- Game version: `0.7.0`
+- App version: `v0.8.0`
+- Game version: `0.8.0`
 - Save version: `1`
 - Preview branch: `main`
 - GitHub Pages URL: `https://jtripppiie.github.io/roadside-realmo/`
 - Debug URL: `https://jtripppiie.github.io/roadside-realmo/?realmDebug=1`
 - Computer Mode URL: `https://jtripppiie.github.io/roadside-realmo/?computerMode=1`
 - Fast Computer Mode URL: `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast`
+- Debug Deep Check URL: `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast&debugDeep=1`
 
 ## Launch Route
 
 1. Open the Pages URL.
 2. Confirm the Roadside Realm splash screen appears.
-3. Confirm the visible version reads `App v0.7.0 · Roadside Realm 0.7.0`.
+3. Confirm the visible version reads `App v0.8.0 · Roadside Realm 0.8.0`.
 4. Confirm Start New Quest works.
 5. Confirm the canvas renders.
 6. Confirm the D-pad, action buttons, inventory, log, and objective are visible.
@@ -35,8 +36,34 @@ Use this checklist for every pushed preview checkpoint. Roadside Realm is not V1
 2. Wait for the Auto Play Verification overlay.
 3. Confirm it reports `Status: PASSED`.
 4. Confirm it shows zero runtime errors.
-5. Confirm the pass list includes launch, initial render, forward movement, turning, scene signature change, item pickup, inspect feedback, Underpass transition, Mansion transition, Conservatory transition, and ending trigger.
-6. If it reports `FAILED`, copy the failed line and browser console error before continuing feature work.
+5. Confirm the status includes `Mode: real-playthrough`.
+6. Confirm the pass list includes launch, initial render, forward movement, turning, scene signature change, item pickup, inspect feedback, walking to the potion, walking to the Signpost Ogre, real combat, Mapstone pickup, normal ending, HUD/scene checks, and zero runtime errors.
+7. Confirm it reaches `Ending: normal`.
+8. If it reports `FAILED`, copy the failed line and browser console error before continuing feature work.
+
+## Debug Deep Check Verification
+
+1. Open `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast&debugDeep=1`.
+2. Confirm the overlay reports `Mode: debug-deep-check`.
+3. Confirm it reports `Status: PASSED`.
+4. Confirm it checks the Forgotten Underpass, Never-Finished Mansion, Hidden Conservatory, and Glass Rose ending.
+5. Do not treat this mode as proof that the normal game is playable; Real Computer Mode is the playable-route gate.
+
+## Local Verification Commands
+
+Run before pushing a release-quality checkpoint:
+
+```bash
+npm run verify
+```
+
+Optional browser automation:
+
+```bash
+npm install
+npm run test:browser:install
+npm run test:browser
+```
 
 ## Main Route Test
 

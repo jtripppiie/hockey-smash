@@ -133,7 +133,7 @@
   };
 
   window.RTA_ROADSIDE_REALM_DATA = {
-    version: '0.7.0',
+    version: '0.8.0',
     title: 'Roadside Realm',
     saveKey: 'rtaRoadsideRealmSave',
     startMap: 'map-kiosk-dungeon',

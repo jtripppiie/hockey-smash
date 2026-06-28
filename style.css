@@ -34,6 +34,10 @@ input {
   font: inherit;
 }
 
+button {
+  touch-action: manipulation;
+}
+
 .app-shell {
   width: min(1500px, 100%);
   margin: 0 auto;
@@ -176,6 +180,7 @@ input {
   background: rgba(244, 230, 193, 0.08);
   color: var(--realm-paper);
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .realm-button:hover {
@@ -389,6 +394,39 @@ input {
     inset 0 -40px 80px rgba(0, 0, 0, 0.58);
 }
 
+.realm-neo-view::before,
+.realm-neo-view::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.realm-neo-view::before {
+  left: 8%;
+  top: 18%;
+  z-index: 13;
+  width: clamp(42px, 7vw, 88px);
+  aspect-ratio: 1 / 1.7;
+  border: 3px solid #050609;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(243,198,78,0.95) 0 10%, transparent 12%),
+    linear-gradient(90deg, transparent 42%, #241a12 43% 57%, transparent 58%),
+    linear-gradient(#5c412b, #211812);
+  box-shadow:
+    0 0 34px rgba(243,198,78,0.34),
+    inset 0 0 18px rgba(0,0,0,0.65);
+  clip-path: polygon(38% 0, 62% 0, 62% 24%, 82% 24%, 82% 42%, 58% 42%, 58% 100%, 42% 100%, 42% 42%, 18% 42%, 18% 24%, 38% 24%);
+}
+
+.realm-neo-view::after {
+  inset: 0;
+  z-index: 18;
+  opacity: 0.18;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 5px, rgba(255,255,255,0.08) 5px 6px),
+    linear-gradient(90deg, rgba(143,211,255,0.08), transparent 16% 84%, rgba(243,198,78,0.08));
+}
+
 .realm-neo__grain,
 .realm-neo__vignette,
 .realm-neo__sky,
@@ -510,6 +548,23 @@ input {
   border: 4px solid rgba(0,0,0,0.55);
 }
 
+.realm-neo__wall--far::before {
+  content: "ROUTE";
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  translate: -50% 0;
+  min-width: 42%;
+  padding: 0.2rem 0.35rem;
+  border: 2px solid #050609;
+  background: #214d3c;
+  color: #fff7df;
+  font-size: clamp(0.48rem, 1.3vw, 0.82rem);
+  font-weight: 900;
+  text-align: center;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.5);
+}
+
 .realm-neo__door {
   left: 39%;
   top: 24%;
@@ -589,6 +644,24 @@ input {
   opacity: 1;
 }
 
+.realm-neo__object:not(.realm-neo__object--none)::after {
+  content: attr(data-label);
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 0.45rem);
+  translate: -50% 0;
+  white-space: nowrap;
+  max-width: min(280px, 70vw);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0.3rem 0.45rem;
+  border: 2px solid #050609;
+  background: rgba(5,6,9,0.88);
+  color: #fff7df;
+  font-size: clamp(0.72rem, 2vw, 1rem);
+  text-shadow: none;
+}
+
 .realm-neo__object--key::before { content: "K"; }
 .realm-neo__object--juice::before,
 .realm-neo__object--sun-snack::before,
@@ -620,6 +693,26 @@ input {
   opacity: 1;
 }
 
+.realm-neo__entity:not(.realm-neo__entity--none)::after {
+  content: attr(data-label);
+  position: absolute;
+  left: 50%;
+  bottom: -1.8rem;
+  translate: -50% 0;
+  min-width: min(320px, 78vw);
+  padding: 0.35rem 0.5rem;
+  border: 2px solid #050609;
+  background:
+    linear-gradient(90deg, rgba(229,107,47,0.22), rgba(5,6,9,0.92)),
+    rgba(5,6,9,0.92);
+  color: #fff7df;
+  font-size: clamp(0.78rem, 2.1vw, 1.05rem);
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.55);
+}
+
 .realm-neo__entity-icon {
   display: grid;
   place-items: center;
@@ -636,6 +729,28 @@ input {
   font-weight: 900;
   text-shadow: 0 6px 0 #050609, 0 0 24px rgba(0,0,0,0.9);
   box-shadow: 0 20px 60px rgba(0,0,0,0.78);
+}
+
+.realm-neo__entity-icon::before,
+.realm-neo__entity-icon::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.realm-neo__entity-icon::before {
+  inset: 16%;
+  border: 4px solid rgba(255,247,223,0.2);
+  transform: rotate(45deg);
+}
+
+.realm-neo__entity-icon::after {
+  width: 64%;
+  height: 14%;
+  left: 18%;
+  bottom: 19%;
+  background: rgba(5,6,9,0.42);
+  box-shadow: 0 -32px 0 rgba(5,6,9,0.2);
 }
 
 .realm-neo__entity--signpost-ogre .realm-neo__entity-icon {
@@ -1133,6 +1248,143 @@ input {
   color: #ffb1a1;
 }
 
+@media (max-width: 640px) {
+  .app-shell {
+    padding: 0.35rem;
+  }
+
+  .realm-play {
+    padding: 0.45rem;
+    gap: 0.45rem;
+  }
+
+  .realm-topbar {
+    margin-bottom: 0;
+    padding: 0.55rem;
+    gap: 0.5rem;
+  }
+
+  .realm-topbar h2 {
+    font-size: 1.05rem;
+  }
+
+  .realm-objective {
+    max-width: none;
+    font-size: 0.86rem;
+  }
+
+  .realm-status-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.2rem;
+    margin-bottom: 0;
+  }
+
+  .realm-stat {
+    min-height: 44px;
+    padding: 0.35rem 0.28rem;
+  }
+
+  .realm-stat span {
+    font-size: 0.62rem;
+  }
+
+  .realm-stat strong {
+    font-size: 0.96rem;
+  }
+
+  .realm-party-strip {
+    grid-template-columns: 1fr;
+    margin-bottom: 0;
+  }
+
+  .realm-layout {
+    display: contents;
+  }
+
+  .realm-view-panel {
+    order: 3;
+    min-height: 0;
+    border-width: 6px;
+    padding: 0.25rem;
+  }
+
+  .realm-neo-view {
+    min-height: clamp(250px, 46vh, 390px);
+    aspect-ratio: 9 / 10;
+  }
+
+  .realm-neo__caption {
+    left: 0.45rem;
+    right: 0.45rem;
+    bottom: 0.45rem;
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.45rem;
+  }
+
+  .realm-neo__entity {
+    left: 23%;
+    width: 54%;
+  }
+
+  .realm-neo__object {
+    left: 39%;
+    width: 22%;
+  }
+
+  .realm-control-deck {
+    order: 4;
+    position: sticky;
+    bottom: 0.25rem;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.5rem;
+    align-items: center;
+    width: 100%;
+    padding: 0.45rem;
+    border: 2px solid #050609;
+    border-radius: 6px;
+    background: rgba(5, 6, 9, 0.94);
+    box-shadow: 0 -14px 36px rgba(0,0,0,0.45);
+  }
+
+  .realm-dpad {
+    grid-template-columns: repeat(3, 54px);
+    grid-template-rows: repeat(2, 54px);
+    gap: 0.3rem;
+  }
+
+  .realm-dpad .realm-button,
+  .realm-action-pad .realm-button {
+    min-height: 52px;
+    padding: 0.4rem 0.45rem;
+  }
+
+  .realm-action-pad {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+    width: 100%;
+  }
+
+  .realm-side-panel {
+    order: 5;
+  }
+
+  .realm-log {
+    max-height: 170px;
+  }
+
+  .realm-computer {
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    width: auto;
+    max-height: 48vh;
+  }
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -1210,5 +1462,51 @@ body.realm-reduced-motion *::after {
 
   .realm-help-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding: 0.35rem;
+  }
+
+  .realm-layout {
+    display: contents;
+  }
+
+  .realm-status-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .realm-view-panel {
+    order: 3;
+    min-height: 0;
+  }
+
+  .realm-neo-view {
+    min-height: clamp(250px, 46vh, 390px);
+    aspect-ratio: 9 / 10;
+  }
+
+  .realm-control-deck {
+    order: 4;
+    position: sticky;
+    bottom: 0.25rem;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    justify-items: stretch;
+    width: 100%;
+  }
+
+  .realm-side-panel {
+    order: 5;
+  }
+
+  .realm-action-pad {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-content: stretch;
+    width: 100%;
   }
 }

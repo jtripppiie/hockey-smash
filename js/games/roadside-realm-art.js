@@ -1,6 +1,6 @@
 (function () {
   window.RTA_ROADSIDE_REALM_ART = {
-    version: '0.7.0',
+    version: '0.8.0',
     assetFiles: {
       signpostOgre: 'assets/roadside-realm/sprites/realm-sprite-signpost-ogre.png',
       moonlitWarden: 'assets/roadside-realm/sprites/realm-sprite-moonlit-warden.png',

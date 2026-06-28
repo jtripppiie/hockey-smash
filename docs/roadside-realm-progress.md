@@ -417,15 +417,15 @@ Rules kept from the project plan:
 - The existing canvas renderer remains available as a fallback.
 - No dependencies, backend, analytics, tracking, GPS, or external asset loading were added.
 
-## Checkpoint: Game Loop Verification Pass
+## Checkpoint: Release Quality And Real Verification Pass
 
-This checkpoint responds to the preview feeling broken after the visual overhaul. The priority is not adding new content; it is proving the controls, state changes, visible viewport updates, transitions, and endings can be verified in the browser.
+This checkpoint responds to the preview feeling like an engineering-only `0.7.0`. The priority is turning the build into an honest `0.8.0`: more playable, more visually intentional, more mobile-friendly, and verified by a real action-based route rather than debug jumps.
 
 Version changes:
 
-- Visible version badge: `App v0.7.0 · Roadside Realm 0.7.0`.
-- Roadside Realm game data version: `0.7.0`.
-- Roadside Realm art metadata version: `0.7.0`.
+- Visible version badge: `App v0.8.0 · Roadside Realm 0.8.0`.
+- Roadside Realm game data version: `0.8.0`.
+- Roadside Realm art metadata version: `0.8.0`.
 - Save wrapper remains version `1`.
 
 Implemented in this checkpoint:
@@ -433,13 +433,17 @@ Implemented in this checkpoint:
 - Hardened DOM rendering with safe text/HTML setters so a missing display node cannot stop the game loop.
 - Added runtime error capture for browser errors and unhandled promise rejections.
 - Added position/facing/step-driven scene signatures to the visible first-person viewport so movement is obvious and testable.
-- Added `?computerMode=1` as local-only Computer Mode.
-- Added `?computerMode=1&speed=fast` for quick smoke testing.
-- Added a visible Computer Mode overlay that reports pass/fail counts, current map, player position, ending state, and recent verification steps.
-- Computer Mode checks launch, rendering, forward movement, turning, scene updates, item pickup, inspect feedback, Underpass transition, Mansion transition, Conservatory transition, ending trigger, and runtime errors.
+- Split Computer Mode into real playthrough verification and debug-only deep regression checks.
+- Real Computer Mode now starts a new quest and uses normal action handlers to move, turn, inspect, collect the key, collect the potion, fight the Signpost Ogre, dodge Big Spin, use healing, collect the Mapstone, and reach the normal ending.
+- Debug Deep Check Mode uses `?computerMode=1&debugDeep=1` and is clearly labeled as separate from real playthrough proof.
+- Improved the first-person viewport with stronger route signage, torch/glow framing, encounter/object labels, scanline treatment, and deeper atmospheric layering.
+- Improved mobile layout with sticky thumb controls immediately under the viewport, compact stats, larger touch targets, and a responsive verification overlay.
+- Added `package.json`, Playwright browser test scaffolding, and local Node verification scripts.
 
 Verification notes:
 
-- Terminal syntax and data checks should be run before each push.
-- Browser verification can be performed from GitHub Pages by opening `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast` and waiting for the overlay to report `Status: PASSED`.
-- A full browser automation run from this environment is currently blocked because no local Chromium/Firefox/Playwright binary is installed.
+- `npm run verify` runs syntax, data, and VM-based Computer Mode checks.
+- Browser verification can be performed from GitHub Pages by opening `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast` and waiting for `Status: PASSED` with `Mode: real-playthrough`.
+- Debug deep verification can be performed with `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast&debugDeep=1`.
+- Playwright browser verification is scaffolded with `npm run test:browser`; install dev dependencies and Chromium first with `npm install` and `npm run test:browser:install`.
+- In this workspace, `npm run test:browser` was attempted and returned `playwright: not found` because dev dependencies are not installed.

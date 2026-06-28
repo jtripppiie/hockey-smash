@@ -2,7 +2,7 @@
 
 Roadside Realmo is the working repo for **Roadside Realm**, a static first-person road-fantasy dungeon crawler built with HTML, CSS, vanilla JavaScript, and local assets.
 
-Current preview version: **0.7.0**
+Current preview version: **0.8.0**
 
 Live GitHub Pages preview:
 
@@ -12,7 +12,7 @@ https://jtripppiie.github.io/roadside-realmo/
 
 ## Current Status
 
-Roadside Realm is now a playable in-development browser game, not just a planning scaffold. The current `0.7.0` checkpoint hardens the game loop and adds browser-visible computer verification while preserving the WarClass-inspired, original Roadside Realm interface.
+Roadside Realm is now a playable in-development browser game, not just a planning scaffold. The current `0.8.0` checkpoint upgrades the release quality with real action-based Computer Mode verification, stronger first-person atmosphere, and a more mobile-friendly HUD.
 
 The game includes:
 
@@ -78,12 +78,43 @@ Use:
 
 Debug mode includes position/state readouts and jump/give/heal helpers for testing main, secret, mansion, conservatory, and Soldotna routes.
 
+## Verification Modes
+
+Real Computer Mode uses the same action system as a player. It starts a new quest, walks the normal route, collects the Rusty Road Key and Apple Juice Potion, fights the Signpost Ogre, dodges Big Spin, uses a healing item if needed, collects the Mapstone, and reaches the normal ending.
+
+```text
+?computerMode=1
+?computerMode=1&speed=fast
+```
+
+Debug Deep Check Mode is separate. It may jump to deeper states for regression checks, and it is not used as proof that the normal game is playable.
+
+```text
+?computerMode=1&debugDeep=1
+?computerMode=1&speed=fast&debugDeep=1
+```
+
+Local verification commands:
+
+```bash
+npm run verify
+```
+
+Optional browser verification after installing Playwright:
+
+```bash
+npm install
+npm run test:browser:install
+npm run test:browser
+```
+
 ## Known Limitations
 
 - The WarClass-style viewport is a new DOM/CSS presentation layer; the canvas renderer still exists as a fallback.
 - Enemy/NPC silhouettes are original symbolic placeholders and need more bespoke art.
 - No sound pass has been done yet.
 - QA still needs manual browser playthroughs after each larger visual/content change.
+- Playwright browser verification is scaffolded, but dependencies are not committed; run `npm install` locally before `npm run test:browser`.
 
 ## Roadmap
 
@@ -102,6 +133,8 @@ Debug mode includes position/state readouts and jump/give/heal helpers for testi
 - `js/games/roadside-realm-art.js`: local art metadata
 - `js/games/roadside-realm.js`: runtime state, movement, rendering, save/load, debug mode
 - `assets/roadside-realm/`: local generated starter assets
+- `scripts/`: local verification scripts
+- `tests/`: optional Playwright browser verification
 - `docs/roadside-realm-game-plan.md`: full V1.0 game plan
 - `docs/roadside-realm-summary.md`: maintained quick summary
 - `docs/roadside-realm-qa.md`: QA routes
