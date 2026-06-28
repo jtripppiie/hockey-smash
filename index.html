@@ -37,7 +37,7 @@
               <label><input id="realm-option-sound" type="checkbox"> Sound</label>
             </fieldset>
             <p class="realm-credit">Made by TripperDeeLabs.</p>
-            <p class="realm-version">App v0.3.0 · Roadside Realm 0.3.0</p>
+            <p class="realm-version">App v0.7.0 · Roadside Realm 0.7.0</p>
           </div>
         </div>
 
@@ -240,6 +240,21 @@
             <button id="realm-summary-new" class="realm-button realm-button--primary" type="button">Start New Quest</button>
             <button id="realm-summary-menu" class="realm-button" type="button">Back to Splash</button>
           </div>
+        </section>
+
+        <section
+          id="realm-computer"
+          class="realm-computer"
+          hidden
+          aria-labelledby="realm-computer-title"
+          aria-live="polite"
+        >
+          <div>
+            <p class="realm-eyebrow">Computer Mode</p>
+            <h2 id="realm-computer-title">Auto Play Verification</h2>
+          </div>
+          <pre id="realm-computer-status" class="realm-computer__status">Status: ready</pre>
+          <ol id="realm-computer-log" class="realm-computer__log"></ol>
         </section>
       </section>
     </main>

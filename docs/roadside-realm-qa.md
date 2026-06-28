@@ -4,18 +4,20 @@ Use this checklist for every pushed preview checkpoint. Roadside Realm is not V1
 
 ## Current Preview
 
-- App version: `v0.3.0`
-- Game version: `0.3.0`
+- App version: `v0.7.0`
+- Game version: `0.7.0`
 - Save version: `1`
 - Preview branch: `main`
 - GitHub Pages URL: `https://jtripppiie.github.io/roadside-realmo/`
 - Debug URL: `https://jtripppiie.github.io/roadside-realmo/?realmDebug=1`
+- Computer Mode URL: `https://jtripppiie.github.io/roadside-realmo/?computerMode=1`
+- Fast Computer Mode URL: `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast`
 
 ## Launch Route
 
 1. Open the Pages URL.
 2. Confirm the Roadside Realm splash screen appears.
-3. Confirm the visible version reads `App v0.3.0 · Roadside Realm 0.3.0`.
+3. Confirm the visible version reads `App v0.7.0 · Roadside Realm 0.7.0`.
 4. Confirm Start New Quest works.
 5. Confirm the canvas renders.
 6. Confirm the D-pad, action buttons, inventory, log, and objective are visible.
@@ -26,6 +28,15 @@ Use this checklist for every pushed preview checkpoint. Roadside Realm is not V1
 11. Press `Ctrl` three times quickly and confirm the cheatsheet toggles.
 12. Confirm Signpost Ogre and Moonlit Warden sprite art does not show green-screen backing.
 13. Confirm no console errors appear.
+
+## Computer Mode Verification
+
+1. Open `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast`.
+2. Wait for the Auto Play Verification overlay.
+3. Confirm it reports `Status: PASSED`.
+4. Confirm it shows zero runtime errors.
+5. Confirm the pass list includes launch, initial render, forward movement, turning, scene signature change, item pickup, inspect feedback, Underpass transition, Mansion transition, Conservatory transition, and ending trigger.
+6. If it reports `FAILED`, copy the failed line and browser console error before continuing feature work.
 
 ## Main Route Test
 

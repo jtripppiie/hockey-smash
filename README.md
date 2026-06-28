@@ -2,7 +2,7 @@
 
 Roadside Realmo is the working repo for **Roadside Realm**, a static first-person road-fantasy dungeon crawler built with HTML, CSS, vanilla JavaScript, and local assets.
 
-Current preview version: **0.3.0**
+Current preview version: **0.7.0**
 
 Live GitHub Pages preview:
 
@@ -12,7 +12,7 @@ https://jtripppiie.github.io/roadside-realmo/
 
 ## Current Status
 
-Roadside Realm is now a playable in-development browser game, not just a planning scaffold. The current `0.3.0` checkpoint adds a WarClass-inspired visual overhaul while keeping the game original and GitHub Pages friendly.
+Roadside Realm is now a playable in-development browser game, not just a planning scaffold. The current `0.7.0` checkpoint hardens the game loop and adds browser-visible computer verification while preserving the WarClass-inspired, original Roadside Realm interface.
 
 The game includes:
 
@@ -25,6 +25,7 @@ The game includes:
 - normal, secret, impossible, and Glass Rose ending paths
 - local save/load
 - debug mode with `?realmDebug=1`
+- computer verification mode with `?computerMode=1`
 - development cheatsheet overlay
 
 ## Visual Direction

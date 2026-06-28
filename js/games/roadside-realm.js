@@ -2,7 +2,10 @@
   const DATA = window.RTA_ROADSIDE_REALM_DATA;
   const ART = window.RTA_ROADSIDE_REALM_ART || { sprites: {}, monsterSprites: {}, layers: [] };
   const SAVE_VERSION = 1;
-  const DEBUG = new URLSearchParams(window.location.search).get('realmDebug') === '1';
+  const QUERY = new URLSearchParams(window.location.search);
+  const DEBUG = QUERY.get('realmDebug') === '1' || QUERY.get('computerMode') === '1';
+  const COMPUTER_MODE = QUERY.get('computerMode') === '1';
+  const COMPUTER_FAST = QUERY.get('speed') === 'fast';
   const DIRECTIONS = ['north', 'east', 'south', 'west'];
   const VECTORS = {
     north: { x: 0, y: -1 },
@@ -15,7 +18,22 @@
   let elements = {};
   let inputLocked = false;
   let ctrlPresses = [];
+  let eventsBound = false;
+  let renderCount = 0;
+  let computerTimer = null;
+  const runtimeErrors = [];
   const keyedImageCache = new Map();
+  const computerReport = {
+    enabled: COMPUTER_MODE,
+    running: false,
+    passed: 0,
+    failed: 0,
+    step: 0,
+    total: 0,
+    errors: [],
+    log: [],
+    complete: false,
+  };
   const assets = {
     signpostOgre: loadImage('assets/roadside-realm/sprites/realm-sprite-signpost-ogre.png'),
     moonlitWarden: loadImage('assets/roadside-realm/sprites/realm-sprite-moonlit-warden.png'),
@@ -134,6 +152,7 @@
 
   function start() {
     cacheElements();
+    installRuntimeErrorCapture();
     bindEvents();
     applyStoredOptions();
     const dataErrors = validateData();
@@ -145,6 +164,9 @@
     }
     showSplash();
     render();
+    if (COMPUTER_MODE) {
+      window.setTimeout(startComputerMode, 150);
+    }
   }
 
   function cacheElements() {
@@ -196,6 +218,9 @@
       summaryMenu: document.getElementById('realm-summary-menu'),
       debug: document.getElementById('realm-debug'),
       debugStatus: document.getElementById('realm-debug-status'),
+      computer: document.getElementById('realm-computer'),
+      computerStatus: document.getElementById('realm-computer-status'),
+      computerLog: document.getElementById('realm-computer-log'),
       options: {
         motion: document.getElementById('realm-option-motion'),
         contrast: document.getElementById('realm-option-contrast'),
@@ -206,6 +231,8 @@
   }
 
   function bindEvents() {
+    if (eventsBound) return;
+    eventsBound = true;
     elements.start.addEventListener('click', () => newGame());
     elements.continue.addEventListener('click', () => continueGame());
     elements.resetSave.addEventListener('click', () => resetGame());
@@ -274,15 +301,16 @@
 
   function applyStoredOptions() {
     Object.entries(elements.options).forEach(([key, input]) => {
+      if (!input) return;
       input.checked = localStorage.getItem(`realmOption:${key}`) === '1';
     });
     applyOptions();
   }
 
   function applyOptions() {
-    elements.body.classList.toggle('realm-reduced-motion', elements.options.motion.checked);
-    elements.body.classList.toggle('realm-high-contrast', elements.options.contrast.checked);
-    elements.body.classList.toggle('realm-large-text', elements.options.largeText.checked);
+    elements.body.classList.toggle('realm-reduced-motion', Boolean(elements.options.motion?.checked));
+    elements.body.classList.toggle('realm-high-contrast', Boolean(elements.options.contrast?.checked));
+    elements.body.classList.toggle('realm-large-text', Boolean(elements.options.largeText?.checked));
   }
 
   function newGame() {
@@ -351,6 +379,29 @@
       inputLocked = false;
       render();
     }
+  }
+
+  function installRuntimeErrorCapture() {
+    if (installRuntimeErrorCapture.done) return;
+    installRuntimeErrorCapture.done = true;
+    window.addEventListener('error', (event) => {
+      recordRuntimeError(event.message || 'Unknown runtime error', {
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+      });
+    });
+    window.addEventListener('unhandledrejection', (event) => {
+      recordRuntimeError(event.reason?.message || String(event.reason || 'Unhandled promise rejection'));
+    });
+  }
+
+  function recordRuntimeError(message, detail = {}) {
+    const entry = { message, detail, at: new Date().toISOString() };
+    runtimeErrors.push(entry);
+    computerReport.errors.push(entry);
+    debugLog('error', entry);
+    renderComputerReport();
   }
 
   function handleCtrlCheatSheetShortcut() {
@@ -937,34 +988,46 @@
 
   function render() {
     if (!state) return;
-    renderDom();
-    renderCanvas();
-    renderDebug();
+    renderCount += 1;
+    try {
+      renderDom();
+      renderCanvas();
+      renderDebug();
+      renderComputerReport();
+    } catch (error) {
+      recordRuntimeError(error.message || String(error), { stack: error.stack });
+      safeText(elements.live, 'Roadside Realm hit a render snag, but the game recovered.');
+    }
   }
 
   function renderDom() {
-    elements.hp.textContent = `${state.player.hp}/${state.player.maxHp}`;
-    elements.atk.textContent = state.player.attack;
-    elements.def.textContent = state.player.defense;
-    elements.level.textContent = state.player.level;
-    elements.gold.textContent = state.player.gold;
-    elements.objective.textContent = objectiveText();
-    elements.hpMeter.max = state.player.maxHp;
-    elements.hpMeter.value = state.player.hp;
-    elements.routeState.textContent = currentMap().name;
-    elements.threatState.textContent = `Threat: ${threatText().toLowerCase()}`;
-    elements.facingState.textContent = `Facing ${titleCase(state.player.facing)}`;
-    elements.frontState.textContent = aheadDescription();
-    elements.roomName.textContent = currentMap().name;
-    elements.roomCoords.textContent = `${state.player.x},${state.player.y}`;
-    elements.roomAhead.textContent = aheadDescription();
-    elements.activeCharm.textContent = hasItem('kenai-river-charm') ? 'Kenai River Charm' : hasItem('moon-toll-token') ? 'Moon Toll Token' : 'Empty';
-    elements.activeRelic.textContent = hasItem('mapstone') ? 'Mapstone' : 'None';
-    elements.inventory.innerHTML = state.player.inventory.length
+    const map = currentMap();
+    const ahead = aheadDescription();
+    safeText(elements.hp, `${state.player.hp}/${state.player.maxHp}`);
+    safeText(elements.atk, state.player.attack);
+    safeText(elements.def, state.player.defense);
+    safeText(elements.level, state.player.level);
+    safeText(elements.gold, state.player.gold);
+    safeText(elements.objective, objectiveText());
+    if (elements.hpMeter) {
+      elements.hpMeter.max = state.player.maxHp;
+      elements.hpMeter.value = state.player.hp;
+      elements.hpMeter.textContent = `${state.player.hp} HP`;
+    }
+    safeText(elements.routeState, map.name);
+    safeText(elements.threatState, `Threat: ${threatText().toLowerCase()}`);
+    safeText(elements.facingState, `Facing ${titleCase(state.player.facing)}`);
+    safeText(elements.frontState, ahead);
+    safeText(elements.roomName, map.name);
+    safeText(elements.roomCoords, `x=${state.player.x}, y=${state.player.y}`);
+    safeText(elements.roomAhead, ahead);
+    safeText(elements.activeCharm, hasItem('kenai-river-charm') ? 'Kenai River Charm' : hasItem('moon-toll-token') ? 'Moon Toll Token' : 'Empty');
+    safeText(elements.activeRelic, hasItem('mapstone') ? 'Mapstone' : 'None');
+    safeHtml(elements.inventory, state.player.inventory.length
       ? state.player.inventory.map((id) => renderInventoryChip(id)).join('')
-      : '<span class="realm-chip">No items yet</span>';
-    elements.log.innerHTML = state.log.map((message) => `<li>${message}</li>`).join('');
-    elements.live.textContent = `Facing ${state.player.facing}. ${aheadDescription()}`;
+      : '<span class="realm-chip">No items yet</span>');
+    safeHtml(elements.log, state.log.map((message) => `<li>${escapeHtml(message)}</li>`).join(''));
+    safeText(elements.live, `Facing ${state.player.facing}. ${ahead}`);
     renderNeoView();
   }
 
@@ -981,16 +1044,40 @@
       `realm-neo-view--${map.id}`,
       `realm-neo-view--${presentation.kind}`,
       `realm-facing-${state.player.facing}`,
+      `realm-position-${Math.abs(state.player.x + state.player.y) % 4}`,
       inputLocked ? 'realm-neo-view--busy' : '',
       state.lastAction ? `realm-neo-view--action-${state.lastAction}` : '',
     ].filter(Boolean).join(' ');
+    elements.neoView.dataset.sceneSignature = sceneSignature(map, presentation);
+    const stepX = (state.player.x % 4) * 18;
+    const stepY = (state.player.y % 4) * 14;
+    const facingShift = DIRECTIONS.indexOf(state.player.facing) * 22;
+    elements.neoView.style.setProperty('--realm-step-x', `${stepX}px`);
+    elements.neoView.style.setProperty('--realm-step-y', `${stepY}px`);
+    elements.neoView.style.setProperty('--realm-step-x-neg', `${-stepX}px`);
+    elements.neoView.style.setProperty('--realm-step-y-neg', `${-stepY}px`);
+    elements.neoView.style.setProperty('--realm-facing-shift', `${facingShift}px`);
+    elements.neoView.style.setProperty('--realm-facing-shift-neg', `${-facingShift}px`);
 
     elements.neoDoor.className = `realm-neo__door realm-neo__door--${presentation.door || 'none'}`;
     elements.neoObject.className = `realm-neo__object realm-neo__object--${presentation.object || 'none'}`;
     elements.neoEntity.className = `realm-neo__entity realm-neo__entity--${presentation.entity || 'none'}`;
-    elements.neoEntityIcon.textContent = presentation.icon || '';
-    elements.neoLocation.textContent = map.name;
-    elements.neoAhead.textContent = presentation.label;
+    safeText(elements.neoEntityIcon, presentation.icon || '');
+    safeText(elements.neoLocation, `${map.name} · ${state.player.x},${state.player.y} · ${titleCase(state.player.facing)}`);
+    safeText(elements.neoAhead, presentation.label);
+  }
+
+  function sceneSignature(map, presentation) {
+    return [
+      map.id,
+      state.player.x,
+      state.player.y,
+      state.player.facing,
+      presentation.kind,
+      presentation.label,
+      state.counters.steps,
+      renderCount,
+    ].join('|');
   }
 
   function frontPresentation(tile, event, target) {
@@ -1119,6 +1206,169 @@
     ].join('\n');
   }
 
+  function renderComputerReport() {
+    if (!elements.computer) return;
+    elements.computer.hidden = !COMPUTER_MODE;
+    if (!COMPUTER_MODE) return;
+    const status = computerReport.complete
+      ? computerReport.failed || runtimeErrors.length
+        ? 'FAILED'
+        : 'PASSED'
+      : computerReport.running
+        ? 'RUNNING'
+        : 'READY';
+    safeText(elements.computerStatus, [
+      `Status: ${status}`,
+      `Step: ${computerReport.step}/${computerReport.total || '?'}`,
+      `Pass: ${computerReport.passed}`,
+      `Fail: ${computerReport.failed}`,
+      `Runtime errors: ${runtimeErrors.length}`,
+      state ? `Map: ${state.player.mapId} @ ${state.player.x},${state.player.y} facing ${state.player.facing}` : 'State: not ready',
+      state?.ending ? `Ending: ${state.ending}` : 'Ending: not reached',
+    ].join('\n'));
+    safeHtml(elements.computerLog, computerReport.log.slice(0, 14).map((entry) => {
+      const className = entry.ok ? 'realm-computer__pass' : 'realm-computer__fail';
+      return `<li class="${className}">${escapeHtml(entry.label)}</li>`;
+    }).join(''));
+  }
+
+  function startComputerMode() {
+    if (!COMPUTER_MODE || computerReport.running) return;
+    window.clearTimeout(computerTimer);
+    computerReport.running = true;
+    computerReport.complete = false;
+    computerReport.passed = 0;
+    computerReport.failed = 0;
+    computerReport.step = 0;
+    computerReport.log = [];
+    computerReport.errors = [];
+    runtimeErrors.length = 0;
+    localStorage.removeItem(DATA.saveKey);
+    newGame();
+    const sequence = [
+      ['Launch creates playable state', () => assertComputer(Boolean(state && !elements.play.hidden), 'Play screen did not open.')],
+      ['Initial render completes', () => assertComputer(renderCount > 0 && Boolean(elements.neoView?.dataset.sceneSignature), 'Visible viewport did not render.')],
+      ['Forward changes position', () => {
+        const before = snapshotPlayer();
+        handleAction('forward');
+        const after = snapshotPlayer();
+        assertComputer(before.x !== after.x || before.y !== after.y, `Position stayed at ${after.x},${after.y}.`);
+      }],
+      ['Turn changes facing', () => {
+        const before = state.player.facing;
+        handleAction('turnLeft');
+        assertComputer(state.player.facing !== before, `Facing stayed ${before}.`);
+      }],
+      ['Visible scene signature changes after input', () => {
+        const before = elements.neoView?.dataset.sceneSignature || '';
+        handleAction('turnRight');
+        const after = elements.neoView?.dataset.sceneSignature || '';
+        assertComputer(after && after !== before, 'Scene signature did not change.');
+      }],
+      ['Item pickup works through movement', () => {
+        handleAction('forward');
+        handleAction('turnLeft');
+        handleAction('forward');
+        assertComputer(hasItem('rusty-road-key'), 'Rusty Road Key was not collected.');
+      }],
+      ['Inspect adds a player-facing log line', () => {
+        const before = state.log.length;
+        handleAction('inspect');
+        assertComputer(state.log.length >= before, 'Inspect did not produce log feedback.');
+      }],
+      ['Hidden Underpass transition works', () => {
+        state.flags.secretSwitchPressed = true;
+        jumpTo('map-kiosk-dungeon', 9, 6, 'east');
+        handleAction('forward');
+        assertComputer(state.player.mapId === 'forgotten-underpass', `Expected forgotten-underpass, got ${state.player.mapId}.`);
+      }],
+      ['Mansion transition works after Moon Toll Token', () => {
+        giveComputerItem('moon-toll-token');
+        state.flags.trueEndingUnlocked = true;
+        jumpTo('forgotten-underpass', 2, 3, 'east');
+        handleAction('forward');
+        assertComputer(state.player.mapId === 'never-finished-mansion', `Expected never-finished-mansion, got ${state.player.mapId}.`);
+      }],
+      ['Hidden Conservatory transition works after Star Map Fragment', () => {
+        giveComputerItem('star-map-fragment');
+        state.flags.impossibleRouteEndingUnlocked = true;
+        jumpTo('never-finished-mansion', 5, 7, 'north');
+        handleAction('forward');
+        assertComputer(state.player.mapId === 'hidden-conservatory', `Expected hidden-conservatory, got ${state.player.mapId}.`);
+      }],
+      ['Ending trigger works from exit tile', () => {
+        giveComputerItem('mapstone');
+        giveComputerItem('glass-rose');
+        state.flags.trueEndingUnlocked = true;
+        state.flags.impossibleRouteEndingUnlocked = true;
+        jumpTo('map-kiosk-dungeon', 1, 2, 'north');
+        handleAction('forward');
+        assertComputer(state.ending === 'glass', `Expected glass ending, got ${state.ending || 'none'}.`);
+      }],
+      ['No runtime errors recorded', () => assertComputer(runtimeErrors.length === 0, `${runtimeErrors.length} runtime errors recorded.`)],
+    ];
+    computerReport.total = sequence.length;
+    renderComputerReport();
+    runComputerStep(sequence);
+  }
+
+  function runComputerStep(sequence) {
+    if (!sequence[computerReport.step]) {
+      computerReport.running = false;
+      computerReport.complete = true;
+      renderComputerReport();
+      window.RTA_ROADSIDE_REALM_COMPUTER_REPORT = clone(computerReport);
+      return;
+    }
+    const [label, test] = sequence[computerReport.step];
+    try {
+      test();
+      passComputer(label);
+    } catch (error) {
+      failComputer(`${label}: ${error.message || error}`);
+    }
+    computerReport.step += 1;
+    renderComputerReport();
+    computerTimer = window.setTimeout(() => runComputerStep(sequence), COMPUTER_FAST ? 35 : 420);
+  }
+
+  function snapshotPlayer() {
+    return {
+      mapId: state.player.mapId,
+      x: state.player.x,
+      y: state.player.y,
+      facing: state.player.facing,
+    };
+  }
+
+  function assertComputer(condition, message) {
+    if (!condition) throw new Error(message);
+  }
+
+  function passComputer(label) {
+    computerReport.passed += 1;
+    computerReport.log.unshift({ ok: true, label: `PASS: ${label}` });
+    debugLog('computer', { ok: true, label });
+  }
+
+  function failComputer(label) {
+    computerReport.failed += 1;
+    computerReport.log.unshift({ ok: false, label: `FAIL: ${label}` });
+    debugLog('computer', { ok: false, label });
+  }
+
+  function giveComputerItem(itemId) {
+    if (!DATA.items[itemId]) throw new Error(`Missing computer item ${itemId}.`);
+    if (!state.player.inventory.includes(itemId)) state.player.inventory.push(itemId);
+    if (itemId === 'mapstone') state.flags.mapstoneFound = true;
+    if (itemId === 'moon-toll-token') state.flags.trueEndingUnlocked = true;
+    if (itemId === 'star-map-fragment') {
+      state.flags.starMapFragmentFound = true;
+      state.flags.impossibleRouteEndingUnlocked = true;
+    }
+    if (itemId === 'glass-rose') state.flags.glassRoseFound = true;
+  }
+
   function handleDebugAction(action) {
     if (!DEBUG || !state) return;
     if (action === 'heal') state.player.hp = state.player.maxHp;
@@ -1191,6 +1441,23 @@
   function debugLog(category, details) {
     if (!DEBUG) return;
     console.info(`[RoadsideRealm:${category}]`, details);
+  }
+
+  function safeText(element, value) {
+    if (element) element.textContent = value;
+  }
+
+  function safeHtml(element, value) {
+    if (element) element.innerHTML = value;
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
   }
 
   function objectiveText() {
@@ -1999,5 +2266,11 @@
     ctx.restore();
   }
 
-  window.RTA_ROADSIDE_REALM = { start };
+  window.RTA_ROADSIDE_REALM = {
+    start,
+    startComputerMode,
+    getState: () => clone(state),
+    getComputerReport: () => clone(computerReport),
+    getRuntimeErrors: () => clone(runtimeErrors),
+  };
 })();

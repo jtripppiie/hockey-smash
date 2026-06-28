@@ -366,6 +366,12 @@ input {
 
 .realm-neo-view {
   position: relative;
+  --realm-step-x: 0px;
+  --realm-step-y: 0px;
+  --realm-step-x-neg: 0px;
+  --realm-step-y-neg: 0px;
+  --realm-facing-shift: 0px;
+  --realm-facing-shift-neg: 0px;
   min-height: min(64vh, 760px);
   aspect-ratio: 16 / 9;
   overflow: hidden;
@@ -435,6 +441,10 @@ input {
     repeating-linear-gradient(90deg, rgba(0,0,0,0.42) 0 3px, transparent 3px 68px),
     repeating-linear-gradient(0deg, rgba(255,255,255,0.08) 0 2px, transparent 2px 42px),
     linear-gradient(180deg, #3b3e44, #1a1d24);
+  background-position:
+    var(--realm-facing-shift-neg) 0,
+    0 var(--realm-step-y-neg),
+    0 0;
   box-shadow: inset 0 -28px 60px rgba(0,0,0,0.66);
 }
 
@@ -451,6 +461,11 @@ input {
     repeating-linear-gradient(90deg, rgba(0,0,0,0.38) 0 4px, transparent 4px 84px),
     repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0 2px, transparent 2px 44px),
     linear-gradient(180deg, #55515a, #1f1a18);
+  background-position:
+    0 0,
+    var(--realm-step-x-neg) 0,
+    0 var(--realm-step-y-neg),
+    0 0;
   box-shadow: inset 0 42px 90px rgba(0,0,0,0.45);
 }
 
@@ -462,6 +477,10 @@ input {
     repeating-linear-gradient(0deg, rgba(0,0,0,0.42) 0 3px, transparent 3px 42px),
     repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0 2px, transparent 2px 72px),
     linear-gradient(180deg, #6c7077, #282c34);
+  background-position:
+    0 var(--realm-step-y-neg),
+    var(--realm-facing-shift-neg) 0,
+    0 0;
   box-shadow: inset 0 0 70px rgba(0,0,0,0.62);
 }
 
@@ -1064,6 +1083,54 @@ input {
 .realm-debug__actions .realm-button {
   min-height: 40px;
   padding: 0.55rem 0.75rem;
+}
+
+.realm-computer {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 80;
+  width: min(420px, calc(100vw - 2rem));
+  max-height: min(72vh, 680px);
+  overflow: auto;
+  border: 2px solid var(--realm-moon-blue);
+  border-radius: 6px;
+  padding: 0.9rem;
+  background: rgba(5, 6, 9, 0.94);
+  color: #fff7df;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+}
+
+.realm-computer h2 {
+  margin: 0 0 0.7rem;
+  font-size: 1.05rem;
+}
+
+.realm-computer__status {
+  margin: 0 0 0.75rem;
+  white-space: pre-wrap;
+  color: #ffffff;
+}
+
+.realm-computer__log {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.realm-computer__log li {
+  padding: 0.2rem 0.35rem;
+  border-left: 4px solid currentColor;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.realm-computer__pass {
+  color: #9dffbd;
+}
+
+.realm-computer__fail {
+  color: #ffb1a1;
 }
 
 .visually-hidden {

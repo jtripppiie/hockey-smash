@@ -416,3 +416,30 @@ Rules kept from the project plan:
 - The game remains vanilla HTML/CSS/JavaScript.
 - The existing canvas renderer remains available as a fallback.
 - No dependencies, backend, analytics, tracking, GPS, or external asset loading were added.
+
+## Checkpoint: Game Loop Verification Pass
+
+This checkpoint responds to the preview feeling broken after the visual overhaul. The priority is not adding new content; it is proving the controls, state changes, visible viewport updates, transitions, and endings can be verified in the browser.
+
+Version changes:
+
+- Visible version badge: `App v0.7.0 · Roadside Realm 0.7.0`.
+- Roadside Realm game data version: `0.7.0`.
+- Roadside Realm art metadata version: `0.7.0`.
+- Save wrapper remains version `1`.
+
+Implemented in this checkpoint:
+
+- Hardened DOM rendering with safe text/HTML setters so a missing display node cannot stop the game loop.
+- Added runtime error capture for browser errors and unhandled promise rejections.
+- Added position/facing/step-driven scene signatures to the visible first-person viewport so movement is obvious and testable.
+- Added `?computerMode=1` as local-only Computer Mode.
+- Added `?computerMode=1&speed=fast` for quick smoke testing.
+- Added a visible Computer Mode overlay that reports pass/fail counts, current map, player position, ending state, and recent verification steps.
+- Computer Mode checks launch, rendering, forward movement, turning, scene updates, item pickup, inspect feedback, Underpass transition, Mansion transition, Conservatory transition, ending trigger, and runtime errors.
+
+Verification notes:
+
+- Terminal syntax and data checks should be run before each push.
+- Browser verification can be performed from GitHub Pages by opening `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast` and waiting for the overlay to report `Status: PASSED`.
+- A full browser automation run from this environment is currently blocked because no local Chromium/Firefox/Playwright binary is installed.

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.7.0 - Game Loop Verification Pass
+
+- Hardened the input/render loop so missing or stale DOM targets cannot freeze the playable view.
+- Made the visible first-person viewport update with map, coordinates, facing, step count, and scene signature.
+- Added local-only Computer Mode with `?computerMode=1` and fast mode with `?computerMode=1&speed=fast`.
+- Added a visible auto-play verification overlay that checks launch, movement, turning, item pickup, inspect feedback, map transitions, ending trigger, and runtime errors.
+- Added runtime error capture for browser errors and unhandled promise rejections.
+- Updated version badges, README, QA notes, and progress documentation.
+
 ## 0.3.0 - WarClass-Inspired Visual Overhaul
 
 - Added a DOM/CSS first-person viewport with layered floor, ceiling, side walls, far wall, doors, objects, enemy silhouettes, grain, vignette, and location caption.
