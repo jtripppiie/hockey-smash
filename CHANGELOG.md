@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.5.0 - Hockey Smash Prototype Pivot
+
+- Pivoted the public launch experience to **Hockey Smash v0.5.0** inside the existing repo.
+- Reused the existing static GitHub Pages workflow instead of creating a new repository.
+- Added Hockey Smash splash screen, Play button, and short "Entering Hockey Smash..." transition.
+- Added full browser-viewport gameplay screen with a 1024x576 landscape-first canvas layout.
+- Added fixed-screen side-scroller gameplay with Daniel as the player.
+- Added left/right movement, jump, hold-to-slide speed boost, and hockey stick combo attack.
+- Added Daniel health bar, invincibility after damage, and Try Again flow.
+- Added summer Soldotna-inspired background rendering and sidewalk/ground tile layer.
+- Added asset fallback placeholders for missing sprites and scenery.
+- Added salmon hazards, a major salmon run sequence, bears, moose, Mom/Sister interruption bubbles, and Dad boss concept with dad-joke attacks.
+- Added temporary mobile portrait rotate hint and no-scroll gameplay controls.
+- Added Hockey Smash design, workflow, and dev checklist documentation.
+
 ## 0.8.0 - Release Quality And Real Verification Pass
 
 - Split verification into Real Computer Mode and Debug Deep Check Mode.

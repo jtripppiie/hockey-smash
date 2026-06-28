@@ -2,6 +2,46 @@
 
 This file tracks implementation progress so work can continue safely across sessions.
 
+## 2026-06-28 Checkpoint: Hockey Smash v0.5.0 Pivot
+
+The public-facing game has pivoted to **Hockey Smash v0.5.0** inside this existing repo. Roadside Realm files remain in the background as reusable infrastructure and history, but the main launch screen now presents Hockey Smash only.
+
+Implemented:
+
+- Replaced the public launch shell with `Hockey Smash`.
+- Added visible `Hockey Smash v0.5.0` version text.
+- Added Play button and 2.4-second `Entering Hockey Smash...` transition.
+- Added full browser-viewport gameplay screen.
+- Added 1024x576 landscape-first canvas scaling.
+- Added fixed ground line at `canvasHeight * 0.60`.
+- Added Daniel movement, jump, hold-to-slide speed boost, and hockey stick combo.
+- Added player health bar, invincibility window, and Try Again screen.
+- Added no-scroll gameplay mode through `body.hockey-playing`.
+- Added bottom-left D-pad and bottom-right Jump/Slide/Stick buttons.
+- Added temporary mobile portrait rotate hint.
+- Added asset fallback placeholders for missing sprites and scenery.
+- Added first prototype hazards: salmon, bears, moose, Mom/Sister interruption bubbles, salmon run, Dad mower intro, Dad boss, and dad joke attacks.
+- Added Hockey Smash design, workflow, and dev checklist docs.
+- Added static Hockey Smash verifier.
+
+Key files:
+
+- `index.html`
+- `style.css`
+- `script.js`
+- `js/games/hockey-smash.js`
+- `scripts/verify-hockey-smash.js`
+- `docs/hockey-smash-design.md`
+- `docs/hockey-smash-workflow.md`
+- `docs/hockey-smash-dev-checklist.md`
+
+Known limitations:
+
+- Final art assets are not required yet; missing assets render as labeled placeholders.
+- This is a fixed-screen prototype, not a scrolling level.
+- Balance and spawn timing need real playtesting.
+- Roadside Realm docs remain for historical continuity and should be cleaned up only after Hockey Smash stabilizes.
+
 ## Current Branch
 
 `codex/roadside-realm-plan-assets`

@@ -1,8 +1,6 @@
-# Roadside Realmo
+# Hockey Smash
 
-Roadside Realmo is the working repo for **Roadside Realm**, a static first-person road-fantasy dungeon crawler built with HTML, CSS, vanilla JavaScript, and local assets.
-
-Current preview version: **0.8.0**
+Current playable version: **Hockey Smash v0.5.0**
 
 Live GitHub Pages preview:
 
@@ -12,39 +10,31 @@ https://jtripppiie.github.io/roadside-realmo/
 
 ## Current Status
 
-Roadside Realm is now a playable in-development browser game, not just a planning scaffold. The current `0.8.0` checkpoint upgrades the release quality with real action-based Computer Mode verification, stronger first-person atmosphere, and a more mobile-friendly HUD.
+Hockey Smash is now the primary public playable mode in this existing repo. The project is reusing the repo's static GitHub Pages infrastructure, canvas setup, docs, verification scripts, and asset organization instead of creating a new repository.
 
-The game includes:
+The old Roadside Realm files remain in the background as useful historical infrastructure, but they are no longer the main launch experience.
 
-- first-person grid movement
-- canvas fallback renderer
-- new DOM/CSS perspective viewport
-- D-pad and keyboard controls
-- inventory, log, stats, room scanner, and gear deck
-- main dungeon, Forgotten Underpass, Never-Finished Mansion, Hidden Conservatory, and Soldotna Creek Wayside
-- normal, secret, impossible, and Glass Rose ending paths
-- local save/load
-- debug mode with `?realmDebug=1`
-- computer verification mode with `?computerMode=1`
-- development cheatsheet overlay
+## What This Prototype Includes
 
-## Visual Direction
+- Hockey Smash splash screen and visible `Hockey Smash v0.5.0` version text.
+- Play button with a short "Entering Hockey Smash..." transition.
+- Full browser-viewport gameplay screen.
+- 1024x576 landscape-first canvas layout.
+- Ground line at `canvasHeight * 0.60`.
+- Daniel fixed-screen side-scroller movement.
+- Left/right movement only for v0.5.0.
+- Responsive jump, hold-to-slide speed boost, and hockey stick combo attack.
+- One health bar with brief invincibility after damage.
+- Try Again screen when health reaches zero.
+- Summer Soldotna-inspired background and sidewalk collision layer.
+- Asset fallback placeholders when sprites/images are missing.
+- Bears, moose, salmon hazards, Mom/Sister interruption bubbles, a major salmon run, and Dad boss with dad joke attacks.
+- Mobile landscape-first layout with temporary portrait rotate hint.
+- D-pad and action controls that do not scroll the page during gameplay.
 
-The current visual target is a **WarClass-inspired but original roadside RPG interface**:
-
-- dense retro RPG panels around the play area
-- layered first-person viewport with ceiling, floor, side walls, far wall, gates, objects, enemy silhouettes, grain, and vignette
-- darker, stranger roadside-dungeon atmosphere
-- road-trip fantasy objects instead of copied medieval/fantasy assets
-- local CSS/JS/PNG treatment only
-
-WarClass was used as a serious reference for interface density, CSS perspective, pixel filter treatment, and first-person RPG presentation. **No WarClass art, sprites, sounds, or placeholder assets were copied.**
-
-## How To Run
+## How To Run Locally
 
 No build step is required.
-
-Open `index.html` in a browser, or use any simple static server:
 
 ```bash
 python3 -m http.server 8080
@@ -58,116 +48,66 @@ http://localhost:8080/
 
 ## Controls
 
-- Move forward: `ArrowUp` or `W`
-- Move backward: `ArrowDown` or `S`
-- Turn left: `ArrowLeft` or `A`
-- Turn right: `ArrowRight` or `D`
-- Inspect: `Enter` or `Space`
-- Attack: `F`
-- Use item: `I`
-- Toggle map: `M`
-- Development cheatsheet: Help button or press `Ctrl` three times quickly
+Keyboard:
 
-## Playable Controls Stabilization
+- Move left: `ArrowLeft` or `A`
+- Move right: `ArrowRight` or `D`
+- Jump: `ArrowUp`, `W`, or `Space`
+- Slide/speed boost: `Shift` or `S`
+- Hockey stick: `F` or `Enter`
 
-The current stabilization pass fixes the playable input layer before more features are added. The broken behavior was mobile-first: the D-pad and menu controls were still participating in page layout, so they could scroll with the document and feel detached from the game viewport.
+Touch:
 
-Files changed for this pass:
+- Bottom-left D-pad: left/right movement.
+- Bottom-right buttons: Jump, Slide, Stick.
 
-- `js/games/roadside-realm.js`
-- `style.css`
-- `README.md`
-- `docs/roadside-realm-progress.md`
-- `docs/roadside-realm-qa.md`
+## Main Files
 
-Movement is now wired through one shared path. Keyboard shortcuts map to an action ID, D-pad/menu buttons use the same `data-action` ID, and both call the same runtime action handler. The visible status/debug readout now reports the last input result, so blocked walls/doors are distinguishable from broken input.
+- `index.html`: Hockey Smash public shell.
+- `style.css`: full-screen layout, splash, HUD, canvas scaling, and mobile controls.
+- `script.js`: app bootstrap.
+- `js/games/hockey-smash.js`: Hockey Smash runtime, state machine, player movement, hazards, Dad boss, rendering, and asset fallbacks.
+- `assets/`: expected Hockey Smash sprite/background files.
+- `docs/hockey-smash-design.md`: design target and scope.
+- `docs/hockey-smash-workflow.md`: manual development workflow.
+- `docs/hockey-smash-dev-checklist.md`: quick dev checklist.
 
-Keyboard test:
+## Asset Paths
 
-1. Start a new quest.
-2. Press `ArrowUp` or `W` and confirm the position/status changes.
-3. Press `ArrowDown` or `S` and confirm the player steps back.
-4. Press `ArrowLeft`/`A` and `ArrowRight`/`D` and confirm facing changes.
-
-Mobile test:
-
-1. Open the game in a narrow mobile viewport.
-2. Start a new quest.
-3. Confirm the D-pad remains fixed to the bottom of the game viewport.
-4. Tap and hold left/right/up/down and confirm each repeats movement or turning.
-5. Confirm tapping controls does not scroll the browser page.
-6. Rotate to landscape and confirm the controls remain fixed and usable.
-
-## Debug Mode
-
-Use:
+Expected assets are `.png` files in `assets/`:
 
 ```text
-?realmDebug=1
+assets/player_hockey_sprite_96x96.png
+assets/salmon_sprite_96x96.png
+assets/bear_sprite_96x96.png
+assets/moose_sprite_96x96.png
+assets/dad_mower_sprite_96x96.png
+assets/dad_sprite_96x96.png
+assets/mom_sprite_96x96.png
+assets/mom_sprite_text_96x96.png
+assets/sister_sprite_96x96.png
+assets/sister_sprite_text_96x96.png
+assets/soldotna_background_01.png
+assets/sidewalk_tile_96x32.png
+assets/soldotna_background_placeholder.png
+assets/soldotna_sidewalk_placeholder.png
 ```
 
-Debug mode includes position/state readouts and jump/give/heal helpers for testing main, secret, mansion, conservatory, and Soldotna routes.
+Missing assets do not crash the game. The runtime draws labeled placeholders and logs missing paths to the developer console.
 
-Debug mode now also shows the latest input result. Use that line to tell the difference between "input fired but movement was blocked" and "input did not reach the game."
+## Verification
 
-## Verification Modes
-
-Real Computer Mode uses the same action system as a player. It starts a new quest, walks the normal route, collects the Rusty Road Key and Apple Juice Potion, fights the Signpost Ogre, dodges Big Spin, uses a healing item if needed, collects the Mapstone, and reaches the normal ending.
-
-```text
-?computerMode=1
-?computerMode=1&speed=fast
-```
-
-Debug Deep Check Mode is separate. It may jump to deeper states for regression checks, and it is not used as proof that the normal game is playable.
-
-```text
-?computerMode=1&debugDeep=1
-?computerMode=1&speed=fast&debugDeep=1
-```
-
-Local verification commands:
+Run:
 
 ```bash
 npm run verify
 ```
 
-Optional browser verification after installing Playwright:
-
-```bash
-npm install
-npm run test:browser:install
-npm run test:browser
-```
+This checks JavaScript syntax and validates the Hockey Smash launch shell, docs, version text, and expected asset path definitions.
 
 ## Known Limitations
 
-- The WarClass-style viewport is a new DOM/CSS presentation layer; the canvas renderer still exists as a fallback.
-- Enemy/NPC silhouettes are original symbolic placeholders and need more bespoke art.
-- No sound pass has been done yet.
-- QA still needs manual browser playthroughs after each larger visual/content change.
-- Playwright browser verification is scaffolded, but dependencies are not committed; run `npm install` locally before `npm run test:browser`.
-
-## Roadmap
-
-- Replace placeholder enemy symbols with original Roadside Realm sprites.
-- Add deeper WarClass-style menu tabs for quest, map, items, and route history.
-- Add more room-specific art states and encounter presentation.
-- Improve mobile fullscreen ergonomics.
-- Complete V1.0 QA routes documented in `docs/roadside-realm-qa.md`.
-
-## Repository Contents
-
-- `index.html`: app shell and Roadside Realm markup
-- `style.css`: layout, HUD, first-person viewport, responsive styling
-- `script.js`: app bootstrap
-- `js/games/roadside-realm-data.js`: maps, items, monsters, events
-- `js/games/roadside-realm-art.js`: local art metadata
-- `js/games/roadside-realm.js`: runtime state, movement, rendering, save/load, debug mode
-- `assets/roadside-realm/`: local generated starter assets
-- `scripts/`: local verification scripts
-- `tests/`: optional Playwright browser verification
-- `docs/roadside-realm-game-plan.md`: full V1.0 game plan
-- `docs/roadside-realm-summary.md`: maintained quick summary
-- `docs/roadside-realm-qa.md`: QA routes
-- `docs/roadside-realm-progress.md`: build progress log
+- Daniel uses one static 96x96 sprite path; walking animation is future work.
+- Placeholder drawings stand in for any missing final art.
+- The first level is fixed-screen only; there is no camera-following long level yet.
+- Dad boss, salmon run, and interruption timing are tuned for a first prototype, not final balance.

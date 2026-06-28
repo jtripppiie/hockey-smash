@@ -1,18 +1,76 @@
 # Roadside Realm QA Routes
 
-Use this checklist for every pushed preview checkpoint. Roadside Realm is not V1.0 until these routes pass in a browser without normal-play console errors.
+Hockey Smash is now the primary public game. Roadside Realm QA below remains as historical/background coverage.
 
 ## Current Preview
 
-- App version: `v0.8.0`
-- Game version: `0.8.0`
+- Public game: `Hockey Smash v0.5.0`
+- Legacy Roadside Realm version retained in background files: `0.8.0`
 - Save version: `1`
 - Preview branch: `main`
 - GitHub Pages URL: `https://jtripppiie.github.io/roadside-realmo/`
-- Debug URL: `https://jtripppiie.github.io/roadside-realmo/?realmDebug=1`
-- Computer Mode URL: `https://jtripppiie.github.io/roadside-realmo/?computerMode=1`
-- Fast Computer Mode URL: `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast`
-- Debug Deep Check URL: `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast&debugDeep=1`
+
+## Hockey Smash v0.5.0 Launch QA
+
+### Launch Flow
+
+1. Open the Pages URL.
+2. Confirm the splash screen says `Hockey Smash`.
+3. Confirm the visible version says `Hockey Smash v0.5.0`.
+4. Click Play.
+5. Confirm the page does not anchor-jump or scroll down.
+6. Confirm the transition screen says `Entering Hockey Smash...`.
+7. Confirm gameplay opens in a full browser-viewport screen.
+
+### Gameplay Shell
+
+1. Confirm the canvas scales as a landscape-first 16:9 game view.
+2. Confirm Daniel stands on the ground line.
+3. Confirm bears, moose, salmon, Mom, Sister, and Dad align to the same ground area.
+4. Confirm the lower part of the screen contains scenery and controls without covering Daniel.
+5. Confirm missing art uses labeled placeholders instead of crashing.
+
+### Controls
+
+1. Use `A` / `ArrowLeft` and confirm Daniel moves left.
+2. Use `D` / `ArrowRight` and confirm Daniel moves right.
+3. Press `W`, `ArrowUp`, or `Space` and confirm Daniel jumps.
+4. Hold `Shift` or `S` while moving and confirm slide/speed boost works.
+5. Press `F` or `Enter` repeatedly and confirm the hockey stick combo advances.
+6. Hold the touch D-pad left/right and confirm movement works.
+7. Use touch Jump, Slide, and Stick buttons.
+8. Confirm keyboard arrows and touch controls do not scroll the page.
+
+### Hazards And Boss
+
+1. Confirm salmon fly across the screen.
+2. Confirm bears and moose appear and can be hit with the stick.
+3. Confirm Mom/Sister bubbles appear and can be destroyed with the stick.
+4. Confirm the major salmon run starts before Dad.
+5. Confirm Dad mower intro appears.
+6. Confirm Dad boss appears with a small health bar.
+7. Confirm Dad jokes damage Daniel and can be destroyed with the stick.
+8. Confirm stick hits reduce Dad health.
+
+### Mobile
+
+1. Test portrait on a phone-sized viewport.
+2. Confirm `Rotate for the best gaming experience.` appears briefly.
+3. Rotate to landscape and confirm the overlay disappears.
+4. Confirm the D-pad stays bottom-left.
+5. Confirm action buttons stay bottom-right.
+6. Confirm dragging/tapping controls does not move the page.
+
+### Try Again
+
+1. Let Daniel take damage until health reaches zero.
+2. Confirm a Try Again screen appears.
+3. Click Try Again.
+4. Confirm the level state and health reset after the transition.
+
+## Historical Roadside Realm QA
+
+These routes are retained for reference while the new Hockey Smash prototype stabilizes.
 
 ## Launch Route
 

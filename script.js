@@ -1,7 +1,7 @@
 (function () {
-  if (!window.RTA_ROADSIDE_REALM) return;
-
   window.addEventListener('DOMContentLoaded', () => {
-    window.RTA_ROADSIDE_REALM.start();
+    if (window.RTA_HOCKEY_SMASH) {
+      window.RTA_HOCKEY_SMASH.start();
+    }
   });
 })();
