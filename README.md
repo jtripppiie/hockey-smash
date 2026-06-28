@@ -53,6 +53,10 @@ The likely first implementation will be a static browser game:
 - `README.md`: project overview
 - `docs/game-design.md`: early design notes
 - `docs/technical-plan.md`: implementation direction
+- `docs/roadside-realm-summary.md`: maintained quick summary for the V1.0 game spec
+- `docs/roadside-realm-game-plan.md`: full Roadside Realm V1.0 game plan
+- `docs/roadside-realm-image-spec.md`: optional image asset specifications for the game
+- `assets/roadside-realm/ASSET_MANIFEST.md`: generated starter asset inventory and usage notes
 - `CONTRIBUTING.md`: contribution guidelines
 - `LICENSE`: project license placeholder
 
@@ -65,4 +69,3 @@ No build system exists yet. The first playable milestone should add the smallest
 3. Inspect objects.
 4. Resolve one encounter.
 5. Save basic progress locally.
-
