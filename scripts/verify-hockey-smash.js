@@ -57,6 +57,7 @@ const changelog = read('CHANGELOG.md');
 });
 
 if (!html.includes('Entering Hockey Smash')) errors.push('Transition text is missing.');
+if (!html.includes('Rotate for the best gaming experience.')) errors.push('Rotate guidance is missing from the public UI.');
 if (!html.includes('id="hockey-canvas"')) errors.push('Hockey canvas is missing.');
 if (!html.includes('data-action="left"') || !html.includes('data-action="right"')) errors.push('D-pad left/right actions are missing.');
 if (!html.includes('data-action="jump"') || !html.includes('data-action="slide"') || !html.includes('data-action="stick"')) errors.push('Action buttons are missing.');

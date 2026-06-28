@@ -42,6 +42,16 @@ Known limitations:
 - Balance and spawn timing need real playtesting.
 - Roadside Realm docs remain for historical continuity and should be cleaned up only after Hockey Smash stabilizes.
 
+## 2026-06-28 Checkpoint: Hockey Smash Portrait And Splash Fix
+
+Follow-up stabilization after the v0.5.0 pivot:
+
+- Made the rotate guidance visible on the splash screen and transition screen, not only after gameplay starts.
+- Tightened portrait splash spacing so the title, Play button, and rotate note are visible as an actual splash screen.
+- Reworked portrait controls so Jump, Slide, and Stick stay in a compact horizontal action row instead of stacking vertically.
+- Kept D-pad left/right at the bottom in portrait with smaller thumb targets.
+- Updated static verification to fail if the rotate guidance is missing.
+
 ## Current Branch
 
 `codex/roadside-realm-plan-assets`
