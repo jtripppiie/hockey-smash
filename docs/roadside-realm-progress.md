@@ -87,3 +87,68 @@ Next recommended work:
 4. Add a QA doc with manual normal, secret, mansion, save/load, and mobile routes.
 5. Improve normal enemy sprite graphics.
 6. Add service worker only after the static app paths settle.
+
+## 2026-06-28 Checkpoint: Deeper Route Preview
+
+This checkpoint expands the public preview from the first playable shell into the first deeper-route build.
+
+Version changes:
+
+- Visible version badge: `App v0.2.0 · Roadside Realm 0.2.0`.
+- Roadside Realm game data version: `0.2.0`.
+- Save wrapper remains version `1`.
+
+Implemented in this checkpoint:
+
+- Added the Never-Finished Mansion map.
+- Added the Hidden Conservatory map.
+- Added Underpass painted-door event that unlocks the mansion when the player has the Moon Toll Token.
+- Added Blueprint Key.
+- Added Blueprint Warden.
+- Added Star Map Fragment.
+- Added Glass Rose.
+- Added Blueprint Study locked door.
+- Added hidden Conservatory wallpaper seam.
+- Added Impossible Route Ending.
+- Added Impossible Route Ending + Glass Rose summary copy.
+- Added debug buttons for Star Map Fragment, Glass Rose, and mansion jump.
+- Added Signpost Ogre Big Spin telegraph.
+- Added Big Spin retreat behavior: stepping backward while the Ogre is winding up makes the spin miss.
+- Updated objective text for mansion and deeper secret progress.
+- Updated score formula to reward Impossible Route and Glass Rose completion.
+
+Validation performed:
+
+- `node --check script.js`
+- `node --check js/games/roadside-realm-data.js`
+- `node --check js/games/roadside-realm.js`
+- Data validation for map dimensions, event bounds, item IDs, required item IDs, monster IDs, and target map IDs.
+- Reachability checks for:
+  - main start to Rusty Road Key
+  - key to boss path
+  - boss to Mapstone
+  - secret switch to hidden wall
+  - Underpass entry to Moon Toll Token
+  - Underpass entry to mansion door
+  - mansion entry to stair button
+  - mansion entry to Blueprint Key
+  - Blueprint Key path to Star Map Fragment
+  - mansion path to Conservatory seam
+  - Conservatory entry to Glass Rose
+
+Known limitations after this checkpoint:
+
+- Mansion content is a compact first implementation, not final expanded room-by-room polish.
+- Blueprint Warden uses the fallback monster drawing, not a custom sprite yet.
+- Mansion and Conservatory use the existing canvas palette rather than a distinct final art theme.
+- Boss Big Spin is implemented, but needs browser-play QA for timing and feel.
+- No service worker yet.
+- This is still not V1.0.
+
+Next recommended work:
+
+1. Browser-play the normal, Secret Star, Impossible Route, and Glass Rose routes using debug mode.
+2. Improve mansion-specific canvas visuals.
+3. Add custom primitive sprites for Dust Goblin, Map Bat, Toll Troll, and Blueprint Warden.
+4. Add service worker/cache only after preview paths settle.
+5. Expand the QA checklist with pass/fail notes from real browser testing.

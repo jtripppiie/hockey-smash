@@ -60,8 +60,19 @@
         tollGateOpen: false,
         secretSwitchPressed: false,
         secretWallOpen: false,
+        mapstoneFound: false,
         bossDefeated: false,
+        underpassFound: false,
+        neverFinishedMansionUnlocked: false,
+        neverFinishedMansionEntered: false,
+        stairButtonPressed: false,
+        blueprintWardenDefeated: false,
+        blueprintStudyUnlocked: false,
+        starMapFragmentFound: false,
+        hiddenConservatoryOpen: false,
+        glassRoseFound: false,
         trueEndingUnlocked: false,
+        impossibleRouteEndingUnlocked: false,
       },
       counters: {
         steps: 0,
@@ -275,6 +286,7 @@
 
   function attemptMove(dir) {
     const target = tileAhead(dir);
+    const dodgedSpin = dir < 0 && dodgePendingOgreSpin();
     const from = { mapId: state.player.mapId, x: state.player.x, y: state.player.y };
     const check = canEnter(target);
     if (!check.ok) {
@@ -288,9 +300,21 @@
     state.counters.steps += 1;
     revealCurrentTile();
     addLog(dir > 0 ? 'You step forward.' : 'You step back.');
+    if (dodgedSpin) addLog('The Big Spin clips empty air.');
     resolveEnterEvent(target);
     debugLog('move', { from, to: { mapId: state.player.mapId, x: state.player.x, y: state.player.y }, facing: state.player.facing });
     saveGame();
+  }
+
+  function dodgePendingOgreSpin() {
+    const target = tileAhead(1);
+    const event = getEvent(currentMap(), target.x, target.y);
+    if (event?.type !== 'monster') return false;
+    const monster = state.monsters[event.monsterId];
+    if (monster?.type !== 'signpost-ogre' || !monster.pendingSpin) return false;
+    monster.pendingSpin = false;
+    debugLog('combat', { monsterId: monster.id, dodgedBigSpin: true });
+    return true;
   }
 
   function canEnter(target) {
@@ -306,6 +330,18 @@
     }
     if (event?.type === 'hiddenWall' && !state.flags[event.flag]) {
       if (!state.flags[event.requiredFlag]) return { ok: false, message: event.blockedText };
+      state.flags[event.flag] = true;
+      state.counters.secretsFound += 1;
+      addLog(event.text);
+      return { ok: true };
+    }
+    if (event?.type === 'mansionDoor') {
+      if (!hasItem(event.requiredItem)) return { ok: false, message: event.blockedText };
+      state.flags.neverFinishedMansionUnlocked = true;
+      return { ok: true };
+    }
+    if (event?.type === 'hiddenConservatory' && !state.flags[event.flag]) {
+      if (!hasItem(event.requiredItem)) return { ok: false, message: event.blockedText };
       state.flags[event.flag] = true;
       state.counters.secretsFound += 1;
       addLog(event.text);
@@ -344,6 +380,7 @@
 
     if (event.type === 'return') {
       addLog(event.text);
+      if (state.player.mapId === 'forgotten-underpass') state.flags.underpassFound = true;
       state.player.mapId = event.mapId;
       state.player.x = event.x;
       state.player.y = event.y;
@@ -354,10 +391,32 @@
 
     if (event.type === 'hiddenWall' && state.flags[event.flag]) {
       addLog('A stairway drops into the Forgotten Underpass.');
+      state.flags.underpassFound = true;
       state.player.mapId = 'forgotten-underpass';
       state.player.x = DATA.maps['forgotten-underpass'].start.x;
       state.player.y = DATA.maps['forgotten-underpass'].start.y;
       state.player.facing = DATA.maps['forgotten-underpass'].start.facing;
+      revealCurrentTile();
+      debugLog('map-transition', { mapId: state.player.mapId, x: state.player.x, y: state.player.y });
+    }
+
+    if (event.type === 'mansionDoor' && hasItem(event.requiredItem)) {
+      addLog(event.text);
+      state.flags.neverFinishedMansionUnlocked = true;
+      state.flags.neverFinishedMansionEntered = true;
+      state.player.mapId = event.mapId;
+      state.player.x = event.x;
+      state.player.y = event.y;
+      state.player.facing = event.facing;
+      revealCurrentTile();
+      debugLog('map-transition', { mapId: state.player.mapId, x: state.player.x, y: state.player.y });
+    }
+
+    if (event.type === 'hiddenConservatory' && state.flags[event.flag]) {
+      state.player.mapId = event.mapId;
+      state.player.x = event.x;
+      state.player.y = event.y;
+      state.player.facing = event.facing;
       revealCurrentTile();
       debugLog('map-transition', { mapId: state.player.mapId, x: state.player.x, y: state.player.y });
     }
@@ -379,6 +438,16 @@
     }
     if (event?.type === 'hiddenWall') {
       addLog(state.flags[event.requiredFlag] ? 'The wall has a tiny moon-shaped scratch near the base.' : event.blockedText);
+      debugLog('inspect', { target, event });
+      return;
+    }
+    if (event?.type === 'mansionDoor') {
+      addLog(hasItem(event.requiredItem) ? event.text : event.blockedText);
+      debugLog('inspect', { target, event });
+      return;
+    }
+    if (event?.type === 'hiddenConservatory') {
+      addLog(hasItem(event.requiredItem) ? 'Upside-down wallpaper curls away from a hidden glass hallway.' : event.blockedText);
       debugLog('inspect', { target, event });
       return;
     }
@@ -427,17 +496,38 @@
       return;
     }
 
+    resolveMonsterTurn(monster);
+    saveGame();
+  }
+
+  function resolveMonsterTurn(monster) {
     if (monster.type === 'map-bat' && Math.random() < 0.25) {
       addLog('The Map Bat flutters past, missing entirely.');
       return;
     }
-
+    if (monster.type === 'signpost-ogre') {
+      if (monster.pendingSpin) {
+        monster.pendingSpin = false;
+        const taken = rollDamage(monster.attack + 3, state.player.defense);
+        state.player.hp = Math.max(0, state.player.hp - taken);
+        addLog(`The Big Spin clips you for ${taken}.`);
+        debugLog('combat', { monsterId: monster.id, bigSpin: true, taken, playerHp: state.player.hp });
+        if (state.player.hp <= 0) defeatPlayer();
+        return;
+      }
+      monster.turnCount = (monster.turnCount || 0) + 1;
+      if (monster.turnCount % 3 === 0) {
+        monster.pendingSpin = true;
+        addLog('The Signpost Ogre winds up a Big Spin. Step back or brace yourself.');
+        debugLog('combat', { monsterId: monster.id, telegraph: true });
+        return;
+      }
+    }
     const taken = rollDamage(monster.attack, state.player.defense);
     state.player.hp = Math.max(0, state.player.hp - taken);
     addLog(`The ${monster.name} bumps you for ${taken}.`);
     debugLog('combat', { monsterId: monster.id, taken, playerHp: state.player.hp });
     if (state.player.hp <= 0) defeatPlayer();
-    saveGame();
   }
 
   function defeatMonster(monster) {
@@ -451,6 +541,10 @@
     }
     if (monster.type === 'moonlit-warden') {
       state.flags.trueEndingUnlocked = true;
+    }
+    if (monster.type === 'blueprint-warden') {
+      state.flags.blueprintWardenDefeated = true;
+      addLog('The Blueprint Warden unfolds into a quiet stack of harmless floor plans.');
     }
     debugLog('combat', { defeated: monster.id, flags: state.flags });
   }
@@ -502,6 +596,11 @@
     state.counters.treasuresFound += 1;
     if (itemId === 'mapstone') state.flags.mapstoneFound = true;
     if (itemId === 'moon-toll-token') state.flags.trueEndingUnlocked = true;
+    if (itemId === 'star-map-fragment') {
+      state.flags.starMapFragmentFound = true;
+      state.flags.impossibleRouteEndingUnlocked = true;
+    }
+    if (itemId === 'glass-rose') state.flags.glassRoseFound = true;
     addLog(text || `You found ${item.name}.`);
     debugLog('item', { pickedUp: itemId, key, inventory: state.player.inventory });
     if (map.id === 'forgotten-underpass' && itemId === 'moon-toll-token') {
@@ -510,8 +609,13 @@
   }
 
   function win() {
-    const trueEnding = hasItem('moon-toll-token') && state.flags.trueEndingUnlocked;
-    state.ending = trueEnding ? 'true' : 'normal';
+    if (hasItem('star-map-fragment') && state.flags.impossibleRouteEndingUnlocked) {
+      state.ending = hasItem('glass-rose') ? 'glass' : 'impossible';
+    } else if (hasItem('moon-toll-token') && state.flags.trueEndingUnlocked) {
+      state.ending = 'true';
+    } else {
+      state.ending = 'normal';
+    }
     debugLog('ending', { ending: state.ending, score: calculateScore() });
     saveGame();
     showSummary();
@@ -522,13 +626,32 @@
     elements.play.hidden = true;
     elements.summary.hidden = false;
     const score = calculateScore();
-    const trueEnding = state.ending === 'true';
-    elements.summaryTitle.textContent = trueEnding ? 'Secret Star Ending' : 'Route Restored';
-    elements.summaryCopy.textContent = trueEnding
-      ? 'You restored the moonlit route through the Forgotten Underpass. The Roadside Realm stamps your map with a secret star.'
-      : 'You escaped the Roadside Realm with the Mapstone. The route is restored, and someone in the car earns first snack pick.';
+    const endingCopy = {
+      normal: {
+        title: 'Route Restored',
+        copy: 'You escaped the Roadside Realm with the Mapstone. The route is restored, and someone in the car earns first snack pick.',
+        label: 'Normal Route',
+      },
+      true: {
+        title: 'Secret Star Ending',
+        copy: 'You restored the moonlit route through the Forgotten Underpass. The Roadside Realm stamps your map with a secret star.',
+        label: 'Secret Star Route',
+      },
+      impossible: {
+        title: 'Impossible Route Ending',
+        copy: 'You carried the Mapstone, Moon Toll Token, and Star Map Fragment back to the kiosk. A mansion hallway folds itself into the map, revealing a road that should not fit anywhere.',
+        label: 'Impossible Route',
+      },
+      glass: {
+        title: 'Impossible Route Ending',
+        copy: 'You carried the Mapstone, Moon Toll Token, Star Map Fragment, and Glass Rose back to the kiosk. The hidden Conservatory leaves a silver bloom on your map.',
+        label: 'Impossible Route + Glass Rose',
+      },
+    }[state.ending || 'normal'];
+    elements.summaryTitle.textContent = endingCopy.title;
+    elements.summaryCopy.textContent = endingCopy.copy;
     const stats = [
-      ['Ending', trueEnding ? 'True Route' : 'Normal Route'],
+      ['Ending', endingCopy.label],
       ['Score', score],
       ['Steps', state.counters.steps],
       ['Monsters', state.counters.monstersDefeated],
@@ -546,6 +669,8 @@
       + state.counters.secretsFound * 250
       + (state.flags.bossDefeated ? 500 : 0)
       + (state.flags.trueEndingUnlocked ? 1000 : 0)
+      + (state.flags.impossibleRouteEndingUnlocked ? 1200 : 0)
+      + (state.flags.glassRoseFound ? 500 : 0)
       - state.counters.defeats * 100
     );
   }
@@ -719,9 +844,13 @@
     const event = getEvent(map, target.x, target.y);
     const tile = getTile(map, target.x, target.y);
     const ending = hasItem('mapstone')
-      ? hasItem('moon-toll-token') && state.flags.trueEndingUnlocked
-        ? 'Secret Star eligible'
-        : 'Normal eligible'
+      ? hasItem('star-map-fragment')
+        ? hasItem('glass-rose')
+          ? 'Impossible + Glass Rose eligible'
+          : 'Impossible eligible'
+        : hasItem('moon-toll-token') && state.flags.trueEndingUnlocked
+          ? 'Secret Star eligible'
+          : 'Normal eligible'
       : 'Not eligible';
     elements.debugStatus.textContent = [
       `Game: ${DATA.version} | Save: ${SAVE_VERSION}`,
@@ -746,10 +875,19 @@
       giveDebugItem('moon-toll-token');
       state.flags.trueEndingUnlocked = true;
     }
+    if (action === 'giveStarMap') {
+      giveDebugItem('star-map-fragment');
+      state.flags.impossibleRouteEndingUnlocked = true;
+    }
+    if (action === 'giveGlassRose') giveDebugItem('glass-rose');
     if (action === 'jumpMain') jumpTo(DATA.start.mapId, DATA.start.x, DATA.start.y, DATA.start.facing);
     if (action === 'jumpUnderpass') {
       const start = DATA.maps['forgotten-underpass'].start;
       jumpTo('forgotten-underpass', start.x, start.y, start.facing);
+    }
+    if (action === 'jumpMansion') {
+      const start = DATA.maps['never-finished-mansion'].start;
+      jumpTo('never-finished-mansion', start.x, start.y, start.facing);
     }
     if (action === 'jumpBoss') jumpTo('map-kiosk-dungeon', 5, 9, 'south');
     if (action === 'jumpExit') jumpTo('map-kiosk-dungeon', 1, 1, 'south');
@@ -769,6 +907,8 @@
     if (!DATA.items[itemId] || state.player.inventory.includes(itemId)) return;
     state.player.inventory.push(itemId);
     if (itemId === 'mapstone') state.flags.mapstoneFound = true;
+    if (itemId === 'star-map-fragment') state.flags.impossibleRouteEndingUnlocked = true;
+    if (itemId === 'glass-rose') state.flags.glassRoseFound = true;
     addLog(`Debug: added ${DATA.items[itemId].name}.`);
   }
 
@@ -802,6 +942,9 @@
     if (!state.flags.tollGateOpen) return 'Return to the Toll Gate and unlock the route.';
     if (!state.flags.bossDefeated) return 'Defeat the Signpost Ogre and watch the signs.';
     if (!hasItem('mapstone')) return 'Claim the Mapstone beyond Signpost Court.';
+    if (hasItem('moon-toll-token') && !hasItem('star-map-fragment') && state.flags.neverFinishedMansionUnlocked) return 'Explore the Never-Finished Mansion for the Star Map Fragment.';
+    if (hasItem('star-map-fragment') && !hasItem('glass-rose')) return 'Return to the exit, or inspect the mansion wallpaper for one deeper secret.';
+    if (hasItem('glass-rose')) return 'Return to the map kiosk exit with the impossible route restored.';
     if (hasItem('moon-toll-token')) return 'Return to the map kiosk exit for the secret route home.';
     return 'Return to the exit route near the map kiosk.';
   }
@@ -819,6 +962,8 @@
     if (event?.type === 'lockedDoor' && !state.flags[event.flag]) return 'A locked Toll Gate is ahead.';
     if (event?.type === 'item') return `${DATA.items[event.itemId].name} is ahead.`;
     if (event?.type === 'exit') return 'The map kiosk exit is ahead.';
+    if (event?.type === 'mansionDoor') return 'A painted mansion door is ahead.';
+    if (event?.type === 'hiddenConservatory') return 'A wallpaper seam is ahead.';
     return 'An open path is ahead.';
   }
 

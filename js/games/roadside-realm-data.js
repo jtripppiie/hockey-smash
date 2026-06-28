@@ -52,13 +52,61 @@
     ],
     events: {
       '1,1': { type: 'return', mapId: 'map-kiosk-dungeon', x: 10, y: 6, facing: 'west', text: 'You climb back up into the kiosk dungeon.' },
+      '3,3': { type: 'mansionDoor', requiredItem: 'moon-toll-token', mapId: 'never-finished-mansion', x: 1, y: 1, facing: 'east', blockedText: 'A painted door waits on the wall, but it stays flat without a moonlit toll.', text: 'The Moon Toll Token grows cold. The painted door becomes real.' },
       '4,1': { type: 'monster', monsterId: 'moonlit-warden-1' },
       '5,4': { type: 'item', itemId: 'moon-toll-token', text: 'A cold, silver Moon Toll Token sits beside a weathered lore sign.' },
     },
   };
 
+  const NEVER_FINISHED_MANSION = {
+    id: 'never-finished-mansion',
+    name: 'Never-Finished Mansion',
+    width: 9,
+    height: 9,
+    start: { x: 1, y: 1, facing: 'east' },
+    tiles: [
+      '#########',
+      '#R..M.DG#',
+      '#.###.#.#',
+      '#..S#...#',
+      '###.#.###',
+      '#K..#...#',
+      '#.###H#.#',
+      '#.......#',
+      '#########',
+    ],
+    events: {
+      '1,1': { type: 'return', mapId: 'forgotten-underpass', x: 3, y: 3, facing: 'west', text: 'You step back through the painted door into the Forgotten Underpass.' },
+      '3,3': { type: 'secretSwitch', flag: 'stairButtonPressed', text: 'You press the stair button. A hallway stops repeating and finally chooses a direction.' },
+      '1,5': { type: 'item', itemId: 'blueprint-key', requiresFlag: 'stairButtonPressed', blockedText: 'The key cabinet is sealed until the staircase remembers itself.', text: 'A flat brass Blueprint Key waits inside a crooked cabinet.' },
+      '4,1': { type: 'monster', monsterId: 'blueprint-warden-1' },
+      '6,1': { type: 'lockedDoor', requiredItem: 'blueprint-key', flag: 'blueprintStudyUnlocked', lockedText: 'The Blueprint Study is locked by a key shaped like a floor plan.', unlockText: 'The Blueprint Key unfolds in the lock. The study door opens.' },
+      '7,1': { type: 'item', itemId: 'star-map-fragment', requiresFlag: 'blueprintWardenDefeated', blockedText: 'The Blueprint Warden keeps the floor plan folded shut.', text: 'You found the Star Map Fragment. An impossible route draws itself across the page.' },
+      '5,6': { type: 'hiddenConservatory', requiredItem: 'star-map-fragment', flag: 'hiddenConservatoryOpen', mapId: 'hidden-conservatory', x: 1, y: 1, facing: 'east', blockedText: 'Upside-down wallpaper hides a seam, but the route on your map is incomplete.', text: 'The upside-down wallpaper peels open into a hidden Conservatory.' },
+    },
+  };
+
+  const HIDDEN_CONSERVATORY = {
+    id: 'hidden-conservatory',
+    name: 'Hidden Conservatory',
+    width: 5,
+    height: 5,
+    start: { x: 1, y: 1, facing: 'east' },
+    tiles: [
+      '#####',
+      '#R.G#',
+      '#...#',
+      '#...#',
+      '#####',
+    ],
+    events: {
+      '1,1': { type: 'return', mapId: 'never-finished-mansion', x: 5, y: 6, facing: 'south', text: 'You return from the hidden Conservatory.' },
+      '3,1': { type: 'item', itemId: 'glass-rose', text: 'A Glass Rose blooms in a pot of folded maps.' },
+    },
+  };
+
   window.RTA_ROADSIDE_REALM_DATA = {
-    version: '0.1.0',
+    version: '0.2.0',
     title: 'Roadside Realm',
     saveKey: 'rtaRoadsideRealmSave',
     startMap: 'map-kiosk-dungeon',
@@ -66,12 +114,17 @@
     maps: {
       [MAP_KIOSK_DUNGEON.id]: MAP_KIOSK_DUNGEON,
       [FORGOTTEN_UNDERPASS.id]: FORGOTTEN_UNDERPASS,
+      [NEVER_FINISHED_MANSION.id]: NEVER_FINISHED_MANSION,
+      [HIDDEN_CONSERVATORY.id]: HIDDEN_CONSERVATORY,
     },
     items: {
       'rusty-road-key': { id: 'rusty-road-key', name: 'Rusty Road Key', type: 'quest', description: 'Opens the old Toll Gate.' },
       'apple-juice-potion': { id: 'apple-juice-potion', name: 'Apple Juice Potion', type: 'consumable', heal: 8, description: 'Restores 8 HP.' },
       mapstone: { id: 'mapstone', name: 'Mapstone', type: 'quest', description: 'The missing heart of the roadside map.' },
       'moon-toll-token': { id: 'moon-toll-token', name: 'Moon Toll Token', type: 'quest', description: 'A silver token from the Forgotten Underpass.' },
+      'blueprint-key': { id: 'blueprint-key', name: 'Blueprint Key', type: 'quest', description: 'A flat brass key shaped like a folded floor plan.' },
+      'star-map-fragment': { id: 'star-map-fragment', name: 'Star Map Fragment', type: 'quest', description: 'A torn piece of map showing a road through a mansion hallway.' },
+      'glass-rose': { id: 'glass-rose', name: 'Glass Rose', type: 'collectible', description: 'A glass rose from a Conservatory that should not exist.' },
     },
     monsters: {
       'dust-goblin-1': { id: 'dust-goblin-1', type: 'dust-goblin', name: 'Dust Goblin', hp: 7, maxHp: 7, attack: 3, defense: 0, xp: 3, gold: 2, text: 'A Dust Goblin rattles an old motel key at you.' },
@@ -79,6 +132,7 @@
       'toll-troll-1': { id: 'toll-troll-1', type: 'toll-troll', name: 'Toll Troll', hp: 12, maxHp: 12, attack: 4, defense: 1, xp: 5, gold: 4, text: 'A Toll Troll blocks the old service road, arms crossed.' },
       'signpost-ogre-1': { id: 'signpost-ogre-1', type: 'signpost-ogre', name: 'Signpost Ogre', hp: 26, maxHp: 26, attack: 5, defense: 1, xp: 8, gold: 8, boss: true, text: 'The Signpost Ogre spins its arrow-arms and blocks the goal corridor.' },
       'moonlit-warden-1': { id: 'moonlit-warden-1', type: 'moonlit-warden', name: 'Moonlit Warden', hp: 22, maxHp: 22, attack: 5, defense: 2, xp: 8, gold: 6, secret: true, text: 'The Moonlit Warden guards the route that does not appear on ordinary maps.' },
+      'blueprint-warden-1': { id: 'blueprint-warden-1', type: 'blueprint-warden', name: 'Blueprint Warden', hp: 24, maxHp: 24, attack: 5, defense: 2, xp: 9, gold: 7, secret: true, text: 'The Blueprint Warden folds the hallway into a shield.' },
     },
   };
 })();
