@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.9.2';
-  const DISPLAY_BUILD = 'Build 2026-06-29.13';
+  const DISPLAY_VERSION = 'Hockey Smash v0.9.3';
+  const DISPLAY_BUILD = 'Build 2026-06-29.14';
   const DESIGN_WIDTH = 1024;
   const RIGHT_EDGE = 810;
   const LEFT_ENTRY = 108;
@@ -16,6 +16,12 @@
   ];
   const params = new URLSearchParams(window.location.search);
   const computerMode = params.get('computerMode') === '1';
+  const preloadedBackgrounds = STAGE_BACKGROUNDS.map((src) => {
+    const image = new Image();
+    image.decoding = 'async';
+    image.src = src;
+    return image;
+  });
 
   function onReady() {
     const api = window.RTA_HOCKEY_SMASH;
@@ -62,6 +68,7 @@
       stageBackground.style.height = `${rect.height}px`;
       stageBackground.style.backgroundImage = `url("${STAGE_BACKGROUNDS[stage]}")`;
       stageBackground.dataset.stage = String(stage + 1);
+      stageBackground.dataset.ready = preloadedBackgrounds[stage]?.complete ? 'true' : 'loading';
     }
 
     function setStage(state, nextStage, direction) {
@@ -74,12 +81,12 @@
       state.salmonRunStarted = stage >= 2;
       if (stage >= 3 && state.mode !== 'bossFight') state.mode = 'bossIntro';
       if (stage < 3 && state.mode === 'bossIntro') state.mode = 'playing';
+      syncStageBackground();
       state.player.x = direction === 'back' ? RIGHT_EDGE - 80 : LEFT_ENTRY;
       state.player.vx = 0;
       state.player.facing = direction === 'back' ? -1 : 1;
       state.message = `Road section ${stage + 1} of ${STAGE_SECONDS.length}. Keep moving!`;
       if (status) status.textContent = state.message;
-      syncStageBackground();
     }
 
     function keepProgressing() {
@@ -90,6 +97,7 @@
         if (player.x >= RIGHT_EDGE && stage < STAGE_SECONDS.length - 1) setStage(state, stage + 1, 'forward');
         if (player.x <= LEFT_EDGE && stage > 0) setStage(state, stage - 1, 'back');
         if (player.x > DESIGN_WIDTH - player.width - 28 && stage >= STAGE_SECONDS.length - 1) {
+          syncStageBackground();
           player.x = RETURN_EDGE;
           player.vx = 0;
           state.message = 'Daniel loops the road and keeps skating.';
