@@ -3,17 +3,37 @@
  *
  * Keep index.html simple: load this one file only.
  * If a layer is retired later, remove it here instead of stacking more links in HTML.
- * Current cache key: 0.12.7-20260629.42
+ * Current cache key: 0.12.8-20260629.43
  */
 
-@import url("style.css?v=0.12.7-20260629.42");
-@import url("hockey-smash-polish.css?v=0.12.7-20260629.42");
-@import url("hockey-smash-touch.css?v=0.12.7-20260629.42");
-@import url("hockey-smash-custom.css?v=0.12.7-20260629.42");
-@import url("hockey-smash-v09.css?v=0.12.7-20260629.42");
-@import url("hockey-smash-v094.css?v=0.12.7-20260629.42");
-@import url("hockey-smash-v095.css?v=0.12.7-20260629.42");
-@import url("hockey-smash-v0111.css?v=0.12.7-20260629.42");
+@import url("style.css?v=0.12.8-20260629.43");
+@import url("hockey-smash-polish.css?v=0.12.8-20260629.43");
+@import url("hockey-smash-touch.css?v=0.12.8-20260629.43");
+@import url("hockey-smash-custom.css?v=0.12.8-20260629.43");
+@import url("hockey-smash-v09.css?v=0.12.8-20260629.43");
+@import url("hockey-smash-v094.css?v=0.12.8-20260629.43");
+@import url("hockey-smash-v095.css?v=0.12.8-20260629.43");
+@import url("hockey-smash-v0111.css?v=0.12.8-20260629.43");
+
+/*
+ * Critical repair:
+ * Several gameplay CSS layers set display/layout on .hockey-game, .hockey-splash,
+ * transition screens, and overlays. That can override the browser's default
+ * [hidden] behavior and leave hidden controls clickable during splash mode.
+ */
+[hidden],
+.hockey-game[hidden],
+.hockey-splash[hidden],
+.hockey-transition[hidden],
+.hockey-try-again[hidden],
+#hockey-game[hidden],
+#hockey-splash[hidden],
+#hockey-transition[hidden],
+#hockey-try-again[hidden] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
 
 /*
  * The boot log used to sit at bottom-left, directly on top of the D-pad.
