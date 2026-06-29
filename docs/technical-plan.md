@@ -2,7 +2,7 @@
 
 ## Target
 
-Roadside Realmo should start as a static web game that can be hosted on GitHub Pages or any plain static host.
+Hockey Smash should start as a static web game that can be hosted on GitHub Pages or any plain static host.
 
 ## Proposed Stack
 
@@ -17,7 +17,7 @@ TypeScript can be introduced later if the model/state layer grows.
 ## Suggested File Structure
 
 ```text
-roadside-realmo/
+hockey-smash/
   index.html
   src/
     main.js

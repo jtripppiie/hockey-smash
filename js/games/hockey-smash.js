@@ -4,21 +4,22 @@
   const DESIGN_HEIGHT = 576;
   const TRANSITION_MS = 2400;
   const ASSETS = {
-    background01: 'assets/roadside-realm/backgrounds/soldotna_cityscape_background_01_1920x1080.png',
-    background02: 'assets/roadside-realm/backgrounds/soldotna_cityscape_background_02_1920x1080.png',
-    background03: 'assets/roadside-realm/backgrounds/soldotna_cityscape_background_03_1920x1080.png',
-    background04: 'assets/roadside-realm/backgrounds/soldotna_cityscape_background_04_1920x1080.png',
-    background05: 'assets/roadside-realm/backgrounds/soldotna_cityscape_background_05_1920x1080.png',
+    splash: 'assets/hockey-smash/sprites/splash.png',
+    background01: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1920x1080.png',
+    background02: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_02_1920x1080.png',
+    background03: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_03_1920x1080.png',
+    background04: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_04_1920x1080.png',
+    background05: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_05_1920x1080.png',
     daniel: 'assets/player_hockey_sprite_96x96.png',
-    salmon: 'assets/roadside-realm/sprites/salmon.png',
-    bear: 'assets/roadside-realm/sprites/bear.png',
-    moose: 'assets/roadside-realm/sprites/moose.png',
-    dadMower: 'assets/roadside-realm/sprites/dad.png',
-    dad: 'assets/roadside-realm/sprites/dad.png',
-    mom: 'assets/roadside-realm/sprites/mom.png',
-    momText: 'assets/roadside-realm/sprites/mom_text.png',
-    sister: 'assets/roadside-realm/sprites/sister.png',
-    sisterText: 'assets/roadside-realm/sprites/sister_text.png',
+    salmon: 'assets/hockey-smash/sprites/salmon.png',
+    bear: 'assets/hockey-smash/sprites/bear.png',
+    moose: 'assets/hockey-smash/sprites/moose.png',
+    dadMower: 'assets/hockey-smash/sprites/dad.png',
+    dad: 'assets/hockey-smash/sprites/dad.png',
+    mom: 'assets/hockey-smash/sprites/mom.png',
+    momText: 'assets/hockey-smash/sprites/mom_text.png',
+    sister: 'assets/hockey-smash/sprites/sister.png',
+    sisterText: 'assets/hockey-smash/sprites/sister_text.png',
   };
   const BACKGROUND_SEQUENCE = ['background01', 'background02', 'background03', 'background04', 'background05'];
 

@@ -132,9 +132,9 @@
     },
   };
 
-  window.RTA_ROADSIDE_REALM_DATA = {
+  window.RTA_HOCKEY_SMASH_LEGACY_DATA = {
     version: '0.8.0',
-    title: 'Roadside Realm',
+    title: 'Hockey Smash',
     saveKey: 'rtaRoadsideRealmSave',
     startMap: 'map-kiosk-dungeon',
     start: { mapId: 'map-kiosk-dungeon', x: 1, y: 1, facing: 'south' },

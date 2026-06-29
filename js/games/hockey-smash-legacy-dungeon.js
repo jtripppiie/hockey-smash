@@ -1,6 +1,6 @@
 (function () {
-  const DATA = window.RTA_ROADSIDE_REALM_DATA;
-  const ART = window.RTA_ROADSIDE_REALM_ART || { sprites: {}, monsterSprites: {}, layers: [] };
+  const DATA = window.RTA_HOCKEY_SMASH_LEGACY_DATA;
+  const ART = window.RTA_HOCKEY_SMASH_LEGACY_ART || { sprites: {}, monsterSprites: {}, layers: [] };
   const SAVE_VERSION = 1;
   const QUERY = new URLSearchParams(window.location.search);
   const DEBUG = QUERY.get('realmDebug') === '1' || QUERY.get('computerMode') === '1';
@@ -40,10 +40,10 @@
     complete: false,
   };
   const assets = {
-    signpostOgre: loadImage('assets/roadside-realm/sprites/realm-sprite-signpost-ogre.png'),
-    moonlitWarden: loadImage('assets/roadside-realm/sprites/realm-sprite-moonlit-warden.png'),
-    items: loadImage('assets/roadside-realm/items/realm-items-core.png'),
-    moonScratch: loadImage('assets/roadside-realm/tiles/realm-tile-hidden-moon-scratch.png'),
+    signpostOgre: loadImage('assets/hockey-smash/sprites/hockey-smash-sprite-signpost-ogre.png'),
+    moonlitWarden: loadImage('assets/hockey-smash/sprites/hockey-smash-sprite-moonlit-warden.png'),
+    items: loadImage('assets/hockey-smash/items/hockey-smash-items-core.png'),
+    moonScratch: loadImage('assets/hockey-smash/tiles/hockey-smash-tile-hidden-moon-scratch.png'),
   };
 
   const ITEM_FRAMES = {
@@ -165,7 +165,7 @@
     state = loadGame() || createDefaultState();
     state.debug = DEBUG;
     if (dataErrors.length) {
-      addLog(`Roadside Realm data warning: ${dataErrors[0]}`);
+      addLog(`Hockey Smash data warning: ${dataErrors[0]}`);
       debugLog('error', { dataErrors });
     }
     showSplash();
@@ -178,60 +178,60 @@
   function cacheElements() {
     elements = {
       body: document.body,
-      splash: document.getElementById('realm-splash'),
-      play: document.getElementById('realm-play'),
-      summary: document.getElementById('realm-summary'),
-      start: document.getElementById('realm-start'),
-      continue: document.getElementById('realm-continue'),
-      resetSave: document.getElementById('realm-reset-save'),
-      canvas: document.getElementById('realm-canvas'),
-      pickupCard: document.getElementById('realm-pickup-card'),
-      pickupIcon: document.getElementById('realm-pickup-icon'),
-      pickupTitle: document.getElementById('realm-pickup-title'),
-      pickupText: document.getElementById('realm-pickup-text'),
-      neoView: document.getElementById('realm-neo-view'),
-      neoDoor: document.getElementById('realm-neo-door'),
-      neoObject: document.getElementById('realm-neo-object'),
-      neoEntity: document.getElementById('realm-neo-entity'),
-      neoEntityIcon: document.getElementById('realm-neo-entity-icon'),
-      neoLocation: document.getElementById('realm-neo-location'),
-      neoAhead: document.getElementById('realm-neo-ahead'),
-      helpOverlay: document.getElementById('realm-help-overlay'),
-      helpClose: document.getElementById('realm-help-close'),
-      objective: document.getElementById('realm-objective'),
-      hpMeter: document.getElementById('realm-hp-meter'),
-      routeState: document.getElementById('realm-route-state'),
-      threatState: document.getElementById('realm-threat-state'),
-      facingState: document.getElementById('realm-facing-state'),
-      frontState: document.getElementById('realm-front-state'),
-      roomName: document.getElementById('realm-room-name'),
-      roomCoords: document.getElementById('realm-room-coords'),
-      roomAhead: document.getElementById('realm-room-ahead'),
-      activeCharm: document.getElementById('realm-active-charm'),
-      activeRelic: document.getElementById('realm-active-relic'),
-      hp: document.getElementById('realm-hp'),
-      atk: document.getElementById('realm-atk'),
-      def: document.getElementById('realm-def'),
-      level: document.getElementById('realm-level'),
-      gold: document.getElementById('realm-gold'),
-      inventory: document.getElementById('realm-inventory'),
-      log: document.getElementById('realm-log'),
-      live: document.getElementById('realm-live'),
-      summaryTitle: document.getElementById('realm-summary-title'),
-      summaryCopy: document.getElementById('realm-summary-copy'),
-      summaryStats: document.getElementById('realm-summary-stats'),
-      summaryNew: document.getElementById('realm-summary-new'),
-      summaryMenu: document.getElementById('realm-summary-menu'),
-      debug: document.getElementById('realm-debug'),
-      debugStatus: document.getElementById('realm-debug-status'),
-      computer: document.getElementById('realm-computer'),
-      computerStatus: document.getElementById('realm-computer-status'),
-      computerLog: document.getElementById('realm-computer-log'),
+      splash: document.getElementById('hockey-smash-legacy-splash'),
+      play: document.getElementById('hockey-smash-legacy-play'),
+      summary: document.getElementById('hockey-smash-legacy-summary'),
+      start: document.getElementById('hockey-smash-legacy-start'),
+      continue: document.getElementById('hockey-smash-legacy-continue'),
+      resetSave: document.getElementById('hockey-smash-legacy-reset-save'),
+      canvas: document.getElementById('hockey-smash-legacy-canvas'),
+      pickupCard: document.getElementById('hockey-smash-legacy-pickup-card'),
+      pickupIcon: document.getElementById('hockey-smash-legacy-pickup-icon'),
+      pickupTitle: document.getElementById('hockey-smash-legacy-pickup-title'),
+      pickupText: document.getElementById('hockey-smash-legacy-pickup-text'),
+      neoView: document.getElementById('hockey-smash-legacy-neo-view'),
+      neoDoor: document.getElementById('hockey-smash-legacy-neo-door'),
+      neoObject: document.getElementById('hockey-smash-legacy-neo-object'),
+      neoEntity: document.getElementById('hockey-smash-legacy-neo-entity'),
+      neoEntityIcon: document.getElementById('hockey-smash-legacy-neo-entity-icon'),
+      neoLocation: document.getElementById('hockey-smash-legacy-neo-location'),
+      neoAhead: document.getElementById('hockey-smash-legacy-neo-ahead'),
+      helpOverlay: document.getElementById('hockey-smash-legacy-help-overlay'),
+      helpClose: document.getElementById('hockey-smash-legacy-help-close'),
+      objective: document.getElementById('hockey-smash-legacy-objective'),
+      hpMeter: document.getElementById('hockey-smash-legacy-hp-meter'),
+      routeState: document.getElementById('hockey-smash-legacy-route-state'),
+      threatState: document.getElementById('hockey-smash-legacy-threat-state'),
+      facingState: document.getElementById('hockey-smash-legacy-facing-state'),
+      frontState: document.getElementById('hockey-smash-legacy-front-state'),
+      roomName: document.getElementById('hockey-smash-legacy-room-name'),
+      roomCoords: document.getElementById('hockey-smash-legacy-room-coords'),
+      roomAhead: document.getElementById('hockey-smash-legacy-room-ahead'),
+      activeCharm: document.getElementById('hockey-smash-legacy-active-charm'),
+      activeRelic: document.getElementById('hockey-smash-legacy-active-relic'),
+      hp: document.getElementById('hockey-smash-legacy-hp'),
+      atk: document.getElementById('hockey-smash-legacy-atk'),
+      def: document.getElementById('hockey-smash-legacy-def'),
+      level: document.getElementById('hockey-smash-legacy-level'),
+      gold: document.getElementById('hockey-smash-legacy-gold'),
+      inventory: document.getElementById('hockey-smash-legacy-inventory'),
+      log: document.getElementById('hockey-smash-legacy-log'),
+      live: document.getElementById('hockey-smash-legacy-live'),
+      summaryTitle: document.getElementById('hockey-smash-legacy-summary-title'),
+      summaryCopy: document.getElementById('hockey-smash-legacy-summary-copy'),
+      summaryStats: document.getElementById('hockey-smash-legacy-summary-stats'),
+      summaryNew: document.getElementById('hockey-smash-legacy-summary-new'),
+      summaryMenu: document.getElementById('hockey-smash-legacy-summary-menu'),
+      debug: document.getElementById('hockey-smash-legacy-debug'),
+      debugStatus: document.getElementById('hockey-smash-legacy-debug-status'),
+      computer: document.getElementById('hockey-smash-legacy-computer'),
+      computerStatus: document.getElementById('hockey-smash-legacy-computer-status'),
+      computerLog: document.getElementById('hockey-smash-legacy-computer-log'),
       options: {
-        motion: document.getElementById('realm-option-motion'),
-        contrast: document.getElementById('realm-option-contrast'),
-        largeText: document.getElementById('realm-option-large-text'),
-        sound: document.getElementById('realm-option-sound'),
+        motion: document.getElementById('hockey-smash-legacy-option-motion'),
+        contrast: document.getElementById('hockey-smash-legacy-option-contrast'),
+        largeText: document.getElementById('hockey-smash-legacy-option-large-text'),
+        sound: document.getElementById('hockey-smash-legacy-option-sound'),
       },
     };
   }
@@ -362,9 +362,9 @@
   }
 
   function applyOptions() {
-    elements.body.classList.toggle('realm-reduced-motion', Boolean(elements.options.motion?.checked));
-    elements.body.classList.toggle('realm-high-contrast', Boolean(elements.options.contrast?.checked));
-    elements.body.classList.toggle('realm-large-text', Boolean(elements.options.largeText?.checked));
+    elements.body.classList.toggle('hockey-smash-legacy-reduced-motion', Boolean(elements.options.motion?.checked));
+    elements.body.classList.toggle('hockey-smash-legacy-high-contrast', Boolean(elements.options.contrast?.checked));
+    elements.body.classList.toggle('hockey-smash-legacy-large-text', Boolean(elements.options.largeText?.checked));
   }
 
   function newGame() {
@@ -390,7 +390,7 @@
   }
 
   function showSplash() {
-    elements.body.classList.toggle('realm-playing', false);
+    elements.body.classList.toggle('hockey-smash-legacy-playing', false);
     stopHeldAction();
     elements.splash.hidden = false;
     elements.play.hidden = true;
@@ -401,7 +401,7 @@
   }
 
   function showPlay() {
-    elements.body.classList.toggle('realm-playing', true);
+    elements.body.classList.toggle('hockey-smash-legacy-playing', true);
     state.mode = 'EXPLORING';
     elements.splash.hidden = true;
     elements.play.hidden = false;
@@ -654,7 +654,7 @@
     const event = getEvent(map, target.x, target.y);
     const tile = getTile(map, target.x, target.y);
     if (event?.type === 'exit') {
-      addLog(hasItem(event.requiredItem) ? 'The route glows. Step forward to leave the Roadside Realm.' : event.blockedText);
+      addLog(hasItem(event.requiredItem) ? 'The route glows. Step forward to leave the Hockey Smash.' : event.blockedText);
       debugLog('inspect', { target, event });
       return;
     }
@@ -852,7 +852,7 @@
   }
 
   function showSummary() {
-    elements.body.classList.toggle('realm-playing', false);
+    elements.body.classList.toggle('hockey-smash-legacy-playing', false);
     stopHeldAction();
     elements.splash.hidden = true;
     elements.play.hidden = true;
@@ -861,12 +861,12 @@
     const endingCopy = {
       normal: {
         title: 'Route Restored',
-        copy: 'You escaped the Roadside Realm with the Mapstone. The route is restored, and someone in the car earns first snack pick.',
+        copy: 'You escaped the Hockey Smash with the Mapstone. The route is restored, and someone in the car earns first snack pick.',
         label: 'Normal Route',
       },
       true: {
         title: 'Secret Star Ending',
-        copy: 'You restored the moonlit route through the Forgotten Underpass. The Roadside Realm stamps your map with a secret star.',
+        copy: 'You restored the moonlit route through the Forgotten Underpass. The Hockey Smash stamps your map with a secret star.',
         label: 'Secret Star Route',
       },
       impossible: {
@@ -1061,7 +1061,7 @@
       renderComputerReport();
     } catch (error) {
       recordRuntimeError(error.message || String(error), { stack: error.stack });
-      safeText(elements.live, 'Roadside Realm hit a render snag, but the game recovered.');
+      safeText(elements.live, 'Hockey Smash hit a render snag, but the game recovered.');
     }
   }
 
@@ -1090,7 +1090,7 @@
     safeText(elements.activeRelic, hasItem('mapstone') ? 'Mapstone' : 'None');
     safeHtml(elements.inventory, state.player.inventory.length
       ? state.player.inventory.map((id) => renderInventoryChip(id)).join('')
-      : '<span class="realm-chip">No items yet</span>');
+      : '<span class="hockey-smash-legacy-chip">No items yet</span>');
     safeHtml(elements.log, state.log.map((message) => `<li>${escapeHtml(message)}</li>`).join(''));
     safeText(elements.live, `Facing ${state.player.facing}. ${ahead} ${state.lastInputResult || ''}`.trim());
     renderNeoView();
@@ -1105,28 +1105,28 @@
     const presentation = frontPresentation(tile, event, target);
 
     elements.neoView.className = [
-      'realm-neo-view',
-      `realm-neo-view--${map.id}`,
-      `realm-neo-view--${presentation.kind}`,
-      `realm-facing-${state.player.facing}`,
-      `realm-position-${Math.abs(state.player.x + state.player.y) % 4}`,
-      inputLocked ? 'realm-neo-view--busy' : '',
-      state.lastAction ? `realm-neo-view--action-${state.lastAction}` : '',
+      'hockey-smash-legacy-neo-view',
+      `hockey-smash-legacy-neo-view--${map.id}`,
+      `hockey-smash-legacy-neo-view--${presentation.kind}`,
+      `hockey-smash-legacy-facing-${state.player.facing}`,
+      `hockey-smash-legacy-position-${Math.abs(state.player.x + state.player.y) % 4}`,
+      inputLocked ? 'hockey-smash-legacy-neo-view--busy' : '',
+      state.lastAction ? `hockey-smash-legacy-neo-view--action-${state.lastAction}` : '',
     ].filter(Boolean).join(' ');
     elements.neoView.dataset.sceneSignature = sceneSignature(map, presentation);
     const stepX = (state.player.x % 4) * 18;
     const stepY = (state.player.y % 4) * 14;
     const facingShift = DIRECTIONS.indexOf(state.player.facing) * 22;
-    elements.neoView.style.setProperty('--realm-step-x', `${stepX}px`);
-    elements.neoView.style.setProperty('--realm-step-y', `${stepY}px`);
-    elements.neoView.style.setProperty('--realm-step-x-neg', `${-stepX}px`);
-    elements.neoView.style.setProperty('--realm-step-y-neg', `${-stepY}px`);
-    elements.neoView.style.setProperty('--realm-facing-shift', `${facingShift}px`);
-    elements.neoView.style.setProperty('--realm-facing-shift-neg', `${-facingShift}px`);
+    elements.neoView.style.setProperty('--hockey-smash-legacy-step-x', `${stepX}px`);
+    elements.neoView.style.setProperty('--hockey-smash-legacy-step-y', `${stepY}px`);
+    elements.neoView.style.setProperty('--hockey-smash-legacy-step-x-neg', `${-stepX}px`);
+    elements.neoView.style.setProperty('--hockey-smash-legacy-step-y-neg', `${-stepY}px`);
+    elements.neoView.style.setProperty('--hockey-smash-legacy-facing-shift', `${facingShift}px`);
+    elements.neoView.style.setProperty('--hockey-smash-legacy-facing-shift-neg', `${-facingShift}px`);
 
-    elements.neoDoor.className = `realm-neo__door realm-neo__door--${presentation.door || 'none'}`;
-    elements.neoObject.className = `realm-neo__object realm-neo__object--${presentation.object || 'none'}`;
-    elements.neoEntity.className = `realm-neo__entity realm-neo__entity--${presentation.entity || 'none'}`;
+    elements.neoDoor.className = `hockey-smash-legacy-neo__door hockey-smash-legacy-neo__door--${presentation.door || 'none'}`;
+    elements.neoObject.className = `hockey-smash-legacy-neo__object hockey-smash-legacy-neo__object--${presentation.object || 'none'}`;
+    elements.neoEntity.className = `hockey-smash-legacy-neo__entity hockey-smash-legacy-neo__entity--${presentation.entity || 'none'}`;
     elements.neoObject.dataset.label = presentation.object && presentation.object !== 'none' ? presentation.label : '';
     elements.neoEntity.dataset.label = presentation.entity && presentation.entity !== 'none' ? presentation.label : '';
     safeText(elements.neoEntityIcon, presentation.icon || '');
@@ -1198,8 +1198,8 @@
     const item = DATA.items[itemId];
     const sprite = ART.sprites[itemId] || {};
     return [
-      '<span class="realm-item-chip">',
-      `<span class="realm-item-chip__icon" aria-hidden="true">${iconGlyph(sprite.icon || itemId)}</span>`,
+      '<span class="hockey-smash-legacy-item-chip">',
+      `<span class="hockey-smash-legacy-item-chip__icon" aria-hidden="true">${iconGlyph(sprite.icon || itemId)}</span>`,
       `<span>${item?.name || itemId}</span>`,
       '</span>',
     ].join('');
@@ -1297,7 +1297,7 @@
       state?.ending ? `Ending: ${state.ending}` : 'Ending: not reached',
     ].join('\n'));
     safeHtml(elements.computerLog, computerReport.log.slice(0, 14).map((entry) => {
-      const className = entry.ok ? 'realm-computer__pass' : 'realm-computer__fail';
+      const className = entry.ok ? 'hockey-smash-legacy-computer__pass' : 'hockey-smash-legacy-computer__fail';
       return `<li class="${className}">${escapeHtml(entry.label)}</li>`;
     }).join(''));
   }
@@ -1450,7 +1450,7 @@
       computerReport.running = false;
       computerReport.complete = true;
       renderComputerReport();
-      window.RTA_ROADSIDE_REALM_COMPUTER_REPORT = clone(computerReport);
+      window.RTA_HOCKEY_SMASH_LEGACY_COMPUTER_REPORT = clone(computerReport);
       return;
     }
     const [label, test] = sequence[computerReport.step];
@@ -2542,7 +2542,7 @@
     ctx.restore();
   }
 
-  window.RTA_ROADSIDE_REALM = {
+  window.RTA_HOCKEY_SMASH_LEGACY = {
     start,
     startComputerMode,
     getState: () => clone(state),

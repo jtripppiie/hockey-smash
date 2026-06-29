@@ -1,10 +1,10 @@
-# Roadside Realm Build Progress
+# Hockey Smash Build Progress
 
 This file tracks implementation progress so work can continue safely across sessions.
 
 ## 2026-06-28 Checkpoint: Hockey Smash v0.5.0 Pivot
 
-The public-facing game has pivoted to **Hockey Smash v0.5.0** inside this existing repo. Roadside Realm files remain in the background as reusable infrastructure and history, but the main launch screen now presents Hockey Smash only.
+The public-facing game has pivoted to **Hockey Smash v0.5.0** inside this existing repo. Hockey Smash files remain in the background as reusable infrastructure and history, but the main launch screen now presents Hockey Smash only.
 
 Implemented:
 
@@ -40,7 +40,7 @@ Known limitations:
 - Final art assets are not required yet; missing assets render as labeled placeholders.
 - This is a fixed-screen prototype, not a scrolling level.
 - Balance and spawn timing need real playtesting.
-- Roadside Realm docs remain for historical continuity and should be cleaned up only after Hockey Smash stabilizes.
+- Hockey Smash docs remain for historical continuity and should be cleaned up only after Hockey Smash stabilizes.
 
 ## 2026-06-28 Checkpoint: Hockey Smash Portrait And Splash Fix
 
@@ -64,15 +64,15 @@ Follow-up stabilization after the v0.5.0 pivot:
 - Kept the Play button on the loading screen so the prototype still starts intentionally.
 - Wired the real 1920x1080 Soldotna cityscape backgrounds into the canvas.
 - Background sequence starts with `soldotna_cityscape_background_01_1920x1080.png`, then advances through `02`, `03`, `04`, and `05` during later play/boss phases.
-- Updated Hockey Smash docs and static verification to use the actual asset paths under `assets/roadside-realm/`.
+- Updated Hockey Smash docs and static verification to use the actual asset paths under `assets/hockey-smash/`.
 
 ## Current Branch
 
-`codex/roadside-realm-plan-assets`
+`codex/hockey-smash-plan-assets`
 
 Remote tracking branch:
 
-`origin/codex/roadside-realm-plan-assets`
+`origin/codex/hockey-smash-plan-assets`
 
 GitHub default branch:
 
@@ -80,25 +80,25 @@ GitHub default branch:
 
 GitHub Pages deployment plan:
 
-Use `main` as the Pages source while Roadside Realm is under active construction, per the current repo policy. Every pushed checkpoint should land on `main` so the public preview tracks the build the user is reviewing.
+Use `main` as the Pages source while Hockey Smash is under active construction, per the current repo policy. Every pushed checkpoint should land on `main` so the public preview tracks the build the user is reviewing.
 
 ## 2026-06-28 Checkpoint: App Shell And First Playable Slice
 
-Started implementing Roadside Realm as the first static playable app in this repo.
+Started implementing Hockey Smash as the first static playable app in this repo.
 
 Created:
 
 - `index.html`
 - `style.css`
 - `script.js`
-- `js/games/roadside-realm-data.js`
-- `js/games/roadside-realm.js`
-- `docs/roadside-realm-progress.md`
+- `js/games/hockey-smash-data.js`
+- `js/games/hockey-smash.js`
+- `docs/hockey-smash-progress.md`
 
 Implemented so far:
 
-- Visible version badge: `App v0.1.0 · Roadside Realm 0.1.0`.
-- Roadside Realm game data version: `0.1.0`.
+- Visible version badge: `App v0.1.0 · Hockey Smash 0.1.0`.
+- Hockey Smash game data version: `0.1.0`.
 - Save wrapper version: `1`.
 - Placeholder splash/title screen.
 - Required credit: "Made by TripperDeeLabs."
@@ -132,16 +132,16 @@ Known limitations in this checkpoint:
 Validation performed:
 
 - `node --check script.js`
-- `node --check js/games/roadside-realm-data.js`
-- `node --check js/games/roadside-realm.js`
-- Roadside Realm data validation script for map dimensions, event bounds, item IDs, and monster IDs.
+- `node --check js/games/hockey-smash-data.js`
+- `node --check js/games/hockey-smash.js`
+- Hockey Smash data validation script for map dimensions, event bounds, item IDs, and monster IDs.
 - Reachability checks for start to key, key to boss path, boss to Mapstone, secret switch to hidden wall, and Underpass entry to Moon Toll Token.
 - Local HTTP smoke check on port `4173`:
   - `/` returned `200 text/html`
   - `/style.css` returned `200 text/css`
-  - `/js/games/roadside-realm-data.js` returned `200 text/javascript`
-  - `/js/games/roadside-realm.js` returned `200 text/javascript`
-  - `/assets/roadside-realm/sprites/realm-sprite-signpost-ogre.png` returned `200 image/png`
+  - `/js/games/hockey-smash-data.js` returned `200 text/javascript`
+  - `/js/games/hockey-smash.js` returned `200 text/javascript`
+  - `/assets/hockey-smash/sprites/hockey-smash-sprite-signpost-ogre.png` returned `200 image/png`
 
 Next recommended work:
 
@@ -158,8 +158,8 @@ This checkpoint expands the public preview from the first playable shell into th
 
 Version changes:
 
-- Visible version badge: `App v0.2.0 · Roadside Realm 0.2.0`.
-- Roadside Realm game data version: `0.2.0`.
+- Visible version badge: `App v0.2.0 · Hockey Smash 0.2.0`.
+- Hockey Smash game data version: `0.2.0`.
 - Save wrapper remains version `1`.
 
 Implemented in this checkpoint:
@@ -184,8 +184,8 @@ Implemented in this checkpoint:
 Validation performed:
 
 - `node --check script.js`
-- `node --check js/games/roadside-realm-data.js`
-- `node --check js/games/roadside-realm.js`
+- `node --check js/games/hockey-smash-data.js`
+- `node --check js/games/hockey-smash.js`
 - Data validation for map dimensions, event bounds, item IDs, required item IDs, monster IDs, and target map IDs.
 - Reachability checks for:
   - main start to Rusty Road Key
@@ -223,8 +223,8 @@ This checkpoint improves the public preview's visual readability without adding 
 
 Version changes:
 
-- Visible version badge: `App v0.2.1 · Roadside Realm 0.2.1`.
-- Roadside Realm game data version: `0.2.1`.
+- Visible version badge: `App v0.2.1 · Hockey Smash 0.2.1`.
+- Hockey Smash game data version: `0.2.1`.
 - Save wrapper remains version `1`.
 
 Implemented in this checkpoint:
@@ -252,12 +252,12 @@ Known limitations after this checkpoint:
 
 ## 2026-06-28 Checkpoint: Retro Dungeon Feel Pass
 
-This checkpoint responds to the preview not feeling enough like an old-school first-person dungeon crawler. It keeps Roadside Realm original and avoids copying protected QuestLord content, while pushing the broad genre language closer to a classic grid-based RPG.
+This checkpoint responds to the preview not feeling enough like an old-school first-person dungeon crawler. It keeps Hockey Smash original and avoids copying protected QuestLord content, while pushing the broad genre language closer to a classic grid-based RPG.
 
 Version changes:
 
-- Visible version badge: `App v0.2.2 · Roadside Realm 0.2.2`.
-- Roadside Realm game data version: `0.2.2`.
+- Visible version badge: `App v0.2.2 · Hockey Smash 0.2.2`.
+- Hockey Smash game data version: `0.2.2`.
 - Save wrapper remains version `1`.
 
 Implemented in this checkpoint:
@@ -270,7 +270,7 @@ Implemented in this checkpoint:
 - Replaced the flat canvas corridor with a deeper perspective tunnel made from side wall panels and nested depth frames.
 - Added a stronger front-wall rendering for blocked tiles.
 - Added an open-passage rendering for walkable corridors.
-- Kept the original Roadside Realm story, items, maps, and art direction intact.
+- Kept the original Hockey Smash story, items, maps, and art direction intact.
 
 Known limitations after this checkpoint:
 
@@ -284,8 +284,8 @@ This checkpoint makes the first-person dungeon view read more like a grid-based 
 
 Version changes:
 
-- Visible version badge: `App v0.2.3 · Roadside Realm 0.2.3`.
-- Roadside Realm game data version: `0.2.3`.
+- Visible version badge: `App v0.2.3 · Hockey Smash 0.2.3`.
+- Hockey Smash game data version: `0.2.3`.
 - Save wrapper remains version `1`.
 
 Implemented in this checkpoint:
@@ -300,8 +300,8 @@ Implemented in this checkpoint:
 Validation performed:
 
 - `node --check script.js`
-- `node --check js/games/roadside-realm-data.js`
-- `node --check js/games/roadside-realm.js`
+- `node --check js/games/hockey-smash-data.js`
+- `node --check js/games/hockey-smash.js`
 - Data validation for maps/events/items/monsters/target maps.
 - Reachability checks for main, secret, mansion, and Conservatory routes.
 
@@ -317,8 +317,8 @@ This checkpoint adds left/right corridor awareness to the first-person renderer.
 
 Version changes:
 
-- Visible version badge: `App v0.2.4 · Roadside Realm 0.2.4`.
-- Roadside Realm game data version: `0.2.4`.
+- Visible version badge: `App v0.2.4 · Hockey Smash 0.2.4`.
+- Hockey Smash game data version: `0.2.4`.
 - Save wrapper remains version `1`.
 
 Implemented in this checkpoint:
@@ -340,8 +340,8 @@ This checkpoint responds to the reference image showing a classic pixel-art firs
 
 Version changes:
 
-- Visible version badge: `App v0.2.5 · Roadside Realm 0.2.5`.
-- Roadside Realm game data version: `0.2.5`.
+- Visible version badge: `App v0.2.5 · Hockey Smash 0.2.5`.
+- Hockey Smash game data version: `0.2.5`.
 - Save wrapper remains version `1`.
 
 Implemented in this checkpoint:
@@ -352,7 +352,7 @@ Implemented in this checkpoint:
 - Added floor tile rows and perspective tile lines.
 - Added a left-wall torch with warm radial glow.
 - Strengthened the bottom control deck with darker framed, arcade-like command buttons.
-- Preserved original Roadside Realm theme and content while moving the broad visual language closer to the provided dungeon crawler reference.
+- Preserved original Hockey Smash theme and content while moving the broad visual language closer to the provided dungeon crawler reference.
 
 Known limitations after this checkpoint:
 
@@ -371,19 +371,19 @@ Reference folders seen locally:
 
 Version changes:
 
-- Visible version badge: `App v0.2.6 · Roadside Realm 0.2.6`.
-- Roadside Realm game data version: `0.2.6`.
-- Roadside Realm art metadata version: `0.2.6`.
+- Visible version badge: `App v0.2.6 · Hockey Smash 0.2.6`.
+- Hockey Smash game data version: `0.2.6`.
+- Hockey Smash art metadata version: `0.2.6`.
 - Save wrapper remains version `1`.
 
 Implemented in this checkpoint:
 
-- Added `js/games/roadside-realm-art.js`.
-- Added `window.RTA_ROADSIDE_REALM_ART` sprite/icon metadata for items and monsters.
+- Added `js/games/hockey-smash-art.js`.
+- Added `window.RTA_HOCKEY_SMASH_LEGACY_ART` sprite/icon metadata for items and monsters.
 - Added a lightweight local `emitRealmEvent(type, detail)` hook for engine-style event flow.
 - Added item pickup cards over the canvas.
 - Inventory chips now include small pixel-style icon cells from art metadata.
-- Added `.realm-pixel-art` and `crisp-edges` image rendering hints.
+- Added `.hockey-smash-legacy-pixel-art` and `crisp-edges` image rendering hints.
 - Added `.gitignore` entries for the two local Canvas RPG Kit reference folders.
 
 Rules kept from the project plan:
@@ -401,18 +401,18 @@ Known limitations after this checkpoint:
 
 ## Checkpoint: WarClass-Inspired Asset Safety Pass
 
-This checkpoint reviews the newly shared `haasva/WarClass-test` reference repo and the newly added local Roadside Realm images. WarClass is useful as inspiration for dense HTML/CSS RPG interface design, cell-based first-person movement, interactable overlays, and immediate RPG feedback. Its README states that most assets are placeholders from other games, so Roadside Realm must borrow structure and feel only, not assets or protected content.
+This checkpoint reviews the newly shared `haasva/WarClass-test` reference repo and the newly added local Hockey Smash images. WarClass is useful as inspiration for dense HTML/CSS RPG interface design, cell-based first-person movement, interactable overlays, and immediate RPG feedback. Its README states that most assets are placeholders from other games, so Hockey Smash must borrow structure and feel only, not assets or protected content.
 
 Version changes:
 
-- Visible version badge: `App v0.2.7 · Roadside Realm 0.2.7`.
-- Roadside Realm game data version: `0.2.7`.
-- Roadside Realm art metadata version: `0.2.7`.
+- Visible version badge: `App v0.2.7 · Hockey Smash 0.2.7`.
+- Hockey Smash game data version: `0.2.7`.
+- Hockey Smash art metadata version: `0.2.7`.
 - Save wrapper remains version `1`.
 
 Implemented in this checkpoint:
 
-- Added image asset paths and item-sheet order to `window.RTA_ROADSIDE_REALM_ART`.
+- Added image asset paths and item-sheet order to `window.RTA_HOCKEY_SMASH_LEGACY_ART`.
 - Added runtime chroma-key drawing for local sprite sheets so green-screen pixels are removed safely at render time.
 - Applied keyed drawing to Signpost Ogre, Moonlit Warden, item-sheet icons, and the moon-scratch overlay.
 - Updated QA to check `main`, `0.2.7`, and green-screen-free sprite rendering.
@@ -423,7 +423,7 @@ Rules kept from the project plan:
 - WarClass is used heavily for interface and interaction inspiration only.
 - No WarClass assets, placeholder assets, or copied protected content are imported.
 - No WebGL, npm, build step, backend, analytics, GPS, or external asset loading added.
-- Roadside Realm remains original and static-GitHub-Pages friendly.
+- Hockey Smash remains original and static-GitHub-Pages friendly.
 
 ## Checkpoint: Soldotna Creek Wayside Optional Level
 
@@ -431,9 +431,9 @@ This checkpoint adds an original optional level inspired by Soldotna, Alaska. Th
 
 Version changes:
 
-- Visible version badge: `App v0.2.8 · Roadside Realm 0.2.8`.
-- Roadside Realm game data version: `0.2.8`.
-- Roadside Realm art metadata version: `0.2.8`.
+- Visible version badge: `App v0.2.8 · Hockey Smash 0.2.8`.
+- Hockey Smash game data version: `0.2.8`.
+- Hockey Smash art metadata version: `0.2.8`.
 - Save wrapper remains version `1`.
 
 Implemented in this checkpoint:
@@ -452,22 +452,22 @@ Implemented in this checkpoint:
 Rules kept from the project plan:
 
 - This is an optional scenic detour, not a blocker for normal, secret, mansion, or conservatory endings.
-- The level is inspired by place-feel only and remains original Roadside Realm fantasy.
+- The level is inspired by place-feel only and remains original Hockey Smash fantasy.
 
 ## Checkpoint: WarClass-Inspired First-Person Visual Overhaul
 
-This checkpoint responds directly to the need for Roadside Realm to feel much closer in ambition to `haasva/WarClass-test` while staying original and static-site friendly. WarClass was studied for CSS perspective, dense RPG HUD layout, pixel/grain treatment, party/status panels, encounter presentation, and menu density. No WarClass assets, copied sprites, sounds, or placeholder art were imported.
+This checkpoint responds directly to the need for Hockey Smash to feel much closer in ambition to `haasva/WarClass-test` while staying original and static-site friendly. WarClass was studied for CSS perspective, dense RPG HUD layout, pixel/grain treatment, party/status panels, encounter presentation, and menu density. No WarClass assets, copied sprites, sounds, or placeholder art were imported.
 
 Version changes:
 
-- Visible version badge: `App v0.3.0 · Roadside Realm 0.3.0`.
-- Roadside Realm game data version: `0.3.0`.
-- Roadside Realm art metadata version: `0.3.0`.
+- Visible version badge: `App v0.3.0 · Hockey Smash 0.3.0`.
+- Hockey Smash game data version: `0.3.0`.
+- Hockey Smash art metadata version: `0.3.0`.
 - Save wrapper remains version `1`.
 
 Implemented in this checkpoint:
 
-- Added a DOM/CSS first-person `realm-neo-view` above the canvas fallback.
+- Added a DOM/CSS first-person `hockey-smash-legacy-neo-view` above the canvas fallback.
 - Added layered sky, ceiling, floor, side walls, far wall, doors, objects, enemy silhouettes, crosshair, caption, grain, and vignette.
 - Added state-driven visual classes for walls, locked doors, hidden walls, mansion doors, river gates, glass paths, exits, monsters, and items.
 - Added a dense RPG party strip with HP meter, route state, threat state, facing state, and front-tile state.
@@ -487,9 +487,9 @@ This checkpoint responds to the preview feeling like an engineering-only `0.7.0`
 
 Version changes:
 
-- Visible version badge: `App v0.8.0 · Roadside Realm 0.8.0`.
-- Roadside Realm game data version: `0.8.0`.
-- Roadside Realm art metadata version: `0.8.0`.
+- Visible version badge: `App v0.8.0 · Hockey Smash 0.8.0`.
+- Hockey Smash game data version: `0.8.0`.
+- Hockey Smash art metadata version: `0.8.0`.
 - Save wrapper remains version `1`.
 
 Implemented in this checkpoint:
@@ -507,8 +507,8 @@ Implemented in this checkpoint:
 Verification notes:
 
 - `npm run verify` runs syntax, data, and VM-based Computer Mode checks.
-- Browser verification can be performed from GitHub Pages by opening `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast` and waiting for `Status: PASSED` with `Mode: real-playthrough`.
-- Debug deep verification can be performed with `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast&debugDeep=1`.
+- Browser verification can be performed from GitHub Pages by opening `https://jtripppiie.github.io/hockey-smash/?computerMode=1&speed=fast` and waiting for `Status: PASSED` with `Mode: real-playthrough`.
+- Debug deep verification can be performed with `https://jtripppiie.github.io/hockey-smash/?computerMode=1&speed=fast&debugDeep=1`.
 - Playwright browser verification is scaffolded with `npm run test:browser`; install dev dependencies and Chromium first with `npm install` and `npm run test:browser:install`.
 - In this workspace, `npm run test:browser` was attempted and returned `playwright: not found` because dev dependencies are not installed.
 
@@ -518,17 +518,17 @@ This checkpoint pauses feature work and fixes the basic playability layer. The b
 
 Files changed:
 
-- `js/games/roadside-realm.js`
+- `js/games/hockey-smash.js`
 - `style.css`
 - `README.md`
-- `docs/roadside-realm-progress.md`
-- `docs/roadside-realm-qa.md`
+- `docs/hockey-smash-progress.md`
+- `docs/hockey-smash-qa.md`
 
 What changed:
 
-- Added a `realm-playing` body state while the game screen is active.
-- Locked the mobile play viewport while Roadside Realm is being played.
-- Changed mobile `.realm-control-deck` from sticky page layout to fixed overlay positioning.
+- Added a `hockey-smash-legacy-playing` body state while the game screen is active.
+- Locked the mobile play viewport while Hockey Smash is being played.
+- Changed mobile `.hockey-smash-legacy-control-deck` from sticky page layout to fixed overlay positioning.
 - Added `touch-action: none` and selection prevention to D-pad/action controls.
 - Added hold-to-repeat behavior for forward, backward, turn left, and turn right.
 - Routed touch/pointer D-pad input through the same action dispatcher used by keyboard controls.
@@ -547,7 +547,7 @@ keyboard key or data-action button
 
 Keyboard test:
 
-1. Start Roadside Realm.
+1. Start Hockey Smash.
 2. Use `ArrowUp/W`, `ArrowDown/S`, `ArrowLeft/A`, and `ArrowRight/D`.
 3. Confirm movement/facing changes and the front status reports the latest input.
 

@@ -1,12 +1,12 @@
 (function () {
-  window.RTA_ROADSIDE_REALM_ART = {
+  window.RTA_HOCKEY_SMASH_LEGACY_ART = {
     version: '0.8.0',
     assetFiles: {
-      signpostOgre: 'assets/roadside-realm/sprites/realm-sprite-signpost-ogre.png',
-      moonlitWarden: 'assets/roadside-realm/sprites/realm-sprite-moonlit-warden.png',
-      itemSheet: 'assets/roadside-realm/items/realm-items-core.png',
-      moonScratch: 'assets/roadside-realm/tiles/realm-tile-hidden-moon-scratch.png',
-      trueRouteEnding: 'assets/roadside-realm/endings/realm-ending-true-route.png',
+      signpostOgre: 'assets/hockey-smash/sprites/hockey-smash-sprite-signpost-ogre.png',
+      moonlitWarden: 'assets/hockey-smash/sprites/hockey-smash-sprite-moonlit-warden.png',
+      itemSheet: 'assets/hockey-smash/items/hockey-smash-items-core.png',
+      moonScratch: 'assets/hockey-smash/tiles/hockey-smash-tile-hidden-moon-scratch.png',
+      trueRouteEnding: 'assets/hockey-smash/endings/hockey-smash-ending-true-route.png',
     },
     itemSheet: {
       frameCount: 8,

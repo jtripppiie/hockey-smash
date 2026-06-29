@@ -26,8 +26,8 @@ class Element {
     this.className = '';
     this.dataset = {};
     this.listeners = {};
-    this.width = id === 'realm-canvas' ? 720 : 1;
-    this.height = id === 'realm-canvas' ? 420 : 1;
+    this.width = id === 'hockey-smash-legacy-canvas' ? 720 : 1;
+    this.height = id === 'hockey-smash-legacy-canvas' ? 420 : 1;
     this.classList = new ClassList();
     this.style = {
       setProperty: (key, value) => {
@@ -71,7 +71,7 @@ function runComputerMode(search) {
     elements.set(match[1], new Element(match[1]));
   }
 
-  ['realm-play', 'realm-summary', 'realm-computer', 'realm-help-overlay'].forEach((id) => {
+  ['hockey-smash-legacy-play', 'hockey-smash-legacy-summary', 'hockey-smash-legacy-computer', 'hockey-smash-legacy-help-overlay'].forEach((id) => {
     if (elements.has(id)) elements.get(id).hidden = true;
   });
 
@@ -142,20 +142,20 @@ function runComputerMode(search) {
   context.globalThis = context.window;
 
   vm.createContext(context);
-  ['js/games/roadside-realm-data.js', 'js/games/roadside-realm-art.js', 'js/games/roadside-realm.js'].forEach((file) => {
+  ['js/games/hockey-smash-data.js', 'js/games/hockey-smash-art.js', 'js/games/hockey-smash.js'].forEach((file) => {
     vm.runInContext(fs.readFileSync(file, 'utf8'), context, { filename: file });
   });
 
-  context.window.RTA_ROADSIDE_REALM.start();
+  context.window.RTA_HOCKEY_SMASH_LEGACY.start();
   let guard = 0;
   while (timers.length && guard < 800) {
     timers.shift()();
     guard += 1;
   }
 
-  const report = context.window.RTA_ROADSIDE_REALM.getComputerReport();
-  const errors = context.window.RTA_ROADSIDE_REALM.getRuntimeErrors();
-  const state = context.window.RTA_ROADSIDE_REALM.getState();
+  const report = context.window.RTA_HOCKEY_SMASH_LEGACY.getComputerReport();
+  const errors = context.window.RTA_HOCKEY_SMASH_LEGACY.getRuntimeErrors();
+  const state = context.window.RTA_HOCKEY_SMASH_LEGACY.getState();
 
   if (!report.complete || report.failed || errors.length) {
     console.error(JSON.stringify({ search, report, errors, state }, null, 2));

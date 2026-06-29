@@ -1,5 +1,5 @@
 {
-  "name": "roadside-realmo",
+  "name": "hockey-smash",
   "version": "0.5.0",
   "private": true,
   "description": "Static Hockey Smash browser game verification helpers.",
@@ -7,8 +7,6 @@
     "verify": "npm run verify:syntax && npm run verify:hockey",
     "verify:syntax": "node --check script.js && node --check js/games/hockey-smash.js && node --check scripts/verify-hockey-smash.js",
     "verify:hockey": "node scripts/verify-hockey-smash.js",
-    "verify:realm:data": "node scripts/verify-realm-data.js",
-    "verify:realm:vm": "node scripts/verify-realm-vm.js",
     "test:browser": "playwright test",
     "test:browser:install": "npx playwright install chromium"
   },

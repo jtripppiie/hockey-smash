@@ -1,6 +1,6 @@
-# Roadside Realm Asset Manifest
+# Hockey Smash Asset Manifest
 
-Generated starter asset set for Roadside Realm.
+Generated starter asset set for Hockey Smash.
 
 The game design still supports canvas-drawn art. These files are optional production assets that can be used when image-based sprites or illustrations are desired.
 
@@ -21,8 +21,8 @@ The game is currently in **playable preview plus starter asset** state:
 
 | File | Purpose | Dimensions | Notes |
 |---|---|---:|---|
-| `sprites/realm-sprite-signpost-ogre.png` | Main boss sprite sheet | 2172x724 | RGBA PNG, 6 poses in one row. |
-| `sprites/realm-sprite-moonlit-warden.png` | Secret guardian sprite sheet | 2172x724 | RGBA PNG, 6 poses in one row. |
+| `sprites/hockey-smash-sprite-signpost-ogre.png` | Main boss sprite sheet | 2172x724 | RGBA PNG, 6 poses in one row. |
+| `sprites/hockey-smash-sprite-moonlit-warden.png` | Secret guardian sprite sheet | 2172x724 | RGBA PNG, 6 poses in one row. |
 
 Frame order for both sprite sheets:
 
@@ -42,7 +42,7 @@ Use the full sheet height unless the implementation later trims consistent frame
 
 | File | Purpose | Dimensions | Notes |
 |---|---|---:|---|
-| `items/realm-items-core.png` | Core item glyph sheet | 2172x724 | RGBA PNG, 8 item icons in one row. |
+| `items/hockey-smash-items-core.png` | Core item glyph sheet | 2172x724 | RGBA PNG, 8 item icons in one row. |
 
 Item order:
 
@@ -69,23 +69,23 @@ For implementation, either draw from this sheet with approximate cell boxes or c
 
 | File | Purpose | Dimensions | Notes |
 |---|---|---:|---|
-| `tiles/realm-tile-hidden-moon-scratch.png` | Hidden wall clue overlay | 1254x1254 | RGBA PNG. |
+| `tiles/hockey-smash-tile-hidden-moon-scratch.png` | Hidden wall clue overlay | 1254x1254 | RGBA PNG. |
 
 ### Endings
 
 | File | Purpose | Dimensions | Notes |
 |---|---|---:|---|
-| `endings/realm-ending-true-route.png` | True ending illustration | 1672x941 | RGB PNG. |
+| `endings/hockey-smash-ending-true-route.png` | True ending illustration | 1672x941 | RGB PNG. |
 
 ### Sources
 
 The original generated green-screen files are preserved in `source/`:
 
 ```text
-source/realm-sprite-signpost-ogre-source.png
-source/realm-sprite-moonlit-warden-source.png
-source/realm-items-core-source.png
-source/realm-tile-hidden-moon-scratch-source.png
+source/hockey-smash-sprite-signpost-ogre-source.png
+source/hockey-smash-sprite-moonlit-warden-source.png
+source/hockey-smash-items-core-source.png
+source/hockey-smash-tile-hidden-moon-scratch-source.png
 ```
 
 These are useful if the chroma-key removal needs to be redone.
@@ -98,7 +98,7 @@ Because chroma-keyed PNGs can retain green in hidden RGB channels, some preview 
 
 ## Generation Prompts
 
-The assets were generated with the built-in image generation tool using the art direction from `docs/roadside-realm-image-spec.md`.
+The assets were generated with the built-in image generation tool using the art direction from `docs/hockey-smash-image-spec.md`.
 
 Prompt themes:
 

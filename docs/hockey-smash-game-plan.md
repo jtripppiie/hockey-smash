@@ -1,6 +1,6 @@
-# Roadside Realm V1.0 Game Plan
+# Hockey Smash V1.0 Game Plan
 
-This document is the organized source of truth for building **Roadside Realm**, a complete first-person grid-based dungeon crawler mini-game inside the Road Trip Adventures app.
+This document is the organized source of truth for building **Hockey Smash**, a complete first-person grid-based dungeon crawler mini-game inside the Road Trip Adventures app.
 
 Use the sections in this order:
 
@@ -14,12 +14,12 @@ Use the sections in this order:
 
 ## Organization Notes
 
-- Removed repeated copies of **Roadside Realm — Full Technical & Content Expansion (Part 2)** and kept the most complete copy once as the Technical Appendix.
-- Promoted **AI Agent Prompt: Build Roadside Realm V1.0** to the front because it is the clearest implementation brief.
+- Removed repeated copies of **Hockey Smash — Full Technical & Content Expansion (Part 2)** and kept the most complete copy once as the Technical Appendix.
+- Promoted **AI Agent Prompt: Build Hockey Smash V1.0** to the front because it is the clearest implementation brief.
 - Kept the expanded content add-on and exact build detail sections because they contain useful non-duplicate content for scope, polish, maps, balancing, and flavor.
 - The older draft prompt was superseded by the V1.0 prompt and removed from the main flow to keep this file build-ready.
-- Maintain the companion summary at `docs/roadside-realm-summary.md` whenever this spec changes in a way that affects scope, architecture, flow, controls, QA, or launch instructions.
-- If exported images are needed, use `docs/roadside-realm-image-spec.md` for exact asset sizes, DPI/source guidance, filenames, sprite sheets, and export rules.
+- Maintain the companion summary at `docs/hockey-smash-summary.md` whenever this spec changes in a way that affects scope, architecture, flow, controls, QA, or launch instructions.
+- If exported images are needed, use `docs/hockey-smash-image-spec.md` for exact asset sizes, DPI/source guidance, filenames, sprite sheets, and export rules.
 
 ---
 
@@ -39,11 +39,11 @@ Use the sections in this order:
 
 ## 1. Implementation Brief
 
-### AI Agent Prompt: Build Roadside Realm V1.0
+### AI Agent Prompt: Build Hockey Smash V1.0
 
 #### One-Sentence Assignment
 
-Build **Roadside Realm**, a complete original V1.0 first-person grid-based dungeon crawler mini-game inside the existing **Road Trip Adventures** repo.
+Build **Hockey Smash**, a complete original V1.0 first-person grid-based dungeon crawler mini-game inside the existing **Road Trip Adventures** repo.
 
 This must be a real playable mini-game, not a demo.
 
@@ -179,7 +179,7 @@ static website simplicity
 accessibility
 ```
 
-Roadside Realm must fit this identity.
+Hockey Smash must fit this identity.
 
 Even though this is a dungeon crawler, it should not feel like a totally unrelated dark fantasy game. It should feel like a tiny fantasy adventure discovered during a road trip.
 
@@ -192,12 +192,12 @@ Even though this is a dungeon crawler, it should not feel like a totally unrelat
 Use:
 
 ```text
-Roadside Realm
+Hockey Smash
 ```
 
 #### Premise
 
-During a road trip, passengers find an old roadside map kiosk with a strange glowing route marker. The kiosk opens into a tiny pocket dungeon called the Roadside Realm. The route home has been scrambled by the Signpost Ogre. The player must recover the Mapstone, restore the route, and escape.
+During a road trip, passengers find an old roadside map kiosk with a strange glowing route marker. The kiosk opens into a tiny pocket dungeon called the Hockey Smash. The route home has been scrambled by the Signpost Ogre. The player must recover the Mapstone, restore the route, and escape.
 
 #### Tone
 
@@ -324,7 +324,7 @@ The player should feel rewarded for discovering it.
 #### Game Name
 
 ```text
-Roadside Realm
+Hockey Smash
 ```
 
 #### Main Quest Name
@@ -354,13 +354,13 @@ A moon-shaped scratch marks a wall that should not be there. Find the hidden rou
 #### Normal Ending
 
 ```text
-You escaped the Roadside Realm with the Mapstone. The route is restored, the map kiosk clicks shut, and someone in the car earns first snack pick.
+You escaped the Hockey Smash with the Mapstone. The route is restored, the map kiosk clicks shut, and someone in the car earns first snack pick.
 ```
 
 #### True Ending
 
 ```text
-You found the Forgotten Underpass and restored the moonlit route. The Roadside Realm stamps your map with a secret star.
+You found the Forgotten Underpass and restored the moonlit route. The Hockey Smash stamps your map with a secret star.
 ```
 
 ---
@@ -409,20 +409,20 @@ Do not guess if the existing app already has a pattern.
 Create:
 
 ```text
-js/games/roadside-realm-data.js
-js/games/roadside-realm.js
+js/games/hockey-smash-data.js
+js/games/hockey-smash.js
 ```
 
 Optional later if art becomes large:
 
 ```text
-js/games/roadside-realm-art.js
+js/games/hockey-smash-art.js
 ```
 
 Recommended first pass:
 
 ```text
-Do not create roadside-realm-art.js yet unless roadside-realm.js becomes too large.
+Do not create hockey-smash-art.js yet unless hockey-smash.js becomes too large.
 ```
 
 ---
@@ -454,7 +454,7 @@ Suggested card:
 ```html
 <button class="option-card" data-category="realm">
   <span class="option-emoji" aria-hidden="true">🗝️</span>
-  <span class="option-title">Roadside Realm</span>
+  <span class="option-title">Hockey Smash</span>
   <span class="mode-pill scored">Quest</span>
 </button>
 ```
@@ -462,7 +462,7 @@ Suggested card:
 Add a new section:
 
 ```html
-<section id="realm-game" hidden>
+<section id="hockey-smash-legacy-game" hidden>
   ...
 </section>
 ```
@@ -470,8 +470,8 @@ Add a new section:
 Add script tags before `script.js`:
 
 ```html
-<script src="js/games/roadside-realm-data.js"></script>
-<script src="js/games/roadside-realm.js"></script>
+<script src="js/games/hockey-smash-data.js"></script>
+<script src="js/games/hockey-smash.js"></script>
 <script src="script.js"></script>
 ```
 
@@ -495,7 +495,7 @@ or:
 function startRoadsideRealmGame() {
   resetGame();
   showSection('realm');
-  window.RTA_ROADSIDE_REALM.start({
+  window.RTA_HOCKEY_SMASH_LEGACY.start({
     players,
     showSection,
     showSummary: showRealmSummary,
@@ -512,19 +512,19 @@ Avoid putting the whole game into `script.js`.
 Add styles for:
 
 ```text
-realm-game
-realm-canvas
-realm-status-card
-realm-stats
-realm-inventory
-realm-log
-realm-controls
-realm-map-panel
-realm-action-button
-realm-danger
-realm-success
-realm-secret
-realm-fullscreen
+hockey-smash-legacy-game
+hockey-smash-legacy-canvas
+hockey-smash-legacy-status-card
+hockey-smash-legacy-stats
+hockey-smash-legacy-inventory
+hockey-smash-legacy-log
+hockey-smash-legacy-controls
+hockey-smash-legacy-map-panel
+hockey-smash-legacy-action-button
+hockey-smash-legacy-danger
+hockey-smash-legacy-success
+hockey-smash-legacy-secret
+hockey-smash-legacy-fullscreen
 high-contrast realm styles
 large-text realm styles
 reduce-motion realm styles
@@ -541,14 +541,14 @@ bump it
 If it has a file list:
 
 ```text
-add js/games/roadside-realm-data.js
-add js/games/roadside-realm.js
+add js/games/hockey-smash-data.js
+add js/games/hockey-smash.js
 ```
 
 If you add art file:
 
 ```text
-add js/games/roadside-realm-art.js
+add js/games/hockey-smash-art.js
 ```
 
 #### Required audit change
@@ -582,13 +582,13 @@ Use global namespaces, but keep them contained.
 #### Data namespace
 
 ```js
-window.RTA_ROADSIDE_REALM_DATA = { ... };
+window.RTA_HOCKEY_SMASH_LEGACY_DATA = { ... };
 ```
 
 #### Game namespace
 
 ```js
-window.RTA_ROADSIDE_REALM = {
+window.RTA_HOCKEY_SMASH_LEGACY = {
   start,
   stop,
   reset,
@@ -601,7 +601,7 @@ Use an IIFE:
 
 ```js
 (function () {
-  const DATA = window.RTA_ROADSIDE_REALM_DATA;
+  const DATA = window.RTA_HOCKEY_SMASH_LEGACY_DATA;
 
   let state = null;
   let elements = {};
@@ -612,7 +612,7 @@ Use an IIFE:
   function save() {}
   function load() {}
 
-  window.RTA_ROADSIDE_REALM = {
+  window.RTA_HOCKEY_SMASH_LEGACY = {
     start,
     stop,
     reset,
@@ -631,68 +631,68 @@ Do not create many globals.
 Add this or adapt to existing conventions.
 
 ```html
-<section id="realm-game" hidden>
+<section id="hockey-smash-legacy-game" hidden>
   <div class="mode-header">
     <div>
-      <h2 id="realm-heading">Roadside Realm</h2>
-      <p id="realm-intro">
+      <h2 id="hockey-smash-legacy-heading">Hockey Smash</h2>
+      <p id="hockey-smash-legacy-intro">
         Explore a tiny first-person dungeon hidden inside a roadside map kiosk.
       </p>
       <p class="privacy-note">
         Local-only quest. No accounts, no tracking, no location access.
       </p>
     </div>
-    <div id="realm-score" class="emoji-target" aria-label="Roadside Realm status">
+    <div id="hockey-smash-legacy-score" class="emoji-target" aria-label="Hockey Smash status">
       Floor 1
     </div>
   </div>
 
-  <article class="trivia-card realm-status-card">
-    <span id="realm-phase" class="challenge-badge">Quest</span>
-    <h3 id="realm-title">Find the Mapstone</h3>
-    <p id="realm-status" class="hunt-status" aria-live="polite">
+  <article class="trivia-card hockey-smash-legacy-status-card">
+    <span id="hockey-smash-legacy-phase" class="challenge-badge">Quest</span>
+    <h3 id="hockey-smash-legacy-title">Find the Mapstone</h3>
+    <p id="hockey-smash-legacy-status" class="hunt-status" aria-live="polite">
       Move forward, turn, inspect suspicious walls, and survive the dungeon.
     </p>
   </article>
 
-  <div class="realm-layout">
-    <div class="realm-view-wrap">
+  <div class="hockey-smash-legacy-layout">
+    <div class="hockey-smash-legacy-view-wrap">
       <canvas
-        id="realm-canvas"
-        class="realm-canvas"
+        id="hockey-smash-legacy-canvas"
+        class="hockey-smash-legacy-canvas"
         width="720"
         height="420"
         aria-label="First-person dungeon view"
       ></canvas>
-      <div id="realm-screen-reader-state" class="visually-hidden" aria-live="polite"></div>
+      <div id="hockey-smash-legacy-screen-reader-state" class="visually-hidden" aria-live="polite"></div>
     </div>
 
-    <aside class="realm-side-panel">
-      <div id="realm-stats" class="realm-stats" aria-live="polite"></div>
-      <div id="realm-inventory" class="realm-inventory" aria-label="Inventory"></div>
-      <div id="realm-minimap" class="realm-minimap" aria-label="Discovered map"></div>
+    <aside class="hockey-smash-legacy-side-panel">
+      <div id="hockey-smash-legacy-stats" class="hockey-smash-legacy-stats" aria-live="polite"></div>
+      <div id="hockey-smash-legacy-inventory" class="hockey-smash-legacy-inventory" aria-label="Inventory"></div>
+      <div id="hockey-smash-legacy-minimap" class="hockey-smash-legacy-minimap" aria-label="Discovered map"></div>
     </aside>
   </div>
 
-  <ol id="realm-log" class="realm-log" aria-label="Adventure log"></ol>
+  <ol id="hockey-smash-legacy-log" class="hockey-smash-legacy-log" aria-label="Adventure log"></ol>
 
-  <div class="realm-controls" aria-label="Roadside Realm controls">
-    <button id="realm-turn-left" class="secondary-button" type="button">Turn Left</button>
-    <button id="realm-forward" class="primary-button" type="button">Forward</button>
-    <button id="realm-turn-right" class="secondary-button" type="button">Turn Right</button>
-    <button id="realm-back" class="secondary-button" type="button">Back</button>
-    <button id="realm-inspect" class="secondary-button" type="button">Inspect</button>
-    <button id="realm-attack" class="secondary-button" type="button">Attack</button>
-    <button id="realm-use" class="secondary-button" type="button">Use Item</button>
-    <button id="realm-map" class="secondary-button" type="button" aria-pressed="true">Map</button>
+  <div class="hockey-smash-legacy-controls" aria-label="Hockey Smash controls">
+    <button id="hockey-smash-legacy-turn-left" class="secondary-button" type="button">Turn Left</button>
+    <button id="hockey-smash-legacy-forward" class="primary-button" type="button">Forward</button>
+    <button id="hockey-smash-legacy-turn-right" class="secondary-button" type="button">Turn Right</button>
+    <button id="hockey-smash-legacy-back" class="secondary-button" type="button">Back</button>
+    <button id="hockey-smash-legacy-inspect" class="secondary-button" type="button">Inspect</button>
+    <button id="hockey-smash-legacy-attack" class="secondary-button" type="button">Attack</button>
+    <button id="hockey-smash-legacy-use" class="secondary-button" type="button">Use Item</button>
+    <button id="hockey-smash-legacy-map" class="secondary-button" type="button" aria-pressed="true">Map</button>
   </div>
 
   <div class="adventure-actions">
-    <button id="realm-continue" class="secondary-button" type="button" hidden>Continue Quest</button>
-    <button id="realm-save" class="secondary-button" type="button">Save Quest</button>
-    <button id="realm-reset" class="secondary-button" type="button">Reset Quest</button>
-    <button id="realm-fullscreen" class="secondary-button" type="button">Full Screen</button>
-    <button id="realm-finish" class="secondary-button" type="button">Finish Quest</button>
+    <button id="hockey-smash-legacy-continue" class="secondary-button" type="button" hidden>Continue Quest</button>
+    <button id="hockey-smash-legacy-save" class="secondary-button" type="button">Save Quest</button>
+    <button id="hockey-smash-legacy-reset" class="secondary-button" type="button">Reset Quest</button>
+    <button id="hockey-smash-legacy-fullscreen" class="secondary-button" type="button">Full Screen</button>
+    <button id="hockey-smash-legacy-finish" class="secondary-button" type="button">Finish Quest</button>
   </div>
 </section>
 ```
@@ -706,16 +706,16 @@ If the app already uses a visually hidden class, reuse it. If not, create one.
 Create this in:
 
 ```text
-js/games/roadside-realm-data.js
+js/games/hockey-smash-data.js
 ```
 
 Use this structure:
 
 ```js
 (function () {
-  window.RTA_ROADSIDE_REALM_DATA = {
+  window.RTA_HOCKEY_SMASH_LEGACY_DATA = {
     version: '1.0.0',
-    title: 'Roadside Realm',
+    title: 'Hockey Smash',
     startMap: 'map-kiosk-dungeon',
     start: {
       mapId: 'map-kiosk-dungeon',
@@ -1227,7 +1227,7 @@ The exit refuses to open. The Mapstone is still missing.
 #### Facing exit with Mapstone
 
 ```text
-The route glows. Step forward to leave the Roadside Realm.
+The route glows. Step forward to leave the Hockey Smash.
 ```
 
 ---
@@ -1784,7 +1784,7 @@ If not easily accessible from the new module, keep fullscreen simple.
 
 The Full Screen button should:
 
-- try to fullscreen the `realm-game` section or canvas wrapper.
+- try to fullscreen the `hockey-smash-legacy-game` section or canvas wrapper.
 - if unavailable, show status:
 
 ```text
@@ -1799,7 +1799,7 @@ Controls must remain visible.
 
 Add keydown listener when game is active.
 
-Do not hijack keys outside Roadside Realm.
+Do not hijack keys outside Hockey Smash.
 
 ```js
 function handleKeydown(event) {
@@ -2103,7 +2103,7 @@ prize idea
 Normal summary:
 
 ```text
-Roadside Realm Complete.
+Hockey Smash Complete.
 You escaped with the Mapstone.
 Steps: 74.
 Monsters defeated: 4.
@@ -2152,20 +2152,20 @@ No online leaderboard.
 Add classes.
 
 ```css
-.realm-layout {}
-.realm-view-wrap {}
-.realm-canvas {}
-.realm-side-panel {}
-.realm-stats {}
-.realm-inventory {}
-.realm-minimap {}
-.realm-log {}
-.realm-controls {}
-.realm-status-card {}
-.realm-danger {}
-.realm-success {}
-.realm-secret {}
-.realm-combat {}
+.hockey-smash-legacy-layout {}
+.hockey-smash-legacy-view-wrap {}
+.hockey-smash-legacy-canvas {}
+.hockey-smash-legacy-side-panel {}
+.hockey-smash-legacy-stats {}
+.hockey-smash-legacy-inventory {}
+.hockey-smash-legacy-minimap {}
+.hockey-smash-legacy-log {}
+.hockey-smash-legacy-controls {}
+.hockey-smash-legacy-status-card {}
+.hockey-smash-legacy-danger {}
+.hockey-smash-legacy-success {}
+.hockey-smash-legacy-secret {}
+.hockey-smash-legacy-combat {}
 ```
 
 #### Mobile
@@ -2185,7 +2185,7 @@ log readable
 #### Controls grid
 
 ```css
-.realm-controls {
+.hockey-smash-legacy-controls {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
@@ -2195,7 +2195,7 @@ log readable
 #### Canvas
 
 ```css
-.realm-canvas {
+.hockey-smash-legacy-canvas {
   width: 100%;
   max-width: 720px;
   aspect-ratio: 12 / 7;
@@ -2207,7 +2207,7 @@ log readable
 Add:
 
 ```css
-.high-contrast .realm-canvas {
+.high-contrast .hockey-smash-legacy-canvas {
   border: 3px solid currentColor;
 }
 ```
@@ -2219,7 +2219,7 @@ Ensure controls wrap.
 #### Reduced motion
 
 ```css
-.reduce-motion .realm-canvas {
+.reduce-motion .hockey-smash-legacy-canvas {
   scroll-behavior: auto;
 }
 ```
@@ -2357,7 +2357,7 @@ Before finishing:
 Create or update:
 
 ```text
-docs/roadside-realm-qa.md
+docs/hockey-smash-qa.md
 ```
 
 Include this checklist.
@@ -2366,7 +2366,7 @@ Include this checklist.
 
 - App loads.
 - Passenger gate works.
-- Roadside Realm card appears.
+- Hockey Smash card appears.
 - Mode opens.
 - Canvas renders.
 - No console errors.
@@ -2472,12 +2472,12 @@ Follow this exact order.
 3. Add section markup.
 4. Add mode card.
 5. Wire route.
-6. Show blank Roadside Realm screen.
+6. Show blank Hockey Smash screen.
 
 Commit/checkpoint idea:
 
 ```text
-Add Roadside Realm shell
+Add Hockey Smash shell
 ```
 
 #### Phase 2: State and Data
@@ -2493,7 +2493,7 @@ Add Roadside Realm shell
 Checkpoint:
 
 ```text
-Add Roadside Realm data model
+Add Hockey Smash data model
 ```
 
 #### Phase 3: Movement
@@ -2583,7 +2583,7 @@ Add endings and hidden layer
 Checkpoint:
 
 ```text
-Polish Roadside Realm V1
+Polish Hockey Smash V1
 ```
 
 ---
@@ -2593,8 +2593,8 @@ Polish Roadside Realm V1
 The work is complete only when all are true:
 
 ```text
-Roadside Realm card appears.
-Roadside Realm launches.
+Hockey Smash card appears.
+Hockey Smash launches.
 Game renders a first-person dungeon.
 Player can move and turn.
 Player can inspect.
@@ -2699,13 +2699,13 @@ Wait, this little road-trip app has a whole secret dungeon game in it?
 
 ## 2. Expanded Game Content
 
-### Roadside Realm V1.0 — Expanded Game Content Add-On
+### Hockey Smash V1.0 — Expanded Game Content Add-On
 
 #### Purpose of This Add-On
 
 Expand the actual game, not just the implementation instructions.
 
-Roadside Realm V1.0 should feel like a small but complete RPG adventure with:
+Hockey Smash V1.0 should feel like a small but complete RPG adventure with:
 
 ```text
 more rooms
@@ -2729,7 +2729,7 @@ Do not turn it into a huge RPG. Make it feel dense, polished, and complete.
 
 ### 1. Bigger Game Shape
 
-Instead of feeling like one tiny map with a boss, Roadside Realm should feel like a compact adventure with **three connected zones**:
+Instead of feeling like one tiny map with a boss, Hockey Smash should feel like a compact adventure with **three connected zones**:
 
 ```text
 Zone 1: Map Kiosk Dungeon
@@ -4093,7 +4093,7 @@ Route Restored
 Text:
 
 ```text
-You escaped the Roadside Realm with the Mapstone. The old kiosk clicks shut, the road lines settle back onto the map, and the car’s route is restored.
+You escaped the Hockey Smash with the Mapstone. The old kiosk clicks shut, the road lines settle back onto the map, and the car’s route is restored.
 ```
 
 Reward text:
@@ -4133,7 +4133,7 @@ Do not make defeat permanent.
 Text:
 
 ```text
-You got overwhelmed and woke up beside the map kiosk. The Roadside Realm gives passengers second chances.
+You got overwhelmed and woke up beside the map kiosk. The Hockey Smash gives passengers second chances.
 ```
 
 Effect:
@@ -4611,7 +4611,7 @@ This is still manageable but feels complete.
 A player should experience something like this:
 
 ```text
-I opened Roadside Realm.
+I opened Hockey Smash.
 I learned to turn and move.
 I found a key.
 I unlocked a toll gate.
@@ -4631,7 +4631,7 @@ That is the desired V1.0 feeling.
 
 ### 22. Final Agent Instruction
 
-Add enough content so Roadside Realm feels like a real mini-RPG.
+Add enough content so Hockey Smash feels like a real mini-RPG.
 
 Do not just create a hallway, a key, and a boss.
 
@@ -4660,7 +4660,7 @@ This is a full little game inside my app.
 
 ## 3. Exact Build Detail
 
-### Roadside Realm — Expanded Design Spec (V1.0 Build Detail)
+### Hockey Smash — Expanded Design Spec (V1.0 Build Detail)
 
 This expands the original build prompt with concrete maps, full dialogue/text content, exact event coordinates, and balancing math, so an implementing agent has nothing left to invent on the fly.
 
@@ -5025,7 +5025,7 @@ This gives a clean example for the summary-screen mockup below.
 
 ```
 ROADSIDE REALM — COMPLETE
-"You escaped the Roadside Realm with the Mapstone.
+"You escaped the Hockey Smash with the Mapstone.
 The route is restored, and someone in the car gets first snack pick."
 
 Steps taken: {steps}
@@ -5043,7 +5043,7 @@ Score: {score}
 ```
 ROADSIDE REALM — SECRET STAR ENDING
 "You found the Forgotten Underpass and restored the old moonlit route.
-The Roadside Realm stamps your map with a secret star."
+The Hockey Smash stamps your map with a secret star."
 
 Steps taken: {steps}
 Monsters defeated: {monstersDefeated}
@@ -5135,7 +5135,7 @@ ROADSIDE REALM — COMPLETE
 
 ## 4. Technical Appendix
 
-### Roadside Realm — Full Technical & Content Expansion (Part 2)
+### Hockey Smash — Full Technical & Content Expansion (Part 2)
 
 This document goes underneath the Part 1 spec (maps/items/balancing) and adds:
 
@@ -5545,7 +5545,7 @@ const SAVE_KEY = 'rtaRoadsideRealmSave';
 
 const saveSchemaV1 = {
   schemaVersion: 1,
-  gameVersion: '1.0.0',         // from RTA_ROADSIDE_REALM_DATA.version
+  gameVersion: '1.0.0',         // from RTA_HOCKEY_SMASH_LEGACY_DATA.version
   savedAt: '<ISO timestamp>',
   player: {
     x: Number, y: Number, facing: 'north'|'east'|'south'|'west',
@@ -5603,13 +5603,13 @@ function loadSave() {
   try {
     parsed = JSON.parse(raw);
   } catch (e) {
-    console.warn('Roadside Realm save was corrupt JSON, ignoring.');
+    console.warn('Hockey Smash save was corrupt JSON, ignoring.');
     return null;
   }
 
   parsed = migrate(parsed);
   if (!validateSave(parsed)) {
-    console.warn('Roadside Realm save failed validation, ignoring.');
+    console.warn('Hockey Smash save failed validation, ignoring.');
     return null;
   }
   return parsed;
@@ -5988,15 +5988,15 @@ All colors given as hex, intended as CSS custom properties so high-contrast mode
 
 ```css
 :root {
-  --realm-sky: #f4e8c9;          /* warm cream ceiling */
-  --realm-floor: #e2c79a;        /* postcard tan floor */
-  --realm-wall-near: #2f4f4f;    /* deep teal, near distance */
-  --realm-wall-mid: #3f6363;
-  --realm-wall-far: #547878;
-  --realm-accent-orange: #e2772e; /* sunset orange highlights, signage, UI accents */
-  --realm-gold: #d4af37;          /* treasure glow */
-  --realm-moon: #c9d6e8;          /* secret layer moonlight tint */
-  --realm-blood: none;            /* explicitly unused — no red "damage" tint on the
+  --hockey-smash-legacy-sky: #f4e8c9;          /* warm cream ceiling */
+  --hockey-smash-legacy-floor: #e2c79a;        /* postcard tan floor */
+  --hockey-smash-legacy-wall-near: #2f4f4f;    /* deep teal, near distance */
+  --hockey-smash-legacy-wall-mid: #3f6363;
+  --hockey-smash-legacy-wall-far: #547878;
+  --hockey-smash-legacy-accent-orange: #e2772e; /* sunset orange highlights, signage, UI accents */
+  --hockey-smash-legacy-gold: #d4af37;          /* treasure glow */
+  --hockey-smash-legacy-moon: #c9d6e8;          /* secret layer moonlight tint */
+  --hockey-smash-legacy-blood: none;            /* explicitly unused — no red "damage" tint on the
                                        player view; HP changes communicate via the
                                        stats row and log only, never a screen tint,
                                        to keep tone non-violent per Part 1's "not
@@ -6004,15 +6004,15 @@ All colors given as hex, intended as CSS custom properties so high-contrast mode
 }
 
 body.high-contrast {
-  --realm-sky: #ffffff;
-  --realm-floor: #cccccc;
-  --realm-wall-near: #000000;
-  --realm-wall-mid: #1a1a1a;
-  --realm-wall-far: #333333;
-  --realm-accent-orange: #ff8c00;  /* kept saturated — orange-on-dark still passes
+  --hockey-smash-legacy-sky: #ffffff;
+  --hockey-smash-legacy-floor: #cccccc;
+  --hockey-smash-legacy-wall-near: #000000;
+  --hockey-smash-legacy-wall-mid: #1a1a1a;
+  --hockey-smash-legacy-wall-far: #333333;
+  --hockey-smash-legacy-accent-orange: #ff8c00;  /* kept saturated — orange-on-dark still passes
                                         contrast and preserves the "this is a door/
                                         important thing" visual language */
-  --realm-gold: #ffd700;
+  --hockey-smash-legacy-gold: #ffd700;
 }
 ```
 
@@ -6070,7 +6070,7 @@ Stage 2 (clued): a small crescent-moon scratch icon (simple path: two
 
 Stage 3 (revealed): wall slice replaced with a darker rectangle (the
   "stairway down" opening) plus 3 thin horizontal lines suggesting steps,
-  and a cool moon-tinted glow (--realm-moon at low alpha) bleeding from
+  and a cool moon-tinted glow (--hockey-smash-legacy-moon at low alpha) bleeding from
   the opening.
 ```
 
@@ -6080,7 +6080,7 @@ All monsters are built from basic canvas shapes layered together, scaled by dist
 
 **Dust Goblin** — small, low to the ground:
 ```
-- Body: squashed ellipse, --realm-wall-mid fill, ~70px wide × 50px tall
+- Body: squashed ellipse, --hockey-smash-legacy-wall-mid fill, ~70px wide × 50px tall
 - Two small triangle ears on top
 - A small gray rectangle "key" shape held in front (motel-key motif)
 - Two simple dot eyes, no mouth (keeps it cute, not threatening)
@@ -6090,14 +6090,14 @@ All monsters are built from basic canvas shapes layered together, scaled by dist
 ```
 - Body: small circle, dark fill
 - Two wide triangular "wings" made of a torn-paper texture (jagged edge
-  via a zigzag path) tinted --realm-accent-orange at low alpha, suggesting
+  via a zigzag path) tinted --hockey-smash-legacy-accent-orange at low alpha, suggesting
   a paper map folded into wings
 - Position animates with a gentle bob (frozen under reduced motion)
 ```
 
 **Toll Troll** — squat, wide:
 ```
-- Body: rounded rectangle, wider than tall, --realm-wall-far fill
+- Body: rounded rectangle, wider than tall, --hockey-smash-legacy-wall-far fill
 - A small sign-shaped chest plate (rectangle with "TOLL" suggested by
   two horizontal lines, not actual readable text at this scale)
 - Thick simple arms crossed (two short rectangles)
@@ -6105,10 +6105,10 @@ All monsters are built from basic canvas shapes layered together, scaled by dist
 
 **Signpost Ogre (Boss)** — tall, dominant, fills more of the frame:
 ```
-- Body: tall rounded rectangle, --realm-wall-near fill, scaled ~1.4× a
+- Body: tall rounded rectangle, --hockey-smash-legacy-wall-near fill, scaled ~1.4× a
   normal monster's footprint to read as a boss at a glance
 - "Arms" are two crossed signpost-arrow shapes (simple arrow polygons,
-  --realm-accent-orange fill) rotating slowly around a shoulder pivot
+  --hockey-smash-legacy-accent-orange fill) rotating slowly around a shoulder pivot
   (frozen under reduced motion; this is also the visual tell for the
   Big Spin telegraph — the arrows should visibly speed up their rotation
   during the telegraphed turn, giving sighted players a redundant cue
@@ -6118,10 +6118,10 @@ All monsters are built from basic canvas shapes layered together, scaled by dist
 
 **Moonlit Warden** — slim, vertical, cool-toned:
 ```
-- Body: tall thin ellipse, --realm-moon fill at higher saturation than
+- Body: tall thin ellipse, --hockey-smash-legacy-moon fill at higher saturation than
   background moonlight tint
 - A simple staff (vertical line with a small circle at top, glowing
-  faintly --realm-gold) held to one side
+  faintly --hockey-smash-legacy-gold) held to one side
 - No animation by default (a still, watchful guardian reads correctly
   as calm rather than aggressive, matching the "not scary" tone even
   though it's an optional boss fight)
@@ -6130,14 +6130,14 @@ All monsters are built from basic canvas shapes layered together, scaled by dist
 ##### F.6 Item Glyphs (drawn floating/glinting on the tile-ahead overlay, distance 1 only)
 
 ```
-Rusty Road Key   -> simple key silhouette, --realm-wall-mid, slight rotation
+Rusty Road Key   -> simple key silhouette, --hockey-smash-legacy-wall-mid, slight rotation
 Snack Charm      -> small wrapped-candy shape (twisted ends), cream fill
 Apple Juice Potion -> small juice-box rectangle with a bent straw line
-Mapstone         -> faceted hexagon, --realm-gold fill, soft pulsing glow
+Mapstone         -> faceted hexagon, --hockey-smash-legacy-gold fill, soft pulsing glow
                       (glow intensity animated only when motion is allowed;
                       under reduced motion render at fixed mid-brightness)
-Moon Toll Token   -> circle coin shape, --realm-moon fill, thin ring outline
-Lucky Toll Coin   -> circle coin shape, --realm-gold fill, smaller than the
+Moon Toll Token   -> circle coin shape, --hockey-smash-legacy-moon fill, thin ring outline
+Lucky Toll Coin   -> circle coin shape, --hockey-smash-legacy-gold fill, smaller than the
                       Moon Toll Token so the two are distinguishable at a
                       glance without relying on color alone (size + label
                       in inventory list, not color, is the real
@@ -6174,7 +6174,7 @@ mobile widths rather than wrapping awkwardly:
   🪙 Gold: {gold}
 
 HP card gets a subtle border color shift at low HP (<= 25% of maxHp)
-using --realm-accent-orange -> a warning tone, NOT red, to keep the
+using --hockey-smash-legacy-accent-orange -> a warning tone, NOT red, to keep the
 "avoid color implying violence/danger in a scary way" tone while still
 giving a clear low-HP signal. The numeric value is the actual signal
 for accessibility; the border tint is a bonus for sighted users only.
@@ -6190,7 +6190,7 @@ Each scenario lists exact actions and the expected resulting state, using the co
 
 | Step | Action | Expected Result |
 |---|---|---|
-| 1 | Load app, open Roadside Realm mode card | `state.mode = TITLE`. "Continue Quest" button is hidden or disabled (no save in localStorage). |
+| 1 | Load app, open Hockey Smash mode card | `state.mode = TITLE`. "Continue Quest" button is hidden or disabled (no save in localStorage). |
 | 2 | Click "Start New Quest" | `state.mode = INTRO`. Intro text about the kiosk is shown. |
 | 3 | Press any movement key | `state.mode = EXPLORING`. `player = {x:1, y:1, facing:'south', hp:20, maxHp:20, mapId:'map-kiosk-dungeon'}`. Canvas renders a corridor. Status text reads "Facing south. an open path ahead." |
 | 4 | Check console | No errors. |
@@ -6304,16 +6304,16 @@ Each scenario lists exact actions and the expected resulting state, using the co
 
 | Step | Action | Expected Result |
 |---|---|---|
-| 1 | Load the app fresh after the Roadside Realm files are added, confirm `sw.js`'s cache list and version were updated per Part 1's instructions | New files (`roadside-realm-data.js`, `roadside-realm.js`, any `-art.js`) are present in the cache manifest; `CACHE_VERSION` differs from the pre-Realm build. |
-| 2 | Go offline (devtools "Offline" throttling) after first successful load | Roadside Realm still launches and plays fully — no network requests are attempted at any point during play (consistent with "No backend, no external APIs, no external asset loading"). |
+| 1 | Load the app fresh after the Hockey Smash files are added, confirm `sw.js`'s cache list and version were updated per Part 1's instructions | New files (`hockey-smash-data.js`, `hockey-smash.js`, any `-art.js`) are present in the cache manifest; `CACHE_VERSION` differs from the pre-Realm build. |
+| 2 | Go offline (devtools "Offline" throttling) after first successful load | Hockey Smash still launches and plays fully — no network requests are attempted at any point during play (consistent with "No backend, no external APIs, no external asset loading"). |
 | 3 | Ship a follow-up patch, bump `CACHE_VERSION` again, reload | Old cached assets are evicted; new version loads cleanly without requiring the user to manually clear site data. |
 
 ##### G.14 Scenario: Regression Check on Existing Modes
 
 | Step | Action | Expected Result |
 |---|---|---|
-| 1 | Launch Road Pong, Hide & Seek, Banana Towers, trivia, and the scavenger hunt in turn, after the Realm integration | Each still launches and plays exactly as before. No shared global (`script.js` routing, `style.css` selectors, `sw.js` cache keys) was overwritten or shadowed by the new `RTA_ROADSIDE_REALM*` namespace. |
-| 2 | Check the app's passenger-gate / driver-safety check (if present) | Still functions identically; Roadside Realm did not introduce any new always-on input capture (e.g., a stray global keydown listener) that could interfere with driver-mode restrictions elsewhere in the app. |
+| 1 | Launch Road Pong, Hide & Seek, Banana Towers, trivia, and the scavenger hunt in turn, after the Realm integration | Each still launches and plays exactly as before. No shared global (`script.js` routing, `style.css` selectors, `sw.js` cache keys) was overwritten or shadowed by the new `RTA_HOCKEY_SMASH_LEGACY*` namespace. |
+| 2 | Check the app's passenger-gate / driver-safety check (if present) | Still functions identically; Hockey Smash did not introduce any new always-on input capture (e.g., a stray global keydown listener) that could interfere with driver-mode restrictions elsewhere in the app. |
 
 ---
 
@@ -6323,7 +6323,7 @@ This section expands the build spec into production-facing guidance. Use it when
 
 ### 5.1 Design Pillars
 
-Roadside Realm should be judged against these pillars before adding, cutting, or reworking features:
+Hockey Smash should be judged against these pillars before adding, cutting, or reworking features:
 
 - **Readable exploration:** the player always understands their position, facing, available actions, and immediate obstacle.
 - **Small but complete RPG arc:** the game has introduction, growth, obstacle, boss, reward, ending, and optional secret mastery.
@@ -6356,15 +6356,15 @@ Keep responsibilities separated so the feature does not turn into one giant scri
 
 | Area | Recommended Home | Owns |
 |---|---|---|
-| Static content | `js/games/roadside-realm-data.js` | maps, items, monsters, events, dialogue banks, balance constants |
-| Runtime state | `js/games/roadside-realm.js` | current mode, player state, flags, counters, save/load, actions |
-| Rendering | `js/games/roadside-realm.js` first, optional `roadside-realm-art.js` later | canvas drawing helpers, minimap, sprites, high-contrast palette |
+| Static content | `js/games/hockey-smash-data.js` | maps, items, monsters, events, dialogue banks, balance constants |
+| Runtime state | `js/games/hockey-smash.js` | current mode, player state, flags, counters, save/load, actions |
+| Rendering | `js/games/hockey-smash.js` first, optional `hockey-smash-art.js` later | canvas drawing helpers, minimap, sprites, high-contrast palette |
 | App integration | `index.html`, `script.js` | mode card, section routing, script includes, app summary flow |
 | Styling | `style.css` | Realm layout, controls, status, responsive behavior, accessibility variants |
 | Offline support | `sw.js` | cache version and new file manifest entries |
-| QA | `docs/roadside-realm-qa.md` | manual test paths, known limitations, release checklist |
-| Maintainer overview | `docs/roadside-realm-summary.md` | quick summary of scope, flow, architecture, controls, QA, and sync notes |
-| Optional image production | `docs/roadside-realm-image-spec.md` | exact raster/vector asset sizes, export settings, sprite sheets, UI icons, and image QA |
+| QA | `docs/hockey-smash-qa.md` | manual test paths, known limitations, release checklist |
+| Maintainer overview | `docs/hockey-smash-summary.md` | quick summary of scope, flow, architecture, controls, QA, and sync notes |
+| Optional image production | `docs/hockey-smash-image-spec.md` | exact raster/vector asset sizes, export settings, sprite sheets, UI icons, and image QA |
 
 ### 5.4 Runtime State Contract
 
@@ -6506,7 +6506,7 @@ Use this as the behavioral contract for manual QA:
 
 ### 5.7 Screen And UI Detail
 
-Roadside Realm should have these visible UI regions:
+Hockey Smash should have these visible UI regions:
 
 | Region | Purpose | Notes |
 |---|---|---|
@@ -6523,7 +6523,7 @@ Do not put instructions as long permanent text blocks inside the play surface. T
 
 Splash screen requirements:
 
-- Show **Roadside Realm** as the game title.
+- Show **Hockey Smash** as the game title.
 - Include Start New Quest.
 - Include Continue Quest only when a valid save exists.
 - Include Options.
@@ -6679,7 +6679,7 @@ Each phase should end with a playable checkpoint:
 
 ### 5.15 Maintainer Summary Sync Rules
 
-The summary file is `docs/roadside-realm-summary.md`. Update it whenever any of these change:
+The summary file is `docs/hockey-smash-summary.md`. Update it whenever any of these change:
 
 - game title, premise, or tone
 - required files
@@ -6706,12 +6706,12 @@ What must be tested before release?
 
 These are decisions to make during implementation, preferably after inspecting the existing app patterns:
 
-- Should Roadside Realm use the app's global summary screen or its own in-section summary?
+- Should Hockey Smash use the app's global summary screen or its own in-section summary?
 - Does the existing app already have utility functions for showing/hiding modes and fullscreen?
-- Should the optional `roadside-realm-art.js` split happen immediately or only after `roadside-realm.js` becomes unwieldy?
+- Should the optional `hockey-smash-art.js` split happen immediately or only after `hockey-smash.js` becomes unwieldy?
 - Should quest keys remain in inventory after use, or move into a key-item history list?
 - Should completed normal-ending saves allow “continue for secrets,” or should true ending require a reset/replay?
-- What visible app version format does the repo currently use, and where should the Roadside Realm version bump appear?
+- What visible app version format does the repo currently use, and where should the Hockey Smash version bump appear?
 
 Until answered, use the conservative defaults in this spec: follow existing app patterns, keep V1.0 static and vanilla, make normal completion final, and avoid extra files unless they reduce real complexity.
 
@@ -6719,7 +6719,7 @@ Until answered, use the conservative defaults in this spec: follow existing app 
 
 ## 6. One-Pass Perfect V1.0 Target
 
-This section defines the final target: Roadside Realm should be buildable in one focused production pass and should feel complete on the first shipped version. The player can still discover the optional secret path, but the implementation should not depend on a later polish pass to feel good.
+This section defines the final target: Hockey Smash should be buildable in one focused production pass and should feel complete on the first shipped version. The player can still discover the optional secret path, but the implementation should not depend on a later polish pass to feel good.
 
 ### 6.1 What "One-Pass Perfect" Means
 
@@ -6737,7 +6737,7 @@ This does not mean the game must be enormous. It means the game must be complete
 
 ### 6.2 Final Player-Facing Promise
 
-If a player opens Roadside Realm, they should get:
+If a player opens Hockey Smash, they should get:
 
 ```text
 A compact first-person road-fantasy dungeon crawler with a complete main quest,
@@ -6753,7 +6753,7 @@ This is the ideal first run from the player's perspective:
 
 | Minute | Experience | What The Game Must Do |
 |---|---|---|
-| 0 | Player opens the Roadside Realm card | Title screen appears instantly; Start and Continue are clear. |
+| 0 | Player opens the Hockey Smash card | Title screen appears instantly; Start and Continue are clear. |
 | 1 | Player learns movement | First hallway makes turn/move/inspect obvious through safe prompts. |
 | 2 | Player sees a locked Toll Gate | The goal is concrete: find a key. |
 | 3 | Player finds the Rusty Road Key | The log, inventory, and objective all update. |
@@ -7015,9 +7015,9 @@ Motion:
 
 ### 6.13 Deluxe Graphics And Control Feel
 
-Roadside Realm should feel visually special even without external image assets. The target is "handmade roadside fantasy arcade panel": clear silhouettes, bold signage, chunky controls, warm map colors, and memorable monster shapes.
+Hockey Smash should feel visually special even without external image assets. The target is "handmade roadside fantasy arcade panel": clear silhouettes, bold signage, chunky controls, warm map colors, and memorable monster shapes.
 
-If the build uses exported raster or vector images, follow `docs/roadside-realm-image-spec.md`. That document is the authority for pixel sizes, DPI/source settings, file names, sprite sheets, icon dimensions, and image QA.
+If the build uses exported raster or vector images, follow `docs/hockey-smash-image-spec.md`. That document is the authority for pixel sizes, DPI/source settings, file names, sprite sheets, icon dimensions, and image QA.
 
 #### Art Pillars
 
@@ -7078,13 +7078,13 @@ Button requirements:
 Suggested control markup:
 
 ```html
-<div class="realm-dpad" aria-label="Movement controls">
+<div class="hockey-smash-legacy-dpad" aria-label="Movement controls">
   <button data-action="forward" aria-label="Move forward">▲</button>
   <button data-action="turnLeft" aria-label="Turn left">◀</button>
   <button data-action="backward" aria-label="Move backward">▼</button>
   <button data-action="turnRight" aria-label="Turn right">▶</button>
 </div>
-<div class="realm-action-pad" aria-label="Action controls">
+<div class="hockey-smash-legacy-action-pad" aria-label="Action controls">
   <button data-action="inspect">Inspect</button>
   <button data-action="attack">Attack</button>
   <button data-action="useItem">Item</button>
@@ -7095,7 +7095,7 @@ Suggested control markup:
 Suggested CSS shape:
 
 ```css
-.realm-dpad {
+.hockey-smash-legacy-dpad {
   display: grid;
   grid-template-columns: repeat(3, minmax(48px, 64px));
   grid-template-rows: repeat(2, minmax(48px, 64px));
@@ -7103,10 +7103,10 @@ Suggested CSS shape:
   justify-content: center;
 }
 
-.realm-dpad [data-action="forward"] { grid-column: 2; grid-row: 1; }
-.realm-dpad [data-action="turnLeft"] { grid-column: 1; grid-row: 2; }
-.realm-dpad [data-action="backward"] { grid-column: 2; grid-row: 2; }
-.realm-dpad [data-action="turnRight"] { grid-column: 3; grid-row: 2; }
+.hockey-smash-legacy-dpad [data-action="forward"] { grid-column: 2; grid-row: 1; }
+.hockey-smash-legacy-dpad [data-action="turnLeft"] { grid-column: 1; grid-row: 2; }
+.hockey-smash-legacy-dpad [data-action="backward"] { grid-column: 2; grid-row: 2; }
+.hockey-smash-legacy-dpad [data-action="turnRight"] { grid-column: 3; grid-row: 2; }
 ```
 
 #### Canvas Composition
@@ -7130,26 +7130,26 @@ Main dungeon:
 
 | Token | Color | Use |
 |---|---|---|
-| `--realm-sky` | `#24314a` | cool ceiling/sky gradient |
-| `--realm-floor` | `#5b4632` | warm road-dust floor |
-| `--realm-wall` | `#7d7462` | map-kiosk stone/cardboard walls |
-| `--realm-wall-dark` | `#45413a` | distant wall and shadows |
-| `--realm-route-yellow` | `#f3c64e` | route line, objective glow |
-| `--realm-sign-green` | `#3e8f68` | road sign panels |
-| `--realm-cone-orange` | `#e56b2f` | cones, warnings, attack accents |
-| `--realm-moon-blue` | `#8fd3ff` | secret route and underpass glow |
-| `--realm-ink` | `#17191f` | outlines |
-| `--realm-paper` | `#f4e6c1` | map paper and UI panels |
+| `--hockey-smash-legacy-sky` | `#24314a` | cool ceiling/sky gradient |
+| `--hockey-smash-legacy-floor` | `#5b4632` | warm road-dust floor |
+| `--hockey-smash-legacy-wall` | `#7d7462` | map-kiosk stone/cardboard walls |
+| `--hockey-smash-legacy-wall-dark` | `#45413a` | distant wall and shadows |
+| `--hockey-smash-legacy-route-yellow` | `#f3c64e` | route line, objective glow |
+| `--hockey-smash-legacy-sign-green` | `#3e8f68` | road sign panels |
+| `--hockey-smash-legacy-cone-orange` | `#e56b2f` | cones, warnings, attack accents |
+| `--hockey-smash-legacy-moon-blue` | `#8fd3ff` | secret route and underpass glow |
+| `--hockey-smash-legacy-ink` | `#17191f` | outlines |
+| `--hockey-smash-legacy-paper` | `#f4e6c1` | map paper and UI panels |
 
 Forgotten Underpass:
 
 | Token | Color | Use |
 |---|---|---|
-| `--realm-underpass-wall` | `#42566c` | blue-gray concrete |
-| `--realm-underpass-floor` | `#263342` | dark pavement floor |
-| `--realm-underpass-glow` | `#9de8ff` | moon toll marks |
-| `--realm-underpass-moss` | `#77a878` | soft growth and age |
-| `--realm-underpass-shadow` | `#121923` | deep recesses |
+| `--hockey-smash-legacy-underpass-wall` | `#42566c` | blue-gray concrete |
+| `--hockey-smash-legacy-underpass-floor` | `#263342` | dark pavement floor |
+| `--hockey-smash-legacy-underpass-glow` | `#9de8ff` | moon toll marks |
+| `--hockey-smash-legacy-underpass-moss` | `#77a878` | soft growth and age |
+| `--hockey-smash-legacy-underpass-shadow` | `#121923` | deep recesses |
 
 High contrast replacements should use stronger black/white/yellow/cyan separation and remove subtle texture dependence.
 
@@ -7445,7 +7445,7 @@ The perfect V1.0 build handles boring edge cases gracefully.
 
 Before calling V1.0 done:
 
-- Roadside Realm appears in the app mode list.
+- Hockey Smash appears in the app mode list.
 - Start New Quest launches the title/intro cleanly.
 - Continue appears only when a valid save exists.
 - Movement works by touch and keyboard.
@@ -7502,15 +7502,15 @@ Before shipping, play one normal run and one true-ending run. The answer to each
 
 ## 7. Never-Finished Mansion Add-On
 
-This optional add-on expands Roadside Realm with a deeper fictional mansion-inspired chapter called **The Never-Finished Mansion**. It is inspired by the broad idea of strange historic roadside mansion architecture, but it must remain fictionalized and must not copy real layouts, tour material, tragedies, branding, or copyrighted content.
+This optional add-on expands Hockey Smash with a deeper fictional mansion-inspired chapter called **The Never-Finished Mansion**. It is inspired by the broad idea of strange historic roadside mansion architecture, but it must remain fictionalized and must not copy real layouts, tour material, tragedies, branding, or copyrighted content.
 
 ### Source Add-On Title
 
-Roadside Realm Add-On: Winchester Mansion Gameplay Zone — Error-Proof Implementation Spec
+Hockey Smash Add-On: Winchester Mansion Gameplay Zone — Error-Proof Implementation Spec
 
 #### Purpose
 
-Add a dedicated mansion-inspired gameplay chapter to **Roadside Realm V1.0**.
+Add a dedicated mansion-inspired gameplay chapter to **Hockey Smash V1.0**.
 
 This section should be inspired by the broad idea of a strange historic roadside mansion with:
 
@@ -7589,7 +7589,7 @@ road-trip weird
 
 ### 2. Where This Zone Fits
 
-Roadside Realm should have this progression structure:
+Hockey Smash should have this progression structure:
 
 ```text
 Layer 1: Main Dungeon
@@ -9324,14 +9324,14 @@ function getEndingType() {
 
 ```text
 Route Restored
-You escaped the Roadside Realm with the Mapstone. The old kiosk clicks shut, the road lines settle back onto the map, and the car’s route is restored.
+You escaped the Hockey Smash with the Mapstone. The old kiosk clicks shut, the road lines settle back onto the map, and the car’s route is restored.
 ```
 
 ##### Secret Star
 
 ```text
 Secret Star Ending
-You escaped with the Mapstone and the Moon Toll Token. The Roadside Realm stamps your map with a silver star.
+You escaped with the Mapstone and the Moon Toll Token. The Hockey Smash stamps your map with a silver star.
 ```
 
 ##### Impossible Route

@@ -121,8 +121,8 @@ Update these when behavior changes:
 
 - `README.md`
 - `CHANGELOG.md`
-- `docs/roadside-realm-progress.md`
-- `docs/roadside-realm-qa.md`
+- `docs/hockey-smash-progress.md`
+- `docs/hockey-smash-qa.md`
 - `docs/hockey-smash-design.md`
 - `docs/hockey-smash-workflow.md`
 - `docs/hockey-smash-dev-checklist.md`

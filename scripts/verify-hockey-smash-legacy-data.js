@@ -3,12 +3,12 @@ const vm = require('vm');
 
 const context = { window: {} };
 vm.createContext(context);
-vm.runInContext(fs.readFileSync('js/games/roadside-realm-data.js', 'utf8'), context);
+vm.runInContext(fs.readFileSync('js/games/hockey-smash-data.js', 'utf8'), context);
 
-const data = context.window.RTA_ROADSIDE_REALM_DATA;
+const data = context.window.RTA_HOCKEY_SMASH_LEGACY_DATA;
 const errors = [];
 
-if (!data) errors.push('Missing RTA_ROADSIDE_REALM_DATA.');
+if (!data) errors.push('Missing RTA_HOCKEY_SMASH_LEGACY_DATA.');
 if (data.version !== '0.8.0') errors.push(`Expected game data version 0.8.0, got ${data.version}.`);
 
 Object.values(data.maps || {}).forEach((map) => {
@@ -46,4 +46,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`Roadside Realm data validation passed for ${data.version}.`);
+console.log(`Hockey Smash data validation passed for ${data.version}.`);

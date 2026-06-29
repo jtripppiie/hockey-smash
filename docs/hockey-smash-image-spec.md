@@ -1,10 +1,10 @@
-# Roadside Realm Optional Image Asset Spec
+# Hockey Smash Optional Image Asset Spec
 
-This document is only needed if Roadside Realm uses hand-built, generated, or exported image assets instead of drawing everything directly with canvas primitives.
+This document is only needed if Hockey Smash uses hand-built, generated, or exported image assets instead of drawing everything directly with canvas primitives.
 
 The default V1.0 plan still prefers canvas-drawn shapes because they are lightweight, local, and easy to recolor for high contrast. If images are used, this file defines exactly what to build so there is no guesswork.
 
-Generated starter assets live under `assets/roadside-realm/`. See `assets/roadside-realm/ASSET_MANIFEST.md` for the current inventory, frame order, item order, transparency notes, and cleanup recommendations.
+Generated starter assets live under `assets/hockey-smash/`. See `assets/hockey-smash/ASSET_MANIFEST.md` for the current inventory, frame order, item order, transparency notes, and cleanup recommendations.
 
 ## Important Web DPI Rule
 
@@ -34,13 +34,13 @@ Recommended source settings:
 If image assets are added, place them here:
 
 ```text
-assets/roadside-realm/
+assets/hockey-smash/
 ```
 
 Recommended folders:
 
 ```text
-assets/roadside-realm/
+assets/hockey-smash/
   sprites/
   items/
   tiles/
@@ -57,15 +57,15 @@ Use `source/` only for editable originals if the repo wants to keep them. If sou
 Use lowercase kebab-case:
 
 ```text
-realm-sprite-dust-goblin-idle.png
-realm-item-mapstone.png
-realm-ui-dpad-arrow-up.svg
-realm-bg-map-kiosk-dungeon.png
+hockey-smash-legacy-sprite-dust-goblin-idle.png
+hockey-smash-legacy-item-mapstone.png
+hockey-smash-legacy-ui-dpad-arrow-up.svg
+hockey-smash-legacy-bg-map-kiosk-dungeon.png
 ```
 
 Rules:
 
-- Prefix every file with `realm-`.
+- Prefix every file with `hockey-smash-legacy-`.
 - Include category: `sprite`, `item`, `tile`, `ui`, `bg`, `ending`.
 - Include state when relevant: `idle`, `hit`, `attack`, `defeated`, `telegraph`.
 - Do not use spaces.
@@ -326,7 +326,7 @@ Example:
 ```js
 const SPRITE_SHEETS = {
   'dust-goblin': {
-    src: 'assets/roadside-realm/sprites/realm-sprite-dust-goblin.png',
+    src: 'assets/hockey-smash/sprites/hockey-smash-legacy-sprite-dust-goblin.png',
     frameWidth: 360,
     frameHeight: 360,
     displayWidth: 180,
@@ -421,12 +421,12 @@ Do not commit giant layered source files unless the repo owner wants them. A pra
 
 If you only want the most impact for the least work, build this set:
 
-1. `realm-sprite-signpost-ogre.png` sprite sheet.
-2. `realm-sprite-moonlit-warden.png` sprite sheet.
-3. `realm-item-mapstone.svg`.
-4. `realm-item-moon-toll-token.svg`.
-5. `realm-tile-hidden-moon-scratch.svg`.
-6. `realm-ending-true-route.webp`.
+1. `hockey-smash-sprite-signpost-ogre.png` sprite sheet.
+2. `hockey-smash-sprite-moonlit-warden.png` sprite sheet.
+3. `hockey-smash-legacy-item-mapstone.svg`.
+4. `hockey-smash-legacy-item-moon-toll-token.svg`.
+5. `hockey-smash-tile-hidden-moon-scratch.svg`.
+6. `hockey-smash-ending-true-route.webp`.
 
 Everything else can still be canvas-drawn.
 

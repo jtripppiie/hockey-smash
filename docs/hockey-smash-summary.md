@@ -1,14 +1,14 @@
-# Roadside Realm Summary
+# Hockey Smash Summary
 
-This file is the maintained quick summary for **Roadside Realm V1.0**. The full game plan lives in [roadside-realm-game-plan.md](roadside-realm-game-plan.md).
+This file is the maintained quick summary for **Hockey Smash V1.0**. The full game plan lives in [hockey-smash-game-plan.md](hockey-smash-game-plan.md).
 
 Update this summary whenever the full spec changes in a way that affects scope, architecture, flow, controls, saves, QA, or launch instructions.
 
-If exported image assets are needed, use [roadside-realm-image-spec.md](roadside-realm-image-spec.md) for exact dimensions, DPI/source settings, filenames, sprite sheets, and image QA.
+If exported image assets are needed, use [hockey-smash-image-spec.md](hockey-smash-image-spec.md) for exact dimensions, DPI/source settings, filenames, sprite sheets, and image QA.
 
 ## High Concept
 
-Roadside Realm is a complete first-person, grid-based dungeon crawler mini-game inside the Road Trip Adventures app.
+Hockey Smash is a complete first-person, grid-based dungeon crawler mini-game inside the Road Trip Adventures app.
 
 The player discovers a strange roadside map kiosk, enters a tiny pocket dungeon, defeats the Signpost Ogre, recovers the Mapstone, and restores the route. A hidden room leads to the optional Forgotten Underpass and a true ending.
 
@@ -66,17 +66,17 @@ The player should be able to complete the true ending in one run if they notice 
 
 Create:
 
-- `js/games/roadside-realm-data.js`
-- `js/games/roadside-realm.js`
-- `docs/roadside-realm-qa.md`
+- `js/games/hockey-smash-data.js`
+- `js/games/hockey-smash.js`
+- `docs/hockey-smash-qa.md`
 
 Create later only if needed:
 
-- `js/games/roadside-realm-art.js`
+- `js/games/hockey-smash-art.js`
 
 Optional docs:
 
-- `docs/roadside-realm-image-spec.md` if raster/vector image assets are created.
+- `docs/hockey-smash-image-spec.md` if raster/vector image assets are created.
 
 Modify:
 
@@ -316,7 +316,7 @@ Accessibility requirements:
 - Important events are written outside the canvas.
 - Current status uses `aria-live="polite"`.
 - All controls are keyboard reachable.
-- Keyboard shortcuts only apply while Roadside Realm is active.
+- Keyboard shortcuts only apply while Hockey Smash is active.
 - High contrast changes DOM and canvas visuals.
 - Reduced motion disables slide/bob animation.
 - Large text and 200% zoom remain usable.
@@ -360,7 +360,7 @@ Each phase should end with a playable checkpoint.
 
 Verify:
 
-- Roadside Realm card appears and launches.
+- Hockey Smash card appears and launches.
 - Existing app modes still launch.
 - Canvas renders with no console errors.
 - Touch and keyboard controls work.
@@ -385,7 +385,7 @@ One-pass release checks:
 ## Known Decisions To Confirm During Build
 
 - Whether to use the app's global summary screen or a Realm-owned summary.
-- Whether `roadside-realm-art.js` is needed immediately.
+- Whether `hockey-smash-art.js` is needed immediately.
 - Whether quest keys stay in inventory after use.
 - Whether a completed normal-ending save can continue for secrets or requires reset.
 - Where the visible app version should be bumped.

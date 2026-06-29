@@ -10,25 +10,26 @@ const requiredFiles = [
   'docs/hockey-smash-design.md',
   'docs/hockey-smash-workflow.md',
   'docs/hockey-smash-dev-checklist.md',
-  'docs/roadside-realm-progress.md',
-  'docs/roadside-realm-qa.md',
+  'docs/hockey-smash-progress.md',
+  'docs/hockey-smash-qa.md',
 ];
 
 const requiredAssetPaths = [
-  'assets/roadside-realm/backgrounds/soldotna_cityscape_background_01_1920x1080.png',
-  'assets/roadside-realm/backgrounds/soldotna_cityscape_background_02_1920x1080.png',
-  'assets/roadside-realm/backgrounds/soldotna_cityscape_background_03_1920x1080.png',
-  'assets/roadside-realm/backgrounds/soldotna_cityscape_background_04_1920x1080.png',
-  'assets/roadside-realm/backgrounds/soldotna_cityscape_background_05_1920x1080.png',
+  'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1920x1080.png',
+  'assets/hockey-smash/backgrounds/soldotna_cityscape_background_02_1920x1080.png',
+  'assets/hockey-smash/backgrounds/soldotna_cityscape_background_03_1920x1080.png',
+  'assets/hockey-smash/backgrounds/soldotna_cityscape_background_04_1920x1080.png',
+  'assets/hockey-smash/backgrounds/soldotna_cityscape_background_05_1920x1080.png',
   'assets/player_hockey_sprite_96x96.png',
-  'assets/roadside-realm/sprites/salmon.png',
-  'assets/roadside-realm/sprites/bear.png',
-  'assets/roadside-realm/sprites/moose.png',
-  'assets/roadside-realm/sprites/dad.png',
-  'assets/roadside-realm/sprites/mom.png',
-  'assets/roadside-realm/sprites/mom_text.png',
-  'assets/roadside-realm/sprites/sister.png',
-  'assets/roadside-realm/sprites/sister_text.png',
+  'assets/hockey-smash/sprites/splash.png',
+  'assets/hockey-smash/sprites/salmon.png',
+  'assets/hockey-smash/sprites/bear.png',
+  'assets/hockey-smash/sprites/moose.png',
+  'assets/hockey-smash/sprites/dad.png',
+  'assets/hockey-smash/sprites/mom.png',
+  'assets/hockey-smash/sprites/mom_text.png',
+  'assets/hockey-smash/sprites/sister.png',
+  'assets/hockey-smash/sprites/sister_text.png',
 ];
 
 const errors = [];
@@ -53,16 +54,19 @@ const changelog = read('CHANGELOG.md');
   ['README.md', readme],
   ['CHANGELOG.md', changelog],
 ].forEach(([file, content]) => {
-  if (!content.includes('Hockey Smash v0.5.0')) errors.push(`${file} missing Hockey Smash v0.5.0.`);
+if (!content.includes('Hockey Smash v0.5.0')) errors.push(`${file} missing Hockey Smash v0.5.0.`);
 });
 
 if (!html.includes('Entering Hockey Smash')) errors.push('Transition text is missing.');
-if (!html.includes('Loading...')) errors.push('Black loading splash text is missing.');
+if (!html.includes('assets/hockey-smash/sprites/splash.png')) errors.push('Splash character image is missing.');
+if (!html.includes('Hockey Slash 2')) errors.push('Splash title is missing.');
+if (!html.includes("He's back with a vengance!")) errors.push('Splash tagline is missing.');
 if (!html.includes('Rotate for the best gaming experience.')) errors.push('Rotate guidance is missing from the public UI.');
 if (!html.includes('Hockey Smash v0.5.0 · Build 2026-06-28.5')) errors.push('Visible build overlay is missing or stale.');
 if (!html.includes('id="hockey-canvas"')) errors.push('Hockey canvas is missing.');
 if (!html.includes('data-action="left"') || !html.includes('data-action="right"')) errors.push('D-pad left/right actions are missing.');
 if (!html.includes('data-action="jump"') || !html.includes('data-action="slide"') || !html.includes('data-action="stick"')) errors.push('Action buttons are missing.');
+if (!html.includes('aria-label="Hockey stick attack"') || !html.includes('🏒')) errors.push('Hockey stick button icon is missing.');
 if (!css.includes('body.hockey-playing')) errors.push('No-scroll gameplay body class is missing.');
 if (!css.includes('touch-action: none')) errors.push('Touch scroll prevention is missing.');
 if (!js.includes('groundRatio: 0.60')) errors.push('Ground ratio must be 0.60.');

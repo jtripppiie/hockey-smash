@@ -2,7 +2,7 @@
 
 ## High Concept
 
-Roadside Realmo is a first-person grid adventure about finding hidden fantasy realms inside familiar road-trip places. The player is not a chosen knight. They are a traveler who notices that the world gets weird when you look too closely at exit signs, vending machines, maps, and motel hallways.
+Hockey Smash is a first-person grid adventure about finding hidden fantasy realms inside familiar road-trip places. The player is not a chosen knight. They are a traveler who notices that the world gets weird when you look too closely at exit signs, vending machines, maps, and motel hallways.
 
 ## Tone
 

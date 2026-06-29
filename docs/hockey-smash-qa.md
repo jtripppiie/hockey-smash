@@ -1,14 +1,14 @@
-# Roadside Realm QA Routes
+# Hockey Smash QA Routes
 
-Hockey Smash is now the primary public game. Roadside Realm QA below remains as historical/background coverage.
+Hockey Smash is now the primary public game. Hockey Smash QA below remains as historical/background coverage.
 
 ## Current Preview
 
 - Public game: `Hockey Smash v0.5.0`
-- Legacy Roadside Realm version retained in background files: `0.8.0`
+- Legacy Hockey Smash version retained in background files: `0.8.0`
 - Save version: `1`
 - Preview branch: `main`
-- GitHub Pages URL: `https://jtripppiie.github.io/roadside-realmo/`
+- GitHub Pages URL: `https://jtripppiie.github.io/hockey-smash/`
 
 ## Hockey Smash v0.5.0 Launch QA
 
@@ -68,15 +68,15 @@ Hockey Smash is now the primary public game. Roadside Realm QA below remains as 
 3. Click Try Again.
 4. Confirm the level state and health reset after the transition.
 
-## Historical Roadside Realm QA
+## Historical Hockey Smash QA
 
 These routes are retained for reference while the new Hockey Smash prototype stabilizes.
 
 ## Launch Route
 
 1. Open the Pages URL.
-2. Confirm the Roadside Realm splash screen appears.
-3. Confirm the visible version reads `App v0.8.0 · Roadside Realm 0.8.0`.
+2. Confirm the Hockey Smash splash screen appears.
+3. Confirm the visible version reads `App v0.8.0 · Hockey Smash 0.8.0`.
 4. Confirm Start New Quest works.
 5. Confirm the canvas renders.
 6. Confirm the D-pad, action buttons, inventory, log, and objective are visible.
@@ -90,7 +90,7 @@ These routes are retained for reference while the new Hockey Smash prototype sta
 
 ## Computer Mode Verification
 
-1. Open `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast`.
+1. Open `https://jtripppiie.github.io/hockey-smash/?computerMode=1&speed=fast`.
 2. Wait for the Auto Play Verification overlay.
 3. Confirm it reports `Status: PASSED`.
 4. Confirm it shows zero runtime errors.
@@ -101,7 +101,7 @@ These routes are retained for reference while the new Hockey Smash prototype sta
 
 ## Debug Deep Check Verification
 
-1. Open `https://jtripppiie.github.io/roadside-realmo/?computerMode=1&speed=fast&debugDeep=1`.
+1. Open `https://jtripppiie.github.io/hockey-smash/?computerMode=1&speed=fast&debugDeep=1`.
 2. Confirm the overlay reports `Mode: debug-deep-check`.
 3. Confirm it reports `Status: PASSED`.
 4. Confirm it checks the Forgotten Underpass, Never-Finished Mansion, Hidden Conservatory, and Glass Rose ending.

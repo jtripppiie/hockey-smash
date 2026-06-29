@@ -4,7 +4,7 @@
 
 **Hockey Smash v0.5.0**
 
-Hockey Smash is now the primary playable mode in this existing static HTML/CSS/JavaScript repo. The old Roadside Realm files remain available as background infrastructure, but the public launch screen should only present Hockey Smash.
+Hockey Smash is now the primary playable mode in this static HTML/CSS/JavaScript repo. The public launch screen should present Hockey Smash clearly, with the local splash sprite and Soldotna-inspired background sequence.
 
 ## Launch Flow
 
@@ -79,20 +79,21 @@ Dad has a small health bar above his character. Dad joke attacks are actual haza
 ## Asset List
 
 ```text
-assets/roadside-realm/backgrounds/soldotna_cityscape_background_01_1920x1080.png
-assets/roadside-realm/backgrounds/soldotna_cityscape_background_02_1920x1080.png
-assets/roadside-realm/backgrounds/soldotna_cityscape_background_03_1920x1080.png
-assets/roadside-realm/backgrounds/soldotna_cityscape_background_04_1920x1080.png
-assets/roadside-realm/backgrounds/soldotna_cityscape_background_05_1920x1080.png
+assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1920x1080.png
+assets/hockey-smash/backgrounds/soldotna_cityscape_background_02_1920x1080.png
+assets/hockey-smash/backgrounds/soldotna_cityscape_background_03_1920x1080.png
+assets/hockey-smash/backgrounds/soldotna_cityscape_background_04_1920x1080.png
+assets/hockey-smash/backgrounds/soldotna_cityscape_background_05_1920x1080.png
 assets/player_hockey_sprite_96x96.png
-assets/roadside-realm/sprites/salmon.png
-assets/roadside-realm/sprites/bear.png
-assets/roadside-realm/sprites/moose.png
-assets/roadside-realm/sprites/dad.png
-assets/roadside-realm/sprites/mom.png
-assets/roadside-realm/sprites/mom_text.png
-assets/roadside-realm/sprites/sister.png
-assets/roadside-realm/sprites/sister_text.png
+assets/hockey-smash/sprites/splash.png
+assets/hockey-smash/sprites/salmon.png
+assets/hockey-smash/sprites/bear.png
+assets/hockey-smash/sprites/moose.png
+assets/hockey-smash/sprites/dad.png
+assets/hockey-smash/sprites/mom.png
+assets/hockey-smash/sprites/mom_text.png
+assets/hockey-smash/sprites/sister.png
+assets/hockey-smash/sprites/sister_text.png
 ```
 
 ## Prototype Scope

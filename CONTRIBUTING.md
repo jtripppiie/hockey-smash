@@ -1,6 +1,6 @@
 # Contributing
 
-Roadside Realmo is at the planning stage. Contributions should keep the game small, original, and easy to run as a static browser game.
+Hockey Smash is at the planning stage. Contributions should keep the game small, original, and easy to run as a static browser game.
 
 ## Guidelines
 

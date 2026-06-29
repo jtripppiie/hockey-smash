@@ -5,14 +5,12 @@ Current playable version: **Hockey Smash v0.5.0**
 Live GitHub Pages preview:
 
 ```text
-https://jtripppiie.github.io/roadside-realmo/
+https://jtripppiie.github.io/hockey-smash/
 ```
 
 ## Current Status
 
-Hockey Smash is now the primary public playable mode in this existing repo. The project is reusing the repo's static GitHub Pages infrastructure, canvas setup, docs, verification scripts, and asset organization instead of creating a new repository.
-
-The old Roadside Realm files remain in the background as useful historical infrastructure, but they are no longer the main launch experience.
+Hockey Smash is now the primary public playable mode in this repo. The project uses static GitHub Pages infrastructure, a canvas runtime, local assets, docs, and verification scripts centered on Hockey Smash.
 
 ## What This Prototype Includes
 
@@ -77,20 +75,21 @@ Touch:
 Expected assets are `.png` files in `assets/`:
 
 ```text
-assets/roadside-realm/backgrounds/soldotna_cityscape_background_01_1920x1080.png
-assets/roadside-realm/backgrounds/soldotna_cityscape_background_02_1920x1080.png
-assets/roadside-realm/backgrounds/soldotna_cityscape_background_03_1920x1080.png
-assets/roadside-realm/backgrounds/soldotna_cityscape_background_04_1920x1080.png
-assets/roadside-realm/backgrounds/soldotna_cityscape_background_05_1920x1080.png
+assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1920x1080.png
+assets/hockey-smash/backgrounds/soldotna_cityscape_background_02_1920x1080.png
+assets/hockey-smash/backgrounds/soldotna_cityscape_background_03_1920x1080.png
+assets/hockey-smash/backgrounds/soldotna_cityscape_background_04_1920x1080.png
+assets/hockey-smash/backgrounds/soldotna_cityscape_background_05_1920x1080.png
 assets/player_hockey_sprite_96x96.png
-assets/roadside-realm/sprites/salmon.png
-assets/roadside-realm/sprites/bear.png
-assets/roadside-realm/sprites/moose.png
-assets/roadside-realm/sprites/dad.png
-assets/roadside-realm/sprites/mom.png
-assets/roadside-realm/sprites/mom_text.png
-assets/roadside-realm/sprites/sister.png
-assets/roadside-realm/sprites/sister_text.png
+assets/hockey-smash/sprites/splash.png
+assets/hockey-smash/sprites/salmon.png
+assets/hockey-smash/sprites/bear.png
+assets/hockey-smash/sprites/moose.png
+assets/hockey-smash/sprites/dad.png
+assets/hockey-smash/sprites/mom.png
+assets/hockey-smash/sprites/mom_text.png
+assets/hockey-smash/sprites/sister.png
+assets/hockey-smash/sprites/sister_text.png
 ```
 
 Missing assets do not crash the game. The runtime draws labeled placeholders and logs missing paths to the developer console.
