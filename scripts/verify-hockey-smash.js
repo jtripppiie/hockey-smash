@@ -1,9 +1,9 @@
 const fs = require('fs');
 
-const DISPLAY_VERSION = 'Hockey Smash v0.5.7';
-const DISPLAY_BUILD = 'Build 2026-06-29.4';
+const DISPLAY_VERSION = 'Hockey Smash v0.5.8';
+const DISPLAY_BUILD = 'Build 2026-06-29.5';
 const DISPLAY_BADGE = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
-const CACHE_KEY = '0.5.7-20260629.4';
+const CACHE_KEY = '0.5.8-20260629.5';
 
 const requiredFiles = [
   'index.html',
@@ -53,7 +53,7 @@ const css = read('style.css');
 const polishCss = read('hockey-smash-polish.css');
 const packageJson = read('package.json');
 
-if (!packageJson.includes('"version": "0.5.7"')) errors.push('package.json version should be 0.5.7.');
+if (!packageJson.includes('"version": "0.5.8"')) errors.push('package.json version should be 0.5.8.');
 if (!html.includes(DISPLAY_BADGE)) errors.push('Visible build overlay is missing or stale.');
 if (!polishJs.includes(DISPLAY_BADGE)) errors.push('Runtime polish script should force the latest visible badge.');
 if (!polishJs.includes('api.getVersion = () => DISPLAY_VERSION')) errors.push('Runtime getVersion override should report the visible build version.');
@@ -74,11 +74,14 @@ if (!polishCss.includes('.hockey-autoplay-panel')) errors.push('Computer Play pa
 if (!polishCss.includes('.hockey-button--secondary')) errors.push('Secondary watch button CSS is missing.');
 if (!html.includes('id="hockey-player-overlay"')) errors.push('Hard-coded player overlay is missing from HTML.');
 if (!html.includes('DANIEL')) errors.push('Hard-coded DANIEL label is missing from HTML.');
-if (!html.includes('z-index:9999')) errors.push('Player overlay should have an inline high z-index fallback.');
+if (!html.includes('top:calc(80vh - 136px)')) errors.push('Player overlay fallback should start lower on the road.');
 if (!html.includes('assets/hockey-smash/sprites/hockey-player.png')) errors.push('Player overlay sprite is missing from HTML.');
 if (!polishJs.includes('getElementById(\'hockey-player-overlay\')')) errors.push('Polish script should reuse the hard-coded player overlay.');
-if (!polishJs.includes('Math.max(112')) errors.push('Player overlay should enforce a visible minimum width.');
-if (!polishJs.includes('Math.max(136')) errors.push('Player overlay should enforce a visible minimum height.');
+if (!polishJs.includes('VISUAL_GROUND_RATIO = 0.80')) errors.push('Player overlay should be anchored to the visual road ground.');
+if (!polishJs.includes('visualFeetY')) errors.push('Player overlay should use visual feet anchoring.');
+if (!polishJs.includes('TAP_HOLD_MS')) errors.push('Tap controls should create a visible movement impulse.');
+if (!polishJs.includes('KeyboardEvent')) errors.push('Tap controls should dispatch keyboard events for the existing game input system.');
+if (!polishCss.includes('transition: left 80ms linear, top 80ms linear')) errors.push('Player overlay should animate position changes smoothly.');
 if (!polishCss.includes('.hockey-player-overlay')) errors.push('Player overlay CSS is missing.');
 if (!polishCss.includes('.hockey-player-overlay__label')) errors.push('Player overlay label CSS is missing.');
 if (!html.includes('Entering Hockey Smash')) errors.push('Transition text is missing.');
@@ -112,4 +115,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`${DISPLAY_VERSION} static verification passed for player-facing Computer Play mode.`);
+console.log(`${DISPLAY_VERSION} static verification passed for normal movement and visual road anchoring.`);
