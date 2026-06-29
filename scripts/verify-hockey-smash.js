@@ -3,8 +3,10 @@ const fs = require('fs');
 const requiredFiles = [
   'index.html',
   'style.css',
+  'hockey-smash-polish.css',
   'script.js',
   'js/games/hockey-smash.js',
+  'js/games/hockey-smash-polish.js',
   'README.md',
   'CHANGELOG.md',
   'docs/hockey-smash-design.md',
@@ -45,7 +47,9 @@ function read(file) {
 
 const html = read('index.html');
 const js = read('js/games/hockey-smash.js');
+const polishJs = read('js/games/hockey-smash-polish.js');
 const css = read('style.css');
+const polishCss = read('hockey-smash-polish.css');
 const readme = read('README.md');
 const changelog = read('CHANGELOG.md');
 
@@ -66,12 +70,21 @@ if (!html.includes('Rotate for the best gaming experience.')) errors.push('Rotat
 if (!html.includes('Hockey Smash v0.5.3 · Build 2026-06-28.8')) errors.push('Visible build overlay is missing or stale.');
 if (!html.includes('id="hockey-canvas"')) errors.push('Hockey canvas is missing.');
 if (!html.includes('id="hockey-debug"')) errors.push('Debug overlay is missing.');
+if (!html.includes('hockey-smash-polish.css')) errors.push('Normal-mode polish stylesheet is missing from HTML.');
+if (!html.includes('js/games/hockey-smash-polish.js')) errors.push('Normal-mode polish script is missing from HTML.');
+if (html.includes('class="hockey-version"')) errors.push('Duplicate in-screen version label should be removed; keep version in the top-right badge.');
+if (!html.includes('Survive the salmon run')) errors.push('HUD subtitle should replace the duplicate HUD version label.');
 if (!html.includes('data-action="left"') || !html.includes('data-action="right"')) errors.push('D-pad left/right actions are missing.');
 if (!html.includes('data-action="jump"') || !html.includes('data-action="slide"') || !html.includes('data-action="stick"')) errors.push('Action buttons are missing.');
 if (!html.includes('aria-label="Jump">J</button>') || !html.includes('aria-label="Slide">S</button>')) errors.push('Compact J/S action labels are missing.');
 if (!html.includes('aria-label="Hockey stick attack"') || !html.includes('🏒')) errors.push('Hockey stick button icon is missing.');
 if (!css.includes('body.hockey-playing')) errors.push('No-scroll gameplay body class is missing.');
 if (!css.includes('touch-action: none')) errors.push('Touch scroll prevention is missing.');
+if (!polishCss.includes('body:not(.hockey-computer-mode) .hockey-debug')) errors.push('Normal mode should hide the debug overlay.');
+if (!polishCss.includes('.hockey-finish')) errors.push('Victory overlay CSS is missing.');
+if (!polishJs.includes('hockey-computer-mode')) errors.push('Computer mode body class hook is missing.');
+if (!polishJs.includes('hockey-finish')) errors.push('Victory overlay script is missing.');
+if (!polishJs.includes('Final challenge cleared')) errors.push('Victory status text is missing.');
 if (!js.includes('groundRatio: 0.82')) errors.push('Ground ratio must be 0.82.');
 if (!js.includes('isComputerMode')) errors.push('Computer mode hook is missing.');
 if (!js.includes('updateDebugPanel')) errors.push('Debug panel update hook is missing.');
@@ -93,4 +106,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Hockey Smash static verification passed for v0.5.3.');
+console.log('Hockey Smash static verification passed for v0.5.3 normal-mode polish.');
