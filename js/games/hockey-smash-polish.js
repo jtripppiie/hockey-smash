@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.5.4';
-  const DISPLAY_BUILD = 'Build 2026-06-29.1';
+  const DISPLAY_VERSION = 'Hockey Smash v0.5.5';
+  const DISPLAY_BUILD = 'Build 2026-06-29.2';
   const params = new URLSearchParams(window.location.search);
   const computerMode = params.get('computerMode') === '1';
   const DESIGN_WIDTH = 1024;
@@ -18,13 +18,23 @@
     if (api?.getVersion) api.getVersion = () => DISPLAY_VERSION;
     if (!api || !game) return;
 
-    const playerOverlay = document.createElement('img');
+    const playerOverlay = document.createElement('div');
     playerOverlay.className = 'hockey-player-overlay';
-    playerOverlay.src = 'assets/hockey-smash/sprites/hockey-player.png';
-    playerOverlay.alt = '';
     playerOverlay.hidden = true;
     playerOverlay.setAttribute('aria-hidden', 'true');
-    game.append(playerOverlay);
+
+    const playerSprite = document.createElement('img');
+    playerSprite.className = 'hockey-player-overlay__sprite';
+    playerSprite.src = 'assets/hockey-smash/sprites/hockey-player.png';
+    playerSprite.alt = '';
+
+    const playerLabel = document.createElement('span');
+    playerLabel.className = 'hockey-player-overlay__label';
+    playerLabel.textContent = 'DANIEL';
+
+    playerOverlay.appendChild(playerSprite);
+    playerOverlay.appendChild(playerLabel);
+    game.appendChild(playerOverlay);
 
     const finish = document.createElement('section');
     finish.id = 'hockey-finish';
@@ -50,9 +60,12 @@
     button.type = 'button';
     button.textContent = 'Play Again';
 
-    card.append(eyebrow, heading, copy, button);
-    finish.append(card);
-    game.append(finish);
+    card.appendChild(eyebrow);
+    card.appendChild(heading);
+    card.appendChild(copy);
+    card.appendChild(button);
+    finish.appendChild(card);
+    game.appendChild(finish);
 
     let finishShown = false;
 
@@ -81,9 +94,9 @@
       playerOverlay.hidden = false;
       playerOverlay.style.left = `${rect.left + player.x * scaleX}px`;
       playerOverlay.style.top = `${rect.top + player.y * scaleY}px`;
-      playerOverlay.style.width = `${player.width * scaleX}px`;
-      playerOverlay.style.height = `${player.height * scaleY}px`;
-      playerOverlay.style.transform = player.facing < 0 ? 'scaleX(-1)' : 'scaleX(1)';
+      playerOverlay.style.width = `${Math.max(72, player.width * scaleX)}px`;
+      playerOverlay.style.height = `${Math.max(86, player.height * scaleY)}px`;
+      playerOverlay.dataset.facing = player.facing < 0 ? 'left' : 'right';
     }
 
     function watchNormalMode() {
