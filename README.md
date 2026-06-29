@@ -1,6 +1,6 @@
 # Hockey Smash
 
-Current playable version: **Hockey Smash v0.5.3**
+Current playable version: **Hockey Smash v0.5.4**
 
 Live GitHub Pages preview:
 
@@ -12,6 +12,16 @@ https://jtripppiie.github.io/hockey-smash/
 
 Hockey Smash is now the primary public playable mode in this repo. The project uses static GitHub Pages infrastructure, a canvas runtime, local assets, docs, and verification scripts centered on Hockey Smash.
 
+## Latest Visible Build
+
+The top-right badge should read:
+
+```text
+Hockey Smash v0.5.4 · Build 2026-06-29.1
+```
+
+Use that badge to confirm GitHub Pages is serving the latest checkpoint.
+
 ## What This Prototype Includes
 
 - Hockey Smash splash screen with the visible version kept only in the top-right build badge.
@@ -19,8 +29,8 @@ Hockey Smash is now the primary public playable mode in this repo. The project u
 - Full browser-viewport gameplay screen.
 - 1024x576 landscape-first canvas layout.
 - Ground line at `canvasHeight * 0.82`, aligned to the visible sidewalk in the background art.
-- Hockey player fixed-screen side-scroller movement with a visible debug marker while controls are being stabilized.
-- Left/right movement, jump, slide, and stick swing coverage for v0.5.3.
+- Hockey player fixed-screen side-scroller movement with a normal-mode player overlay so Daniel remains visible outside computer mode.
+- Left/right movement, jump, slide, and stick swing coverage for v0.5.4.
 - Responsive jump, hold-to-slide speed boost, and hockey stick combo attack.
 - One health bar with brief invincibility after damage.
 - Try Again screen when health reaches zero.
@@ -75,10 +85,10 @@ Computer mode briefly shows the splash screen, starts the game, and cycles throu
 
 - `index.html`: Hockey Smash public shell.
 - `style.css`: full-screen layout, splash, HUD, canvas scaling, and mobile controls.
-- `hockey-smash-polish.css`: normal-mode presentation polish, debug hiding, and victory overlay styles.
+- `hockey-smash-polish.css`: normal-mode presentation polish, player overlay, debug hiding, and victory overlay styles.
 - `script.js`: app bootstrap.
 - `js/games/hockey-smash.js`: Hockey Smash runtime, state machine, player movement, hazards, Dad boss, rendering, and asset fallbacks.
-- `js/games/hockey-smash-polish.js`: normal-mode polish layer for top-level player experience.
+- `js/games/hockey-smash-polish.js`: normal-mode polish layer for top-level player experience and visible build badge.
 - `assets/`: expected Hockey Smash sprite/background files.
 - `docs/hockey-smash-design.md`: design target and scope.
 - `docs/hockey-smash-workflow.md`: manual development workflow.
