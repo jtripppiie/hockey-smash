@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#101923">
     <title>Hockey Smash</title>
-    <link rel="stylesheet" href="style.css?v=0.5.5-20260629.2">
-    <link rel="stylesheet" href="hockey-smash-polish.css?v=0.5.5-20260629.2">
+    <link rel="stylesheet" href="style.css?v=0.5.6-20260629.3">
+    <link rel="stylesheet" href="hockey-smash-polish.css?v=0.5.6-20260629.3">
   </head>
   <body>
     <main id="app" class="app-shell hockey-app">
       <section id="hockey-smash" class="hockey-shell" aria-labelledby="hockey-title">
         <div id="hockey-build-badge" class="hockey-build-badge" aria-label="Current deployed build">
-          Hockey Smash v0.5.5 · Build 2026-06-29.2
+          Hockey Smash v0.5.6 · Build 2026-06-29.3
         </div>
         <section id="hockey-splash" class="hockey-splash">
           <div class="hockey-splash__content">
@@ -45,6 +45,24 @@
             height="576"
             aria-label="Hockey Smash fixed-screen side-scrolling game"
           ></canvas>
+
+          <div
+            id="hockey-player-overlay"
+            class="hockey-player-overlay"
+            aria-hidden="true"
+            style="position:fixed;left:18vw;top:54vh;width:112px;height:136px;z-index:9999;display:block;pointer-events:none;border:5px solid #fff27a;border-radius:16px;background:rgba(5,8,13,.28);box-shadow:0 0 0 4px rgba(0,0,0,.75),0 0 28px rgba(255,242,122,.8);"
+          >
+            <img
+              class="hockey-player-overlay__sprite"
+              src="assets/hockey-smash/sprites/hockey-player.png"
+              alt=""
+              style="display:block;width:100%;height:100%;object-fit:contain;"
+            >
+            <span
+              class="hockey-player-overlay__label"
+              style="position:absolute;left:50%;top:-2.15rem;transform:translateX(-50%);padding:.3rem .6rem;border:2px solid #fff27a;border-radius:999px;background:rgba(5,8,13,.92);color:#fff27a;font-weight:1000;line-height:1;letter-spacing:.05em;"
+            >DANIEL</span>
+          </div>
 
           <div class="hockey-hud" aria-live="polite">
             <div class="hockey-hud__title">
@@ -86,8 +104,8 @@
       </section>
     </main>
 
-    <script src="js/games/hockey-smash.js?v=0.5.5-20260629.2"></script>
-    <script src="js/games/hockey-smash-polish.js?v=0.5.5-20260629.2"></script>
-    <script src="script.js?v=0.5.5-20260629.2"></script>
+    <script src="js/games/hockey-smash.js?v=0.5.6-20260629.3"></script>
+    <script src="js/games/hockey-smash-polish.js?v=0.5.6-20260629.3"></script>
+    <script src="script.js?v=0.5.6-20260629.3"></script>
   </body>
 </html>
