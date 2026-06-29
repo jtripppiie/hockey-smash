@@ -7,6 +7,13 @@
   const LEFT_EDGE = 42;
   const RETURN_EDGE = 170;
   const STAGE_SECONDS = [0.5, 10.5, 20.5, 27.5, 34.5];
+  const STAGE_BACKGROUNDS = [
+    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1920x1080.png',
+    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_02_1920x1080.png',
+    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_03_1920x1080.png',
+    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_04_1920x1080.png',
+    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_05_1920x1080.png',
+  ];
   const params = new URLSearchParams(window.location.search);
   const computerMode = params.get('computerMode') === '1';
 
@@ -15,6 +22,8 @@
     const badge = document.getElementById('hockey-build-badge');
     const playerOverlay = document.getElementById('hockey-player-overlay');
     const status = document.getElementById('hockey-status');
+    const game = document.getElementById('hockey-game');
+    const canvas = document.getElementById('hockey-canvas');
 
     if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
     if (api?.getVersion) api.getVersion = () => DISPLAY_VERSION;
@@ -26,6 +35,14 @@
       document.body.classList.add('hockey-canvas-player-only');
     }
 
+    const stageBackground = document.createElement('div');
+    stageBackground.className = 'hockey-stage-background';
+    stageBackground.setAttribute('aria-hidden', 'true');
+    if (game && canvas && !computerMode) {
+      game.insertBefore(stageBackground, canvas.nextSibling);
+      document.body.classList.add('hockey-stage-background-active');
+    }
+
     let stage = 0;
     let lastStageTime = 0;
 
@@ -35,18 +52,34 @@
       return state;
     }
 
+    function syncStageBackground() {
+      if (!stageBackground || !canvas || computerMode) return;
+      const rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      stageBackground.style.left = `${rect.left}px`;
+      stageBackground.style.top = `${rect.top}px`;
+      stageBackground.style.width = `${rect.width}px`;
+      stageBackground.style.height = `${rect.height}px`;
+      stageBackground.style.backgroundImage = `url("${STAGE_BACKGROUNDS[stage]}")`;
+      stageBackground.dataset.stage = String(stage + 1);
+    }
+
     function setStage(state, nextStage, direction) {
       const now = performance.now();
       if (now - lastStageTime < 550) return;
       lastStageTime = now;
       stage = Math.max(0, Math.min(STAGE_SECONDS.length - 1, nextStage));
       state.travelStage = stage;
-      state.time = Math.max(state.time, STAGE_SECONDS[stage]);
+      state.time = STAGE_SECONDS[stage];
+      state.salmonRunStarted = stage >= 2;
+      if (stage >= 3 && state.mode !== 'bossFight') state.mode = 'bossIntro';
+      if (stage < 3 && state.mode === 'bossIntro') state.mode = 'playing';
       state.player.x = direction === 'back' ? RIGHT_EDGE - 80 : LEFT_ENTRY;
       state.player.vx = 0;
       state.player.facing = direction === 'back' ? -1 : 1;
       state.message = `Road section ${stage + 1} of ${STAGE_SECONDS.length}. Keep moving!`;
       if (status) status.textContent = state.message;
+      syncStageBackground();
     }
 
     function keepProgressing() {
@@ -63,6 +96,7 @@
           if (status) status.textContent = state.message;
         }
       }
+      syncStageBackground();
       window.requestAnimationFrame(keepProgressing);
     }
 
