@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.12.2 - Touch Control Reliability
+
+- Shipped **Hockey Smash v0.12.2** with visible build badge `Build 2026-06-29.37`.
+- Reworked `js/games/hockey-smash-v096.js` so on-screen D-pad and action buttons use active pointer tracking instead of relying on fragile tap/click timing.
+- Added release handling for `pointercancel`, `lostpointercapture`, `touchcancel`, window blur, and page visibility changes so directions do not get stuck.
+- Kept keyboard controls on the same smooth movement path.
+- Added `hockey-smash-touch.css` with `touch-action: none`, tap-highlight suppression, and pressed-button visual feedback.
+- Added a final `js/games/hockey-smash-v0105.js` release marker so the visible badge and `getVersion()` settle on the newest checkpoint after all layered scripts load.
+- Updated cache keys, package version, and verifier checks for `0.12.2`.
+
 ## 0.12.1 - Puck Variants, Floating Feedback, And Run Summary
 
 - Shipped **Hockey Smash v0.12.1** with visible build badge `Build 2026-06-29.36`.
