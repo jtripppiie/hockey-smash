@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.7 - Player-Facing Computer Play Mode
+
+- Shipped **Hockey Smash v0.5.7** with visible build badge `Build 2026-06-29.4`.
+- Added a splash-screen **Watch Computer Play** entry point that launches `?computerMode=1`.
+- Reframed Computer Mode as a watch/autoplay play mode instead of only a debug route.
+- Hid the diagnostic overlay by default unless `&debug=1` is present.
+- Added a player-facing Computer Play panel during autoplay.
+- Updated verification and browser tests so the watch mode is treated as a supported game path.
+
 ## 0.5.4 - Normal Mode Player Visibility
 
 - Shipped **Hockey Smash v0.5.4** with visible build badge `Build 2026-06-29.1`.
@@ -19,7 +28,7 @@
 ## 0.5.3 - Sidewalk Ground Alignment
 
 - Shipped **Hockey Smash v0.5.3** with visible build badge `Build 2026-06-28.8`.
-- Moved the shared invisible ground line from `0.60` to `0.82` of canvas height so Daniel, bears, moose, family characters, and Dad stand on the visible sidewalk instead of floating above it.
+- Moved the shared invisible ground line from `0.60` to `0.82` of canvas height so Daniel, bears, moose, family characters, and Dad stand on the visible sidewalk instead of floating over the storefronts.
 - Replaced the old sister insult interruption with `Daniel, heads up!`.
 
 ## 0.5.2 - Player Visibility Marker
@@ -78,10 +87,3 @@
 
 - Added the optional Soldotna Creek Wayside route.
 - Added Spruce Signling and River Current Sprite encounters.
-- Added Midnight Sun Snack and Kenai River Charm.
-- Added the development cheatsheet overlay.
-
-## 0.2.7 - Asset Safety Pass
-
-- Added runtime chroma-key cleanup for local generated sprite sheets.
-- Documented WarClass as inspiration only.
