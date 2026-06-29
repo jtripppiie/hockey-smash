@@ -84,7 +84,7 @@ if (!html.includes('id="hockey-boot-log"')) errors.push('Boot debug overlay mark
 if (!html.includes('window.HOCKEY_BOOT_LOG')) errors.push('Boot debug API is missing.');
 if (!html.includes('resource-error') || !html.includes('js-error') || !html.includes('promise-error')) errors.push('Boot debug error handlers are missing.');
 if (!html.includes('Show splash') || !html.includes('Forced splash visible')) errors.push('Debug splash rescue is missing.');
-if (!v0108.includes('Hockey Smash v0.12.5')) errors.push('v0108 still represents the boot overlay marker and should remain available.');
+if (!v0108.includes(VERSION) || !v0108.includes(BUILD)) errors.push('Final marker build label is stale.');
 if (!v096.includes('const activePointers = new Map()')) errors.push('Pointer tracking is missing from movement layer.');
 if (!v096.includes('button.addEventListener(\'pointerdown\'')) errors.push('Button pointerdown handler is missing.');
 if (!v096.includes('button.addEventListener(\'pointerup\'')) errors.push('Button pointerup handler is missing.');
