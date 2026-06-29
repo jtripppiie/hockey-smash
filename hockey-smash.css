@@ -3,17 +3,17 @@
  *
  * Keep index.html simple: load this one file only.
  * If a layer is retired later, remove it here instead of stacking more links in HTML.
- * Current cache key: 0.13.2-20260629.48
+ * Current cache key: 0.13.3-20260629.49
  */
 
-@import url("style.css?v=0.13.2-20260629.48");
-@import url("hockey-smash-polish.css?v=0.13.2-20260629.48");
-@import url("hockey-smash-touch.css?v=0.13.2-20260629.48");
-@import url("hockey-smash-custom.css?v=0.13.2-20260629.48");
-@import url("hockey-smash-v09.css?v=0.13.2-20260629.48");
-@import url("hockey-smash-v094.css?v=0.13.2-20260629.48");
-@import url("hockey-smash-v095.css?v=0.13.2-20260629.48");
-@import url("hockey-smash-v0111.css?v=0.13.2-20260629.48");
+@import url("style.css?v=0.13.3-20260629.49");
+@import url("hockey-smash-polish.css?v=0.13.3-20260629.49");
+@import url("hockey-smash-touch.css?v=0.13.3-20260629.49");
+@import url("hockey-smash-custom.css?v=0.13.3-20260629.49");
+@import url("hockey-smash-v09.css?v=0.13.3-20260629.49");
+@import url("hockey-smash-v094.css?v=0.13.3-20260629.49");
+@import url("hockey-smash-v095.css?v=0.13.3-20260629.49");
+@import url("hockey-smash-v0111.css?v=0.13.3-20260629.49");
 
 /*
  * Critical repair:
@@ -33,6 +33,29 @@
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
+}
+
+/*
+ * Dev controls are intentionally hidden in normal play.
+ * Triple-tap/click the splash image to add .hockey-dev-mode and reveal them.
+ */
+#hockey-watch,
+body:not(.hockey-dev-mode) #hockey-boot-log {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.hockey-dev-mode #hockey-watch {
+  display: inline-flex !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+body.hockey-dev-mode #hockey-boot-log {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 /*
