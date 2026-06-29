@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = 'Hockey Smash v0.12.7';
-const BUILD = 'Build 2026-06-29.42';
-const CACHE_KEY = '0.12.7-20260629.42';
+const VERSION = 'Hockey Smash v0.12.8';
+const BUILD = 'Build 2026-06-29.43';
+const CACHE_KEY = '0.12.8-20260629.43';
 
 const requiredFiles = [
   'index.html',
@@ -73,7 +73,7 @@ const v0107 = read('js/games/hockey-smash-v0107.js');
 const v0108 = read('js/games/hockey-smash-v0108.js');
 const v0109 = read('js/games/hockey-smash-v0109.js');
 
-if (!pkg.includes('"version": "0.12.7"')) errors.push('Package version is stale.');
+if (!pkg.includes('"version": "0.12.8"')) errors.push('Package version is stale.');
 if (!html.includes(`${VERSION} · ${BUILD}`)) errors.push('Build badge is stale.');
 if (!html.includes(`hockey-smash.css?v=${CACHE_KEY}`)) errors.push('Single CSS manifest is not linked or cache-busted.');
 if (!html.includes(`js/games/hockey-smash-v0109.js?v=${CACHE_KEY}`)) errors.push('Button debug script is not linked or cache-busted.');
@@ -82,6 +82,7 @@ if (!html.includes('Cache-Control') || !html.includes('no-cache')) errors.push('
 ['style.css', 'hockey-smash-polish.css', 'hockey-smash-touch.css', 'hockey-smash-custom.css', 'hockey-smash-v09.css', 'hockey-smash-v094.css', 'hockey-smash-v095.css', 'hockey-smash-v0111.css'].forEach((file) => {
   if (!cssManifest.includes(`${file}?v=${CACHE_KEY}`)) errors.push(`CSS manifest is missing ${file}.`);
 });
+if (!cssManifest.includes('[hidden]') || !cssManifest.includes('display: none !important') || !cssManifest.includes('pointer-events: none !important')) errors.push('Hidden screen hard override is missing.');
 if (!cssManifest.includes('#hockey-boot-log') || !cssManifest.includes('top: 0.75rem !important') || !cssManifest.includes('bottom: auto !important')) errors.push('Boot log is not forced away from the bottom-left D-pad.');
 if (!html.includes('id="hockey-boot-log"')) errors.push('Boot debug overlay markup is missing.');
 if (!html.includes('window.HOCKEY_BOOT_LOG')) errors.push('Boot debug API is missing.');
