@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.12.3 - Player Name And Character Select
+
+- Shipped **Hockey Smash v0.12.3** with visible build badge `Build 2026-06-29.38`.
+- Added splash-screen player customization with a name input and Daniel/Sofie character selector.
+- Added `hockey-smash-custom.css` for the customization UI.
+- Added `js/games/hockey-smash-v0106.js` as the loaded-last player customization layer.
+- Added `setPlayerConfig()` and `getPlayerConfig()` to `window.RTA_HOCKEY_SMASH`.
+- Persists the selected name and character in `localStorage`.
+- Uses `dancer-player.webp` for Sofie and `sister-spinning.webp` for Sofie's slide/spin state.
+- Updates splash hero art, HUD name, player overlay label, overlay sprite, Try Again copy, Computer Play copy, status messages, and text bubbles with the selected player name.
+- Updated cache keys, package version, README, and verifier checks for `0.12.3`.
+
 ## 0.12.2 - Touch Control Reliability
 
 - Shipped **Hockey Smash v0.12.2** with visible build badge `Build 2026-06-29.37`.
