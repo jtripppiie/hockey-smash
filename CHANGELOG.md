@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.4 - Normal Mode Player Visibility
+
+- Shipped **Hockey Smash v0.5.4** with visible build badge `Build 2026-06-29.1`.
+- Added a normal-mode player overlay using `assets/hockey-smash/sprites/hockey-player.png` so Daniel is visible outside `?computerMode=1`.
+- Kept the overlay synced to the real game-state player position and facing.
+- Updated the runtime visible badge and `getVersion()` reporting to match the latest visible checkpoint.
+- Updated browser and static verification to fail if the latest badge or player overlay is missing.
+
 ## 0.5.3 - Normal Mode Polish Follow-up
 
 - Kept visible versioning only in the top-right build badge.
