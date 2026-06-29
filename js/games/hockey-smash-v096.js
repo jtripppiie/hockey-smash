@@ -8,6 +8,7 @@
   const SLIDE_DISTANCE = 128;
   const SLIDE_DURATION = 260;
   const SLIDE_COOLDOWN = 420;
+  const SLIDE_TRANSFORM = 'translateY(14px) scaleX(1.12) scaleY(0.72)';
   const params = new URLSearchParams(window.location.search);
   const computerMode = params.get('computerMode') === '1';
 
@@ -85,7 +86,10 @@
 
     function setSliding(active) {
       document.body.classList.toggle('hockey-slide-active', active);
-      if (playerOverlay) playerOverlay.dataset.sliding = active ? 'true' : 'false';
+      if (!playerOverlay) return;
+      playerOverlay.dataset.sliding = active ? 'true' : 'false';
+      playerOverlay.style.transform = active ? SLIDE_TRANSFORM : '';
+      playerOverlay.style.transformOrigin = active ? 'bottom center' : '';
     }
 
     function startSlide() {
