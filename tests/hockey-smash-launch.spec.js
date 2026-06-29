@@ -18,15 +18,20 @@ test('Hockey Smash launches into a full viewport canvas game', async ({ page }) 
   await expect(page.locator('#hockey-game')).toBeVisible({ timeout: 4000 });
   await expect(page.locator('.hockey-hud__title span')).toHaveText('Survive the salmon run');
   await expect(page.locator('#hockey-debug')).toBeHidden();
+  await expect(page.locator('.hockey-player-overlay')).toBeVisible();
+  await expect(page.locator('.hockey-player-overlay')).toHaveAttribute('src', 'assets/hockey-smash/sprites/hockey-player.png');
 
   const state = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getState());
   const version = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getVersion());
   const bodyLocked = await page.evaluate(() => document.body.classList.contains('hockey-playing'));
+  const overlayBox = await page.locator('.hockey-player-overlay').boundingBox();
 
   expect(version).toBe('Hockey Smash v0.5.3');
   expect(state.mode).toBe('playing');
   expect(state.player.health).toBe(100);
   expect(bodyLocked).toBe(true);
+  expect(overlayBox?.width).toBeGreaterThan(40);
+  expect(overlayBox?.height).toBeGreaterThan(40);
 
   const startX = state.player.x;
   await page.keyboard.down('ArrowRight');
