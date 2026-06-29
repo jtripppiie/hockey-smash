@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = 'Hockey Smash v0.12.4';
-const BUILD = 'Build 2026-06-29.39';
-const CACHE_KEY = '0.12.4-20260629.39';
+const VERSION = 'Hockey Smash v0.12.5';
+const BUILD = 'Build 2026-06-29.40';
+const CACHE_KEY = '0.12.5-20260629.40';
 
 const requiredFiles = [
   'index.html',
@@ -30,6 +30,7 @@ const requiredFiles = [
   'js/games/hockey-smash-v0105.js',
   'js/games/hockey-smash-v0106.js',
   'js/games/hockey-smash-v0107.js',
+  'js/games/hockey-smash-v0108.js',
   'scripts/verify-hockey-smash-actions.js',
   'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1280x720.webp',
   'assets/hockey-smash/backgrounds/soldotna_cityscape_background_02_1280x720.webp',
@@ -66,13 +67,17 @@ const v0104 = read('js/games/hockey-smash-v0104.js');
 const v0105 = read('js/games/hockey-smash-v0105.js');
 const v0106 = read('js/games/hockey-smash-v0106.js');
 const v0107 = read('js/games/hockey-smash-v0107.js');
+const v0108 = read('js/games/hockey-smash-v0108.js');
 
-if (!pkg.includes('"version": "0.12.4"')) errors.push('Package version is stale.');
+if (!pkg.includes('"version": "0.12.5"')) errors.push('Package version is stale.');
 if (!html.includes(`${VERSION} · ${BUILD}`)) errors.push('Build badge is stale.');
 if (!html.includes(`style.css?v=${CACHE_KEY}`)) errors.push('Styles are not cache-busted.');
-if (!html.includes(`js/games/hockey-smash-v0107.js?v=${CACHE_KEY}`)) errors.push('Gameplay repair marker is not linked or cache-busted.');
-if (!v096.includes(VERSION) || !v096.includes(BUILD)) errors.push('Movement repair layer build label is stale.');
-if (!v0107.includes(VERSION) || !v0107.includes(BUILD)) errors.push('Final gameplay repair marker build label is stale.');
+if (!html.includes(`js/games/hockey-smash-v0108.js?v=${CACHE_KEY}`)) errors.push('Boot debug marker is not linked or cache-busted.');
+if (!html.includes('id="hockey-boot-log"')) errors.push('Boot debug overlay markup is missing.');
+if (!html.includes('window.HOCKEY_BOOT_LOG')) errors.push('Boot debug API is missing.');
+if (!html.includes('resource-error') || !html.includes('js-error') || !html.includes('promise-error')) errors.push('Boot debug error handlers are missing.');
+if (!html.includes('Show splash') || !html.includes('Forced splash visible')) errors.push('Debug splash rescue is missing.');
+if (!v0108.includes(VERSION) || !v0108.includes(BUILD)) errors.push('Final boot debug marker build label is stale.');
 if (!v096.includes('const activePointers = new Map()')) errors.push('Pointer tracking is missing from movement layer.');
 if (!v096.includes('button.addEventListener(\'pointerdown\'')) errors.push('Button pointerdown handler is missing.');
 if (!v096.includes('button.addEventListener(\'pointerup\'')) errors.push('Button pointerup handler is missing.');
@@ -96,7 +101,7 @@ if (!v0102.includes('BASE_SPAWN_MS') || !v0102.includes('state.difficulty') || !
 if (!v096.includes('RUN_ACCEL') || !v096.includes('COYOTE_MS') || !v096.includes('SLIDE_MS')) errors.push('Smooth movement checks are stale.');
 if (core.includes('_1920x1080.png')) errors.push('Large background paths are still referenced.');
 
-const textToScan = { html, core, polish, v0102, v0103, v0104, v0105, v0106, v0107 };
+const textToScan = { html, core, polish, v0102, v0103, v0104, v0105, v0106, v0107, v0108 };
 Object.entries(textToScan).forEach(([name, text]) => {
   const matches = text.matchAll(/assets\/hockey-smash\/sprites\/([^'"`]+)\.png/g);
   for (const match of matches) {
