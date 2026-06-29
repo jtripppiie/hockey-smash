@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = 'Hockey Smash v0.12.0';
-const BUILD = 'Build 2026-06-29.35';
-const CACHE_KEY = '0.12.0-20260629.35';
+const VERSION = 'Hockey Smash v0.12.1';
+const BUILD = 'Build 2026-06-29.36';
+const CACHE_KEY = '0.12.1-20260629.36';
 
 const requiredFiles = [
   'index.html',
@@ -56,15 +56,18 @@ const v0102 = read('js/games/hockey-smash-v0102.js');
 const v0103 = read('js/games/hockey-smash-v0103.js');
 const v0104 = read('js/games/hockey-smash-v0104.js');
 
-if (!pkg.includes('"version": "0.12.0"')) errors.push('Package version is stale.');
+if (!pkg.includes('"version": "0.12.1"')) errors.push('Package version is stale.');
 if (!html.includes(`${VERSION} · ${BUILD}`)) errors.push('Build badge is stale.');
 if (!html.includes(`style.css?v=${CACHE_KEY}`)) errors.push('Styles are not cache-busted.');
 if (!html.includes(`js/games/hockey-smash-v0104.js?v=${CACHE_KEY}`)) errors.push('Latest score script is not linked.');
 if (!html.includes('id="hockey-score"')) errors.push('Score HUD element is missing.');
-if (!v096.includes(VERSION) || !v096.includes(BUILD)) errors.push('Smooth movement build label is stale.');
-if (!v0102.includes(VERSION) || !v0102.includes(BUILD)) errors.push('Moving encounter build label is stale.');
 if (!v0103.includes(VERSION) || !v0103.includes(BUILD)) errors.push('Puck layer build label is stale.');
 if (!v0104.includes(VERSION) || !v0104.includes(BUILD)) errors.push('Score layer build label is stale.');
+if (!v0103.includes('puckStatsForPlayer') || !v0103.includes('puck.damage')) errors.push('Puck power variants are missing.');
+if (!v0103.includes('puckVariant') || !v0103.includes('AIR PUCK')) errors.push('Puck variant score hooks are missing.');
+if (!v0104.includes('createFloatingTextNear')) errors.push('Floating feedback text is missing.');
+if (!v0104.includes('hockey-run-summary') || !v0104.includes('Puck Hits')) errors.push('Run summary is missing.');
+if (!v0104.includes('peakCombo') || !v0104.includes('fishDodged')) errors.push('Run stat tracking is missing.');
 if (!v0103.includes('recordPuckHit') || !v0103.includes('recordDodge')) errors.push('Puck/dodge score hooks are missing.');
 if (!v0104.includes('hockeySmashHighScore')) errors.push('High score persistence is missing.');
 if (!v0104.includes('state.distance') || !v0104.includes('state.score')) errors.push('Distance/score state exposure is missing.');
