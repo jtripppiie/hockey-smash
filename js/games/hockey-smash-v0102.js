@@ -17,96 +17,43 @@
   // this same encounter pass so watch mode and normal play stay close together.
   const WAVE = [
     {
-      type: 'salmon',
-      x: DESIGN_WIDTH + 120,
-      y: 245,
-      width: 74,
-      height: 42,
-      vx: -420,
-      vy: -80,
-      hp: 1,
-      damage: 0,
-      dodgeDamage: 8,
-      flip: -1,
-      variant: 'normal',
-      message: 'Fish flying in — duck or jump!'
+      type: 'salmon', x: DESIGN_WIDTH + 120, y: 245, width: 74, height: 42,
+      vx: -420, vy: -80, hp: 1, damage: 0, dodgeDamage: 8, flip: -1,
+      variant: 'normal', message: 'Fish flying in — duck or jump!'
     },
     {
-      type: 'bear',
-      x: DESIGN_WIDTH + 90,
-      y: GROUND_Y - 104,
-      width: 122,
-      height: 104,
-      vx: -245,
-      hp: 2,
-      maxHp: 2,
-      damage: 12,
+      type: 'bear', x: DESIGN_WIDTH + 90, y: GROUND_Y - 104, width: 122, height: 104,
+      vx: -245, hp: 2, maxHp: 2, damage: 12,
       message: 'Bear moving in — use the stick and puck!'
     },
     {
-      type: 'salmon',
-      x: DESIGN_WIDTH + 120,
-      y: 180,
-      width: 74,
-      height: 42,
-      vx: -520,
-      vy: -140,
-      hp: 1,
-      damage: 0,
-      dodgeDamage: 8,
-      flip: -1,
-      variant: 'high',
-      message: 'High salmon arc — time your jump!'
+      type: 'salmon', x: DESIGN_WIDTH + 140, y: 160, width: 80, height: 45,
+      vx: -580, vy: -210, hp: 1, damage: 0, dodgeDamage: 8, flip: -1,
+      variant: 'highArc', message: 'High flying salmon — jump high!'
     },
     {
-      type: 'salmon',
-      x: DESIGN_WIDTH + 80,
-      y: 320,
-      width: 68,
-      height: 38,
-      vx: -380,
-      vy: 90,
-      hp: 1,
-      damage: 0,
-      dodgeDamage: 8,
-      flip: -1,
-      variant: 'low',
-      message: 'Low fish — slide under it!'
+      type: 'salmon', x: DESIGN_WIDTH + 100, y: 340, width: 70, height: 38,
+      vx: -390, vy: 120, hp: 1, damage: 0, dodgeDamage: 8, flip: -1,
+      variant: 'low', message: 'Low salmon — slide!'
     },
     {
-      type: 'mom',
-      x: DESIGN_WIDTH + 40,
-      y: GROUND_Y - 88,
-      width: 84,
-      height: 88,
-      vx: -145,
-      hp: 2,
-      damage: 5,
-      bubble: 'Daniel, clean your room!',
+      type: 'salmon', x: DESIGN_WIDTH + 200, y: 220, width: 120, height: 50,
+      vx: -460, vy: -60, hp: 1, damage: 0, dodgeDamage: 12, flip: -1,
+      variant: 'school', message: 'Salmon SCHOOL incoming!'
+    },
+    {
+      type: 'mom', x: DESIGN_WIDTH + 40, y: GROUND_Y - 88, width: 84, height: 88,
+      vx: -145, hp: 2, damage: 5, bubble: 'Daniel, clean your room!',
       message: 'Mom interruption moving in!'
     },
     {
-      type: 'sister',
-      x: DESIGN_WIDTH + 70,
-      y: GROUND_Y - 94,
-      width: 84,
-      height: 94,
-      vx: -175,
-      hp: 2,
-      damage: 7,
-      bubble: 'Spin move!',
+      type: 'sister', x: DESIGN_WIDTH + 70, y: GROUND_Y - 94, width: 84, height: 94,
+      vx: -175, hp: 2, damage: 7, bubble: 'Spin move!',
       message: 'Sister spinning in!'
     },
     {
-      type: 'moose',
-      x: DESIGN_WIDTH + 120,
-      y: GROUND_Y - 118,
-      width: 146,
-      height: 118,
-      vx: -195,
-      hp: 3,
-      maxHp: 3,
-      damage: 16,
+      type: 'moose', x: DESIGN_WIDTH + 120, y: GROUND_Y - 118, width: 146, height: 118,
+      vx: -195, hp: 3, maxHp: 3, damage: 16,
       message: 'Moose moving in — use the stick and puck!'
     }
   ];
@@ -156,16 +103,24 @@
 
       if (entity.type === 'salmon') {
         forceRightSideSalmon(entity);
-        if (entity.variant === 'high' || entity.variant === 'low') return entity;
-        if (roll < 0.18 + difficulty * 0.2) {
+        if (entity.variant === 'highArc' || entity.variant === 'low' || entity.variant === 'school') return entity;
+        if (roll < 0.3 + difficulty * 0.4) {
           entity.variant = 'school';
-          entity.vx *= 1.25 + difficulty * 0.15;
-          entity.width = 110;
-          entity.height = Math.max(entity.height || 42, 46);
-          entity.message = 'School of salmon — big dodge!';
+          entity.vx *= 1.25;
+          entity.width *= 1.6;
+          entity.height = Math.max(entity.height || 42, 48);
+          entity.dodgeDamage = 12;
+          entity.message = 'Salmon SCHOOL incoming!';
           return entity;
         }
-        if (roll < 0.34 + difficulty * 0.24) {
+        if (roll < 0.55 + difficulty * 0.15) {
+          entity.variant = 'highArc';
+          entity.vy = -280;
+          entity.vx *= 0.9;
+          entity.message = 'High flying salmon — jump high!';
+          return entity;
+        }
+        if (roll < 0.7 + difficulty * 0.1) {
           entity.variant = 'fast';
           entity.vx *= 1.18 + difficulty * 0.22;
           entity.vy *= 1.05;
