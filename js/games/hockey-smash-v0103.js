@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.12.1';
-  const DISPLAY_BUILD = 'Build 2026-06-29.36';
+  const DISPLAY_VERSION = 'Hockey Smash v0.13.0';
+  const DISPLAY_BUILD = 'Build 2026-06-29.45';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const GROUND_Y = DESIGN_HEIGHT * 0.82;
@@ -56,39 +56,118 @@
     return state;
   }
 
+  function currentPlayerConfig() {
+    return api?.getPlayerConfig?.() || { name: 'Daniel', character: 'daniel' };
+  }
+
+  function currentPlayerName() {
+    return currentPlayerConfig().name || 'Daniel';
+  }
+
+  function isSofiePlayer() {
+    return currentPlayerConfig().character === 'sofie';
+  }
+
+  function projectileWord() {
+    return isSofiePlayer() ? 'pointe shoe' : 'puck';
+  }
+
+  function projectileHitLabel(variant) {
+    if (isSofiePlayer()) {
+      if (variant === 'aerial') return 'AIR SHOE!';
+      if (variant === 'slide') return 'LOW SHOE!';
+      return 'POINTE SHOE!';
+    }
+    if (variant === 'aerial') return 'AIR PUCK!';
+    if (variant === 'slide') return 'LOW PUCK!';
+    return 'PUCK!';
+  }
+
   function puckStatsForPlayer(player) {
     const sliding = document.body.classList.contains('hockey-slide-active') || document.getElementById('hockey-player-overlay')?.dataset?.sliding === 'true';
     const airborne = !player.grounded && player.y + player.height < GROUND_Y - 18;
+    const name = currentPlayerName();
+    const sofie = isSofiePlayer();
+
+    if (sofie && airborne) {
+      return {
+        variant: 'aerial',
+        projectileType: 'pointe-shoe',
+        damage: 4,
+        width: 40,
+        height: 24,
+        message: `${name} launches an aerial pointe shoe!`,
+        text: '🩰',
+        background: 'linear-gradient(135deg, #fff7ed 0%, #fecdd3 45%, #fb7185 100%)',
+        boxShadow: '0 0 0 2px rgba(255,255,255,.9), 0 0 22px rgba(244,114,182,.75)',
+        borderRadius: '45% 55% 55% 45%',
+      };
+    }
+    if (sofie && sliding) {
+      return {
+        variant: 'slide',
+        projectileType: 'pointe-shoe',
+        damage: 3,
+        width: 38,
+        height: 22,
+        message: `${name} sweeps a low pointe shoe!`,
+        text: '🩰',
+        background: 'linear-gradient(135deg, #fff1f2 0%, #f9a8d4 48%, #be185d 100%)',
+        boxShadow: '0 0 0 2px rgba(255,255,255,.85), 0 0 18px rgba(244,114,182,.7)',
+        borderRadius: '45% 55% 55% 45%',
+      };
+    }
+    if (sofie) {
+      return {
+        variant: 'normal',
+        projectileType: 'pointe-shoe',
+        damage: PUCK_DAMAGE,
+        width: 36,
+        height: 22,
+        message: `${name} throws a pointe shoe at the wildlife!`,
+        text: '🩰',
+        background: 'linear-gradient(135deg, #fff7ed 0%, #fda4af 50%, #e11d48 100%)',
+        boxShadow: '0 0 0 2px rgba(255,255,255,.75), 0 8px 12px rgba(0,0,0,.25)',
+        borderRadius: '45% 55% 55% 45%',
+      };
+    }
+
     if (airborne) {
       return {
         variant: 'aerial',
+        projectileType: 'puck',
         damage: 4,
         width: 36,
         height: 18,
-        message: 'Daniel launches an aerial slapshot!',
+        message: `${name} launches an aerial slapshot!`,
         background: 'radial-gradient(circle at 35% 30%, #fff7a8 0 18%, #f59e0b 45%, #7c2d12 100%)',
-        boxShadow: '0 0 0 2px rgba(255,255,255,.8), 0 0 22px rgba(250,204,21,.75)'
+        boxShadow: '0 0 0 2px rgba(255,255,255,.8), 0 0 22px rgba(250,204,21,.75)',
+        borderRadius: '999px',
       };
     }
     if (sliding) {
       return {
         variant: 'slide',
+        projectileType: 'puck',
         damage: 3,
         width: 34,
         height: 14,
-        message: 'Daniel fires a low slide puck!',
+        message: `${name} fires a low slide puck!`,
         background: 'radial-gradient(circle at 35% 30%, #dbeafe 0 18%, #2563eb 46%, #0f172a 100%)',
-        boxShadow: '0 0 0 2px rgba(255,255,255,.75), 0 0 18px rgba(96,165,250,.7)'
+        boxShadow: '0 0 0 2px rgba(255,255,255,.75), 0 0 18px rgba(96,165,250,.7)',
+        borderRadius: '999px',
       };
     }
     return {
       variant: 'normal',
+      projectileType: 'puck',
       damage: PUCK_DAMAGE,
       width: 30,
       height: 16,
-      message: 'Daniel slaps a puck at the wildlife!',
+      message: `${name} slaps a puck at the wildlife!`,
       background: 'radial-gradient(circle at 35% 30%, #5b6370 0 12%, #1b2028 42%, #05070a 100%)',
-      boxShadow: '0 0 0 2px rgba(255,255,255,.65), 0 8px 12px rgba(0,0,0,.25)'
+      boxShadow: '0 0 0 2px rgba(255,255,255,.65), 0 8px 12px rgba(0,0,0,.25)',
+      borderRadius: '999px',
     };
   }
 
@@ -110,6 +189,7 @@
       life: 1.35,
       damage: puckStats.damage,
       variant: puckStats.variant,
+      projectileType: puckStats.projectileType,
       node: createPuckNode(puckStats),
     });
     state.message = puckStats.message;
@@ -120,11 +200,19 @@
     const node = document.createElement('div');
     node.setAttribute('aria-hidden', 'true');
     node.dataset.puckVariant = puckStats.variant;
+    node.dataset.projectileType = puckStats.projectileType || 'puck';
+    if (puckStats.text) node.textContent = puckStats.text;
     Object.assign(node.style, {
       position: 'fixed', left: '0', top: '0', width: '20px', height: '10px',
-      zIndex: '8', pointerEvents: 'none', borderRadius: '999px',
+      zIndex: '8', pointerEvents: 'none', borderRadius: puckStats.borderRadius || '999px',
       background: puckStats.background,
       boxShadow: puckStats.boxShadow,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '20px',
+      lineHeight: '1',
+      transform: puckStats.projectileType === 'pointe-shoe' ? 'rotate(-18deg)' : '',
     });
     document.body.appendChild(node);
     return node;
@@ -175,16 +263,18 @@
       if (!target) return;
       target.hp -= puck.damage || PUCK_DAMAGE;
       puck.life = 0;
-      state.effects?.push?.({ x: target.x + target.width / 2, y: target.y - 10, text: puck.variant === 'aerial' ? 'AIR PUCK!' : puck.variant === 'slide' ? 'LOW PUCK!' : 'PUCK!', life: 0.35 });
+      const hitLabel = puck.projectileType === 'pointe-shoe' ? projectileHitLabel(puck.variant) : projectileHitLabel(puck.variant);
+      state.effects?.push?.({ x: target.x + target.width / 2, y: target.y - 10, text: hitLabel, life: 0.35 });
       const destroyed = target.hp <= 0;
+      const word = puck.projectileType === 'pointe-shoe' ? 'pointe shoe' : 'puck';
       if (destroyed) {
         target.dead = true;
         if (state.computer?.results) state.computer.results.clearedObstacle = true;
-        state.message = target.type === 'moose' ? 'Moose clears the sidewalk after the puck hit!' : 'Bear backs off after the puck hit!';
+        state.message = target.type === 'moose' ? `Moose clears the sidewalk after the ${word} hit!` : `Bear backs off after the ${word} hit!`;
       } else {
-        state.message = target.type === 'moose' ? 'Puck hit the moose. One more!' : 'Puck hit the bear!';
+        state.message = target.type === 'moose' ? `${capitalize(word)} hit the moose. One more!` : `${capitalize(word)} hit the bear!`;
       }
-      notifyScoreLayer('recordPuckHit', { state, target, destroyed, puckVariant: puck.variant, damage: puck.damage || PUCK_DAMAGE });
+      notifyScoreLayer('recordPuckHit', { state, target, destroyed, puckVariant: puck.variant, projectileType: puck.projectileType, damage: puck.damage || PUCK_DAMAGE });
       if (status) status.textContent = state.message;
     });
     pucks = pucks.filter((puck) => {
@@ -202,7 +292,7 @@
       entity._dodgeLayerResolved = true;
       if (playerIsDodgingSalmon(player)) {
         state.effects?.push?.({ x: player.x + player.width / 2, y: player.y - 10, text: 'DODGE!', life: 0.35 });
-        state.message = 'Daniel dodged the fish!';
+        state.message = `${currentPlayerName()} dodged the fish!`;
         notifyScoreLayer('recordDodge', { state, entity });
       } else {
         damagePlayerFromFish(state, entity.dodgeDamage || FISH_DODGE_DAMAGE);
@@ -222,7 +312,7 @@
     if (player.invincible > 0) return;
     player.health = Math.max(0, player.health - amount);
     player.invincible = 0.85;
-    state.message = 'Fish clipped Daniel. Duck or jump next time!';
+    state.message = `Fish clipped ${currentPlayerName()}. Duck or jump next time!`;
     notifyScoreLayer('recordDamage', { state, amount, source: 'salmon' });
     if (player.health <= 0) showTryAgain(state);
   }
@@ -262,6 +352,10 @@
     if (!health || !state?.player) return;
     health.value = state.player.health;
     health.textContent = `${state.player.health} health`;
+  }
+
+  function capitalize(value) {
+    return String(value || '').charAt(0).toUpperCase() + String(value || '').slice(1);
   }
 
   function horizontalOverlap(a, b) {
