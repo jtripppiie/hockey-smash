@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.2 - Hidden Startup Overlay And Visible Stage Backgrounds
+
+- Shipped **Hockey Smash v0.9.2** with visible build badge `Build 2026-06-29.13`.
+- Hid the Daniel DOM overlay until the player has been synced to the real canvas position so he no longer flashes below the game area at load.
+- Removed the default `Ready.` status text from the HUD.
+- Added CSS to hide the status overlay when it is empty.
+- Added a visible stage-background layer so road-section changes show the next Soldotna background immediately.
+- Updated static verification so the Ready text and missing stage-background layer cannot regress.
+
 ## 0.9.1 - Continuous Road Progression And Computer Player Cleanup
 
 - Shipped **Hockey Smash v0.9.1** with visible build badge `Build 2026-06-29.12`.
@@ -33,41 +42,3 @@
 ## 0.5.10 - Document-Level D-pad Hit Testing
 
 - Shipped **Hockey Smash v0.5.10** with visible build badge `Build 2026-06-29.7`.
-- Added document-level D-pad hit testing so movement can trigger even if the button's own listener is not receiving the event.
-- Added a global `window.HOCKEY_SMASH_DPAD` fallback API for direct movement calls.
-- Increased the D-pad tap movement step so a press should be visibly obvious.
-- Updated browser tests and static verification for the global D-pad fallback.
-
-## 0.5.9 - Direct D-pad Movement Fallback
-
-- Shipped **Hockey Smash v0.5.9** with visible build badge `Build 2026-06-29.6`.
-- Added a direct D-pad movement fallback that mutates the live game state when the left/right buttons are pressed.
-- Added pointer capture and hold-to-move behavior for the on-screen directional buttons.
-- Kept the visible Daniel overlay synced after direct D-pad movement.
-- Updated browser tests and static verification so D-pad clicks must change Daniel's x-position.
-
-## 0.5.8 - Normal Movement And Road Anchoring
-
-- Shipped **Hockey Smash v0.5.8** with visible build badge `Build 2026-06-29.5`.
-- Lowered Daniel's normal-mode overlay so his feet anchor to the visible road/sidewalk area instead of floating near the sign.
-- Centered the overlay on the real player state and preserved jump lift.
-- Added tap-to-move impulse handling so quick D-pad taps visibly move Daniel instead of requiring a long press.
-- Softened the emergency yellow marker styling so it reads more like a gameplay marker while the sprite presentation stabilizes.
-- Updated browser tests and static verification for normal movement and player-overlay position syncing.
-
-## 0.5.7 - Player-Facing Computer Play Mode
-
-- Shipped **Hockey Smash v0.5.7** with visible build badge `Build 2026-06-29.4`.
-- Added a splash-screen **Watch Computer Play** entry point that launches `?computerMode=1`.
-- Reframed Computer Mode as a watch/autoplay play mode instead of only a debug route.
-- Hid the diagnostic overlay by default unless `&debug=1` is present.
-- Added a player-facing Computer Play panel during autoplay.
-- Updated verification and browser tests so the watch mode is treated as a supported game path.
-
-## 0.5.4 - Normal Mode Player Visibility
-
-- Shipped **Hockey Smash v0.5.4** with visible build badge `Build 2026-06-29.1`.
-- Added a normal-mode player overlay using `assets/hockey-smash/sprites/hockey-player.png` so Daniel is visible outside `?computerMode=1`.
-- Kept the overlay synced to the real game-state player position and facing.
-- Updated the runtime visible badge and `getVersion()` reporting to match the latest visible checkpoint.
-- Updated browser and static verification to fail if the latest badge or player overlay is missing.
