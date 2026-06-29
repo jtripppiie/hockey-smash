@@ -7,14 +7,14 @@
 
   // Puck / pointe-shoe tuning.
   // A quick tap still shoots immediately on release. Holding the action key/button
-  // charges a faster, slightly arcing shot. This keeps the controls simple while
-  // giving better players a stronger timing choice.
-  const PUCK_BASE_SPEED = 720;
-  const PUCK_MIN_SPEED = 450;
-  const PUCK_MAX_CHARGE_MS = 650;
+  // charges a faster, arcing shot. The cooldown is intentionally short so skilled
+  // players can tap quickly or hold briefly for a harder slap shot.
+  const PUCK_BASE_SPEED = 680;
+  const PUCK_MIN_SPEED = PUCK_BASE_SPEED * 0.65;
+  const PUCK_MAX_CHARGE_MS = 720;
   const PUCK_DAMAGE = 2;
-  const PUCK_COOLDOWN_MS = 260;
-  const PUCK_ARC_GRAVITY = 420;
+  const PUCK_COOLDOWN_MS = 180;
+  const PUCK_ARC_GRAVITY = 680;
   const FISH_DODGE_DAMAGE = 8;
   const POWERUP_DURATION_MS = 6500;
 
@@ -115,12 +115,12 @@
 
   function projectileHitLabel(variant, charged) {
     if (isSofiePlayer()) {
-      if (charged) return 'CHARGED SHOE!';
+      if (charged) return 'CRUSH SHOE!';
       if (variant === 'aerial') return 'AIR SHOE!';
       if (variant === 'slide') return 'LOW SHOE!';
       return 'POINTE SHOE!';
     }
-    if (charged) return 'CHARGED PUCK!';
+    if (charged) return 'CRUSH PUCK!';
     if (variant === 'aerial') return 'AIR PUCK!';
     if (variant === 'slide') return 'LOW PUCK!';
     return 'PUCK!';
@@ -133,23 +133,23 @@
     const sofie = isSofiePlayer();
     const charged = chargeFactor > 0.6;
     const boost = speedBoostActive();
-    const chargeBoost = Math.floor(chargeFactor * 2) + (boost ? 1 : 0);
+    const chargeBoost = Math.floor(chargeFactor * 3) + (boost ? 1 : 0);
     const boostedGlow = boost ? ', 0 0 34px rgba(140,255,145,.85)' : '';
 
     if (sofie && airborne) {
       return {
         variant: 'aerial', projectileType: 'pointe-shoe', damage: 4 + chargeBoost,
-        width: 40 + chargeFactor * 8, height: 24 + chargeFactor * 4,
-        message: charged ? `${name} winds up an aerial pointe blast!` : `${name} launches an aerial pointe shoe!`,
+        width: 40 + chargeFactor * 12, height: 24 + chargeFactor * 4,
+        message: charged ? `${name} winds up a huge aerial pointe blast!` : `${name} launches an aerial pointe shoe!`,
         text: '🩰', background: 'linear-gradient(135deg, #fff7ed 0%, #fecdd3 45%, #fb7185 100%)',
-        boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.95), 0 0 30px rgba(244,114,182,.95)' : '0 0 0 2px rgba(255,255,255,.9), 0 0 22px rgba(244,114,182,.75)') + boostedGlow,
+        boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.95), 0 0 32px rgba(244,114,182,.95)' : '0 0 0 2px rgba(255,255,255,.9), 0 0 22px rgba(244,114,182,.75)') + boostedGlow,
         borderRadius: '45% 55% 55% 45%', charged
       };
     }
     if (sofie && sliding) {
       return {
         variant: 'slide', projectileType: 'pointe-shoe', damage: 3 + chargeBoost,
-        width: 38 + chargeFactor * 8, height: 22 + chargeFactor * 4,
+        width: 38 + chargeFactor * 12, height: 22 + chargeFactor * 4,
         message: charged ? `${name} charges a low sweeping pointe shot!` : `${name} sweeps a low pointe shoe!`,
         text: '🩰', background: 'linear-gradient(135deg, #fff1f2 0%, #f9a8d4 48%, #be185d 100%)',
         boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.9), 0 0 28px rgba(244,114,182,.9)' : '0 0 0 2px rgba(255,255,255,.85), 0 0 18px rgba(244,114,182,.7)') + boostedGlow,
@@ -159,10 +159,10 @@
     if (sofie) {
       return {
         variant: 'normal', projectileType: 'pointe-shoe', damage: PUCK_DAMAGE + chargeBoost,
-        width: 36 + chargeFactor * 9, height: 22 + chargeFactor * 4,
+        width: 36 + chargeFactor * 12, height: 22 + chargeFactor * 4,
         message: charged ? `${name} winds up a big pointe-shoe shot!` : `${name} throws a pointe shoe at the wildlife!`,
         text: '🩰', background: 'linear-gradient(135deg, #fff7ed 0%, #fda4af 50%, #e11d48 100%)',
-        boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.9), 0 0 26px rgba(244,114,182,.9)' : '0 0 0 2px rgba(255,255,255,.75), 0 8px 12px rgba(0,0,0,.25)') + boostedGlow,
+        boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.9), 0 0 28px rgba(244,114,182,.9)' : '0 0 0 2px rgba(255,255,255,.75), 0 8px 12px rgba(0,0,0,.25)') + boostedGlow,
         borderRadius: '45% 55% 55% 45%', charged
       };
     }
@@ -170,17 +170,17 @@
     if (airborne) {
       return {
         variant: 'aerial', projectileType: 'puck', damage: 4 + chargeBoost,
-        width: 36 + chargeFactor * 10, height: 18 + chargeFactor * 5,
-        message: charged ? `${name} winds up a huge aerial slapshot!` : `${name} launches an aerial slapshot!`,
+        width: 36 + chargeFactor * 12, height: 18 + chargeFactor * 5,
+        message: charged ? `${name} winds up a huge aerial slap shot!` : `${name} launches an aerial slapshot!`,
         background: 'radial-gradient(circle at 35% 30%, #fff7a8 0 18%, #f59e0b 45%, #7c2d12 100%)',
-        boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.95), 0 0 30px rgba(250,204,21,.95)' : '0 0 0 2px rgba(255,255,255,.8), 0 0 22px rgba(250,204,21,.75)') + boostedGlow,
+        boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.95), 0 0 32px rgba(250,204,21,.95)' : '0 0 0 2px rgba(255,255,255,.8), 0 0 22px rgba(250,204,21,.75)') + boostedGlow,
         borderRadius: '999px', charged
       };
     }
     if (sliding) {
       return {
         variant: 'slide', projectileType: 'puck', damage: 3 + chargeBoost,
-        width: 34 + chargeFactor * 10, height: 14 + chargeFactor * 4,
+        width: 34 + chargeFactor * 12, height: 14 + chargeFactor * 4,
         message: charged ? `${name} charges a low rocket puck!` : `${name} fires a low slide puck!`,
         background: 'radial-gradient(circle at 35% 30%, #dbeafe 0 18%, #2563eb 46%, #0f172a 100%)',
         boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.9), 0 0 28px rgba(96,165,250,.9)' : '0 0 0 2px rgba(255,255,255,.75), 0 0 18px rgba(96,165,250,.7)') + boostedGlow,
@@ -189,10 +189,10 @@
     }
     return {
       variant: 'normal', projectileType: 'puck', damage: PUCK_DAMAGE + chargeBoost,
-      width: 30 + chargeFactor * 10, height: 16 + chargeFactor * 5,
-      message: charged ? `${name} winds up a big slap shot!` : `${name} slaps a puck at the wildlife!`,
-      background: charged ? 'radial-gradient(circle at 35% 30%, #fef08a 0 18%, #f97316 46%, #111827 100%)' : 'radial-gradient(circle at 35% 30%, #5b6370 0 12%, #1b2028 42%, #05070a 100%)',
-      boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.9), 0 0 28px rgba(251,191,36,.95)' : '0 0 0 2px rgba(255,255,255,.65), 0 8px 12px rgba(0,0,0,.25)') + boostedGlow,
+      width: 32 + chargeFactor * 12, height: 18,
+      message: charged ? `${name} winds up a BIG slap shot!` : `${name} sends the puck away!`,
+      background: charged ? 'radial-gradient(circle at 35% 30%, #fef08a 0 18%, #f97316 46%, #111827 100%)' : 'radial-gradient(circle at 35% 30%, #ddd 0 14%, #555 60%, #111 100%)',
+      boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.9), 0 0 30px rgba(251,191,36,.95)' : '0 0 0 2px rgba(255,255,255,.65), 0 0 12px rgba(170,170,170,.75)') + boostedGlow,
       borderRadius: '999px', charged
     };
   }
@@ -207,17 +207,17 @@
     const facing = player.facing < 0 ? -1 : 1;
     const chargeFactor = Math.min(1, Math.max(0, chargeTime / PUCK_MAX_CHARGE_MS));
     const speedMultiplier = speedBoostActive() ? 1.25 : 1;
-    const speed = (PUCK_MIN_SPEED + (PUCK_BASE_SPEED - PUCK_MIN_SPEED) * chargeFactor) * speedMultiplier;
+    const speed = (PUCK_MIN_SPEED + (PUCK_BASE_SPEED * 0.65 * chargeFactor)) * speedMultiplier;
     const puckStats = puckStatsForPlayer(player, chargeFactor);
-    const heightOffset = chargeFactor * -25;
+    const heightOffset = chargeFactor * -20;
     pucks.push({
-      x: facing > 0 ? player.x + player.width + 6 : player.x - 34,
-      y: player.y + player.height * 0.48 + heightOffset,
+      x: facing > 0 ? player.x + player.width + 10 : player.x - 40,
+      y: player.y + player.height * 0.45 + heightOffset,
       width: puckStats.width,
       height: puckStats.height,
       vx: speed * facing,
-      vy: chargeFactor * -180,
-      life: 1.8,
+      vy: chargeFactor * -220,
+      life: 2.2,
       damage: puckStats.damage,
       variant: puckStats.variant,
       projectileType: puckStats.projectileType,
@@ -307,9 +307,9 @@
         target.dead = true;
         maybeDropPowerup(target);
         if (state.computer?.results) state.computer.results.clearedObstacle = true;
-        state.message = target.type === 'moose' ? `Moose clears the sidewalk after the ${word} hit!` : `Bear backs off after the ${word} hit!`;
+        state.message = target.type === 'moose' ? `MOOSE DOWN after the ${word} hit!` : `BEAR DOWN after the ${word} hit!`;
       } else {
-        state.message = target.type === 'moose' ? `${capitalize(word)} hit the moose. One more!` : `${capitalize(word)} hit the bear!`;
+        state.message = target.type === 'moose' ? `${capitalize(word)} hit the moose. Keep firing!` : `${capitalize(word)} hit the bear!`;
       }
       notifyScoreLayer('recordPuckHit', { state, target, destroyed, puckVariant: puck.variant, projectileType: puck.projectileType, damage: puck.damage || PUCK_DAMAGE, charged: puck.charged });
       if (status) status.textContent = state.message;
@@ -382,7 +382,7 @@
       if (playerIsDodgingSalmon(player, entity)) {
         const label = entity.variant === 'school' ? 'BIG DODGE!' : 'DODGE!';
         state.effects?.push?.({ x: player.x + player.width / 2, y: player.y - 10, text: label, life: 0.35 });
-        state.message = entity.variant === 'high' ? `${currentPlayerName()} jumped the high salmon arc!` : `${currentPlayerName()} dodged the fish!`;
+        state.message = entity.variant === 'highArc' ? `${currentPlayerName()} jumped the high salmon arc!` : `${currentPlayerName()} dodged the fish!`;
         notifyScoreLayer('recordDodge', { state, entity });
       } else {
         damagePlayerFromFish(state, entity.dodgeDamage || FISH_DODGE_DAMAGE);
@@ -396,7 +396,7 @@
     const jumping = !player.grounded && player.y + player.height < GROUND_Y - 45;
     const highEnough = player.y < GROUND_Y - 120;
     if (entity?.variant === 'low') return sliding;
-    if (entity?.variant === 'high') return jumping && highEnough;
+    if (entity?.variant === 'highArc' || entity?.variant === 'high') return jumping && highEnough;
     return sliding || jumping;
   }
 
@@ -431,6 +431,7 @@
         top: `${rect.top + puck.y * scaleY}px`,
         width: `${Math.max(14, puck.width * scaleX)}px`,
         height: `${Math.max(7, puck.height * scaleY)}px`,
+        transform: puck.projectileType === 'pointe-shoe' ? `rotate(${puck.vy < -100 ? -25 : 12}deg)` : `rotate(${puck.vy < -100 ? -25 : 12}deg)`,
       });
       puck.node.hidden = false;
     });
