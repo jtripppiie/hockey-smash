@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.5.10';
-  const DISPLAY_BUILD = 'Build 2026-06-29.7';
+  const DISPLAY_VERSION = 'Hockey Smash v0.5.11';
+  const DISPLAY_BUILD = 'Build 2026-06-29.8';
   const params = new URLSearchParams(window.location.search);
   const computerMode = params.get('computerMode') === '1';
   const debugMode = params.get('debug') === '1';
@@ -117,13 +117,17 @@
       let lastMoveTime = 0;
       let directMoveRaf = 0;
 
-      function stateIsPlayable(state) {
-        return state && ['playing', 'bossIntro', 'bossFight'].includes(state.mode) && state.player;
+      function getPlayableState() {
+        const state = api.getState?.();
+        if (!state || !state.player) return null;
+        if (state.mode === 'tryAgain') return null;
+        if (state.mode === 'splash' || state.mode === 'transition') state.mode = 'playing';
+        return state;
       }
 
       function movePlayer(direction, distance) {
-        const state = api.getState?.();
-        if (!stateIsPlayable(state)) return;
+        const state = getPlayableState();
+        if (!state) return;
         const player = state.player;
         const delta = direction === 'left' ? -distance : distance;
         player.x = Math.max(22, Math.min(DESIGN_WIDTH - player.width - 22, player.x + delta));
@@ -134,8 +138,8 @@
       }
 
       function jumpPlayer() {
-        const state = api.getState?.();
-        if (!stateIsPlayable(state) || !state.player.grounded) return;
+        const state = getPlayableState();
+        if (!state || !state.player.grounded) return;
         state.player.vy = -(window.RTA_HOCKEY_SMASH?.tuning?.jumpVelocity || 810);
         state.player.grounded = false;
         state.message = 'Daniel jumps.';
@@ -146,8 +150,8 @@
       }
 
       function stickPlayer() {
-        const state = api.getState?.();
-        if (!stateIsPlayable(state)) return;
+        const state = getPlayableState();
+        if (!state) return;
         state.player.attackTimer = 0.2;
         state.message = 'Daniel swings the stick.';
       }
@@ -171,8 +175,8 @@
       }
 
       function stopMove() {
-        const state = api.getState?.();
-        if (stateIsPlayable(state)) state.player.vx = 0;
+        const state = getPlayableState();
+        if (state) state.player.vx = 0;
         activeMove = null;
       }
 
@@ -262,7 +266,7 @@
 
     function syncPlayerOverlay(state) {
       if (!canvas) return;
-      if (!state?.player || state.mode === 'splash' || state.mode === 'transition' || state.mode === 'tryAgain') return;
+      if (!state?.player || state.mode === 'tryAgain') return;
 
       const rect = canvas.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
@@ -270,8 +274,8 @@
       const player = state.player;
       const scaleX = rect.width / DESIGN_WIDTH;
       const scaleY = rect.height / DESIGN_HEIGHT;
-      const displayWidth = Math.max(86, player.width * scaleX * 0.82);
-      const displayHeight = Math.max(108, player.height * scaleY * 0.82);
+      const displayWidth = Math.max(76, player.width * scaleX * 0.78);
+      const displayHeight = Math.max(96, player.height * scaleY * 0.78);
       const coreGroundY = DESIGN_HEIGHT * CORE_GROUND_RATIO;
       const playerFeetY = player.y + player.height;
       const jumpLift = Math.max(0, (coreGroundY - playerFeetY) * scaleY);
