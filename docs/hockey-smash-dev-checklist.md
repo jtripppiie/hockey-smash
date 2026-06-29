@@ -2,9 +2,9 @@
 
 ## Current Checkpoint
 
-- [ ] Confirm visible version says `Hockey Smash v0.11.8 · Build 2026-06-29.33`.
-- [ ] Confirm `package.json` version is `0.11.8`.
-- [ ] Confirm `index.html` cache keys use `0.11.8-20260629.33`.
+- [ ] Confirm visible version says `Hockey Smash v0.12.0 · Build 2026-06-29.35`.
+- [ ] Confirm `package.json` version is `0.12.0`.
+- [ ] Confirm `index.html` cache keys use `0.12.0-20260629.35`.
 - [ ] Confirm README, CHANGELOG, QA, workflow, and checklist docs are updated when behavior changes.
 
 ## Local Run
@@ -27,6 +27,15 @@
 - [ ] Confirm mobile landscape layout works.
 - [ ] Confirm the rotate overlay appears temporarily in portrait.
 
+## Score And Replay
+
+- [ ] Confirm distance and score appear in the HUD.
+- [ ] Confirm distance and score rise during play.
+- [ ] Confirm combo feedback appears after skillful actions.
+- [ ] Confirm combo resets when Daniel loses health.
+- [ ] Confirm the high score persists after refresh.
+- [ ] Confirm the canvas briefly shakes during impact feedback.
+
 ## Gameplay Encounters
 
 - [ ] Confirm fish/salmon fly across the screen.
@@ -39,6 +48,7 @@
 - [ ] Confirm Mom can appear with a speech bubble.
 - [ ] Confirm Sister can appear with a speech bubble/spin moment.
 - [ ] Confirm Try Again appears when Daniel runs out of health.
+- [ ] Confirm encounter pace increases during a longer run.
 
 ## Computer Play / Watch Mode
 
@@ -47,7 +57,7 @@
 - [ ] Confirm Computer Mode cycles through right, left, jump, slide, and stick phases.
 - [ ] Confirm Computer Mode uses the smooth movement controller.
 - [ ] Confirm Computer Mode uses the moving encounter pass.
-- [ ] Confirm Computer Mode can show fish, bear, moose, Mom, Sister, and puck action.
+- [ ] Confirm Computer Mode uses the puck and score layers.
 - [ ] Confirm the difference between normal mode and Computer Mode is the driver, not a separate gameplay path.
 
 ## Verification
