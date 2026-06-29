@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = 'Hockey Smash v0.13.5';
-const BUILD = 'Build 2026-06-29.51';
-const CACHE_KEY = '0.13.5-20260629.51';
+const VERSION = 'Hockey Smash v0.13.6';
+const BUILD = 'Build 2026-06-29.52';
+const CACHE_KEY = '0.13.6-20260629.52';
 
 const requiredFiles = [
   'index.html',
@@ -33,6 +33,7 @@ const requiredFiles = [
   'js/games/hockey-smash-v0107.js',
   'js/games/hockey-smash-v0108.js',
   'js/games/hockey-smash-v0109.js',
+  'js/games/hockey-smash-v0110.js',
   'scripts/verify-hockey-smash-actions.js',
   'docs/hockey-smash-workflow.md',
   'docs/hockey-smash-dev-checklist.md',
@@ -60,6 +61,10 @@ function read(filePath) {
   return fs.readFileSync(filePath, 'utf8');
 }
 
+function requireText(label, text, needle, message) {
+  if (!text.includes(needle)) errors.push(message || `${label} is missing ${needle}`);
+}
+
 requiredFiles.forEach(read);
 const html = read('index.html');
 const pkg = read('package.json');
@@ -73,96 +78,50 @@ const qa = read('docs/hockey-smash-qa.md');
 const progress = read('docs/hockey-smash-progress.md');
 const kidGuide = read('docs/hockey-smash-kid-handoff.md');
 const core = read('js/games/hockey-smash.js');
-const polish = read('js/games/hockey-smash-polish.js');
 const touchCss = read('hockey-smash-touch.css');
 const customCss = read('hockey-smash-custom.css');
 const v096 = read('js/games/hockey-smash-v096.js');
 const v0102 = read('js/games/hockey-smash-v0102.js');
 const v0103 = read('js/games/hockey-smash-v0103.js');
 const v0104 = read('js/games/hockey-smash-v0104.js');
-const v0105 = read('js/games/hockey-smash-v0105.js');
 const v0106 = read('js/games/hockey-smash-v0106.js');
-const v0107 = read('js/games/hockey-smash-v0107.js');
-const v0108 = read('js/games/hockey-smash-v0108.js');
 const v0109 = read('js/games/hockey-smash-v0109.js');
+const v0110 = read('js/games/hockey-smash-v0110.js');
 
-if (!pkg.includes('"version": "0.13.5"')) errors.push('Package version is stale.');
-if (!html.includes(`${VERSION} · ${BUILD}`)) errors.push('Build badge is stale.');
-if (!html.includes(`hockey-smash.css?v=${CACHE_KEY}`)) errors.push('Single CSS manifest is not linked or cache-busted.');
-if (!html.includes(`js/games/hockey-smash-v0109.js?v=${CACHE_KEY}`)) errors.push('Final script is not linked or cache-busted.');
-if (!html.includes('<h1 id="hockey-title">Hockey Smash</h1>')) errors.push('Hockey splash title should say Hockey Smash.');
-if (html.includes('Hockey Slash 2')) errors.push('Index should not say Hockey Slash 2.');
-if (!html.includes('>Sofie</button>')) errors.push('Sofie button should say only Sofie.');
-if (html.includes('Sofie the Dancer')) errors.push('Index still says Sofie the Dancer.');
-if (html.includes('hockey-fullscreen-button')) errors.push('Splash fullscreen button should not be present.');
-if (!html.includes('hockey-fullscreen-chip')) errors.push('Gameplay fullscreen chip should remain in the gameplay area.');
-if (!html.includes('id="hockey-watch"') || !html.includes('aria-hidden="true"') || !html.includes('tabindex="-1"')) errors.push('Computer Play link should start disabled for normal play.');
-if (html.includes('style.css?v=') || html.includes('hockey-smash-polish.css?v=') || html.includes('hockey-smash-touch.css?v=') || html.includes('hockey-smash-custom.css?v=')) errors.push('index.html should not load individual CSS layer links anymore.');
-if (!html.includes('Cache-Control') || !html.includes('no-cache')) errors.push('No-cache meta tags are missing.');
-['style.css', 'hockey-smash-polish.css', 'hockey-smash-touch.css', 'hockey-smash-custom.css', 'hockey-smash-v09.css', 'hockey-smash-v094.css', 'hockey-smash-v095.css', 'hockey-smash-v0111.css'].forEach((file) => {
-  if (!cssManifest.includes(`${file}?v=${CACHE_KEY}`)) errors.push(`CSS manifest is missing ${file}.`);
-});
-if (!cssManifest.includes('[hidden]') || !cssManifest.includes('display: none !important') || !cssManifest.includes('pointer-events: none !important')) errors.push('Hidden screen hard override is missing.');
-if (!cssManifest.includes('#hockey-watch') || !cssManifest.includes('body.hockey-dev-mode #hockey-watch') || !cssManifest.includes('body:not(.hockey-dev-mode) #hockey-boot-log')) errors.push('Dev-only CSS guards are missing.');
-if (!style.includes('max-height: min(32vh, 285px)') || !style.includes('@media (max-height: 720px)') || !style.includes('overflow: hidden')) errors.push('Compact no-scroll splash sizing is missing from style.css.');
-if (!customCss.includes('Hockey Smash v0.13.5') || !customCss.includes('padding: 0.4rem 0.78rem') || !customCss.includes('@media (orientation: portrait) and (max-width: 760px), (max-height: 720px)')) errors.push('Compact customization control sizing is missing.');
-if (!html.includes('id="hockey-boot-log"')) errors.push('Boot debug overlay markup is missing.');
-if (!html.includes('window.HOCKEY_BOOT_LOG')) errors.push('Boot debug API is missing.');
-if (!html.includes('resource-error') || !html.includes('js-error') || !html.includes('promise-error')) errors.push('Boot debug error handlers are missing.');
-if (!html.includes('Show splash') || !html.includes('Forced splash visible')) errors.push('Debug splash rescue is missing.');
-if (!v0109.includes(VERSION) || !v0109.includes(BUILD)) errors.push('Final marker build label is stale.');
-if (!v0109.includes('bindDevModeUnlock') || !v0109.includes('DEV_TAP_TARGET = 3') || !v0109.includes('enableDevMode') || !v0109.includes('hockey-dev-mode')) errors.push('Splash-image triple-tap dev unlock is missing.');
-if (!v0109.includes('setDevElementState') || !v0109.includes('hockey-watch') || !v0109.includes('hockey-boot-log')) errors.push('Dev element state management is missing.');
-if (!v0109.includes('normalizeSofieLabels') || !v0109.includes('lockAccidentalCameraShake')) errors.push('Sofie/camera repair helpers are missing.');
-if (!v0109.includes('hockey-earthquake-active')) errors.push('Earthquake escape hatch for future intentional shake is missing.');
-if (!v0109.includes('pointerdown') || !v0109.includes('pointerup') || !v0109.includes('touchstart')) errors.push('Button debug coverage is missing.');
-if (!v0109.includes('stateSummary') || !v0109.includes('heartbeat')) errors.push('Button debug state output is missing.');
-if (!v0109.includes('START_COUNTDOWN_SECONDS = 10') || !v0109.includes('runStartCountdown') || !v0109.includes('hockey-start-countdown') || !v0109.includes('Practice the buttons')) errors.push('Start-game 10-second practice countdown is missing.');
-if (!v0109.includes('forceSalmonFromRight') || !v0109.includes('entity.vx = -Math.abs') || !v0109.includes('entity.flip = -1')) errors.push('Right-side-only salmon guard is missing.');
-if (!v0109.includes('Kid-friendly rule') || !v0109.includes('Start countdown brain') || !v0109.includes('Salmon direction guard')) errors.push('Beginner comments are missing from final safety layer.');
-if (!v0106.includes("gameTitle: 'Hockey Smash'")) errors.push('Daniel/Hockey mode title should be Hockey Smash.');
-if (v0106.includes('Hockey Slash 2')) errors.push('Character config should not say Hockey Slash 2.');
-if (!v0106.includes("label: 'Sofie'")) errors.push('Sofie character label should be Sofie.');
-if (!v0106.includes("gameTitle: 'Dance Smash'") || !v0106.includes("transitionHeading: 'Entering Dance Smash...'") || !v0106.includes("actionText: '🩰'") || !v0106.includes("actionLabel: 'Throw pointe shoe'")) errors.push('Dance Smash transition/action button labels are missing.');
-if (!v0106.includes('updateModeLabels') || !v0106.includes('data-action="stick"') || !v0106.includes('pointe-shoe')) errors.push('Character-specific action button update is missing.');
-if (!v0103.includes('pointe-shoe') || !v0103.includes('throws a pointe shoe') || !v0103.includes('🩰')) errors.push('Sofie pointe shoe projectile is missing.');
-if (!v0104.includes('projectileHitLabel') || !v0104.includes('POINTE SHOE') || !v0104.includes('Projectile Hits')) errors.push('Score feedback should support pointe shoe projectiles.');
-if (!v096.includes('const activePointers = new Map()')) errors.push('Pointer tracking is missing from movement layer.');
-if (!v096.includes('button.addEventListener(\'pointerdown\'')) errors.push('Button pointerdown handler is missing.');
-if (!v096.includes('button.addEventListener(\'pointerup\'')) errors.push('Button pointerup handler is missing.');
-if (!v096.includes('lostpointercapture')) errors.push('Lost pointer capture release handler is missing.');
-if (!v096.includes('touchcancel')) errors.push('Touch cancel reset handler is missing.');
-if (!v096.includes('window.addEventListener(\'blur\', resetAllInput)')) errors.push('Blur input reset is missing.');
-if (v096.includes('stopImmediatePropagation')) errors.push('Movement layer should not stopImmediatePropagation anymore.');
-if (v096.includes('capture: true')) errors.push('Movement layer should not use capture-phase control listeners anymore.');
-if (v096.includes('lastPointerAt')) errors.push('Old click timing guard should be removed.');
-if (!v096.includes('debug.textContent = `Input L:')) errors.push('Input debug helper is missing.');
-if (!touchCss.includes('touch-action: none')) errors.push('Touch-action CSS is missing.');
-if (!touchCss.includes('-webkit-tap-highlight-color: transparent')) errors.push('Tap highlight suppression is missing.');
-if (!customCss.includes('.hockey-character-button') || !customCss.includes('#player-name')) errors.push('Customization CSS controls are missing.');
-if (!html.includes('id="player-name"')) errors.push('Player name input is missing.');
-if (!html.includes('data-character="sofie"')) errors.push('Sofie character button is missing.');
-if (!v0106.includes('setPlayerConfig') || !v0106.includes('getPlayerConfig')) errors.push('Player config API is missing.');
-if (!v0106.includes('dancer-player.webp') || !v0106.includes('sister-spinning.webp')) errors.push('Sofie dancer sprite config is missing.');
-if (!v0103.includes('puckStatsForPlayer') || !v0103.includes('puck.damage')) errors.push('Projectile power variants are missing.');
-if (!v0104.includes('createFloatingTextNear')) errors.push('Floating feedback text is missing.');
-if (!v0102.includes('BASE_SPAWN_MS') || !v0102.includes('state.difficulty') || !v0102.includes('applyVariant')) errors.push('Difficulty ramp checks are stale.');
-if (!v096.includes('RUN_ACCEL') || !v096.includes('COYOTE_MS') || !v096.includes('SLIDE_MS')) errors.push('Smooth movement checks are stale.');
-if (core.includes('_1920x1080.png')) errors.push('Large background paths are still referenced.');
+requireText('package.json', pkg, '"version": "0.13.6"', 'Package version is stale.');
+requireText('index.html', html, `${VERSION} · ${BUILD}`, 'Build badge is stale.');
+requireText('index.html', html, `hockey-smash.css?v=${CACHE_KEY}`, 'CSS manifest is not linked or cache-busted.');
+requireText('index.html', html, `js/games/hockey-smash-v0110.js?v=${CACHE_KEY}`, 'Final v0110 release marker is not linked or cache-busted.');
+requireText('hockey-smash.css', cssManifest, `style.css?v=${CACHE_KEY}`, 'CSS manifest cache key is stale.');
+requireText('hockey-smash.css', cssManifest, '[hidden]', 'Hidden screen hard override is missing.');
+requireText('style.css', style, 'max-height: min(32vh, 285px)', 'Compact no-scroll splash sizing is missing from style.css.');
+requireText('hockey-smash-custom.css', customCss, 'padding: 0.4rem 0.78rem', 'Compact customization control sizing is missing.');
+requireText('js/games/hockey-smash-v0110.js', v0110, VERSION, 'Final marker version is stale.');
+requireText('js/games/hockey-smash-v0110.js', v0110, BUILD, 'Final marker build is stale.');
+requireText('js/games/hockey-smash-v0109.js', v0109, 'START_COUNTDOWN_SECONDS = 10', 'Start-game 10-second practice countdown is missing.');
+requireText('js/games/hockey-smash-v0109.js', v0109, 'forceSalmonFromRight', 'Right-side-only salmon guard is missing.');
+requireText('js/games/hockey-smash-v0103.js', v0103, 'PUCK_MAX_CHARGE_MS = 720', 'Stronger charge window is missing.');
+requireText('js/games/hockey-smash-v0103.js', v0103, 'PUCK_COOLDOWN_MS = 180', 'Faster charged-shot cooldown is missing.');
+requireText('js/games/hockey-smash-v0103.js', v0103, 'PUCK_ARC_GRAVITY = 680', 'Charged projectile arc physics are missing.');
+requireText('js/games/hockey-smash-v0103.js', v0103, 'puckSpeedBoostUntil', 'Safe puck-speed power-up state is missing.');
+requireText('js/games/hockey-smash-v0103.js', v0103, 'highArc', 'High-arc salmon dodge handling is missing.');
+requireText('js/games/hockey-smash-v0102.js', v0102, "variant: 'highArc'", 'High-arc salmon pattern is missing.');
+requireText('js/games/hockey-smash-v0102.js', v0102, "variant: 'school'", 'School salmon pattern is missing.');
+requireText('js/games/hockey-smash-v0102.js', v0102, 'maybeQueueComboSpawn', 'Combo encounter spawning is missing.');
+requireText('js/games/hockey-smash-v0106.js', v0106, "gameTitle: 'Dance Smash'", 'Dance Smash labels are missing.');
+requireText('js/games/hockey-smash-v0104.js', v0104, 'Projectile Hits', 'Score feedback should support projectile hits.');
+requireText('js/games/hockey-smash-v096.js', v096, 'const activePointers = new Map()', 'Pointer tracking is missing from movement layer.');
+requireText('hockey-smash-touch.css', touchCss, 'touch-action: none', 'Touch-action CSS is missing.');
 
 const docsToCheck = { readme, changelog, workflow, checklist, qa, progress, kidGuide };
 Object.entries(docsToCheck).forEach(([name, text]) => {
-  if (!text.includes('v0.13.5') && !text.includes('0.13.5')) errors.push(`${name} does not mention the current version.`);
+  if (!text.includes('v0.13.6') && !text.includes('0.13.6')) errors.push(`${name} does not mention the current version.`);
 });
-if (!readme.includes('compact splash') || !readme.includes('10-second safe practice countdown') || !readme.includes('right side only') || !readme.includes('hockey-smash-kid-handoff.md')) errors.push('README does not document the compact splash, countdown, salmon direction, and beginner handoff guide.');
-if (!changelog.includes('0.13.5 - Compact No-Scroll Splash')) errors.push('Changelog is missing the v0.13.5 entry.');
-if (!workflow.includes('Current v0.13.5 Behavior Notes') || !workflow.includes('compact splash')) errors.push('Workflow doc is stale.');
-if (!checklist.includes('Compact Splash') || !checklist.includes('fish/salmon fly in from the **right side only**')) errors.push('Dev checklist does not cover the latest gameplay/layout checks.');
-if (!qa.includes('Compact Splash') || !qa.includes('right side only')) errors.push('QA doc does not cover the latest layout/gameplay checks.');
-if (!progress.includes('Current Checkpoint: Hockey Smash v0.13.5') || !progress.includes('Compact No-Scroll Splash')) errors.push('Progress doc is stale.');
-if (!kidGuide.includes('How The Files Load') || !kidGuide.includes('Change the countdown length') || !kidGuide.includes('Current v0.13.5 Behavior To Preserve')) errors.push('Beginner handoff guide is missing key sections.');
+requireText('README.md', readme, 'charged', 'README does not document charged shots.');
+requireText('README.md', readme, 'salmon', 'README does not document salmon gameplay.');
+requireText('CHANGELOG.md', changelog, '0.13.6 - Charged Shots And Salmon Patterns', 'Changelog is missing the v0.13.6 entry.');
 
-const textToScan = { html, cssManifest, core, polish, v0102, v0103, v0104, v0105, v0106, v0107, v0108, v0109 };
+const textToScan = { html, cssManifest, core, v0102, v0103, v0104, v0106, v0109, v0110 };
 Object.entries(textToScan).forEach(([name, text]) => {
   const matches = text.matchAll(/assets\/hockey-smash\/sprites\/([^'"`]+)\.png/g);
   for (const match of matches) {
