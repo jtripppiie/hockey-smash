@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.11 - Portrait Mobile Layout Fix
+
+- Shipped **Hockey Smash v0.5.11** with visible build badge `Build 2026-06-29.8`.
+- Added portrait-specific gameplay layout so the HUD, canvas, Daniel, and controls no longer stack into each other on phones.
+- Compacted the mobile HUD and hid the oversized Ready/status panel in portrait play.
+- Positioned the canvas near the top of the portrait viewport and kept controls separated below it.
+- Relaxed D-pad movement state checks so the buttons can move Daniel even if the game still reports a Ready/transition state.
+- Added portrait browser test coverage for canvas/control separation and D-pad movement.
+
 ## 0.5.10 - Document-Level D-pad Hit Testing
 
 - Shipped **Hockey Smash v0.5.10** with visible build badge `Build 2026-06-29.7`.
@@ -104,7 +113,7 @@
 - Added a DOM/CSS first-person viewport with layered floor, ceiling, side walls, far wall, doors, objects, enemy silhouettes, grain, vignette, and location caption.
 - Added a denser RPG interface with party strip, room scanner, gear deck, inventory, log, status meters, and development Help overlay.
 - Kept the existing canvas renderer as a fallback while making the new DOM viewport the primary presentation.
-- Added state-driven visual classes for walls, gates, items, monsters, exits, the mansion, the underpass, the conservatory, and Soldotna Creek Wayside.
+- Added state-driven visual classes for walls, gates, items, monsters, exits, the mansion, the underpass, and the conservatory.
 - Updated README, QA notes, and progress documentation.
 - WarClass was used for visual/interface inspiration only; no WarClass assets were copied.
 
