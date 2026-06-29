@@ -1,6 +1,12 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.13.2';
-  const DISPLAY_BUILD = 'Build 2026-06-29.48';
+  const DISPLAY_VERSION = 'Hockey Smash v0.13.3';
+  const DISPLAY_BUILD = 'Build 2026-06-29.49';
+  const DEV_STORAGE_KEY = 'hockeySmashDevModeSession';
+  const DEV_TAP_WINDOW_MS = 1500;
+  const DEV_TAP_TARGET = 3;
+  let devTapCount = 0;
+  let firstDevTapAt = 0;
+  let devModeEnabled = false;
 
   function actionFromTarget(target) {
     return target?.closest?.('[data-action]')?.dataset?.action || 'none';
@@ -42,15 +48,84 @@
     }
   }
 
+  function shouldAutoEnableDevMode() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('debug') === '1' || params.get('dev') === '1' || params.get('computerMode') === '1') return true;
+    try {
+      return window.sessionStorage.getItem(DEV_STORAGE_KEY) === 'true';
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function setDevElementState(enabled) {
+    const watch = document.getElementById('hockey-watch');
+    if (watch) {
+      watch.hidden = !enabled;
+      watch.setAttribute('aria-hidden', enabled ? 'false' : 'true');
+      if (enabled) watch.removeAttribute('tabindex');
+      else watch.setAttribute('tabindex', '-1');
+    }
+
+    const bootLog = document.getElementById('hockey-boot-log');
+    if (bootLog) {
+      bootLog.hidden = !enabled;
+      bootLog.setAttribute('aria-hidden', enabled ? 'false' : 'true');
+    }
+  }
+
+  function enableDevMode(reason) {
+    devModeEnabled = true;
+    document.body.classList.add('hockey-dev-mode');
+    document.body.dataset.hockeyDevMode = 'true';
+    setDevElementState(true);
+    try {
+      window.sessionStorage.setItem(DEV_STORAGE_KEY, 'true');
+    } catch (error) {
+      // sessionStorage can be unavailable in strict/private browsing contexts.
+    }
+    window.HOCKEY_BOOT_LOG?.log?.('dev', `Dev mode enabled: ${reason || 'manual unlock'}.`);
+    window.HOCKEY_BOOT_LOG?.snapshot?.('dev-mode-enabled');
+  }
+
+  function disableDevModeByDefault() {
+    devModeEnabled = false;
+    document.body.classList.remove('hockey-dev-mode');
+    document.body.dataset.hockeyDevMode = 'false';
+    setDevElementState(false);
+  }
+
+  function bindDevModeUnlock() {
+    const splashHero = document.getElementById('splash-hero');
+    if (!splashHero || splashHero.dataset.devUnlockBound === 'true') return;
+    splashHero.dataset.devUnlockBound = 'true';
+    splashHero.title = 'Character preview';
+
+    splashHero.addEventListener('pointerup', () => {
+      if (devModeEnabled) return;
+      const now = performance.now();
+      if (!firstDevTapAt || now - firstDevTapAt > DEV_TAP_WINDOW_MS) {
+        firstDevTapAt = now;
+        devTapCount = 0;
+      }
+      devTapCount += 1;
+      if (devTapCount >= DEV_TAP_TARGET) enableDevMode('splash image triple tap');
+    }, { passive: true });
+  }
+
   function onReady() {
     const api = window.RTA_HOCKEY_SMASH;
     const badge = document.getElementById('hockey-build-badge');
     if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
     if (api?.getVersion) api.getVersion = () => DISPLAY_VERSION;
-    document.body.dataset.hockeyButtonDebug = 'v0.13.2';
+    document.body.dataset.hockeyButtonDebug = 'v0.13.3';
 
     normalizeSofieLabels();
-    window.HOCKEY_BOOT_LOG?.log?.('v0109', 'Hockey Smash title, Dance Smash mode labels, pointe shoe action button, and accidental camera shake lock active.');
+    if (shouldAutoEnableDevMode()) enableDevMode('debug/dev URL or active session');
+    else disableDevModeByDefault();
+    bindDevModeUnlock();
+
+    window.HOCKEY_BOOT_LOG?.log?.('v0109', 'Normal splash hides dev controls. Triple-tap splash image to unlock dev mode.');
     window.HOCKEY_BOOT_LOG?.snapshot?.('v0109-ready');
 
     ['pointerdown', 'pointerup', 'click', 'touchstart', 'touchend'].forEach((type) => {
@@ -66,8 +141,10 @@
 
     window.setInterval(() => {
       normalizeSofieLabels();
+      bindDevModeUnlock();
+      setDevElementState(devModeEnabled);
       const state = window.RTA_HOCKEY_SMASH?.getState?.();
-      if (state?.mode === 'playing') window.HOCKEY_BOOT_LOG?.log?.('heartbeat', stateSummary());
+      if (devModeEnabled && state?.mode === 'playing') window.HOCKEY_BOOT_LOG?.log?.('heartbeat', stateSummary());
     }, 1500);
 
     function cameraSafetyLoop() {
