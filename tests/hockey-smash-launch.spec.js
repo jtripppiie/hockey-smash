@@ -8,9 +8,11 @@ test('Hockey Smash launches into a full viewport canvas game', async ({ page }) 
   page.on('pageerror', (error) => consoleErrors.push(error.message));
 
   await page.goto('/');
-  await expect(page.locator('h1')).toHaveText('Loading...');
-  await expect(page.locator('#hockey-build-badge')).toContainText('Build 2026-06-28.5');
-  await expect(page.locator('.hockey-version')).toContainText('Hockey Smash v0.5.0');
+  await expect(page.locator('h1')).toHaveText('Hockey Slash 2');
+  await expect(page.locator('.hockey-splash__tagline')).toHaveText("He's back with a vengance!");
+  await expect(page.locator('.hockey-splash__hero')).toHaveAttribute('src', 'assets/hockey-smash/sprites/splash.png');
+  await expect(page.locator('#hockey-build-badge')).toContainText('Build 2026-06-28.6');
+  await expect(page.locator('.hockey-version')).toContainText('Hockey Smash v0.5.1');
   await page.locator('#hockey-play').click();
   await expect(page.locator('#hockey-transition')).toContainText('Entering Hockey Smash');
   await expect(page.locator('#hockey-game')).toBeVisible({ timeout: 4000 });
@@ -19,9 +21,23 @@ test('Hockey Smash launches into a full viewport canvas game', async ({ page }) 
   const version = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getVersion());
   const bodyLocked = await page.evaluate(() => document.body.classList.contains('hockey-playing'));
 
-  expect(version).toBe('Hockey Smash v0.5.0');
+  expect(version).toBe('Hockey Smash v0.5.1');
   expect(state.mode).toBe('playing');
   expect(state.player.health).toBe(100);
   expect(bodyLocked).toBe(true);
+
+  const startX = state.player.x;
+  await page.keyboard.down('ArrowRight');
+  await page.waitForTimeout(220);
+  await page.keyboard.up('ArrowRight');
+  const rightX = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getState().player.x);
+  expect(rightX).toBeGreaterThan(startX);
+
+  await page.keyboard.down('ArrowLeft');
+  await page.waitForTimeout(220);
+  await page.keyboard.up('ArrowLeft');
+  const leftX = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getState().player.x);
+  expect(leftX).toBeLessThan(rightX);
+
   expect(consoleErrors).toEqual([]);
 });

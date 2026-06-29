@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.5.1 - Player Sprite, Debug, And Obstacle Stabilization
+
+- Shipped **Hockey Smash v0.5.1** with visible build badge `Build 2026-06-28.6`.
+- Added the new `hockey-player.png` as the moving player sprite.
+- Fixed processed player sprite rendering so the player is visible on canvas.
+- Enlarged the player and added a temporary `PLAYER` marker/ring for movement debugging.
+- Added in-game debug readout for position, velocity, facing, active keys, sprite load state, and computer test results.
+- Added `?computerMode=1` to automatically test right, left, jump, slide, stick swing, and obstacle clearing.
+- Changed touch action buttons to compact `J`, `S`, and hockey stick labels.
+- Removed code-drawn gray sidewalk/ground, fallback green mountains, and fallback sun.
+- Made bear and moose obstacles larger, earlier, labeled, and clearable with the hockey stick.
+
 ## 0.5.0 - Hockey Smash Prototype Pivot
 
 - Pivoted the public launch experience to **Hockey Smash v0.5.0** inside the existing repo.

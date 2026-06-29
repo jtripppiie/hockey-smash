@@ -11,11 +11,11 @@
     <main id="app" class="app-shell hockey-app">
       <section id="hockey-smash" class="hockey-shell" aria-labelledby="hockey-title">
         <div id="hockey-build-badge" class="hockey-build-badge" aria-label="Current deployed build">
-          Hockey Smash v0.5.0 · Build 2026-06-28.5
+          Hockey Smash v0.5.1 · Build 2026-06-28.6
         </div>
         <section id="hockey-splash" class="hockey-splash">
           <div class="hockey-splash__content">
-            <p class="hockey-eyebrow">Hockey Smash v0.5.0</p>
+            <p class="hockey-eyebrow">Hockey Smash v0.5.1</p>
             <img
               class="hockey-splash__hero"
               src="assets/hockey-smash/sprites/splash.png"
@@ -25,7 +25,7 @@
             <p class="hockey-splash__tagline">He's back with a vengance!</p>
             <p class="hockey-splash__copy">Rotate for the best play experience.</p>
             <button id="hockey-play" class="hockey-button hockey-button--primary" type="button">Play Hockey Smash</button>
-            <p class="hockey-version">Hockey Smash v0.5.0</p>
+            <p class="hockey-version">Hockey Smash v0.5.1</p>
           </div>
         </section>
 
@@ -49,7 +49,7 @@
           <div class="hockey-hud" aria-live="polite">
             <div class="hockey-hud__title">
               <strong>Hockey Smash</strong>
-              <span>v0.5.0</span>
+              <span>v0.5.1</span>
             </div>
             <div class="hockey-health" aria-label="Daniel health">
               <span>Daniel</span>
@@ -57,6 +57,8 @@
             </div>
             <div id="hockey-status" class="hockey-status">Ready.</div>
           </div>
+
+          <div id="hockey-debug" class="hockey-debug" aria-live="polite">Debug waiting...</div>
 
           <div id="hockey-rotate" class="hockey-rotate" hidden>Rotate for the best gaming experience.</div>
 
@@ -66,8 +68,8 @@
               <button class="hockey-control hockey-control--right" type="button" data-action="right" aria-label="Move right">▶</button>
             </div>
             <div class="hockey-actions" aria-label="Action controls">
-              <button class="hockey-control" type="button" data-action="jump">Jump</button>
-              <button class="hockey-control" type="button" data-action="slide">Slide</button>
+              <button class="hockey-control" type="button" data-action="jump" aria-label="Jump">J</button>
+              <button class="hockey-control" type="button" data-action="slide" aria-label="Slide">S</button>
               <button class="hockey-control hockey-control--stick" type="button" data-action="stick" aria-label="Hockey stick attack">🏒</button>
             </div>
           </div>

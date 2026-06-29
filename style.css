@@ -254,6 +254,27 @@ button {
   height: 14px;
 }
 
+.hockey-debug {
+  position: fixed;
+  left: 50%;
+  bottom: max(0.85rem, env(safe-area-inset-bottom));
+  z-index: 6;
+  transform: translateX(-50%);
+  width: min(44rem, calc(100vw - 22rem));
+  border: 2px solid rgba(156,231,255,0.3);
+  border-radius: 10px;
+  padding: 0.45rem 0.65rem;
+  background: rgba(5,8,13,0.74);
+  color: rgba(255,242,207,0.9);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: clamp(0.62rem, 1.25vw, 0.78rem);
+  font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+}
+
 .hockey-controls {
   position: fixed;
   left: max(0.8rem, env(safe-area-inset-left));
@@ -278,7 +299,8 @@ button {
   min-width: clamp(62px, 8vw, 88px);
   min-height: clamp(58px, 8vw, 82px);
   padding: 0.65rem 0.8rem;
-  font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  line-height: 1;
 }
 
 .hockey-control--stick {
@@ -366,6 +388,15 @@ button {
     align-items: stretch;
   }
 
+  .hockey-debug {
+    left: 0.5rem;
+    right: 0.5rem;
+    bottom: calc(max(0.45rem, env(safe-area-inset-bottom)) + 107px);
+    transform: none;
+    width: auto;
+    font-size: 0.64rem;
+  }
+
   .hockey-dpad {
     justify-content: start;
     gap: 0.45rem;
@@ -381,7 +412,7 @@ button {
     min-width: 0;
     min-height: 52px;
     padding: 0.45rem 0.55rem;
-    font-size: 0.86rem;
+    font-size: 1.35rem;
   }
 
   .hockey-dpad .hockey-control {

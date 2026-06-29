@@ -1,6 +1,6 @@
 # Hockey Smash
 
-Current playable version: **Hockey Smash v0.5.0**
+Current playable version: **Hockey Smash v0.5.1**
 
 Live GitHub Pages preview:
 
@@ -14,19 +14,19 @@ Hockey Smash is now the primary public playable mode in this repo. The project u
 
 ## What This Prototype Includes
 
-- Hockey Smash splash screen and visible `Hockey Smash v0.5.0` version text.
+- Hockey Smash splash screen and visible `Hockey Smash v0.5.1` version text.
 - Play button with a short "Entering Hockey Smash..." transition.
 - Full browser-viewport gameplay screen.
 - 1024x576 landscape-first canvas layout.
 - Ground line at `canvasHeight * 0.60`.
-- Daniel fixed-screen side-scroller movement.
-- Left/right movement only for v0.5.0.
+- Hockey player fixed-screen side-scroller movement with a visible debug marker.
+- Left/right movement, jump, slide, and stick swing coverage for v0.5.1.
 - Responsive jump, hold-to-slide speed boost, and hockey stick combo attack.
 - One health bar with brief invincibility after damage.
 - Try Again screen when health reaches zero.
-- Summer Soldotna-inspired background and sidewalk collision layer.
+- Summer Soldotna-inspired backgrounds with an invisible collision ground line and no code-drawn gray sidewalk.
 - Asset fallback placeholders when sprites/images are missing.
-- Bears, moose, salmon hazards, Mom/Sister interruption bubbles, a major salmon run, and Dad boss with dad joke attacks.
+- Bears and moose as stick-clearable obstacles, plus salmon hazards, Mom/Sister interruption bubbles, a major salmon run, and Dad boss with dad joke attacks.
 - Mobile landscape-first layout with temporary portrait rotate hint.
 - D-pad and action controls that do not scroll the page during gameplay.
 
@@ -57,7 +57,17 @@ Keyboard:
 Touch:
 
 - Bottom-left D-pad: left/right movement.
-- Bottom-right buttons: Jump, Slide, Stick.
+- Bottom-right buttons: `J` for jump, `S` for slide, hockey stick for attack.
+
+## Debug / Computer Mode
+
+Open the game with:
+
+```text
+http://localhost:8080/?computerMode=1
+```
+
+Computer mode briefly shows the splash screen, starts the game, and cycles through right movement, left movement, jump, slide, stick swing, and obstacle clearing. The in-game debug overlay reports player `x/y`, velocity, facing, active keys, sprite load state, and pass markers for right/left/jump/slide/stick/obstacle.
 
 ## Main Files
 
@@ -80,7 +90,7 @@ assets/hockey-smash/backgrounds/soldotna_cityscape_background_02_1920x1080.png
 assets/hockey-smash/backgrounds/soldotna_cityscape_background_03_1920x1080.png
 assets/hockey-smash/backgrounds/soldotna_cityscape_background_04_1920x1080.png
 assets/hockey-smash/backgrounds/soldotna_cityscape_background_05_1920x1080.png
-assets/player_hockey_sprite_96x96.png
+assets/hockey-smash/sprites/hockey-player.png
 assets/hockey-smash/sprites/splash.png
 assets/hockey-smash/sprites/salmon.png
 assets/hockey-smash/sprites/bear.png
@@ -106,7 +116,7 @@ This checks JavaScript syntax and validates the Hockey Smash launch shell, docs,
 
 ## Known Limitations
 
-- Daniel uses one static 96x96 sprite path; walking animation is future work.
+- The hockey player uses one static sprite; walking animation is future work.
 - Placeholder drawings stand in for any missing final art.
 - The first level is fixed-screen only; there is no camera-following long level yet.
 - Dad boss, salmon run, and interruption timing are tuned for a first prototype, not final balance.

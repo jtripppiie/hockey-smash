@@ -1,8 +1,17 @@
 (function () {
-  const VERSION = 'Hockey Smash v0.5.0';
+  // Hockey Smash is wrapped in an IIFE so the game does not leak lots of
+  // variables into the global browser scope. The only public API is at the
+  // bottom: window.RTA_HOCKEY_SMASH.
+
+  // These design constants are the "virtual screen" size. The canvas can scale
+  // up or down with CSS, but all game math happens in this 1024x576 world.
+  const VERSION = 'Hockey Smash v0.5.1';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const TRANSITION_MS = 2400;
+
+  // Every image used by the game lives here. Keeping paths in one object makes
+  // it easy to verify assets and swap art without hunting through drawing code.
   const ASSETS = {
     splash: 'assets/hockey-smash/sprites/splash.png',
     background01: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1920x1080.png',
@@ -10,7 +19,7 @@
     background03: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_03_1920x1080.png',
     background04: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_04_1920x1080.png',
     background05: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_05_1920x1080.png',
-    daniel: 'assets/player_hockey_sprite_96x96.png',
+    daniel: 'assets/hockey-smash/sprites/hockey-player.png',
     salmon: 'assets/hockey-smash/sprites/salmon.png',
     bear: 'assets/hockey-smash/sprites/bear.png',
     moose: 'assets/hockey-smash/sprites/moose.png',
@@ -23,6 +32,8 @@
   };
   const BACKGROUND_SEQUENCE = ['background01', 'background02', 'background03', 'background04', 'background05'];
 
+  // TUNING is the game's feel panel. If movement is too slow, jumps are too
+  // floaty, or the ground feels wrong, start by changing these numbers.
   const TUNING = {
     walkSpeed: 285,
     slideSpeed: 455,
@@ -33,6 +44,8 @@
     invincibleMs: 760,
   };
 
+  // A small state machine keeps screens understandable: splash, transition,
+  // playing, boss intro, boss fight, or try-again.
   const STATE = {
     SPLASH: 'splash',
     TRANSITION: 'transition',
@@ -42,6 +55,17 @@
     TRY_AGAIN: 'tryAgain',
   };
 
+  // Computer mode is a built-in tester. It presses virtual controls in this
+  // order so we can see if right, left, jump, slide, and stick attacks work.
+  const COMPUTER_PHASES = [
+    { name: 'right', label: 'Move right', duration: 1.1, actions: ['right'] },
+    { name: 'left', label: 'Move left', duration: 1.1, actions: ['left'] },
+    { name: 'jump', label: 'Jump', duration: 0.9, actions: [] },
+    { name: 'slide', label: 'Slide right', duration: 1.0, actions: ['right', 'slide'] },
+    { name: 'stick', label: 'Stick swing', duration: 1.0, actions: ['stick'] },
+  ];
+
+  // Runtime variables. These change while the game runs.
   let state = null;
   let elements = {};
   let raf = 0;
@@ -50,9 +74,12 @@
   const keys = new Set();
   const pointers = new Map();
   const images = {};
+  const processedImages = {};
   const missingAssets = [];
 
   function start() {
+    // Boot order matters: find DOM nodes, start image loading, wire controls,
+    // then show the splash screen.
     cacheElements();
     preloadAssets();
     bindEvents();
@@ -61,6 +88,8 @@
   }
 
   function cacheElements() {
+    // Store DOM lookups once. Reusing these references is cleaner and faster
+    // than calling document.getElementById all over the game loop.
     elements = {
       body: document.body,
       splash: document.getElementById('hockey-splash'),
@@ -72,14 +101,22 @@
       canvas: document.getElementById('hockey-canvas'),
       health: document.getElementById('hockey-health'),
       status: document.getElementById('hockey-status'),
+      debug: document.getElementById('hockey-debug'),
       rotate: document.getElementById('hockey-rotate'),
     };
   }
 
   function preloadAssets() {
+    // Images load asynchronously. When each image finishes, render once so the
+    // player sees art appear as soon as the browser has it.
     Object.entries(ASSETS).forEach(([key, src]) => {
       const image = new Image();
-      image.onload = () => render();
+      image.onload = () => {
+        // The hockey-player sprite came with a white background. This turns
+        // white pixels transparent so the character sits naturally on the scene.
+        if (key === 'daniel') processedImages[key] = makeWhiteTransparent(image);
+        render();
+      };
       image.onerror = () => {
         missingAssets.push(src);
         debugLog('asset', `Missing ${src}; using labeled placeholder.`);
@@ -90,6 +127,9 @@
   }
 
   function bindEvents() {
+    // Keyboard and touch both write into the same `keys` Set. That means the
+    // movement code does not care whether input came from WASD, arrow keys, or
+    // on-screen buttons.
     elements.play.addEventListener('click', beginTransition);
     elements.retry.addEventListener('click', beginTransition);
 
@@ -111,6 +151,7 @@
 
     document.querySelectorAll('[data-action]').forEach((button) => {
       button.addEventListener('pointerdown', (event) => {
+        // preventDefault keeps mobile taps from scrolling/zooming the page.
         event.preventDefault();
         button.setPointerCapture?.(event.pointerId);
         const action = button.dataset.action;
@@ -141,6 +182,8 @@
   }
 
   function keyToAction(key) {
+    // Convert physical keyboard keys into game actions. After this point, the
+    // game only thinks in actions: left, right, jump, slide, and stick.
     return {
       ArrowLeft: 'left',
       a: 'left',
@@ -164,7 +207,7 @@
   function beginTransition() {
     showTransition();
     window.clearTimeout(transitionTimer);
-    transitionTimer = window.setTimeout(startLevel, TRANSITION_MS);
+    transitionTimer = window.setTimeout(startLevel, isComputerMode() ? 900 : TRANSITION_MS);
   }
 
   function showSplash() {
@@ -175,6 +218,12 @@
     elements.transition.hidden = true;
     elements.game.hidden = true;
     elements.tryAgain.hidden = true;
+    if (elements.debug) elements.debug.textContent = isComputerMode() ? 'Computer mode armed.' : 'Debug waiting...';
+    if (isComputerMode()) {
+      window.setTimeout(() => {
+        if (state?.mode === STATE.SPLASH) beginTransition();
+      }, 1800);
+    }
   }
 
   function showTransition() {
@@ -208,6 +257,8 @@
   }
 
   function createState(mode) {
+    // This is the complete "new game" state. If a kid wants to add coins,
+    // score, or power-ups, this is where those values would first appear.
     const groundY = DESIGN_HEIGHT * TUNING.groundRatio;
     return {
       mode,
@@ -216,12 +267,12 @@
       salmonRunStarted: false,
       salmonRunTimer: 0,
       bossIntroTimer: 0,
-      spawn: { wildlife: 1.4, salmon: 1.0, family: 4.5, dadJoke: 1.5 },
+      spawn: { wildlife: 0.35, salmon: 4.0, family: 5.5, dadJoke: 1.5 },
       player: {
         x: 132,
-        y: groundY - 96,
-        width: 96,
-        height: 96,
+        y: groundY - 152,
+        width: 144,
+        height: 152,
         vx: 0,
         vy: 0,
         facing: 1,
@@ -235,10 +286,14 @@
       entities: [],
       effects: [],
       dad: null,
+      computer: createComputerState(),
     };
   }
 
   function loop(now) {
+    // requestAnimationFrame calls this around 60 times per second. `dt` means
+    // "delta time": how many seconds passed since the previous frame. Movement
+    // uses dt so the game speed stays consistent on fast and slow screens.
     const dt = Math.min(0.033, (now - lastFrame) / 1000 || 0);
     lastFrame = now;
     update(dt);
@@ -254,8 +309,11 @@
   }
 
   function update(dt) {
+    // Update is the game brain. It changes numbers: positions, timers, health,
+    // spawned obstacles, and debug text. Drawing happens later in render().
     if (!isGameplayActive()) return;
     state.time += dt;
+    updateComputer(dt);
     updatePlayer(dt);
     updateSpawns(dt);
     updateEntities(dt);
@@ -265,11 +323,16 @@
 
   function updatePlayer(dt) {
     const player = state.player;
+    // Left is -1, right is +1, both or neither becomes 0. This tiny formula is
+    // the whole side-scroller movement input.
     const move = (keys.has('right') ? 1 : 0) - (keys.has('left') ? 1 : 0);
     const speed = keys.has('slide') ? TUNING.slideSpeed : TUNING.walkSpeed;
     player.vx = move * speed;
     if (move) player.facing = move;
     player.x = clamp(player.x + player.vx * dt, 22, DESIGN_WIDTH - player.width - 22);
+
+    // Jumping is just vertical velocity plus gravity. Gravity pulls the player
+    // down every frame until their feet reach the invisible ground line.
     player.vy += TUNING.gravity * dt;
     player.y += player.vy * dt;
     const groundY = DESIGN_HEIGHT * TUNING.groundRatio;
@@ -282,7 +345,68 @@
     player.attackTimer = Math.max(0, player.attackTimer - dt);
   }
 
+  function createComputerState() {
+    // Computer mode stores pass/fail flags so the debug overlay can prove which
+    // controls have actually moved the player.
+    const enabled = isComputerMode();
+    return {
+      enabled,
+      timer: 0,
+      phaseIndex: 0,
+      phaseName: enabled ? COMPUTER_PHASES[0].name : 'manual',
+      phaseStartedX: 132,
+      jumpFired: false,
+      results: {
+        movedRight: false,
+        movedLeft: false,
+        jumped: false,
+        slid: false,
+        swung: false,
+        clearedObstacle: false,
+      },
+    };
+  }
+
+  function updateComputer(dt) {
+    if (!state.computer?.enabled) return;
+    const computer = state.computer;
+    const phase = COMPUTER_PHASES[computer.phaseIndex];
+    // The computer clears movement keys each frame, then presses the keys for
+    // the current test phase. This uses the same key Set as real players.
+    keys.delete('left');
+    keys.delete('right');
+    keys.delete('slide');
+    phase.actions.forEach((action) => keys.add(action));
+
+    if (phase.name === 'jump' && !computer.jumpFired && state.player.grounded) {
+      jump();
+      computer.jumpFired = true;
+    }
+    if (phase.name === 'stick' && !computer.jumpFired) {
+      swingStick();
+      computer.jumpFired = true;
+    }
+
+    const groundY = DESIGN_HEIGHT * TUNING.groundRatio;
+    computer.results.movedRight ||= state.player.x > 132 + 34;
+    computer.results.movedLeft ||= phase.name === 'left' && state.player.x < computer.phaseStartedX - 34;
+    computer.results.jumped ||= state.player.y + state.player.height < groundY - 8;
+    computer.results.slid ||= phase.name === 'slide' && Math.abs(state.player.vx) > TUNING.walkSpeed + 40;
+    computer.results.swung ||= state.player.attackTimer > 0;
+    state.message = `Computer test: ${phase.label}.`;
+
+    computer.timer += dt;
+    if (computer.timer < phase.duration) return;
+
+    computer.phaseIndex = (computer.phaseIndex + 1) % COMPUTER_PHASES.length;
+    computer.timer = 0;
+    computer.phaseName = COMPUTER_PHASES[computer.phaseIndex].name;
+    computer.phaseStartedX = state.player.x;
+    computer.jumpFired = false;
+  }
+
   function jump() {
+    // Only jump from the ground. This avoids infinite air jumps.
     if (!isGameplayActive() || !state.player.grounded) return;
     state.player.vy = -TUNING.jumpVelocity;
     state.player.grounded = false;
@@ -290,6 +414,8 @@
   }
 
   function swingStick() {
+    // The stick has a simple combo counter: quick repeated swings build up to a
+    // stronger third hit.
     if (!isGameplayActive()) return;
     const now = performance.now();
     const player = state.player;
@@ -301,6 +427,8 @@
   }
 
   function resolveStickHits(combo) {
+    // Combat uses rectangle overlap. If the attack rectangle touches an
+    // obstacle rectangle, that obstacle loses HP.
     const attack = attackBox();
     const damage = combo === 3 ? 3 : combo;
     state.entities.forEach((entity) => {
@@ -309,6 +437,7 @@
       state.effects.push({ x: entity.x, y: entity.y, text: 'SMASH!', life: 0.35 });
       if (entity.hp <= 0) {
         entity.dead = true;
+        if (entity.type === 'bear' || entity.type === 'moose') state.computer.results.clearedObstacle = true;
         state.message = clearMessage(entity.type);
       }
     });
@@ -324,15 +453,19 @@
 
   function attackBox() {
     const p = state.player;
+    // The attack box sits in front of the player and flips sides based on
+    // facing. Make this bigger/smaller to change how forgiving stick hits feel.
     return {
-      x: p.facing > 0 ? p.x + p.width - 8 : p.x - 58,
-      y: p.y + 20,
-      width: 66,
-      height: 48,
+      x: p.facing > 0 ? p.x + p.width - 12 : p.x - 92,
+      y: p.y + 28,
+      width: 104,
+      height: 72,
     };
   }
 
   function updateSpawns(dt) {
+    // Spawn timers count down to zero. When a timer reaches zero, we create a
+    // new obstacle and reset that timer.
     if (state.mode === STATE.BOSS_FIGHT) return;
     state.spawn.wildlife -= dt;
     state.spawn.salmon -= dt;
@@ -386,18 +519,23 @@
   }
 
   function spawnWildlife() {
+    // Bears and moose are the first true stick obstacles: they come from the
+    // right, have HP, and should be cleared by swinging.
     const type = Math.random() > 0.55 ? 'moose' : 'bear';
-    const width = 96;
+    const width = type === 'moose' ? 150 : 132;
+    const height = type === 'moose' ? 120 : 112;
     state.entities.push({
       type,
       x: DESIGN_WIDTH + 40,
-      y: DESIGN_HEIGHT * TUNING.groundRatio - 96,
+      y: DESIGN_HEIGHT * TUNING.groundRatio - height,
       width,
-      height: 96,
+      height,
       vx: type === 'moose' ? -190 : -245,
-      hp: type === 'moose' ? 4 : 3,
+      hp: type === 'moose' ? 3 : 2,
+      maxHp: type === 'moose' ? 3 : 2,
       damage: type === 'moose' ? 16 : 12,
     });
+    state.message = `${type === 'moose' ? 'Moose' : 'Bear'} obstacle incoming. Swing the stick!`;
   }
 
   function spawnSalmon() {
@@ -447,6 +585,8 @@
   }
 
   function updateEntities(dt) {
+    // Every entity moves by velocity. If it overlaps the player, it causes
+    // damage. Dead or far-off entities get removed to keep the game light.
     state.entities.forEach((entity) => {
       entity.x += (entity.vx || 0) * dt;
       entity.y += (entity.vy || 0) * dt;
@@ -467,6 +607,8 @@
   }
 
   function render() {
+    // Render is the game artist. It reads the current state and paints the
+    // screen from back to front: background, obstacles, boss, player, effects.
     if (!elements.canvas) return;
     const ctx = elements.canvas.getContext('2d');
     ctx.clearRect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
@@ -486,6 +628,8 @@
   }
 
   function drawBackground(ctx) {
+    // Backgrounds are 1920x1080 art files. drawCoverImage crops them like a CSS
+    // background-size: cover image so the canvas is always filled.
     const key = backgroundKeyForState();
     const bg = images[key];
     if (bg?.complete && bg.naturalWidth) {
@@ -494,24 +638,11 @@
     }
     ctx.fillStyle = '#7ec9f2';
     ctx.fillRect(0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
-    ctx.fillStyle = '#4f7f61';
-    ctx.beginPath();
-    ctx.moveTo(0, 258);
-    ctx.lineTo(180, 140);
-    ctx.lineTo(330, 262);
-    ctx.lineTo(520, 130);
-    ctx.lineTo(780, 266);
-    ctx.lineTo(1024, 150);
-    ctx.lineTo(1024, 576);
-    ctx.lineTo(0, 576);
-    ctx.fill();
-    ctx.fillStyle = '#f9dc62';
-    ctx.beginPath();
-    ctx.arc(850, 84, 42, 0, Math.PI * 2);
-    ctx.fill();
   }
 
   function backgroundKeyForState() {
+    // The background changes as time passes and special events start. This gives
+    // the one-screen prototype a feeling of progression.
     if (!state || state.mode === STATE.SPLASH || state.mode === STATE.TRANSITION) return BACKGROUND_SEQUENCE[0];
     if (state.mode === STATE.BOSS_FIGHT || state.dad) return 'background05';
     if (state.mode === STATE.BOSS_INTRO) return 'background04';
@@ -521,6 +652,8 @@
   }
 
   function drawCoverImage(ctx, image, x, y, width, height) {
+    // Canvas does not have object-fit: cover, so this helper calculates the
+    // source crop manually before drawing.
     const scale = Math.max(width / image.naturalWidth, height / image.naturalHeight);
     const sw = width / scale;
     const sh = height / scale;
@@ -530,21 +663,16 @@
   }
 
   function drawGround(ctx) {
-    const groundY = DESIGN_HEIGHT * TUNING.groundRatio;
-    ctx.fillStyle = '#56606a';
-    ctx.fillRect(0, groundY, DESIGN_WIDTH, DESIGN_HEIGHT - groundY);
-    for (let x = 0; x < DESIGN_WIDTH; x += 96) {
-      ctx.fillStyle = x % 192 ? '#a6a89e' : '#b8baae';
-      ctx.fillRect(x, groundY, 96, 32);
-      ctx.strokeStyle = '#74776f';
-      ctx.strokeRect(x, groundY, 96, 32);
-    }
+    // Collision still uses groundRatio; the visual floor is supplied by the background art.
   }
 
   function drawDaniel(ctx) {
+    // Draw the player. When facing left, we flip the canvas horizontally and
+    // draw the same sprite, instead of needing a second left-facing image.
     const p = state.player;
     ctx.save();
     if (p.invincible > 0 && Math.floor(performance.now() / 80) % 2 === 0) ctx.globalAlpha = 0.55;
+    drawPlayerMarker(ctx, p);
     if (p.facing < 0) {
       ctx.translate(p.x + p.width, p.y);
       ctx.scale(-1, 1);
@@ -560,13 +688,50 @@
     }
   }
 
+  function drawPlayerMarker(ctx, player) {
+    // Temporary teaching/debug marker. It makes the player easy to find while
+    // we stabilize movement and sprite scale.
+    ctx.save();
+    ctx.globalAlpha = 0.72;
+    ctx.strokeStyle = '#fff27a';
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.ellipse(player.x + player.width / 2, player.y + player.height - 9, player.width * 0.42, 13, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(5, 8, 13, 0.76)';
+    ctx.fillRect(player.x + player.width / 2 - 42, player.y - 24, 84, 20);
+    ctx.fillStyle = '#fff2cf';
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('PLAYER', player.x + player.width / 2, player.y - 9);
+    ctx.restore();
+  }
+
   function drawEntity(ctx, entity) {
+    // Different entity types can draw differently. Dad jokes are speech bubbles;
+    // wildlife and family use sprites; bears/moose also get labels and HP bars.
     if (entity.type === 'dadJoke') {
       drawBubble(ctx, entity.x, entity.y, entity.width, entity.height, entity.bubble, '#fff7d6');
       return;
     }
     drawSpriteOrPlaceholder(ctx, entity.type, entity.x, entity.y, entity.width, entity.height, entity.type.toUpperCase());
+    if (entity.type === 'bear' || entity.type === 'moose') drawObstacleLabel(ctx, entity);
     if (entity.bubble) drawBubble(ctx, entity.x - 178, entity.y - 26, 210, 58, entity.bubble, '#fff7d6');
+  }
+
+  function drawObstacleLabel(ctx, entity) {
+    // Obstacles teach the player what to do: "HIT IT" plus a small HP bar.
+    const label = entity.type === 'moose' ? 'MOOSE - HIT IT' : 'BEAR - HIT IT';
+    ctx.fillStyle = 'rgba(5, 8, 13, 0.78)';
+    ctx.fillRect(entity.x + 8, entity.y - 29, entity.width - 16, 22);
+    ctx.fillStyle = '#fff2cf';
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, entity.x + entity.width / 2, entity.y - 13);
+    ctx.fillStyle = '#111';
+    ctx.fillRect(entity.x + 8, entity.y - 6, entity.width - 16, 6);
+    ctx.fillStyle = '#ffcf5a';
+    ctx.fillRect(entity.x + 8, entity.y - 6, (entity.width - 16) * (entity.hp / entity.maxHp), 6);
   }
 
   function drawDad(ctx) {
@@ -578,8 +743,12 @@
   }
 
   function drawSpriteOrPlaceholder(ctx, key, x, y, width, height, label) {
-    const image = images[key];
-    if (image?.complete && image.naturalWidth) {
+    // If art is loaded, draw it. If not, draw a labeled box so missing images do
+    // not make the game crash or become invisible.
+    const image = processedImages[key] || images[key];
+    const drawableWidth = image?.naturalWidth || image?.width || 0;
+    const drawableHeight = image?.naturalHeight || image?.height || 0;
+    if (drawableWidth && drawableHeight && (image.complete !== false)) {
       ctx.drawImage(image, x, y, width, height);
       return;
     }
@@ -592,6 +761,27 @@
     ctx.font = 'bold 13px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText(label, x + width / 2, y + height / 2);
+  }
+
+  function makeWhiteTransparent(image) {
+    // Beginner-friendly image processing: copy the image to a hidden canvas,
+    // inspect every pixel, and make near-white pixels transparent.
+    const canvas = document.createElement('canvas');
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(image, 0, 0);
+    const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    // Pixel data is stored as red, green, blue, alpha, then repeats.
+    // index += 4 moves to the next pixel.
+    for (let index = 0; index < pixels.data.length; index += 4) {
+      const red = pixels.data[index];
+      const green = pixels.data[index + 1];
+      const blue = pixels.data[index + 2];
+      if (red > 238 && green > 238 && blue > 238) pixels.data[index + 3] = 0;
+    }
+    ctx.putImageData(pixels, 0, 0);
+    return canvas;
   }
 
   function drawBubble(ctx, x, y, width, height, text, color) {
@@ -616,12 +806,53 @@
   }
 
   function updateHud() {
+    // Keep HTML UI in sync with canvas state. Important game info should not
+    // live only inside the canvas.
     elements.health.value = state.player.health;
     elements.health.textContent = `${state.player.health} health`;
     elements.status.textContent = state.message;
+    updateDebugPanel();
+  }
+
+  function updateDebugPanel() {
+    // Debug text answers "is input broken or is movement blocked?" by showing
+    // position, velocity, active keys, and computer-mode pass flags.
+    if (!elements.debug || !state) return;
+    const p = state.player;
+    const spriteLoaded = images.daniel?.complete && images.daniel.naturalWidth ? 'loaded' : 'placeholder';
+    const keyList = Array.from(keys).sort().join('+') || 'none';
+    const computer = state.computer?.enabled
+      ? ` computer=${state.computer.phaseName} results=${formatComputerResults(state.computer.results)}`
+      : ' computer=off';
+    elements.debug.textContent = [
+      `mode=${state.mode}`,
+      `x=${Math.round(p.x)}`,
+      `y=${Math.round(p.y)}`,
+      `vx=${Math.round(p.vx)}`,
+      `vy=${Math.round(p.vy)}`,
+      `facing=${p.facing < 0 ? 'left' : 'right'}`,
+      `grounded=${p.grounded ? 'yes' : 'no'}`,
+      `keys=${keyList}`,
+      `sprite=${spriteLoaded}`,
+      computer,
+    ].join(' | ');
+  }
+
+  function formatComputerResults(results) {
+    // Uppercase means a computer-mode test passed. Lowercase means it has not
+    // passed yet. Example: RLJSHO means all current checks passed.
+    return [
+      results.movedRight ? 'R' : 'r',
+      results.movedLeft ? 'L' : 'l',
+      results.jumped ? 'J' : 'j',
+      results.slid ? 'S' : 's',
+      results.swung ? 'H' : 'h',
+      results.clearedObstacle ? 'O' : 'o',
+    ].join('');
   }
 
   function updateRotateHint() {
+    // Portrait phones can still play, but landscape gives much more room.
     if (!elements.rotate || elements.game.hidden) return;
     const shouldShow = window.innerHeight > window.innerWidth && window.innerWidth < 760;
     elements.rotate.hidden = !shouldShow;
@@ -633,6 +864,8 @@
   }
 
   function rectsOverlap(a, b) {
+    // Axis-aligned rectangle collision. This is one of the most common beginner
+    // game-development tricks.
     return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
   }
 
@@ -648,6 +881,8 @@
   }
 
   function clamp(value, min, max) {
+    // Clamp keeps a number inside a range. Here it stops the player from moving
+    // off the left or right side of the screen.
     return Math.max(min, Math.min(max, value));
   }
 
@@ -666,6 +901,10 @@
 
   function debugLog(category, details) {
     console.info(`[HockeySmash:${category}]`, details);
+  }
+
+  function isComputerMode() {
+    return new URLSearchParams(window.location.search).get('computerMode') === '1';
   }
 
   window.RTA_HOCKEY_SMASH = {
