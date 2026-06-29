@@ -16,6 +16,7 @@
   const PUCK_COOLDOWN_MS = 260;
   const PUCK_ARC_GRAVITY = 420;
   const FISH_DODGE_DAMAGE = 8;
+  const POWERUP_DURATION_MS = 6500;
 
   let api = null;
   let canvas = null;
@@ -26,7 +27,9 @@
   let lastSeenSwing = 0;
   let puckChargeStart = 0;
   let activePointerChargeId = null;
+  let puckSpeedBoostUntil = 0;
   let pucks = [];
+  let powerups = [];
 
   function onReady() {
     api = window.RTA_HOCKEY_SMASH;
@@ -106,8 +109,8 @@
     return currentPlayerConfig().character === 'sofie';
   }
 
-  function projectileWord() {
-    return isSofiePlayer() ? 'pointe shoe' : 'puck';
+  function speedBoostActive() {
+    return performance.now() < puckSpeedBoostUntil;
   }
 
   function projectileHitLabel(variant, charged) {
@@ -129,7 +132,9 @@
     const name = currentPlayerName();
     const sofie = isSofiePlayer();
     const charged = chargeFactor > 0.6;
-    const chargeBoost = Math.floor(chargeFactor * 2);
+    const boost = speedBoostActive();
+    const chargeBoost = Math.floor(chargeFactor * 2) + (boost ? 1 : 0);
+    const boostedGlow = boost ? ', 0 0 34px rgba(140,255,145,.85)' : '';
 
     if (sofie && airborne) {
       return {
@@ -137,7 +142,7 @@
         width: 40 + chargeFactor * 8, height: 24 + chargeFactor * 4,
         message: charged ? `${name} winds up an aerial pointe blast!` : `${name} launches an aerial pointe shoe!`,
         text: '🩰', background: 'linear-gradient(135deg, #fff7ed 0%, #fecdd3 45%, #fb7185 100%)',
-        boxShadow: charged ? '0 0 0 3px rgba(255,255,255,.95), 0 0 30px rgba(244,114,182,.95)' : '0 0 0 2px rgba(255,255,255,.9), 0 0 22px rgba(244,114,182,.75)',
+        boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.95), 0 0 30px rgba(244,114,182,.95)' : '0 0 0 2px rgba(255,255,255,.9), 0 0 22px rgba(244,114,182,.75)') + boostedGlow,
         borderRadius: '45% 55% 55% 45%', charged
       };
     }
@@ -147,7 +152,7 @@
         width: 38 + chargeFactor * 8, height: 22 + chargeFactor * 4,
         message: charged ? `${name} charges a low sweeping pointe shot!` : `${name} sweeps a low pointe shoe!`,
         text: '🩰', background: 'linear-gradient(135deg, #fff1f2 0%, #f9a8d4 48%, #be185d 100%)',
-        boxShadow: charged ? '0 0 0 3px rgba(255,255,255,.9), 0 0 28px rgba(244,114,182,.9)' : '0 0 0 2px rgba(255,255,255,.85), 0 0 18px rgba(244,114,182,.7)',
+        boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.9), 0 0 28px rgba(244,114,182,.9)' : '0 0 0 2px rgba(255,255,255,.85), 0 0 18px rgba(244,114,182,.7)') + boostedGlow,
         borderRadius: '45% 55% 55% 45%', charged
       };
     }
@@ -157,7 +162,7 @@
         width: 36 + chargeFactor * 9, height: 22 + chargeFactor * 4,
         message: charged ? `${name} winds up a big pointe-shoe shot!` : `${name} throws a pointe shoe at the wildlife!`,
         text: '🩰', background: 'linear-gradient(135deg, #fff7ed 0%, #fda4af 50%, #e11d48 100%)',
-        boxShadow: charged ? '0 0 0 3px rgba(255,255,255,.9), 0 0 26px rgba(244,114,182,.9)' : '0 0 0 2px rgba(255,255,255,.75), 0 8px 12px rgba(0,0,0,.25)',
+        boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.9), 0 0 26px rgba(244,114,182,.9)' : '0 0 0 2px rgba(255,255,255,.75), 0 8px 12px rgba(0,0,0,.25)') + boostedGlow,
         borderRadius: '45% 55% 55% 45%', charged
       };
     }
@@ -168,7 +173,7 @@
         width: 36 + chargeFactor * 10, height: 18 + chargeFactor * 5,
         message: charged ? `${name} winds up a huge aerial slapshot!` : `${name} launches an aerial slapshot!`,
         background: 'radial-gradient(circle at 35% 30%, #fff7a8 0 18%, #f59e0b 45%, #7c2d12 100%)',
-        boxShadow: charged ? '0 0 0 3px rgba(255,255,255,.95), 0 0 30px rgba(250,204,21,.95)' : '0 0 0 2px rgba(255,255,255,.8), 0 0 22px rgba(250,204,21,.75)',
+        boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.95), 0 0 30px rgba(250,204,21,.95)' : '0 0 0 2px rgba(255,255,255,.8), 0 0 22px rgba(250,204,21,.75)') + boostedGlow,
         borderRadius: '999px', charged
       };
     }
@@ -178,7 +183,7 @@
         width: 34 + chargeFactor * 10, height: 14 + chargeFactor * 4,
         message: charged ? `${name} charges a low rocket puck!` : `${name} fires a low slide puck!`,
         background: 'radial-gradient(circle at 35% 30%, #dbeafe 0 18%, #2563eb 46%, #0f172a 100%)',
-        boxShadow: charged ? '0 0 0 3px rgba(255,255,255,.9), 0 0 28px rgba(96,165,250,.9)' : '0 0 0 2px rgba(255,255,255,.75), 0 0 18px rgba(96,165,250,.7)',
+        boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.9), 0 0 28px rgba(96,165,250,.9)' : '0 0 0 2px rgba(255,255,255,.75), 0 0 18px rgba(96,165,250,.7)') + boostedGlow,
         borderRadius: '999px', charged
       };
     }
@@ -187,7 +192,7 @@
       width: 30 + chargeFactor * 10, height: 16 + chargeFactor * 5,
       message: charged ? `${name} winds up a big slap shot!` : `${name} slaps a puck at the wildlife!`,
       background: charged ? 'radial-gradient(circle at 35% 30%, #fef08a 0 18%, #f97316 46%, #111827 100%)' : 'radial-gradient(circle at 35% 30%, #5b6370 0 12%, #1b2028 42%, #05070a 100%)',
-      boxShadow: charged ? '0 0 0 3px rgba(255,255,255,.9), 0 0 28px rgba(251,191,36,.95)' : '0 0 0 2px rgba(255,255,255,.65), 0 8px 12px rgba(0,0,0,.25)',
+      boxShadow: (charged ? '0 0 0 3px rgba(255,255,255,.9), 0 0 28px rgba(251,191,36,.95)' : '0 0 0 2px rgba(255,255,255,.65), 0 8px 12px rgba(0,0,0,.25)') + boostedGlow,
       borderRadius: '999px', charged
     };
   }
@@ -201,7 +206,8 @@
     const player = state.player;
     const facing = player.facing < 0 ? -1 : 1;
     const chargeFactor = Math.min(1, Math.max(0, chargeTime / PUCK_MAX_CHARGE_MS));
-    const speed = PUCK_MIN_SPEED + (PUCK_BASE_SPEED - PUCK_MIN_SPEED) * chargeFactor;
+    const speedMultiplier = speedBoostActive() ? 1.25 : 1;
+    const speed = (PUCK_MIN_SPEED + (PUCK_BASE_SPEED - PUCK_MIN_SPEED) * chargeFactor) * speedMultiplier;
     const puckStats = puckStatsForPlayer(player, chargeFactor);
     const heightOffset = chargeFactor * -25;
     pucks.push({
@@ -217,13 +223,13 @@
       projectileType: puckStats.projectileType,
       charged: puckStats.charged,
       chargeFactor,
-      node: createPuckNode(puckStats),
+      node: createProjectileNode(puckStats),
     });
     state.message = puckStats.message;
     if (status) status.textContent = state.message;
   }
 
-  function createPuckNode(puckStats) {
+  function createProjectileNode(puckStats) {
     const node = document.createElement('div');
     node.setAttribute('aria-hidden', 'true');
     node.dataset.puckVariant = puckStats.variant;
@@ -233,8 +239,7 @@
     Object.assign(node.style, {
       position: 'fixed', left: '0', top: '0', width: '20px', height: '10px',
       zIndex: '8', pointerEvents: 'none', borderRadius: puckStats.borderRadius || '999px',
-      background: puckStats.background,
-      boxShadow: puckStats.boxShadow,
+      background: puckStats.background, boxShadow: puckStats.boxShadow,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       fontSize: puckStats.charged ? '24px' : '20px', lineHeight: '1',
       transform: puckStats.projectileType === 'pointe-shoe' ? 'rotate(-18deg)' : '',
@@ -247,13 +252,15 @@
     const dt = Math.min(0.034, Math.max(0.008, (now - lastFrame) / 1000 || 0.016));
     lastFrame = now;
     const state = getPlayableState();
-    if (!state) clearPucks();
+    if (!state) clearLayerObjects();
     else {
       neutralizeSalmonDamage(state);
       launchFromCoreStickSwing(state);
       updatePucks(state, dt);
+      updatePowerups(state, dt);
       handleSalmonDodgeRules(state);
       syncPuckNodes();
+      syncPowerupNodes();
       syncHud(state);
     }
     window.requestAnimationFrame(runPuckAndDodgeLayer);
@@ -298,7 +305,7 @@
       const word = puck.projectileType === 'pointe-shoe' ? 'pointe shoe' : 'puck';
       if (destroyed) {
         target.dead = true;
-        maybeDropPowerup(state, target);
+        maybeDropPowerup(target);
         if (state.computer?.results) state.computer.results.clearedObstacle = true;
         state.message = target.type === 'moose' ? `Moose clears the sidewalk after the ${word} hit!` : `Bear backs off after the ${word} hit!`;
       } else {
@@ -314,21 +321,55 @@
     });
   }
 
-  function maybeDropPowerup(state, target) {
+  function maybeDropPowerup(target) {
+    // Power-ups stay in this layer instead of state.entities. The old core loop
+    // damages the player for every entity overlap, so storing power-ups locally
+    // avoids accidentally turning a reward into a hazard.
     if (!target || Math.random() >= 0.4) return;
-    state.entities.push({
-      type: 'powerup',
-      key: `powerup-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-      x: target.x,
+    powerups.push({
+      x: target.x + target.width / 2 - 24,
       y: Math.max(80, target.y - 40),
       vx: -80,
-      vy: 0,
       width: 48,
       height: 48,
-      damage: 0,
+      life: 5.5,
       power: 'puckSpeed',
-      fromPuckLayer: true,
-      message: 'Power-up dropped — skate through it!',
+      node: createPowerupNode(),
+    });
+  }
+
+  function createPowerupNode() {
+    const node = document.createElement('div');
+    node.setAttribute('aria-hidden', 'true');
+    node.textContent = '⚡';
+    Object.assign(node.style, {
+      position: 'fixed', left: '0', top: '0', width: '28px', height: '28px',
+      zIndex: '8', pointerEvents: 'none', borderRadius: '999px',
+      display: 'grid', placeItems: 'center',
+      background: 'radial-gradient(circle, #fef08a 0 30%, #22c55e 72%, #064e3b 100%)',
+      boxShadow: '0 0 0 3px rgba(255,255,255,.85), 0 0 26px rgba(34,197,94,.85)',
+      fontSize: '22px', lineHeight: '1',
+    });
+    document.body.appendChild(node);
+    return node;
+  }
+
+  function updatePowerups(state, dt) {
+    powerups.forEach((powerup) => {
+      powerup.x += (powerup.vx || 0) * dt;
+      powerup.life -= dt;
+      if (rectsOverlap(powerup, state.player)) {
+        powerup.life = 0;
+        puckSpeedBoostUntil = performance.now() + POWERUP_DURATION_MS;
+        state.effects?.push?.({ x: state.player.x + state.player.width / 2, y: state.player.y - 18, text: 'PUCK BOOST!', life: 0.45 });
+        state.message = `${currentPlayerName()} grabbed a puck speed boost!`;
+        if (status) status.textContent = state.message;
+      }
+    });
+    powerups = powerups.filter((powerup) => {
+      const alive = powerup.life > 0 && powerup.x > -90 && powerup.x < DESIGN_WIDTH + 100;
+      if (!alive) powerup.node?.remove?.();
+      return alive;
     });
   }
 
@@ -376,7 +417,7 @@
     const tryAgain = document.getElementById('hockey-try-again');
     if (game) game.hidden = true;
     if (tryAgain) tryAgain.hidden = false;
-    clearPucks();
+    clearLayerObjects();
   }
 
   function syncPuckNodes() {
@@ -395,9 +436,27 @@
     });
   }
 
-  function clearPucks() {
+  function syncPowerupNodes() {
+    const rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const scaleX = rect.width / DESIGN_WIDTH;
+    const scaleY = rect.height / DESIGN_HEIGHT;
+    powerups.forEach((powerup) => {
+      Object.assign(powerup.node.style, {
+        left: `${rect.left + powerup.x * scaleX}px`,
+        top: `${rect.top + powerup.y * scaleY}px`,
+        width: `${Math.max(24, powerup.width * scaleX)}px`,
+        height: `${Math.max(24, powerup.height * scaleY)}px`,
+      });
+      powerup.node.hidden = false;
+    });
+  }
+
+  function clearLayerObjects() {
     pucks.forEach((puck) => puck.node?.remove?.());
+    powerups.forEach((powerup) => powerup.node?.remove?.());
     pucks = [];
+    powerups = [];
     puckChargeStart = 0;
     activePointerChargeId = null;
   }
