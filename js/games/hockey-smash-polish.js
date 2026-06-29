@@ -1,13 +1,15 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.5.6';
-  const DISPLAY_BUILD = 'Build 2026-06-29.3';
+  const DISPLAY_VERSION = 'Hockey Smash v0.5.7';
+  const DISPLAY_BUILD = 'Build 2026-06-29.4';
   const params = new URLSearchParams(window.location.search);
   const computerMode = params.get('computerMode') === '1';
+  const debugMode = params.get('debug') === '1';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
 
   function onReady() {
     document.body.classList.toggle('hockey-computer-mode', computerMode);
+    document.body.classList.toggle('hockey-debug-enabled', debugMode);
 
     const api = window.RTA_HOCKEY_SMASH;
     const game = document.getElementById('hockey-game');
@@ -38,6 +40,9 @@
       playerOverlay.appendChild(playerLabel);
       game.appendChild(playerOverlay);
     }
+
+    const autoplayPanel = createAutoplayPanel();
+    if (autoplayPanel) game.appendChild(autoplayPanel);
 
     const finish = document.createElement('section');
     finish.id = 'hockey-finish';
@@ -79,8 +84,30 @@
       if (retry) retry.click();
     });
 
+    function createAutoplayPanel() {
+      if (!computerMode) return null;
+      const panel = document.createElement('aside');
+      panel.className = 'hockey-autoplay-panel';
+      panel.setAttribute('aria-live', 'polite');
+
+      const label = document.createElement('p');
+      label.className = 'hockey-autoplay-panel__eyebrow';
+      label.textContent = 'Computer Play';
+
+      const title = document.createElement('strong');
+      title.textContent = 'Watch mode is active';
+
+      const copy = document.createElement('span');
+      copy.textContent = debugMode ? 'Debug overlay is on.' : 'Daniel is being controlled by the computer.';
+
+      panel.appendChild(label);
+      panel.appendChild(title);
+      panel.appendChild(copy);
+      return panel;
+    }
+
     function syncPlayerOverlay(state) {
-      if (computerMode || !canvas) return;
+      if (!canvas) return;
       if (!state?.player || state.mode === 'splash' || state.mode === 'transition' || state.mode === 'tryAgain') return;
 
       const rect = canvas.getBoundingClientRect();
