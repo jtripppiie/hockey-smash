@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.5.9';
-  const DISPLAY_BUILD = 'Build 2026-06-29.6';
+  const DISPLAY_VERSION = 'Hockey Smash v0.5.10';
+  const DISPLAY_BUILD = 'Build 2026-06-29.7';
   const params = new URLSearchParams(window.location.search);
   const computerMode = params.get('computerMode') === '1';
   const debugMode = params.get('debug') === '1';
@@ -9,7 +9,7 @@
   const CORE_GROUND_RATIO = 0.82;
   const VISUAL_GROUND_RATIO = 0.80;
   const DIRECT_MOVE_SPEED = 390;
-  const DIRECT_TAP_STEP = 72;
+  const DIRECT_TAP_STEP = 86;
 
   function onReady() {
     document.body.classList.toggle('hockey-computer-mode', computerMode);
@@ -186,12 +186,42 @@
         if (action === 'stick') stickPlayer();
       }
 
+      function getActionAtPoint(x, y) {
+        const buttons = Array.from(document.querySelectorAll('[data-action]'));
+        for (const button of buttons) {
+          const rect = button.getBoundingClientRect();
+          if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+            return button.dataset.action;
+          }
+        }
+        return null;
+      }
+
+      function consumeEvent(event, action) {
+        if (!action) return false;
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation?.();
+        return true;
+      }
+
+      window.HOCKEY_SMASH_DPAD = {
+        press(action) {
+          runAction(action);
+        },
+        release() {
+          stopMove();
+        },
+        move(direction, distance = DIRECT_TAP_STEP) {
+          movePlayer(direction, distance);
+        },
+      };
+
       document.querySelectorAll('[data-action]').forEach((button) => {
         const action = button.dataset.action;
 
         button.addEventListener('pointerdown', (event) => {
-          event.preventDefault();
-          event.stopPropagation();
+          if (!consumeEvent(event, action)) return;
           button.setPointerCapture?.(event.pointerId);
           runAction(action);
         }, { capture: true, passive: false });
@@ -203,14 +233,31 @@
         });
 
         button.addEventListener('click', (event) => {
-          event.preventDefault();
-          event.stopPropagation();
+          if (!consumeEvent(event, action)) return;
           if (action === 'left' || action === 'right') movePlayer(action, DIRECT_TAP_STEP);
           if (action === 'jump') jumpPlayer();
           if (action === 'slide') slidePlayer();
           if (action === 'stick') stickPlayer();
         }, { capture: true });
       });
+
+      document.addEventListener('pointerdown', (event) => {
+        const action = getActionAtPoint(event.clientX, event.clientY);
+        if (!consumeEvent(event, action)) return;
+        runAction(action);
+      }, { capture: true, passive: false });
+
+      document.addEventListener('pointerup', () => stopMove(), { capture: true });
+      document.addEventListener('pointercancel', () => stopMove(), { capture: true });
+
+      document.addEventListener('click', (event) => {
+        const action = getActionAtPoint(event.clientX, event.clientY);
+        if (!consumeEvent(event, action)) return;
+        if (action === 'left' || action === 'right') movePlayer(action, DIRECT_TAP_STEP);
+        if (action === 'jump') jumpPlayer();
+        if (action === 'slide') slidePlayer();
+        if (action === 'stick') stickPlayer();
+      }, { capture: true });
     }
 
     function syncPlayerOverlay(state) {
