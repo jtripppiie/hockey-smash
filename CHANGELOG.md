@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.9.0 - Character Overlays, Fullscreen, And Mobile Playability
+
+- Shipped **Hockey Smash v0.9.0** with visible build badge `Build 2026-06-29.11`.
+- Added fullscreen controls on the splash screen and during gameplay.
+- Added a dedicated `hockey-smash-v09.css` stylesheet for v0.9 fullscreen, entity overlay, and landscape-phone layout work.
+- Added visible DOM overlays synced to live game state for salmon/fish, bears, moose, Mom, Sister, Dad, and Dad jokes.
+- Kept Daniel visible through the existing player overlay and scaled him down on compact mobile layouts.
+- Added a visible jump impulse so the mobile `J` button clearly moves Daniel upward.
+- Preserved D-pad fallback movement and Watch Computer Play mode.
+- Updated README, static verification, and browser tests for the v0.9 milestone.
+
 ## 0.5.11 - Portrait Mobile Layout Fix
 
 - Shipped **Hockey Smash v0.5.11** with visible build badge `Build 2026-06-29.8`.
@@ -97,27 +108,3 @@
 - Added salmon hazards, a major salmon run sequence, bears, moose, Mom/Sister interruption bubbles, a major salmon run, and Dad boss concept with dad-joke attacks.
 - Added temporary mobile portrait rotate hint and no-scroll gameplay controls.
 - Added Hockey Smash design, workflow, and dev checklist documentation.
-
-## 0.8.0 - Release Quality And Real Verification Pass
-
-- Split verification into Real Computer Mode and Debug Deep Check Mode.
-- Real Computer Mode now uses actual player actions to walk the normal route, collect required items, fight the Signpost Ogre, dodge Big Spin, use a healing item, collect the Mapstone, and reach the normal ending.
-- Debug Deep Check Mode covers underpass, mansion, conservatory, and Glass Rose ending regressions with clearly labeled debug jumps.
-- Improved the first-person viewport with stronger atmospheric framing, route signage, central object/encounter labels, encounter presentation, scanline treatment, and position/facing-driven scene shifts.
-- Improved mobile layout with sticky thumb controls directly below the viewport, larger touch targets, compact status readouts, and a responsive verification overlay.
-- Added Playwright browser verification scaffolding plus Node-based syntax, data, and VM verification scripts.
-- Updated version badges, README, QA notes, changelog, and progress documentation.
-
-## 0.3.0 - WarClass-Inspired Visual Overhaul
-
-- Added a DOM/CSS first-person viewport with layered floor, ceiling, side walls, far wall, doors, objects, enemy silhouettes, grain, vignette, and location caption.
-- Added a denser RPG interface with party strip, room scanner, gear deck, inventory, log, status meters, and development Help overlay.
-- Kept the existing canvas renderer as a fallback while making the new DOM viewport the primary presentation.
-- Added state-driven visual classes for walls, gates, items, monsters, exits, the mansion, the underpass, and the conservatory.
-- Updated README, QA notes, and progress documentation.
-- WarClass was used for visual/interface inspiration only; no WarClass assets were copied.
-
-## 0.2.8 - Soldotna Wayside And Help Overlay
-
-- Added the optional Soldotna Creek Wayside route.
-- Added Spruce Signling and River Current Sprite encounters.
