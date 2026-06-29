@@ -1,11 +1,11 @@
 # Hockey Smash
 
-Current playable version: **Hockey Smash v0.13.4**
+Current playable version: **Hockey Smash v0.13.5**
 
 Live GitHub Pages preview:
 
 ```text
-https://jtripppiie.github.io/hockey-smash/?fresh=0134
+https://jtripppiie.github.io/hockey-smash/?fresh=0135
 ```
 
 Normal clean URL:
@@ -22,23 +22,32 @@ https://jtripppiie.github.io/hockey-smash/?computerMode=1
 
 ## Current Status
 
-Hockey Smash is the primary public playable mode in this repo. It is a static GitHub Pages canvas game with local WebP assets, fullscreen support, mobile controls, player name customization, Daniel/Sofie character selection, smooth side-scroller movement, moving wildlife/family/fish encounters, puck and pointe-shoe projectile gameplay, score, distance, combo streaks, high-score persistence, floating feedback, end-of-run summaries, health, Try Again flow, dev-only Computer Play, and a hidden debug unlock.
+Hockey Smash is the primary public playable mode in this repo. It is a static GitHub Pages canvas game with local WebP assets, fullscreen support, mobile controls, player name customization, Daniel/Sofie character selection, compact splash layout, smooth side-scroller movement, moving wildlife/family/fish encounters, puck and pointe-shoe projectile gameplay, score, distance, combo streaks, high-score persistence, floating feedback, end-of-run summaries, health, Try Again flow, dev-only Computer Play, and a hidden debug unlock.
 
 ## Latest Visible Build
 
 The top-right badge should read:
 
 ```text
-Hockey Smash v0.13.4 · Build 2026-06-29.50
+Hockey Smash v0.13.5 · Build 2026-06-29.51
 ```
 
-Use that badge to confirm GitHub Pages is serving the latest checkpoint. The package version is also `0.13.4`.
+Use that badge to confirm GitHub Pages is serving the latest checkpoint. The package version is also `0.13.5`.
 
 Current cache key:
 
 ```text
-0.13.4-20260629.50
+0.13.5-20260629.51
 ```
+
+## What v0.13.5 Includes
+
+- Adds a **compact splash** pass so players should not need to scroll to see the image, title, copy, character selector, player name input, Start Game button, and note.
+- Shrinks the splash hero image, title, tagline, copy, button height, and spacing.
+- Shrinks the Daniel/Sofie character buttons and player name input.
+- Adds short-screen and portrait overrides for smaller screens.
+- Keeps all splash content visible instead of removing controls or text.
+- Updates the visible badge, package version, cache keys, verifier, README, changelog, QA docs, workflow docs, checklist, progress notes, and beginner handoff guide.
 
 ## What v0.13.4 Includes
 
@@ -48,11 +57,11 @@ Current cache key:
 - Shows a centered countdown message: `Practice the buttons before the salmon run starts`.
 - Skips the countdown in `?computerMode=1` so automated Computer Play starts quickly.
 - Forces salmon/fish to enter from the **right side only** and move left toward the player.
-- Updates the visible badge, package version, cache keys, verifier, README, changelog, QA docs, workflow docs, checklist, and beginner handoff guide.
 - Adds extra beginner-friendly comments in `js/games/hockey-smash-v0109.js` around the countdown, dev mode, and salmon direction guard.
 
 ## Recent v0.13.x Stabilization
 
+- **v0.13.5:** compact no-scroll splash layout.
 - **v0.13.4:** 10-second practice countdown and right-side-only fish/salmon guard.
 - **v0.13.3:** Normal players see only Start Game; Watch Computer Play and debug log are dev-only; triple-tap the splash image to unlock dev mode.
 - **v0.13.2:** Sofie mode became Dance Smash with pointe-shoe projectile behavior.
@@ -60,6 +69,7 @@ Current cache key:
 
 ## Core Gameplay Already Included
 
+- Compact splash screen that should fit without scrolling on common desktop/mobile browser sizes.
 - Smooth left/right movement through `js/games/hockey-smash-v096.js`.
 - Jump buffer, coyote-time forgiveness, early-release jump cut-off, and timed slide/crouch state.
 - Computer Mode feeds its autoplay phases into the same smooth movement controller instead of skipping it.
@@ -162,10 +172,10 @@ http://localhost:8080/
 
 - `index.html`: public shell, visible build badge, splash customization controls, HUD, canvas, and script/css loading order.
 - `hockey-smash.css`: single CSS manifest loaded by `index.html`; imports all CSS layers with the current cache key.
-- `style.css`: full-screen layout, splash, HUD, canvas scaling, and mobile controls.
+- `style.css`: full-screen layout, compact splash layout, HUD, canvas scaling, and mobile controls.
 - `hockey-smash-polish.css`: presentation polish, player overlay, debug hiding, portrait mobile layout, and victory overlay styles.
 - `hockey-smash-touch.css`: touch-control reliability and pressed-button visual feedback.
-- `hockey-smash-custom.css`: player name and character selector styling.
+- `hockey-smash-custom.css`: compact player name and character selector styling.
 - `hockey-smash-v09.css`: fullscreen, entity overlay, and landscape-phone layout overrides.
 - `hockey-smash-v094.css`, `hockey-smash-v095.css`, `hockey-smash-v0111.css`: later layout and HUD polish layers.
 - `script.js`: app bootstrap.
@@ -219,8 +229,8 @@ npm run test:browser
 
 Manual smoke checks before calling this checkpoint good:
 
-- Open `/` and confirm the visible badge says `Hockey Smash v0.13.4 · Build 2026-06-29.50`.
-- Confirm the splash screen shows Start Game, character selector, and name input.
+- Open `/` and confirm the visible badge says `Hockey Smash v0.13.5 · Build 2026-06-29.51`.
+- Confirm the splash screen shows Start Game, character selector, and name input without requiring scrolling on common screen sizes.
 - Confirm Watch Computer Play is hidden for normal players.
 - Triple-tap the splash image and confirm dev mode reveals Watch Computer Play.
 - Select Daniel, enter a custom name, and confirm the HUD/overlay/status text uses that name.
