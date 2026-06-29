@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.5.13';
-  const DISPLAY_BUILD = 'Build 2026-06-29.10';
+  const DISPLAY_VERSION = 'Hockey Smash v0.9.0';
+  const DISPLAY_BUILD = 'Build 2026-06-29.11';
   const params = new URLSearchParams(window.location.search);
   const computerMode = params.get('computerMode') === '1';
   const debugMode = params.get('debug') === '1';
@@ -11,6 +11,15 @@
   const DIRECT_MOVE_SPEED = 390;
   const DIRECT_TAP_STEP = 86;
   const JUMP_VISIBLE_MS = 440;
+  const ENTITY_ASSETS = {
+    salmon: 'assets/hockey-smash/sprites/salmon.png',
+    bear: 'assets/hockey-smash/sprites/bear.png',
+    moose: 'assets/hockey-smash/sprites/moose.png',
+    mom: 'assets/hockey-smash/sprites/mom.png',
+    sister: 'assets/hockey-smash/sprites/sister.png',
+    dad: 'assets/hockey-smash/sprites/dad.png',
+    dadJoke: 'assets/hockey-smash/sprites/dad.png',
+  };
 
   function onReady() {
     document.body.classList.toggle('hockey-computer-mode', computerMode);
@@ -50,6 +59,12 @@
       playerOverlay.appendChild(playerLabel);
       game.appendChild(playerOverlay);
     }
+
+    const entityLayer = document.createElement('div');
+    entityLayer.className = 'hockey-entity-layer';
+    entityLayer.setAttribute('aria-hidden', 'true');
+    game.appendChild(entityLayer);
+    const entityNodes = new Map();
 
     enhanceDpadControls();
 
@@ -372,9 +387,93 @@
       playerOverlay.dataset.x = String(Math.round(player.x));
     }
 
+    function entityLabel(entity) {
+      return {
+        salmon: 'SALMON',
+        bear: 'BEAR',
+        moose: 'MOOSE',
+        mom: 'MOM',
+        sister: 'SISTER',
+        dad: 'DAD',
+        dadJoke: 'DAD JOKE',
+      }[entity.type] || entity.type.toUpperCase();
+    }
+
+    function entityIsGrounded(type) {
+      return ['bear', 'moose', 'mom', 'sister', 'dad'].includes(type);
+    }
+
+    function syncEntityOverlays(state) {
+      if (!canvas || !state || state.mode === 'tryAgain') return;
+      const rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+
+      const scaleX = rect.width / DESIGN_WIDTH;
+      const scaleY = rect.height / DESIGN_HEIGHT;
+      const compact = isCompactViewport();
+      const activeKeys = new Set();
+      const rawEntities = (state.entities || [])
+        .filter((entity) => entity && !entity.dead && ENTITY_ASSETS[entity.type])
+        .slice(0, compact ? 14 : 26);
+      const dadEntity = state.dad && !state.dad.dead ? [state.dad] : [];
+      const visibleEntities = rawEntities.concat(dadEntity);
+
+      visibleEntities.forEach((entity, index) => {
+        const key = entity === state.dad ? 'dad-boss' : `${entity.type}-${index}`;
+        activeKeys.add(key);
+        let node = entityNodes.get(key);
+        if (!node) {
+          node = document.createElement('div');
+          node.className = 'hockey-entity-overlay';
+          const img = document.createElement('img');
+          img.alt = '';
+          img.className = 'hockey-entity-overlay__sprite';
+          const label = document.createElement('span');
+          label.className = 'hockey-entity-overlay__label';
+          node.appendChild(img);
+          node.appendChild(label);
+          entityLayer.appendChild(node);
+          entityNodes.set(key, node);
+        }
+
+        const img = node.querySelector('img');
+        const label = node.querySelector('span');
+        img.src = ENTITY_ASSETS[entity.type];
+        label.textContent = entity.bubble || entityLabel(entity);
+        node.dataset.type = entity.type;
+        node.dataset.facing = entity.vx > 0 || entity.flip > 0 ? 'right' : 'left';
+
+        const scale = compact ? 0.54 : 0.72;
+        const minW = entity.type === 'salmon' ? 24 : compact ? 38 : 50;
+        const minH = entity.type === 'salmon' ? 16 : compact ? 38 : 48;
+        const width = Math.max(minW, entity.width * scaleX * scale);
+        const height = Math.max(minH, entity.height * scaleY * scale);
+        const centerX = rect.left + (entity.x + entity.width / 2) * scaleX;
+        const feetY = entityIsGrounded(entity.type)
+          ? rect.top + rect.height * VISUAL_GROUND_RATIO
+          : rect.top + entity.y * scaleY + height;
+        const top = feetY - height;
+        const left = centerX - width / 2;
+
+        node.style.left = `${left}px`;
+        node.style.top = `${top}px`;
+        node.style.width = `${width}px`;
+        node.style.height = `${height}px`;
+        node.hidden = left > window.innerWidth + 80 || left + width < -80 || top > window.innerHeight + 80;
+      });
+
+      entityNodes.forEach((node, key) => {
+        if (!activeKeys.has(key)) {
+          node.remove();
+          entityNodes.delete(key);
+        }
+      });
+    }
+
     function watchNormalMode() {
       const state = api.getState?.();
       syncPlayerOverlay(state);
+      syncEntityOverlays(state);
 
       if (!computerMode && !finishShown && state?.dad && state.dad.hp <= 0) {
         finishShown = true;
