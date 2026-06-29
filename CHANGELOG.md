@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.9 - Computer Mode Entity Sizing
+
+- Shipped **Hockey Smash v0.9.9** with visible build badge `Build 2026-06-29.20`.
+- Added `js/games/hockey-smash-v099.js` as a Computer Mode sizing pass.
+- Normalized salmon/fish, bear, moose, Mom, Sister, Dad, and Dad joke dimensions in `?computerMode=1`.
+- Kept fish smaller and airborne.
+- Kept bear medium-large and moose larger than bear while still fitting the road area.
+- Added a continuous sizing loop so newly spawned Computer Mode entities are corrected as they appear.
+
 ## 0.9.8 - Normal Gameplay Encounters
 
 - Shipped **Hockey Smash v0.9.8** with visible build badge `Build 2026-06-29.19`.
@@ -66,14 +75,3 @@
 - Added backtracking support from the left edge to the previous road section.
 - Added final-section looping so Daniel is no longer hard-stopped at the first background.
 - Updated package metadata, README, static verification, and browser tests.
-
-## 0.9.0 - Character Overlays, Fullscreen, And Mobile Playability
-
-- Shipped **Hockey Smash v0.9.0** with visible build badge `Build 2026-06-29.11`.
-- Added fullscreen controls on the splash screen and during gameplay.
-- Added a dedicated `hockey-smash-v09.css` stylesheet for v0.9 fullscreen, entity overlay, and landscape-phone layout work.
-- Added visible DOM overlays synced to live game state for salmon/fish, bears, moose, Mom, Sister, Dad, and Dad jokes.
-- Kept Daniel visible through the existing player overlay and scaled him down on compact mobile layouts.
-- Added a visible jump impulse so the mobile `J` button clearly moves Daniel upward.
-- Preserved D-pad fallback movement and Watch Computer Play mode.
-- Updated README, static verification, and browser tests for the v0.9 milestone.
