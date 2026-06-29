@@ -1,16 +1,16 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.12.2';
-  const DISPLAY_BUILD = 'Build 2026-06-29.37';
+  const DISPLAY_VERSION = 'Hockey Smash v0.12.4';
+  const DISPLAY_BUILD = 'Build 2026-06-29.39';
   const DESIGN_WIDTH = 1024;
   const GROUND_Y = 576 * 0.82;
   const RUN_SPEED = 360;
-  const RUN_ACCEL = 1900;
-  const RUN_DECEL = 2550;
-  const AIR_CONTROL = 0.72;
+  const RUN_ACCEL = 2100;
+  const RUN_DECEL = 2800;
+  const AIR_CONTROL = 0.76;
   const JUMP_VELOCITY = 830;
   const JUMP_CUT_VELOCITY = 320;
-  const COYOTE_MS = 120;
-  const JUMP_BUFFER_MS = 140;
+  const COYOTE_MS = 130;
+  const JUMP_BUFFER_MS = 150;
   const SLIDE_SPEED = 560;
   const SLIDE_MS = 320;
   const SLIDE_COOLDOWN_MS = 430;
@@ -53,7 +53,6 @@
     let slideUntil = 0;
     let slideCooldownUntil = 0;
     let slideDirection = 1;
-    let lastPointerAt = 0;
     let lastComputerPhase = '';
     let computerJumpQueued = false;
     let computerSlideQueued = false;
@@ -65,32 +64,31 @@
       return state;
     }
 
-    function actionFromEvent(event) {
-      return event.target?.closest?.('.hockey-controls [data-action]')?.dataset?.action || null;
+    function actionFromButtonTarget(target) {
+      return target?.closest?.('.hockey-controls [data-action]')?.dataset?.action || null;
     }
 
-    function controlButtonFromEvent(event) {
-      return event.target?.closest?.('.hockey-controls [data-action]') || null;
-    }
-
-    function consume(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation?.();
-    }
-
-    function setDirection(action, active) {
-      if (action === 'left') input.left = active;
-      if (action === 'right') input.right = active;
+    function markButton(action, active) {
+      if (!action) return;
       document.querySelectorAll(`.hockey-controls [data-action="${action}"]`).forEach((button) => {
         button.classList.toggle('is-pressed', Boolean(active));
         button.setAttribute('aria-pressed', active ? 'true' : 'false');
       });
     }
 
+    function setDirection(action, active) {
+      if (action === 'left') input.left = active;
+      if (action === 'right') input.right = active;
+      markButton(action, active);
+    }
+
     function resetDirections() {
       setDirection('left', false);
       setDirection('right', false);
+    }
+
+    function isGrounded(player) {
+      return Boolean(player.grounded) || player.y + player.height >= GROUND_Y - 5;
     }
 
     function setSlideVisual(active) {
@@ -101,14 +99,11 @@
       playerOverlay.style.transformOrigin = active ? 'bottom center' : '';
     }
 
-    function isGrounded(player) {
-      return Boolean(player.grounded) || player.y + player.height >= GROUND_Y - 5;
-    }
-
     function queueJump() {
       jumpBufferedAt = performance.now();
       input.jumpHeld = true;
-      pulseButton('jump');
+      markButton('jump', true);
+      window.setTimeout(() => markButton('jump', false), 120);
     }
 
     function releaseJump() {
@@ -132,20 +127,13 @@
       state.message = 'Daniel slides!';
       if (status) status.textContent = state.message;
       setSlideVisual(true);
-      pulseButton('slide');
-    }
-
-    function pulseButton(action) {
-      document.querySelectorAll(`.hockey-controls [data-action="${action}"]`).forEach((button) => {
-        button.classList.add('is-pressed');
-        window.setTimeout(() => button.classList.remove('is-pressed'), 140);
-      });
+      markButton('slide', true);
+      window.setTimeout(() => markButton('slide', false), SLIDE_MS);
     }
 
     function startAction(action, event) {
       if (!action || action === 'stick') return false;
-      if (event) consume(event);
-      lastPointerAt = performance.now();
+      event?.preventDefault?.();
       if (action === 'left' || action === 'right') setDirection(action, true);
       if (action === 'jump') queueJump();
       if (action === 'slide') startSlide();
@@ -154,7 +142,7 @@
 
     function endAction(action, event) {
       if (!action || action === 'stick') return false;
-      if (event) consume(event);
+      event?.preventDefault?.();
       if (action === 'left' || action === 'right') setDirection(action, false);
       if (action === 'jump') releaseJump();
       return true;
@@ -164,6 +152,15 @@
       activePointers.clear();
       resetDirections();
       releaseJump();
+    }
+
+    function controlKey(event) {
+      const key = event.key;
+      if (key === 'ArrowLeft' || key === 'a' || key === 'A') return 'left';
+      if (key === 'ArrowRight' || key === 'd' || key === 'D') return 'right';
+      if (key === 'ArrowUp' || key === 'w' || key === 'W' || key === ' ') return 'jump';
+      if (key === 'Shift' || key === 's' || key === 'S') return 'slide';
+      return null;
     }
 
     function syncComputerModeInput(state) {
@@ -176,8 +173,8 @@
         if (phase !== 'jump') releaseJump();
       }
 
-      input.left = phase === 'left';
-      input.right = phase === 'right' || phase === 'slide';
+      setDirection('left', phase === 'left');
+      setDirection('right', phase === 'right' || phase === 'slide');
 
       if (phase === 'jump' && !computerJumpQueued && isGrounded(state.player)) {
         queueJump();
@@ -187,96 +184,93 @@
         startSlide();
         computerSlideQueued = true;
       }
-    }
-
-    function controlKey(event) {
-      const key = event.key;
-      if (key === 'ArrowLeft' || key === 'a' || key === 'A') return 'left';
-      if (key === 'ArrowRight' || key === 'd' || key === 'D') return 'right';
-      if (key === 'ArrowUp' || key === 'w' || key === 'W' || key === ' ') return 'jump';
-      if (key === 'Shift' || key === 's' || key === 'S') return 'slide';
-      return null;
-    }
-
-    window.addEventListener('pointerdown', (event) => {
-      if (computerMode) return;
-      const action = actionFromEvent(event);
-      if (!startAction(action, event)) return;
-      if (event.pointerId != null) activePointers.set(event.pointerId, action);
-      controlButtonFromEvent(event)?.setPointerCapture?.(event.pointerId);
-    }, { capture: true, passive: false });
-
-    window.addEventListener('pointerup', (event) => {
-      if (computerMode) return;
-      const action = activePointers.get(event.pointerId) || actionFromEvent(event);
-      if (!endAction(action, event)) return;
-      activePointers.delete(event.pointerId);
-    }, { capture: true, passive: false });
-
-    window.addEventListener('pointercancel', (event) => {
-      if (computerMode) return;
-      const action = activePointers.get(event.pointerId) || actionFromEvent(event);
-      if (action) endAction(action, event);
-      else resetAllInput();
-      activePointers.delete(event.pointerId);
-    }, { capture: true, passive: false });
-
-    window.addEventListener('lostpointercapture', (event) => {
-      if (computerMode) return;
-      const action = activePointers.get(event.pointerId);
-      if (action) endAction(action, event);
-      activePointers.delete(event.pointerId);
-    }, { capture: true, passive: false });
-
-    window.addEventListener('touchend', (event) => {
-      if (computerMode) return;
-      const action = actionFromEvent(event);
-      if (action === 'left' || action === 'right' || action === 'jump') endAction(action, event);
-    }, { capture: true, passive: false });
-
-    window.addEventListener('touchcancel', (event) => {
-      if (computerMode) return;
-      consume(event);
-      resetAllInput();
-    }, { capture: true, passive: false });
-
-    window.addEventListener('click', (event) => {
-      if (computerMode) return;
-      const action = actionFromEvent(event);
-      if (!action || action === 'stick') return;
-      consume(event);
-      if (performance.now() - lastPointerAt < 700) return;
-      if (action === 'left' || action === 'right') {
-        setDirection(action, true);
-        window.setTimeout(() => setDirection(action, false), 140);
+      if (phase === 'stick' && state.player.lastSwing !== state.computer?.lastForcedSwing) {
+        const now = performance.now();
+        state.player.lastSwing = now;
+        state.player.attackTimer = 0.18;
+        if (state.computer) state.computer.lastForcedSwing = now;
       }
-      if (action === 'jump') queueJump();
-      if (action === 'slide') startSlide();
-    }, { capture: true, passive: false });
+    }
 
-    window.addEventListener('blur', resetAllInput);
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) resetAllInput();
+    document.querySelectorAll('.hockey-controls [data-action]').forEach((button) => {
+      const action = button.dataset.action;
+      if (!action || action === 'stick') return;
+
+      button.addEventListener('pointerdown', (event) => {
+        if (computerMode) return;
+        if (!startAction(action, event)) return;
+        if (event.pointerId != null) activePointers.set(event.pointerId, action);
+        button.setPointerCapture?.(event.pointerId);
+      }, { passive: false });
+
+      button.addEventListener('pointerup', (event) => {
+        if (computerMode) return;
+        const trackedAction = activePointers.get(event.pointerId) || action;
+        endAction(trackedAction, event);
+        activePointers.delete(event.pointerId);
+      }, { passive: false });
+
+      button.addEventListener('pointercancel', (event) => {
+        if (computerMode) return;
+        const trackedAction = activePointers.get(event.pointerId) || action;
+        endAction(trackedAction, event);
+        activePointers.delete(event.pointerId);
+      }, { passive: false });
+
+      button.addEventListener('lostpointercapture', (event) => {
+        if (computerMode) return;
+        const trackedAction = activePointers.get(event.pointerId);
+        if (trackedAction) endAction(trackedAction, event);
+        activePointers.delete(event.pointerId);
+      });
+
+      button.addEventListener('touchcancel', (event) => {
+        if (computerMode) return;
+        event.preventDefault();
+        resetAllInput();
+      }, { passive: false });
     });
 
     window.addEventListener('keydown', (event) => {
       if (computerMode) return;
       const action = controlKey(event);
       if (!action) return;
-      consume(event);
+      event.preventDefault();
       if (action === 'left' || action === 'right') setDirection(action, true);
       if (action === 'jump' && !event.repeat) queueJump();
       if (action === 'slide' && !event.repeat) startSlide();
-    }, { capture: true, passive: false });
+    });
 
     window.addEventListener('keyup', (event) => {
       if (computerMode) return;
       const action = controlKey(event);
       if (!action) return;
-      consume(event);
+      event.preventDefault();
       if (action === 'left' || action === 'right') setDirection(action, false);
       if (action === 'jump') releaseJump();
-    }, { capture: true, passive: false });
+    });
+
+    window.addEventListener('pointerup', (event) => {
+      const action = activePointers.get(event.pointerId);
+      if (action) endAction(action, event);
+      activePointers.delete(event.pointerId);
+    }, { passive: false });
+
+    window.addEventListener('pointercancel', (event) => {
+      const action = activePointers.get(event.pointerId);
+      if (action) endAction(action, event);
+      activePointers.delete(event.pointerId);
+    }, { passive: false });
+
+    window.addEventListener('touchcancel', (event) => {
+      event.preventDefault();
+      resetAllInput();
+    }, { passive: false });
+
+    window.addEventListener('blur', resetAllInput);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) resetAllInput();
+    });
 
     function movementLoop(now) {
       const state = getState();
@@ -305,7 +299,7 @@
         const axis = (input.right ? 1 : 0) - (input.left ? 1 : 0);
 
         if (slideActive) {
-          smoothVx = approach(smoothVx, slideDirection * 360, 900 * dt);
+          smoothVx = approach(smoothVx, slideDirection * 380, 1100 * dt);
           player.facing = slideDirection;
           setSlideVisual(true);
         } else {
@@ -315,7 +309,7 @@
           if (axis) player.facing = axis < 0 ? -1 : 1;
         }
 
-        if (!axis && !slideActive && Math.abs(smoothVx) < 4) smoothVx = 0;
+        if (!axis && !slideActive && Math.abs(smoothVx) < 5) smoothVx = 0;
         player.vx = smoothVx;
         player.x = clamp(player.x + smoothVx * dt, 22, DESIGN_WIDTH - player.width - 22);
 
@@ -330,9 +324,6 @@
     window.requestAnimationFrame(movementLoop);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', onReady);
-  } else {
-    onReady();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onReady);
+  else onReady();
 })();
