@@ -1,6 +1,6 @@
 # Hockey Smash
 
-Current playable version: **Hockey Smash v0.5.4**
+Current playable version: **Hockey Smash v0.9.0**
 
 Live GitHub Pages preview:
 
@@ -10,37 +10,37 @@ https://jtripppiie.github.io/hockey-smash/
 
 ## Current Status
 
-Hockey Smash is now the primary public playable mode in this repo. The project uses static GitHub Pages infrastructure, a canvas runtime, local assets, docs, and verification scripts centered on Hockey Smash.
+Hockey Smash is now the primary public playable mode in this repo. The project uses static GitHub Pages infrastructure, a canvas runtime, local assets, mobile controls, fullscreen support, and verification scripts centered on Hockey Smash.
 
 ## Latest Visible Build
 
 The top-right badge should read:
 
 ```text
-Hockey Smash v0.5.4 · Build 2026-06-29.1
+Hockey Smash v0.9.0 · Build 2026-06-29.11
 ```
 
 Use that badge to confirm GitHub Pages is serving the latest checkpoint.
 
-## What This Prototype Includes
+## What v0.9.0 Includes
 
-- Hockey Smash splash screen with the visible version kept only in the top-right build badge.
-- Play button with a short "Entering Hockey Smash..." transition.
+- Hockey Smash splash screen with the visible version kept in the top-right build badge.
+- Play button, Watch Computer Play button, and Fullscreen button.
+- Fullscreen support for mobile so browser bars can be hidden where the browser allows it.
 - Full browser-viewport gameplay screen.
-- 1024x576 landscape-first canvas layout.
-- Ground line at `canvasHeight * 0.82`, aligned to the visible sidewalk in the background art.
-- Hockey player fixed-screen side-scroller movement with a normal-mode player overlay so Daniel remains visible outside computer mode.
-- Left/right movement, jump, slide, and stick swing coverage for v0.5.4.
-- Responsive jump, hold-to-slide speed boost, and hockey stick combo attack.
-- One health bar with brief invincibility after damage.
-- Try Again screen when health reaches zero.
-- Normal-mode victory overlay after the final challenge is cleared.
-- Summer Soldotna-inspired backgrounds with an invisible collision ground line and no code-drawn gray sidewalk.
-- Asset fallback placeholders when sprites/images are missing.
-- Bears and moose as stick-clearable obstacles, plus salmon hazards, Mom/Sister interruption bubbles, a major salmon run, and Dad boss with dad joke attacks.
-- Mobile landscape-first layout with temporary portrait rotate hint.
-- D-pad and action controls that do not scroll the page during gameplay.
-- Debug overlay hidden during normal player mode and preserved for `?computerMode=1`.
+- 1024x576 virtual canvas runtime.
+- Daniel as a visible DOM overlay synced to the live player state.
+- Smaller Daniel scaling on compact phone layouts.
+- Visible jump impulse for the mobile `J` button.
+- Direct D-pad movement fallback for touch/click controls.
+- DOM character overlays synced to the live game state for salmon/fish, bears, moose, Mom, Sister, Dad, and Dad jokes.
+- Bears and moose as stick-clearable obstacles.
+- Salmon hazards and major salmon run sequence.
+- Mom/Sister interruption bubbles.
+- Dad boss and Dad joke attacks.
+- Mobile portrait layout compaction.
+- Mobile landscape-phone layout overrides through `hockey-smash-v09.css`.
+- Debug overlay hidden by default and available through `?computerMode=1&debug=1`.
 
 ## How To Run Locally
 
@@ -70,8 +70,9 @@ Touch:
 
 - Bottom-left D-pad: left/right movement.
 - Bottom-right buttons: `J` for jump, `S` for slide, hockey stick for attack.
+- Fullscreen button: requests fullscreen for the game shell when supported by the mobile browser.
 
-## Debug / Computer Mode
+## Computer Play / Watch Mode
 
 Open the game with:
 
@@ -79,20 +80,24 @@ Open the game with:
 http://localhost:8080/?computerMode=1
 ```
 
-Computer mode briefly shows the splash screen, starts the game, and cycles through right movement, left movement, jump, slide, stick swing, and obstacle clearing. The in-game debug overlay reports player `x/y`, velocity, facing, active keys, sprite load state, and pass markers for right/left/jump/slide/stick/obstacle.
+Computer Play is treated as a player-facing watch/autoplay mode. It starts the game and cycles through movement, jump, slide, and stick actions so the game can be watched without manual input.
+
+For diagnostics, use:
+
+```text
+http://localhost:8080/?computerMode=1&debug=1
+```
 
 ## Main Files
 
 - `index.html`: Hockey Smash public shell.
 - `style.css`: full-screen layout, splash, HUD, canvas scaling, and mobile controls.
-- `hockey-smash-polish.css`: normal-mode presentation polish, player overlay, debug hiding, and victory overlay styles.
+- `hockey-smash-polish.css`: normal-mode presentation polish, player overlay, debug hiding, portrait mobile layout, and victory overlay styles.
+- `hockey-smash-v09.css`: v0.9 fullscreen, entity overlay, and landscape-phone layout overrides.
 - `script.js`: app bootstrap.
 - `js/games/hockey-smash.js`: Hockey Smash runtime, state machine, player movement, hazards, Dad boss, rendering, and asset fallbacks.
-- `js/games/hockey-smash-polish.js`: normal-mode polish layer for top-level player experience and visible build badge.
+- `js/games/hockey-smash-polish.js`: player-facing polish layer, fullscreen handling, D-pad fallback, jump fallback, visible player overlay, and entity overlays.
 - `assets/`: expected Hockey Smash sprite/background files.
-- `docs/hockey-smash-design.md`: design target and scope.
-- `docs/hockey-smash-workflow.md`: manual development workflow.
-- `docs/hockey-smash-dev-checklist.md`: quick dev checklist.
 
 ## Asset Paths
 
@@ -126,11 +131,17 @@ Run:
 npm run verify
 ```
 
-This checks JavaScript syntax, validates the Hockey Smash launch shell/docs/assets, and runs a Node-based action simulation for right movement, left movement, jump, slide, stick swing, and bear obstacle clearing.
+Optional browser automation:
+
+```bash
+npm install
+npm run test:browser:install
+npm run test:browser
+```
 
 ## Known Limitations
 
-- The hockey player uses one static sprite; walking animation is future work.
-- Placeholder drawings stand in for any missing final art.
+- Daniel still uses one static sprite; walking animation is future work.
+- Entity overlays are a v0.9 visibility layer while the canvas/mobile scaling stabilizes.
 - The first level is fixed-screen only; there is no camera-following long level yet.
-- Dad boss, salmon run, and interruption timing are tuned for a first prototype, not final balance.
+- Dad boss, salmon run, and interruption timing are tuned for a prototype, not final balance.
