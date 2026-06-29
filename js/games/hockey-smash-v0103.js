@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.11.8';
-  const DISPLAY_BUILD = 'Build 2026-06-29.33';
+  const DISPLAY_VERSION = 'Hockey Smash v0.12.0';
+  const DISPLAY_BUILD = 'Build 2026-06-29.35';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const GROUND_Y = DESIGN_HEIGHT * 0.82;
@@ -40,6 +40,10 @@
     window.addEventListener('click', (event) => {
       if (actionFromEvent(event) === 'stick') firePuck();
     }, { capture: true });
+  }
+
+  function notifyScoreLayer(method, payload) {
+    window.RTA_HOCKEY_SMASH_SCORE?.[method]?.(payload);
   }
 
   function actionFromEvent(event) {
@@ -132,13 +136,15 @@
       target.hp -= PUCK_DAMAGE;
       puck.life = 0;
       state.effects?.push?.({ x: target.x + target.width / 2, y: target.y - 10, text: 'PUCK!', life: 0.35 });
-      if (target.hp <= 0) {
+      const destroyed = target.hp <= 0;
+      if (destroyed) {
         target.dead = true;
         if (state.computer?.results) state.computer.results.clearedObstacle = true;
         state.message = target.type === 'moose' ? 'Moose clears the sidewalk after the puck hit!' : 'Bear backs off after the puck hit!';
       } else {
         state.message = target.type === 'moose' ? 'Puck hit the moose. One more!' : 'Puck hit the bear!';
       }
+      notifyScoreLayer('recordPuckHit', { state, target, destroyed });
       if (status) status.textContent = state.message;
     });
     pucks = pucks.filter((puck) => {
@@ -157,6 +163,7 @@
       if (playerIsDodgingSalmon(player)) {
         state.effects?.push?.({ x: player.x + player.width / 2, y: player.y - 10, text: 'DODGE!', life: 0.35 });
         state.message = 'Daniel dodged the fish!';
+        notifyScoreLayer('recordDodge', { state, entity });
       } else {
         damagePlayerFromFish(state, entity.dodgeDamage || FISH_DODGE_DAMAGE);
       }
@@ -176,6 +183,7 @@
     player.health = Math.max(0, player.health - amount);
     player.invincible = 0.85;
     state.message = 'Fish clipped Daniel. Duck or jump next time!';
+    notifyScoreLayer('recordDamage', { state, amount, source: 'salmon' });
     if (player.health <= 0) showTryAgain(state);
   }
 
