@@ -81,8 +81,13 @@ if (!html.includes('aria-label="Hockey stick attack"') || !html.includes('🏒')
 if (!css.includes('body.hockey-playing')) errors.push('No-scroll gameplay body class is missing.');
 if (!css.includes('touch-action: none')) errors.push('Touch scroll prevention is missing.');
 if (!polishCss.includes('body:not(.hockey-computer-mode) .hockey-debug')) errors.push('Normal mode should hide the debug overlay.');
+if (!polishCss.includes('.hockey-player-overlay')) errors.push('Normal-mode player overlay CSS is missing.');
+if (!polishCss.includes('drop-shadow')) errors.push('Player overlay visibility shadow is missing.');
 if (!polishCss.includes('.hockey-finish')) errors.push('Victory overlay CSS is missing.');
 if (!polishJs.includes('hockey-computer-mode')) errors.push('Computer mode body class hook is missing.');
+if (!polishJs.includes('hockey-player-overlay')) errors.push('Normal-mode player overlay script is missing.');
+if (!polishJs.includes('syncPlayerOverlay')) errors.push('Player overlay sync function is missing.');
+if (!polishJs.includes('assets/hockey-smash/sprites/hockey-player.png')) errors.push('Player overlay must use the hockey-player sprite.');
 if (!polishJs.includes('hockey-finish')) errors.push('Victory overlay script is missing.');
 if (!polishJs.includes('Final challenge cleared')) errors.push('Victory status text is missing.');
 if (!js.includes('groundRatio: 0.82')) errors.push('Ground ratio must be 0.82.');
@@ -106,4 +111,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Hockey Smash static verification passed for v0.5.3 normal-mode polish.');
+console.log('Hockey Smash static verification passed for v0.5.3 normal-mode player visibility polish.');
