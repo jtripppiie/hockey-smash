@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.12.7';
-  const DISPLAY_BUILD = 'Build 2026-06-29.42';
+  const DISPLAY_VERSION = 'Hockey Smash v0.12.8';
+  const DISPLAY_BUILD = 'Build 2026-06-29.43';
 
   function actionFromTarget(target) {
     return target?.closest?.('[data-action]')?.dataset?.action || 'none';
@@ -30,9 +30,9 @@
     const badge = document.getElementById('hockey-build-badge');
     if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
     if (api?.getVersion) api.getVersion = () => DISPLAY_VERSION;
-    document.body.dataset.hockeyButtonDebug = 'v0.12.7';
+    document.body.dataset.hockeyButtonDebug = 'v0.12.8';
 
-    window.HOCKEY_BOOT_LOG?.log?.('v0109', 'Button debug loaded. Debug panel should be top-right, away from D-pad.');
+    window.HOCKEY_BOOT_LOG?.log?.('v0109', 'Button debug and hidden-screen repair marker loaded.');
     window.HOCKEY_BOOT_LOG?.snapshot?.('v0109-ready');
 
     ['pointerdown', 'pointerup', 'click', 'touchstart', 'touchend'].forEach((type) => {
