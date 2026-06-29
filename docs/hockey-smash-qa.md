@@ -1,62 +1,76 @@
 # Hockey Smash QA Routes
 
-Hockey Smash is now the primary public game. Hockey Smash QA below remains as historical/background coverage.
+Hockey Smash is the primary public game in this repo. This QA file tracks the current public preview first, then the manual checks that matter before calling a checkpoint stable.
 
 ## Current Preview
 
-- Public game: `Hockey Smash v0.5.4`
-- Visible build badge: `Hockey Smash v0.5.4 · Build 2026-06-29.1`
-- Legacy Hockey Smash version retained in background files: `0.8.0`
-- Save version: `1`
+- Public game: `Hockey Smash v0.11.8`
+- Visible build badge: `Hockey Smash v0.11.8 · Build 2026-06-29.33`
+- Package version: `0.11.8`
 - Preview branch: `main`
 - GitHub Pages URL: `https://jtripppiie.github.io/hockey-smash/`
+- Computer Play URL: `https://jtripppiie.github.io/hockey-smash/?computerMode=1`
 
-## Hockey Smash v0.5.4 Launch QA
+## v0.11.8 Launch QA
 
 ### Launch Flow
 
-1. Open the Pages URL.
-2. Confirm the top-right badge says `Hockey Smash v0.5.4 · Build 2026-06-29.1`.
+1. Open `https://jtripppiie.github.io/hockey-smash/`.
+2. Confirm the top-right badge says `Hockey Smash v0.11.8 · Build 2026-06-29.33`.
 3. Confirm the splash screen says `Hockey Slash 2`.
-4. Confirm there is no duplicate version label in the splash content.
-5. Click Play.
-6. Confirm the page does not anchor-jump or scroll down.
-7. Confirm the transition screen says `Entering Hockey Smash...`.
-8. Confirm gameplay opens in a full browser-viewport screen.
+4. Click **Play Hockey Smash**.
+5. Confirm the transition screen says `Entering Hockey Smash...`.
+6. Confirm gameplay opens in a full browser-viewport screen.
+7. Confirm the page does not anchor-jump or scroll during gameplay.
 
-### Gameplay Shell
+### Normal Gameplay Controls
 
-1. Confirm the canvas scales as a landscape-first 16:9 game view.
-2. Confirm Daniel appears in normal mode, not only in `?computerMode=1`.
-3. Confirm Daniel stands on the sidewalk ground line.
-4. Confirm bears, moose, salmon, Mom, Sister, and Dad align to the same ground area.
-5. Confirm the lower part of the screen contains scenery and controls without covering Daniel.
-6. Confirm missing art uses labeled placeholders instead of crashing.
-7. Confirm the debug overlay is hidden in normal mode.
-8. Confirm the debug overlay appears in `?computerMode=1`.
-
-### Controls
-
-1. Use `A` / `ArrowLeft` and confirm Daniel moves left.
-2. Use `D` / `ArrowRight` and confirm Daniel moves right.
+1. Use `A` / `ArrowLeft` and confirm Daniel moves left smoothly.
+2. Use `D` / `ArrowRight` and confirm Daniel moves right smoothly.
 3. Press `W`, `ArrowUp`, or `Space` and confirm Daniel jumps.
-4. Hold `Shift` or `S` while moving and confirm slide/speed boost works.
-5. Press `F` or `Enter` repeatedly and confirm the hockey stick combo advances.
-6. Hold the touch D-pad left/right and confirm movement works.
-7. Use touch Jump, Slide, and Stick buttons.
+4. Press or hold `Shift` / `S` and confirm Daniel slides/ducks.
+5. Press `F` or `Enter` and confirm the stick/puck action triggers.
+6. Confirm the mobile D-pad left/right works.
+7. Confirm the mobile `J`, `S`, and hockey stick buttons work.
 8. Confirm keyboard arrows and touch controls do not scroll the page.
 
-### Hazards And Boss
+### Moving Gameplay Encounters
 
-1. Confirm salmon fly across the screen.
-2. Confirm bears and moose appear and can be hit with the stick.
-3. Confirm Mom/Sister bubbles appear and can be destroyed with the stick.
-4. Confirm the major salmon run starts before Dad.
-5. Confirm Dad mower intro appears.
-6. Confirm Dad boss appears with a small health bar.
-7. Confirm Dad jokes damage Daniel and can be destroyed with the stick.
-8. Confirm stick hits reduce Dad health.
-9. Confirm the victory overlay appears after the final challenge is cleared.
+1. Confirm fish/salmon fly across the screen.
+2. Confirm jumping over fish counts as a dodge.
+3. Confirm sliding/ducking under fish counts as a dodge.
+4. Confirm missing a fish dodge damages Daniel.
+5. Confirm bears move toward Daniel.
+6. Confirm moose move toward Daniel.
+7. Confirm stick/puck action can clear bear/moose obstacles.
+8. Confirm Mom can enter as a moving interruption with a speech bubble.
+9. Confirm Sister can enter as a moving interruption with a speech bubble/spin moment.
+10. Confirm Daniel's health meter updates when damage happens.
+11. Confirm **Try Again?** appears when health reaches zero.
+
+### Computer Play / Watch Mode Parity
+
+1. Open `https://jtripppiie.github.io/hockey-smash/?computerMode=1`.
+2. Confirm the game starts automatically after the splash.
+3. Confirm Daniel moves through right, left, jump, slide, and stick phases.
+4. Confirm Computer Mode uses the smooth movement behavior, not only the older core movement.
+5. Confirm fish/salmon, bear, moose, Mom, and Sister can appear under Computer Mode.
+6. Confirm puck action can appear under Computer Mode stick phases.
+7. Confirm Computer Mode looks close to normal play except that the computer is choosing the actions.
+
+### Debug Overlay
+
+Use diagnostics only when needed:
+
+```text
+https://jtripppiie.github.io/hockey-smash/?computerMode=1&debug=1
+```
+
+Checks:
+
+1. Confirm the debug overlay appears only when `debug=1` is present.
+2. Confirm it reports useful player/entity information.
+3. Confirm no runtime error text appears during the basic Computer Play route.
 
 ### Mobile
 
@@ -67,53 +81,7 @@ Hockey Smash is now the primary public game. Hockey Smash QA below remains as hi
 5. Confirm action buttons stay bottom-right.
 6. Confirm dragging/tapping controls does not move the page.
 
-### Try Again
-
-1. Let Daniel take damage until health reaches zero.
-2. Confirm a Try Again screen appears.
-3. Click Try Again.
-4. Confirm the level state and health reset after the transition.
-
-## Historical Hockey Smash QA
-
-These routes are retained for reference while the new Hockey Smash prototype stabilizes.
-
-## Launch Route
-
-1. Open the Pages URL.
-2. Confirm the Hockey Smash splash screen appears.
-3. Confirm the visible version reads `App v0.8.0 · Hockey Smash 0.8.0`.
-4. Confirm Start New Quest works.
-5. Confirm the canvas renders.
-6. Confirm the D-pad, action buttons, inventory, log, and objective are visible.
-7. Confirm the DOM/CSS first-person viewport shows layered walls, floor, ceiling, far wall, grain, and vignette.
-8. Confirm the party strip, room scanner, gear deck, inventory, log, and status meters update after movement.
-9. Pick up an item and confirm the pickup card appears briefly.
-10. Press Help and confirm the development cheatsheet overlay opens and closes.
-11. Press `Ctrl` three times quickly and confirm the cheatsheet toggles.
-12. Confirm Signpost Ogre and Moonlit Warden sprite art does not show green-screen backing.
-13. Confirm no console errors appear.
-
-## Computer Mode Verification
-
-1. Open `https://jtripppiie.github.io/hockey-smash/?computerMode=1&speed=fast`.
-2. Wait for the Auto Play Verification overlay.
-3. Confirm it reports `Status: PASSED`.
-4. Confirm it shows zero runtime errors.
-5. Confirm the status includes `Mode: real-playthrough`.
-6. Confirm the pass list includes launch, initial render, forward movement, turning, scene signature change, item pickup, inspect feedback, walking to the potion, walking to the Signpost Ogre, real combat, Mapstone pickup, normal ending, HUD/scene checks, and zero runtime errors.
-7. Confirm it reaches `Ending: normal`.
-8. If it reports `FAILED`, copy the failed line and browser console error before continuing feature work.
-
-## Debug Deep Check Verification
-
-1. Open `https://jtripppiie.github.io/hockey-smash/?computerMode=1&speed=fast&debugDeep=1`.
-2. Confirm the overlay reports `Mode: debug-deep-check`.
-3. Confirm it reports `Status: PASSED`.
-4. Confirm it checks the Forgotten Underpass, Never-Finished Mansion, Hidden Conservatory, and Glass Rose ending.
-5. Do not treat this mode as proof that the normal game is playable; Real Computer Mode is the playable-route gate.
-
-## Local Verification Commands
+### Local Verification Commands
 
 Run before pushing a release-quality checkpoint:
 
@@ -129,97 +97,8 @@ npm run test:browser:install
 npm run test:browser
 ```
 
-## Main Route Test
+## Known QA Notes
 
-1. Start a new quest.
-2. Move from the kiosk entry to the Rusty Road Key.
-3. Collect the Rusty Road Key.
-4. Return to the Toll Gate.
-5. Unlock the Toll Gate.
-6. Defeat the Dust Goblin.
-7. Collect the Apple Juice Potion.
-8. Defeat the Map Bat and Toll Troll.
-9. Use healing if needed.
-10. Fight the Signpost Ogre.
-11. When Big Spin is telegraphed, step backward and confirm the log says it clips empty air.
-12. Defeat the Signpost Ogre.
-13. Collect the Mapstone.
-14. Return to the kiosk exit.
-15. Confirm the Route Restored ending appears.
-
-## Secret Star Route Test
-
-1. Complete the main route until the secret switch is reachable.
-2. Trigger the loose map pin / secret switch.
-3. Return to the moon-scratched hidden wall.
-4. Open the hidden wall.
-5. Confirm the player enters the Forgotten Underpass.
-6. Collect the Moon Toll Token.
-7. Return to the main dungeon.
-8. Collect the Mapstone if not already collected.
-9. Return to the kiosk exit.
-10. Confirm the Secret Star Ending appears.
-
-## Soldotna Wayside Route Test
-
-1. Defeat the Signpost Ogre and collect the Mapstone.
-2. Return to the blue river-route wall in the main dungeon.
-3. Confirm the route blocks entry before Mapstone and opens after Mapstone.
-4. Enter Soldotna Creek Wayside.
-5. Defeat the Spruce Signling.
-6. Collect the Midnight Sun Snack.
-7. Defeat the River Current Sprite.
-8. Collect the Kenai River Charm.
-9. Return to the main dungeon.
-10. Confirm the map, log, inventory, and score remain stable.
-
-## Impossible Route Test
-
-1. Enter the Forgotten Underpass with the Moon Toll Token.
-2. Find the painted mansion door.
-3. Enter the Never-Finished Mansion.
-4. Press the stair button.
-5. Collect the Blueprint Key.
-6. Defeat the Blueprint Warden.
-7. Unlock the Blueprint Study.
-8. Collect the Star Map Fragment.
-9. Return to the kiosk exit with the Mapstone.
-10. Confirm the Impossible Route Ending appears.
-
-## Hidden Conservatory Test
-
-1. Collect the Star Map Fragment.
-2. Return to the mansion wallpaper seam.
-3. Enter the Hidden Conservatory.
-4. Collect the Glass Rose.
-5. Return to the kiosk exit with Mapstone, Moon Toll Token, Star Map Fragment, and Glass Rose.
-6. Confirm the Impossible Route Ending includes the Glass Rose line.
-
-## Debug Mode Test
-
-1. Open the debug URL with `?realmDebug=1`.
-2. Confirm the debug panel appears below the controls.
-3. Confirm it shows map ID, position, facing, tile ahead, event ahead, HP, inventory, counters, flags, and ending eligibility.
-4. Test Heal Player.
-5. Test Give Mapstone.
-6. Test Give Moon Toll Token.
-7. Test Give Star Map Fragment.
-8. Test Give Glass Rose.
-9. Test Jump Main, Jump Underpass, Jump Mansion, Jump Boss, and Jump Exit.
-10. Test Reveal Current Map.
-11. Test Log State and confirm it only logs locally to the console.
-
-## Save And Reset Test
-
-1. Start a new quest.
-2. Collect the Rusty Road Key.
-3. Click Save.
-4. Reload the page.
-5. Confirm Continue Quest appears.
-6. Continue and confirm the inventory still contains the key.
-7. Enter the Underpass or Mansion and save again.
-8. Reload and confirm the player returns to the saved map safely.
-9. Use Reset Quest.
-10. Confirm Continue Quest disappears.
-
-## Mobile And Accessibility Test
+- The current architecture is layered: the core runtime loads first, then later scripts patch or extend movement, HUD, encounters, Try Again, and puck behavior.
+- The visible badge, package version, latest movement layer, encounter layer, and puck layer are the release-facing v0.11.8 markers.
+- Browser QA still matters because the game uses canvas, DOM overlays, pointer controls, and requestAnimationFrame loops.
