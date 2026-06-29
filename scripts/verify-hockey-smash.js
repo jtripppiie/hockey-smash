@@ -1,9 +1,9 @@
 const fs = require('fs');
 
-const DISPLAY_VERSION = 'Hockey Smash v0.5.9';
-const DISPLAY_BUILD = 'Build 2026-06-29.6';
+const DISPLAY_VERSION = 'Hockey Smash v0.5.10';
+const DISPLAY_BUILD = 'Build 2026-06-29.7';
 const DISPLAY_BADGE = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
-const CACHE_KEY = '0.5.9-20260629.6';
+const CACHE_KEY = '0.5.10-20260629.7';
 
 const requiredFiles = [
   'index.html',
@@ -79,6 +79,9 @@ if (!polishJs.includes('VISUAL_GROUND_RATIO = 0.80')) errors.push('Player overla
 if (!polishJs.includes('visualFeetY')) errors.push('Player overlay should use visual feet anchoring.');
 if (!polishJs.includes('enhanceDpadControls')) errors.push('Direct D-pad fallback is missing.');
 if (!polishJs.includes('DIRECT_TAP_STEP')) errors.push('D-pad tap movement step is missing.');
+if (!polishJs.includes('getActionAtPoint')) errors.push('Document-level D-pad hit testing is missing.');
+if (!polishJs.includes('window.HOCKEY_SMASH_DPAD')) errors.push('Global D-pad fallback API is missing.');
+if (!polishJs.includes('document.addEventListener(\'pointerdown\'')) errors.push('Document-level pointerdown fallback is missing.');
 if (!polishJs.includes('movePlayer(action, DIRECT_TAP_STEP)')) errors.push('D-pad click should move the player directly.');
 if (!polishJs.includes('setPointerCapture')) errors.push('D-pad should capture pointer input while held.');
 if (!polishCss.includes('transition: left 80ms linear, top 80ms linear')) errors.push('Player overlay should animate position changes smoothly.');
@@ -115,4 +118,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`${DISPLAY_VERSION} static verification passed for direct D-pad movement fallback.`);
+console.log(`${DISPLAY_VERSION} static verification passed for document-level D-pad fallback.`);
