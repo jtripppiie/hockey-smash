@@ -14,21 +14,23 @@ Hockey Smash is now the primary public playable mode in this repo. The project u
 
 ## What This Prototype Includes
 
-- Hockey Smash splash screen and visible `Hockey Smash v0.5.3` version text.
+- Hockey Smash splash screen with the visible version kept only in the top-right build badge.
 - Play button with a short "Entering Hockey Smash..." transition.
 - Full browser-viewport gameplay screen.
 - 1024x576 landscape-first canvas layout.
 - Ground line at `canvasHeight * 0.82`, aligned to the visible sidewalk in the background art.
-- Hockey player fixed-screen side-scroller movement with a visible debug marker.
+- Hockey player fixed-screen side-scroller movement with a visible debug marker while controls are being stabilized.
 - Left/right movement, jump, slide, and stick swing coverage for v0.5.3.
 - Responsive jump, hold-to-slide speed boost, and hockey stick combo attack.
 - One health bar with brief invincibility after damage.
 - Try Again screen when health reaches zero.
+- Normal-mode victory overlay after the final challenge is cleared.
 - Summer Soldotna-inspired backgrounds with an invisible collision ground line and no code-drawn gray sidewalk.
 - Asset fallback placeholders when sprites/images are missing.
 - Bears and moose as stick-clearable obstacles, plus salmon hazards, Mom/Sister interruption bubbles, a major salmon run, and Dad boss with dad joke attacks.
 - Mobile landscape-first layout with temporary portrait rotate hint.
 - D-pad and action controls that do not scroll the page during gameplay.
+- Debug overlay hidden during normal player mode and preserved for `?computerMode=1`.
 
 ## How To Run Locally
 
@@ -73,8 +75,10 @@ Computer mode briefly shows the splash screen, starts the game, and cycles throu
 
 - `index.html`: Hockey Smash public shell.
 - `style.css`: full-screen layout, splash, HUD, canvas scaling, and mobile controls.
+- `hockey-smash-polish.css`: normal-mode presentation polish, debug hiding, and victory overlay styles.
 - `script.js`: app bootstrap.
 - `js/games/hockey-smash.js`: Hockey Smash runtime, state machine, player movement, hazards, Dad boss, rendering, and asset fallbacks.
+- `js/games/hockey-smash-polish.js`: normal-mode polish layer for top-level player experience.
 - `assets/`: expected Hockey Smash sprite/background files.
 - `docs/hockey-smash-design.md`: design target and scope.
 - `docs/hockey-smash-workflow.md`: manual development workflow.
