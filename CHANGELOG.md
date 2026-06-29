@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.8 - Normal Movement And Road Anchoring
+
+- Shipped **Hockey Smash v0.5.8** with visible build badge `Build 2026-06-29.5`.
+- Lowered Daniel's normal-mode overlay so his feet anchor to the visible road/sidewalk area instead of floating near the sign.
+- Centered the overlay on the real player state and preserved jump lift.
+- Added tap-to-move impulse handling so quick D-pad taps visibly move Daniel instead of requiring a long press.
+- Softened the emergency yellow marker styling so it reads more like a gameplay marker while the sprite presentation stabilizes.
+- Updated browser tests and static verification for normal movement and player-overlay position syncing.
+
 ## 0.5.7 - Player-Facing Computer Play Mode
 
 - Shipped **Hockey Smash v0.5.7** with visible build badge `Build 2026-06-29.4`.
@@ -80,10 +89,10 @@
 - Added a denser RPG interface with party strip, room scanner, gear deck, inventory, log, status meters, and development Help overlay.
 - Kept the existing canvas renderer as a fallback while making the new DOM viewport the primary presentation.
 - Added state-driven visual classes for walls, gates, items, monsters, exits, the mansion, the underpass, the conservatory, and Soldotna Creek Wayside.
-- Updated README, QA notes, and progress documentation.
+- Updated README, QA notes, changelog, and progress documentation.
 - WarClass was used for visual/interface inspiration only; no WarClass assets were copied.
 
-## 0.2.8 - Soldotna Creek Wayside And Help Overlay
+## 0.2.8 - Soldotna Wayside And Help Overlay
 
 - Added the optional Soldotna Creek Wayside route.
 - Added Spruce Signling and River Current Sprite encounters.
