@@ -12,8 +12,8 @@
    * big, make a new file, name it clearly, load it after this one, and document it
    * in README.md, CHANGELOG.md, and docs/hockey-smash-kid-handoff.md.
    */
-  const DISPLAY_VERSION = 'Hockey Smash v0.13.4';
-  const DISPLAY_BUILD = 'Build 2026-06-29.50';
+  const DISPLAY_VERSION = 'Hockey Smash v0.13.5';
+  const DISPLAY_BUILD = 'Build 2026-06-29.51';
   const DEV_STORAGE_KEY = 'hockeySmashDevModeSession';
   const DEV_TAP_WINDOW_MS = 1500;
   const DEV_TAP_TARGET = 3;
@@ -331,7 +331,7 @@
     const badge = document.getElementById('hockey-build-badge');
     if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
     if (api?.getVersion) api.getVersion = () => DISPLAY_VERSION;
-    document.body.dataset.hockeyButtonDebug = 'v0.13.4';
+    document.body.dataset.hockeyButtonDebug = 'v0.13.5';
 
     normalizeSofieLabels();
     if (shouldAutoEnableDevMode()) enableDevMode('debug/dev URL or active session');
