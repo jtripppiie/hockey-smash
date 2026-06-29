@@ -1,16 +1,17 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.12.0';
-  const DISPLAY_BUILD = 'Build 2026-06-29.35';
+  const DISPLAY_VERSION = 'Hockey Smash v0.13.6';
+  const DISPLAY_BUILD = 'Build 2026-06-29.52';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const GROUND_Y = DESIGN_HEIGHT * 0.82;
   const BASE_SPAWN_MS = 1600;
-  const MIN_SPAWN_MS = 640;
-  const SPAWN_JITTER_MS = 260;
+  const MIN_SPAWN_MS = 620;
+  const SPAWN_JITTER_MS = 280;
+  const COMBO_SPAWN_DELAY_MS = 420;
   const params = new URLSearchParams(window.location.search);
   const computerMode = params.get('computerMode') === '1';
 
-  // This layer does not control Daniel.
+  // This layer does not control the player.
   // It only adds moving gameplay objects to state.entities. The core game loop
   // already moves entities by vx * dt and checks overlap. Computer Mode uses
   // this same encounter pass so watch mode and normal play stay close together.
@@ -27,6 +28,7 @@
       damage: 0,
       dodgeDamage: 8,
       flip: -1,
+      variant: 'normal',
       message: 'Fish flying in — duck or jump!'
     },
     {
@@ -43,17 +45,33 @@
     },
     {
       type: 'salmon',
-      x: -120,
-      y: 285,
-      width: 72,
-      height: 40,
-      vx: 410,
-      vy: -60,
+      x: DESIGN_WIDTH + 120,
+      y: 180,
+      width: 74,
+      height: 42,
+      vx: -520,
+      vy: -140,
       hp: 1,
       damage: 0,
       dodgeDamage: 8,
-      flip: 1,
-      message: 'Fish crossing back — duck or jump!'
+      flip: -1,
+      variant: 'high',
+      message: 'High salmon arc — time your jump!'
+    },
+    {
+      type: 'salmon',
+      x: DESIGN_WIDTH + 80,
+      y: 320,
+      width: 68,
+      height: 38,
+      vx: -380,
+      vy: 90,
+      hp: 1,
+      damage: 0,
+      dodgeDamage: 8,
+      flip: -1,
+      variant: 'low',
+      message: 'Low fish — slide under it!'
     },
     {
       type: 'mom',
@@ -104,6 +122,7 @@
     let nextSpawnAt = 0;
     let waveIndex = 0;
     let firstPlayableAt = 0;
+    let comboSpawnQueued = false;
 
     function getPlayableState() {
       const state = api.getState?.();
@@ -122,13 +141,31 @@
       return Math.max(timedDifficulty, scoreLayerDifficulty);
     }
 
+    function forceRightSideSalmon(entity) {
+      if (entity.type !== 'salmon') return entity;
+      entity.x = Math.max(entity.x || 0, DESIGN_WIDTH + 72);
+      entity.vx = -Math.abs(entity.vx || 420);
+      entity.flip = -1;
+      return entity;
+    }
+
     function applyVariant(entity, difficulty) {
       const roll = Math.random();
       entity.difficulty = Number(difficulty.toFixed(2));
-      entity.variant = 'normal';
+      entity.variant = entity.variant || 'normal';
 
       if (entity.type === 'salmon') {
-        if (roll < 0.22 + difficulty * 0.28) {
+        forceRightSideSalmon(entity);
+        if (entity.variant === 'high' || entity.variant === 'low') return entity;
+        if (roll < 0.18 + difficulty * 0.2) {
+          entity.variant = 'school';
+          entity.vx *= 1.25 + difficulty * 0.15;
+          entity.width = 110;
+          entity.height = Math.max(entity.height || 42, 46);
+          entity.message = 'School of salmon — big dodge!';
+          return entity;
+        }
+        if (roll < 0.34 + difficulty * 0.24) {
           entity.variant = 'fast';
           entity.vx *= 1.18 + difficulty * 0.22;
           entity.vy *= 1.05;
@@ -154,18 +191,36 @@
       return entity;
     }
 
-    function spawnMovingEncounter(state, difficulty) {
+    function spawnMovingEncounter(state, difficulty, options = {}) {
       const template = WAVE[waveIndex % WAVE.length];
       waveIndex += 1;
       const entity = applyVariant({
         ...template,
         key: `moving-${template.type}-${Date.now()}-${waveIndex}`,
         fromMovingGameplayPass: true,
-        fromComputerMode: computerMode
+        fromComputerMode: computerMode,
+        comboSpawn: Boolean(options.comboSpawn)
       }, difficulty);
       state.entities.push(entity);
       state.message = entity.message || template.message;
       if (status) status.textContent = state.message;
+      maybeQueueComboSpawn(difficulty);
+    }
+
+    function maybeQueueComboSpawn(difficulty) {
+      // Complexity boost: later in a run, a second encounter can follow shortly
+      // after the first one. The guard prevents runaway setTimeout chains.
+      if (comboSpawnQueued || difficulty <= 0.08) return;
+      if (Math.random() >= 0.16 + 0.18 * difficulty) return;
+      comboSpawnQueued = true;
+      window.setTimeout(() => {
+        comboSpawnQueued = false;
+        const state = getPlayableState();
+        if (!state) return;
+        const activeLimit = difficulty > 0.7 ? 3 : 2;
+        if (activeMovingGameplayEntities(state).length >= activeLimit + 1) return;
+        spawnMovingEncounter(state, difficulty * 0.8, { comboSpawn: true });
+      }, COMBO_SPAWN_DELAY_MS);
     }
 
     function runMovingGameplay() {
