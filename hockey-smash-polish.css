@@ -3,6 +3,21 @@ body:not(.hockey-computer-mode) .hockey-debug {
   display: none;
 }
 
+.hockey-player-overlay {
+  position: fixed;
+  z-index: 4;
+  display: block;
+  pointer-events: none;
+  image-rendering: pixelated;
+  object-fit: contain;
+  transform-origin: center center;
+  filter: drop-shadow(0 10px 12px rgba(0, 0, 0, 0.42)) drop-shadow(0 0 8px rgba(255, 242, 122, 0.38));
+}
+
+.hockey-player-overlay[hidden] {
+  display: none;
+}
+
 .hockey-finish {
   position: fixed;
   inset: 0;
