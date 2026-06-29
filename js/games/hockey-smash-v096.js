@@ -1,139 +1,69 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.9.7';
-  const DISPLAY_BUILD = 'Build 2026-06-29.18';
+  const DISPLAY_VERSION = 'Hockey Smash v0.11.0';
+  const DISPLAY_BUILD = 'Build 2026-06-29.25';
   const DESIGN_WIDTH = 1024;
-  const HOLD_SPEED = 265;
-  const TAP_DISTANCE = 18;
-  const MAX_FRAME_STEP = 24;
-  const SLIDE_DISTANCE = 128;
-  const SLIDE_DURATION = 260;
-  const SLIDE_COOLDOWN = 420;
-  const SLIDE_TRANSFORM = 'translateY(14px) scaleX(1.12) scaleY(0.72)';
+  const GROUND_Y = 576 * 0.82;
+  const RUN_SPEED = 360;
+  const RUN_ACCEL = 1900;
+  const RUN_DECEL = 2550;
+  const AIR_CONTROL = 0.72;
+  const JUMP_VELOCITY = 830;
+  const JUMP_CUT_VELOCITY = 320;
+  const COYOTE_MS = 120;
+  const JUMP_BUFFER_MS = 140;
+  const SLIDE_SPEED = 560;
+  const SLIDE_MS = 320;
+  const SLIDE_COOLDOWN_MS = 430;
+  const SLIDE_TRANSFORM = 'translateY(14px) scaleX(1.14) scaleY(0.70)';
   const params = new URLSearchParams(window.location.search);
   const computerMode = params.get('computerMode') === '1';
 
-  function easeOutCubic(t) {
-    return 1 - Math.pow(1 - t, 3);
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function approach(value, target, amount) {
+    if (value < target) return Math.min(target, value + amount);
+    if (value > target) return Math.max(target, value - amount);
+    return target;
   }
 
   function onReady() {
     const api = window.RTA_HOCKEY_SMASH;
     const badge = document.getElementById('hockey-build-badge');
+    const status = document.getElementById('hockey-status');
     const playerOverlay = document.getElementById('hockey-player-overlay');
+
     if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
     if (api?.getVersion) api.getVersion = () => DISPLAY_VERSION;
+
+    // Computer Mode should keep using the original test driver.
     if (!api || computerMode) return;
 
-    let activeDirection = null;
-    let raf = 0;
-    let slideRaf = 0;
-    let lastTime = 0;
-    let lastPointerHandledAt = 0;
-    let lastSlideHandledAt = 0;
-    let lastSlideAt = 0;
+    const input = {
+      left: false,
+      right: false,
+      jumpHeld: false,
+    };
 
-    function getPlayableState() {
+    let smoothVx = 0;
+    let lastFrame = performance.now();
+    let lastGroundedAt = 0;
+    let jumpBufferedAt = 0;
+    let slideUntil = 0;
+    let slideCooldownUntil = 0;
+    let slideDirection = 1;
+    let lastPointerAt = 0;
+
+    function getState() {
       const state = api.getState?.();
-      if (!state || !state.player || state.mode === 'splash' || state.mode === 'transition' || state.mode === 'tryAgain') return null;
+      if (!state || !state.player) return null;
+      if (state.mode === 'splash' || state.mode === 'transition' || state.mode === 'tryAgain') return null;
       return state;
     }
 
-    function getDirectionFromEvent(event) {
-      const target = event.target?.closest?.('[data-action="left"], [data-action="right"]');
-      return target?.dataset?.action || null;
-    }
-
-    function isSlideEvent(event) {
-      return Boolean(event.target?.closest?.('[data-action="slide"]'));
-    }
-
-    function move(direction, distance) {
-      const state = getPlayableState();
-      if (!state) return;
-      const player = state.player;
-      const delta = direction === 'left' ? -distance : distance;
-      player.x = Math.max(22, Math.min(DESIGN_WIDTH - player.width - 22, player.x + delta));
-      player.vx = direction === 'left' ? -HOLD_SPEED : HOLD_SPEED;
-      player.facing = direction === 'left' ? -1 : 1;
-      state.message = direction === 'left' ? 'Daniel glides left.' : 'Daniel glides right.';
-    }
-
-    function stopMove() {
-      activeDirection = null;
-      const state = getPlayableState();
-      if (state) state.player.vx = 0;
-      if (raf) window.cancelAnimationFrame(raf);
-      raf = 0;
-    }
-
-    function loop(now) {
-      if (!activeDirection) {
-        raf = 0;
-        return;
-      }
-      const dt = Math.min(0.045, Math.max(0.012, (now - lastTime) / 1000 || 0.016));
-      lastTime = now;
-      move(activeDirection, Math.min(MAX_FRAME_STEP, HOLD_SPEED * dt));
-      raf = window.requestAnimationFrame(loop);
-    }
-
-    function startMove(direction) {
-      activeDirection = direction;
-      lastTime = performance.now();
-      move(direction, TAP_DISTANCE);
-      if (!raf) raf = window.requestAnimationFrame(loop);
-    }
-
-    function setSliding(active) {
-      document.body.classList.toggle('hockey-slide-active', active);
-      if (!playerOverlay) return;
-      playerOverlay.dataset.sliding = active ? 'true' : 'false';
-      playerOverlay.style.transform = active ? SLIDE_TRANSFORM : '';
-      playerOverlay.style.transformOrigin = active ? 'bottom center' : '';
-    }
-
-    function startSlide() {
-      const state = getPlayableState();
-      if (!state) return;
-      const now = performance.now();
-      if (now - lastSlideAt < SLIDE_COOLDOWN) return;
-      lastSlideAt = now;
-
-      if (slideRaf) window.cancelAnimationFrame(slideRaf);
-      stopMove();
-      const player = state.player;
-      const startX = player.x;
-      const direction = player.facing < 0 ? -1 : 1;
-      const minX = 22;
-      const maxX = DESIGN_WIDTH - player.width - 22;
-      const targetX = Math.max(minX, Math.min(maxX, startX + direction * SLIDE_DISTANCE));
-      const startedAt = performance.now();
-      setSliding(true);
-      state.message = 'Daniel slides!';
-
-      function tick(time) {
-        const activeState = getPlayableState();
-        if (!activeState) {
-          setSliding(false);
-          slideRaf = 0;
-          return;
-        }
-        const t = Math.min(1, (time - startedAt) / SLIDE_DURATION);
-        const eased = easeOutCubic(t);
-        activeState.player.x = startX + (targetX - startX) * eased;
-        activeState.player.vx = direction * 320 * (1 - t);
-        activeState.player.facing = direction;
-        if (t < 1) {
-          slideRaf = window.requestAnimationFrame(tick);
-          return;
-        }
-        activeState.player.x = targetX;
-        activeState.player.vx = 0;
-        setSliding(false);
-        slideRaf = 0;
-      }
-
-      slideRaf = window.requestAnimationFrame(tick);
+    function actionFromEvent(event) {
+      return event.target?.closest?.('.hockey-controls [data-action]')?.dataset?.action || null;
     }
 
     function consume(event) {
@@ -142,45 +72,160 @@
       event.stopImmediatePropagation?.();
     }
 
-    window.addEventListener('pointerdown', (event) => {
-      if (isSlideEvent(event)) {
-        consume(event);
-        lastSlideHandledAt = performance.now();
-        event.target?.setPointerCapture?.(event.pointerId);
-        startSlide();
-        return;
-      }
+    function setDirection(action, active) {
+      if (action === 'left') input.left = active;
+      if (action === 'right') input.right = active;
+    }
 
-      const direction = getDirectionFromEvent(event);
-      if (!direction) return;
+    function setSlideVisual(active) {
+      document.body.classList.toggle('hockey-slide-active', active);
+      if (!playerOverlay) return;
+      playerOverlay.dataset.sliding = active ? 'true' : 'false';
+      playerOverlay.style.transform = active ? SLIDE_TRANSFORM : '';
+      playerOverlay.style.transformOrigin = active ? 'bottom center' : '';
+    }
+
+    function isGrounded(player) {
+      return Boolean(player.grounded) || player.y + player.height >= GROUND_Y - 5;
+    }
+
+    function queueJump() {
+      jumpBufferedAt = performance.now();
+      input.jumpHeld = true;
+    }
+
+    function releaseJump() {
+      input.jumpHeld = false;
+      const player = getState()?.player;
+      if (player && player.vy < -JUMP_CUT_VELOCITY) player.vy = -JUMP_CUT_VELOCITY;
+    }
+
+    function startSlide() {
+      const state = getState();
+      if (!state) return;
+      const now = performance.now();
+      if (now < slideCooldownUntil) return;
+      const player = state.player;
+      slideDirection = input.left && !input.right ? -1 : input.right && !input.left ? 1 : player.facing < 0 ? -1 : 1;
+      slideUntil = now + SLIDE_MS;
+      slideCooldownUntil = now + SLIDE_COOLDOWN_MS;
+      smoothVx = slideDirection * SLIDE_SPEED;
+      player.facing = slideDirection;
+      player.vx = smoothVx;
+      state.message = 'Daniel slides!';
+      if (status) status.textContent = state.message;
+      setSlideVisual(true);
+    }
+
+    function controlKey(event) {
+      const key = event.key;
+      if (key === 'ArrowLeft' || key === 'a' || key === 'A') return 'left';
+      if (key === 'ArrowRight' || key === 'd' || key === 'D') return 'right';
+      if (key === 'ArrowUp' || key === 'w' || key === 'W' || key === ' ') return 'jump';
+      if (key === 'Shift' || key === 's' || key === 'S') return 'slide';
+      return null;
+    }
+
+    window.addEventListener('pointerdown', (event) => {
+      const action = actionFromEvent(event);
+      if (!action || action === 'stick') return;
       consume(event);
-      lastPointerHandledAt = performance.now();
+      lastPointerAt = performance.now();
       event.target?.setPointerCapture?.(event.pointerId);
-      startMove(direction);
+      if (action === 'left' || action === 'right') setDirection(action, true);
+      if (action === 'jump') queueJump();
+      if (action === 'slide') startSlide();
     }, { capture: true, passive: false });
 
-    ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((eventName) => {
-      window.addEventListener(eventName, (event) => {
-        if (!activeDirection) return;
-        consume(event);
-        stopMove();
-      }, { capture: true, passive: false });
-    });
+    window.addEventListener('pointerup', (event) => {
+      const action = actionFromEvent(event);
+      if (!action || action === 'stick') return;
+      consume(event);
+      if (action === 'left' || action === 'right') setDirection(action, false);
+      if (action === 'jump') releaseJump();
+    }, { capture: true, passive: false });
+
+    window.addEventListener('pointercancel', () => {
+      input.left = false;
+      input.right = false;
+      releaseJump();
+    }, { capture: true, passive: false });
 
     window.addEventListener('click', (event) => {
-      if (isSlideEvent(event)) {
-        consume(event);
-        if (performance.now() - lastSlideHandledAt > 350) startSlide();
-        return;
+      const action = actionFromEvent(event);
+      if (!action || action === 'stick') return;
+      consume(event);
+      if (performance.now() - lastPointerAt < 360) return;
+      if (action === 'left' || action === 'right') {
+        setDirection(action, true);
+        window.setTimeout(() => setDirection(action, false), 120);
+      }
+      if (action === 'jump') queueJump();
+      if (action === 'slide') startSlide();
+    }, { capture: true, passive: false });
+
+    window.addEventListener('keydown', (event) => {
+      const action = controlKey(event);
+      if (!action) return;
+      consume(event);
+      if (action === 'left' || action === 'right') setDirection(action, true);
+      if (action === 'jump' && !event.repeat) queueJump();
+      if (action === 'slide' && !event.repeat) startSlide();
+    }, { capture: true, passive: false });
+
+    window.addEventListener('keyup', (event) => {
+      const action = controlKey(event);
+      if (!action) return;
+      consume(event);
+      if (action === 'left' || action === 'right') setDirection(action, false);
+      if (action === 'jump') releaseJump();
+    }, { capture: true, passive: false });
+
+    function movementLoop(now) {
+      const state = getState();
+      const dt = clamp((now - lastFrame) / 1000 || 0.016, 0.008, 0.034);
+      lastFrame = now;
+
+      if (state?.player) {
+        const player = state.player;
+        const grounded = isGrounded(player);
+        if (grounded) lastGroundedAt = now;
+
+        const jumpBuffered = now - jumpBufferedAt <= JUMP_BUFFER_MS;
+        const coyoteReady = now - lastGroundedAt <= COYOTE_MS;
+        if (jumpBuffered && coyoteReady) {
+          player.y = Math.min(player.y, GROUND_Y - player.height - 2);
+          player.vy = -JUMP_VELOCITY;
+          player.grounded = false;
+          jumpBufferedAt = 0;
+          lastGroundedAt = 0;
+          state.message = 'Daniel jumps!';
+          if (status) status.textContent = state.message;
+        }
+
+        const slideActive = now < slideUntil;
+        const axis = (input.right ? 1 : 0) - (input.left ? 1 : 0);
+
+        if (slideActive) {
+          smoothVx = approach(smoothVx, slideDirection * 360, 900 * dt);
+          player.facing = slideDirection;
+          setSlideVisual(true);
+        } else {
+          setSlideVisual(false);
+          const targetSpeed = axis * RUN_SPEED * (grounded ? 1 : AIR_CONTROL);
+          smoothVx = approach(smoothVx, targetSpeed, (axis ? RUN_ACCEL : RUN_DECEL) * dt);
+          if (axis) player.facing = axis < 0 ? -1 : 1;
+        }
+
+        if (!axis && !slideActive && Math.abs(smoothVx) < 4) smoothVx = 0;
+        player.vx = smoothVx;
+        player.x = clamp(player.x + smoothVx * dt, 22, DESIGN_WIDTH - player.width - 22);
       }
 
-      const direction = getDirectionFromEvent(event);
-      if (!direction) return;
-      consume(event);
-      if (performance.now() - lastPointerHandledAt > 350) {
-        move(direction, TAP_DISTANCE);
-      }
-    }, { capture: true, passive: false });
+      window.requestAnimationFrame(movementLoop);
+    }
+
+    window.requestAnimationFrame(movementLoop);
   }
 
   if (document.readyState === 'loading') {
