@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.5.11';
-  const DISPLAY_BUILD = 'Build 2026-06-29.8';
+  const DISPLAY_VERSION = 'Hockey Smash v0.5.13';
+  const DISPLAY_BUILD = 'Build 2026-06-29.10';
   const params = new URLSearchParams(window.location.search);
   const computerMode = params.get('computerMode') === '1';
   const debugMode = params.get('debug') === '1';
@@ -10,12 +10,14 @@
   const VISUAL_GROUND_RATIO = 0.80;
   const DIRECT_MOVE_SPEED = 390;
   const DIRECT_TAP_STEP = 86;
+  const JUMP_VISIBLE_MS = 440;
 
   function onReady() {
     document.body.classList.toggle('hockey-computer-mode', computerMode);
     document.body.classList.toggle('hockey-debug-enabled', debugMode);
 
     const api = window.RTA_HOCKEY_SMASH;
+    const shell = document.getElementById('hockey-smash');
     const game = document.getElementById('hockey-game');
     const canvas = document.getElementById('hockey-canvas');
     const badge = document.getElementById('hockey-build-badge');
@@ -24,6 +26,10 @@
     if (api?.getVersion) api.getVersion = () => DISPLAY_VERSION;
     if (!api || !game) return;
 
+    setupFullscreen(shell || game);
+
+    let manualJumpLift = 0;
+    let manualJumpUntil = 0;
     let playerOverlay = document.getElementById('hockey-player-overlay');
     if (!playerOverlay) {
       playerOverlay = document.createElement('div');
@@ -90,6 +96,59 @@
       if (retry) retry.click();
     });
 
+    function setupFullscreen(target) {
+      const buttons = Array.from(document.querySelectorAll('[data-fullscreen-toggle]'));
+      const fullscreenSupported = Boolean(target.requestFullscreen || target.webkitRequestFullscreen);
+      document.body.classList.toggle('hockey-fullscreen-supported', fullscreenSupported);
+
+      function isFullscreen() {
+        return document.fullscreenElement === target || document.webkitFullscreenElement === target;
+      }
+
+      function updateButtons() {
+        const active = isFullscreen();
+        document.body.classList.toggle('hockey-fullscreen-active', active);
+        buttons.forEach((fullscreenButton) => {
+          fullscreenButton.textContent = active ? 'Exit Fullscreen' : 'Fullscreen';
+          fullscreenButton.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+      }
+
+      async function requestFullscreen() {
+        if (target.requestFullscreen) return target.requestFullscreen();
+        if (target.webkitRequestFullscreen) return target.webkitRequestFullscreen();
+        throw new Error('Fullscreen is not supported.');
+      }
+
+      async function exitFullscreen() {
+        if (document.exitFullscreen) return document.exitFullscreen();
+        if (document.webkitExitFullscreen) return document.webkitExitFullscreen();
+      }
+
+      buttons.forEach((fullscreenButton) => {
+        if (!fullscreenSupported) {
+          fullscreenButton.hidden = true;
+          return;
+        }
+        fullscreenButton.addEventListener('click', async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          try {
+            if (isFullscreen()) await exitFullscreen();
+            else await requestFullscreen();
+          } catch (error) {
+            document.body.classList.add('hockey-fullscreen-failed');
+            fullscreenButton.textContent = 'Use browser fullscreen';
+          }
+          updateButtons();
+        });
+      });
+
+      document.addEventListener('fullscreenchange', updateButtons);
+      document.addEventListener('webkitfullscreenchange', updateButtons);
+      updateButtons();
+    }
+
     function createAutoplayPanel() {
       if (!computerMode) return null;
       const panel = document.createElement('aside');
@@ -110,6 +169,10 @@
       panel.appendChild(title);
       panel.appendChild(copy);
       return panel;
+    }
+
+    function isCompactViewport() {
+      return window.matchMedia('(orientation: landscape) and (max-height: 560px), (orientation: portrait) and (max-width: 760px)').matches;
     }
 
     function enhanceDpadControls() {
@@ -139,10 +202,16 @@
 
       function jumpPlayer() {
         const state = getPlayableState();
-        if (!state || !state.player.grounded) return;
-        state.player.vy = -(window.RTA_HOCKEY_SMASH?.tuning?.jumpVelocity || 810);
-        state.player.grounded = false;
+        if (!state) return;
+        const player = state.player;
+        const groundY = DESIGN_HEIGHT * CORE_GROUND_RATIO;
+        player.y = Math.min(player.y, groundY - player.height - 4);
+        player.vy = -(window.RTA_HOCKEY_SMASH?.tuning?.jumpVelocity || 810);
+        player.grounded = false;
+        manualJumpLift = isCompactViewport() ? 48 : 78;
+        manualJumpUntil = performance.now() + JUMP_VISIBLE_MS;
         state.message = 'Daniel jumps.';
+        syncPlayerOverlay(state);
       }
 
       function slidePlayer() {
@@ -192,10 +261,10 @@
 
       function getActionAtPoint(x, y) {
         const buttons = Array.from(document.querySelectorAll('[data-action]'));
-        for (const button of buttons) {
-          const rect = button.getBoundingClientRect();
+        for (const actionButton of buttons) {
+          const rect = actionButton.getBoundingClientRect();
           if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
-            return button.dataset.action;
+            return actionButton.dataset.action;
           }
         }
         return null;
@@ -219,24 +288,27 @@
         move(direction, distance = DIRECT_TAP_STEP) {
           movePlayer(direction, distance);
         },
+        jump() {
+          jumpPlayer();
+        },
       };
 
-      document.querySelectorAll('[data-action]').forEach((button) => {
-        const action = button.dataset.action;
+      document.querySelectorAll('[data-action]').forEach((actionButton) => {
+        const action = actionButton.dataset.action;
 
-        button.addEventListener('pointerdown', (event) => {
+        actionButton.addEventListener('pointerdown', (event) => {
           if (!consumeEvent(event, action)) return;
-          button.setPointerCapture?.(event.pointerId);
+          actionButton.setPointerCapture?.(event.pointerId);
           runAction(action);
         }, { capture: true, passive: false });
 
         ['pointerup', 'pointercancel', 'lostpointercapture', 'pointerleave'].forEach((eventName) => {
-          button.addEventListener(eventName, () => {
+          actionButton.addEventListener(eventName, () => {
             if (action === activeMove) stopMove();
           }, { capture: true });
         });
 
-        button.addEventListener('click', (event) => {
+        actionButton.addEventListener('click', (event) => {
           if (!consumeEvent(event, action)) return;
           if (action === 'left' || action === 'right') movePlayer(action, DIRECT_TAP_STEP);
           if (action === 'jump') jumpPlayer();
@@ -274,11 +346,18 @@
       const player = state.player;
       const scaleX = rect.width / DESIGN_WIDTH;
       const scaleY = rect.height / DESIGN_HEIGHT;
-      const displayWidth = Math.max(76, player.width * scaleX * 0.78);
-      const displayHeight = Math.max(96, player.height * scaleY * 0.78);
+      const compact = isCompactViewport();
+      const playerScale = compact ? 0.56 : 0.72;
+      const minWidth = compact ? 48 : 72;
+      const minHeight = compact ? 62 : 90;
+      const displayWidth = Math.max(minWidth, player.width * scaleX * playerScale);
+      const displayHeight = Math.max(minHeight, player.height * scaleY * playerScale);
       const coreGroundY = DESIGN_HEIGHT * CORE_GROUND_RATIO;
       const playerFeetY = player.y + player.height;
-      const jumpLift = Math.max(0, (coreGroundY - playerFeetY) * scaleY);
+      const stateJumpLift = Math.max(0, (coreGroundY - playerFeetY) * scaleY);
+      const remainingJump = Math.max(0, manualJumpUntil - performance.now());
+      const manualLift = remainingJump ? manualJumpLift * Math.sin((remainingJump / JUMP_VISIBLE_MS) * Math.PI) : 0;
+      const jumpLift = stateJumpLift + manualLift;
       const visualFeetY = rect.top + rect.height * VISUAL_GROUND_RATIO - jumpLift;
       const visualCenterX = rect.left + (player.x + player.width / 2) * scaleX;
 
