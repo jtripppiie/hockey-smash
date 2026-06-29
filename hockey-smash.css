@@ -3,14 +3,33 @@
  *
  * Keep index.html simple: load this one file only.
  * If a layer is retired later, remove it here instead of stacking more links in HTML.
- * Current cache key: 0.12.6-20260629.41
+ * Current cache key: 0.12.7-20260629.42
  */
 
-@import url("style.css?v=0.12.6-20260629.41");
-@import url("hockey-smash-polish.css?v=0.12.6-20260629.41");
-@import url("hockey-smash-touch.css?v=0.12.6-20260629.41");
-@import url("hockey-smash-custom.css?v=0.12.6-20260629.41");
-@import url("hockey-smash-v09.css?v=0.12.6-20260629.41");
-@import url("hockey-smash-v094.css?v=0.12.6-20260629.41");
-@import url("hockey-smash-v095.css?v=0.12.6-20260629.41");
-@import url("hockey-smash-v0111.css?v=0.12.6-20260629.41");
+@import url("style.css?v=0.12.7-20260629.42");
+@import url("hockey-smash-polish.css?v=0.12.7-20260629.42");
+@import url("hockey-smash-touch.css?v=0.12.7-20260629.42");
+@import url("hockey-smash-custom.css?v=0.12.7-20260629.42");
+@import url("hockey-smash-v09.css?v=0.12.7-20260629.42");
+@import url("hockey-smash-v094.css?v=0.12.7-20260629.42");
+@import url("hockey-smash-v095.css?v=0.12.7-20260629.42");
+@import url("hockey-smash-v0111.css?v=0.12.7-20260629.42");
+
+/*
+ * The boot log used to sit at bottom-left, directly on top of the D-pad.
+ * Force it to the top-right so it cannot intercept left/right movement taps.
+ */
+#hockey-boot-log {
+  top: 0.75rem !important;
+  right: 0.75rem !important;
+  bottom: auto !important;
+  left: auto !important;
+  max-height: 46vh !important;
+}
+
+@media (max-width: 700px) {
+  #hockey-boot-log {
+    width: min(420px, calc(100vw - 1.5rem)) !important;
+    max-height: 38vh !important;
+  }
+}
