@@ -2,9 +2,10 @@
 
 ## Current Checkpoint
 
-- [ ] Confirm visible version says `Hockey Smash v0.12.1 · Build 2026-06-29.36`.
-- [ ] Confirm `package.json` version is `0.12.1`.
-- [ ] Confirm `index.html` cache keys use `0.12.1-20260629.36`.
+- [ ] Confirm visible version says `Hockey Smash v0.12.2 · Build 2026-06-29.37`.
+- [ ] Confirm `package.json` version is `0.12.2`.
+- [ ] Confirm `index.html` cache keys use `0.12.2-20260629.37`.
+- [ ] Confirm `hockey-smash-touch.css` is linked and cache-busted.
 - [ ] Confirm README, CHANGELOG, QA, workflow, and checklist docs are updated when behavior changes.
 
 ## Local Run
@@ -18,14 +19,25 @@
 
 ## Normal Controls
 
-- [ ] Confirm Daniel moves left and right smoothly.
-- [ ] Confirm Daniel jumps.
-- [ ] Confirm slide/duck works.
-- [ ] Confirm the stick button works.
+- [ ] Confirm keyboard left/right movement still works smoothly.
+- [ ] Confirm keyboard jump still works.
+- [ ] Confirm keyboard slide/duck still works.
+- [ ] Confirm the stick button still works.
 - [ ] Confirm the puck visual appears from stick input.
 - [ ] Confirm the health bar updates.
 - [ ] Confirm mobile landscape layout works.
 - [ ] Confirm the rotate overlay appears temporarily in portrait.
+
+## Touch Control Reliability
+
+- [ ] Confirm D-pad left works as a held touch control.
+- [ ] Confirm D-pad right works as a held touch control.
+- [ ] Confirm releasing left/right stops Daniel reliably.
+- [ ] Confirm Jump responds from the on-screen `J` button.
+- [ ] Confirm Slide responds from the on-screen `S` button.
+- [ ] Confirm dragging off a touch button does not leave Daniel stuck moving.
+- [ ] Confirm switching browser tabs or apps resets held input.
+- [ ] Confirm `?debug=1` can show `Input L/R/J/Axis/VX` details.
 
 ## Puck And Feedback Polish
 
