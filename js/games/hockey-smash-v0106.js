@@ -19,12 +19,12 @@
     sofie: {
       id: 'sofie',
       name: 'Sofie',
-      label: 'Sofie the Dancer',
+      label: 'Sofie',
       overlayLabel: 'SOFIE',
       hero: 'assets/hockey-smash/sprites/dancer-player.webp',
       sprite: 'assets/hockey-smash/sprites/dancer-player.webp',
       slideSprite: 'assets/hockey-smash/sprites/sister-spinning.webp',
-      alt: 'Sofie the dancer joins Hockey Smash',
+      alt: 'Sofie joins Hockey Smash',
     },
   };
 
@@ -159,6 +159,7 @@
 
     document.querySelectorAll('[data-character]').forEach((button) => {
       const active = button.dataset.character === config.character;
+      button.textContent = CHARACTERS[button.dataset.character]?.label || button.textContent;
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
