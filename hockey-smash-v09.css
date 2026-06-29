@@ -1,0 +1,133 @@
+body:not(.hockey-fullscreen-supported) [data-fullscreen-toggle] {
+  display: none !important;
+}
+
+.hockey-fullscreen-chip {
+  position: fixed;
+  top: max(0.55rem, env(safe-area-inset-top));
+  left: max(0.55rem, env(safe-area-inset-left));
+  z-index: 30;
+  border: 2px solid rgba(255, 242, 122, 0.72);
+  border-radius: 999px;
+  padding: 0.34rem 0.62rem;
+  background: rgba(5, 8, 13, 0.78);
+  color: #fff8df;
+  font-size: 0.72rem;
+  font-weight: 1000;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.42);
+}
+
+body:not(.hockey-playing) .hockey-fullscreen-chip {
+  display: none;
+}
+
+.hockey-entity-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+}
+
+.hockey-entity-overlay {
+  position: fixed;
+  z-index: 8;
+  pointer-events: none;
+  transform-origin: center center;
+  transition: left 80ms linear, top 80ms linear;
+}
+
+.hockey-entity-overlay[hidden] {
+  display: none;
+}
+
+.hockey-entity-overlay__sprite {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.42));
+}
+
+.hockey-entity-overlay[data-facing='right'] .hockey-entity-overlay__sprite {
+  transform: scaleX(-1);
+}
+
+.hockey-entity-overlay__label {
+  position: absolute;
+  top: -1.35rem;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 2px solid rgba(255, 242, 122, 0.78);
+  border-radius: 999px;
+  padding: 0.18rem 0.44rem;
+  background: rgba(5, 8, 13, 0.82);
+  color: #fff27a;
+  font-size: 0.62rem;
+  font-weight: 1000;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.hockey-entity-overlay[data-type='salmon'] .hockey-entity-overlay__label {
+  display: none;
+}
+
+.hockey-entity-overlay[data-type='mom'] .hockey-entity-overlay__label,
+.hockey-entity-overlay[data-type='sister'] .hockey-entity-overlay__label,
+.hockey-entity-overlay[data-type='dadJoke'] .hockey-entity-overlay__label {
+  border-color: rgba(156, 231, 255, 0.82);
+  color: #9ce7ff;
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hockey-entity-overlay[data-type='dad'] .hockey-entity-overlay__label {
+  border-color: rgba(255, 155, 96, 0.9);
+  color: #ffb279;
+}
+
+@media (orientation: landscape) and (max-height: 560px) {
+  body.hockey-playing .hockey-game {
+    display: block;
+    overflow: hidden;
+    background: #05080d;
+  }
+
+  body.hockey-playing .hockey-hud {
+    top: max(0.4rem, env(safe-area-inset-top));
+    left: max(0.55rem, env(safe-area-inset-left));
+    right: max(0.55rem, env(safe-area-inset-right));
+    z-index: 10;
+    grid-template-columns: minmax(8rem, 1fr) minmax(12rem, 1.35fr);
+    gap: 0.45rem;
+  }
+
+  body.hockey-playing .hockey-status {
+    display: none;
+  }
+
+  body.hockey-playing .hockey-canvas {
+    position: fixed;
+    left: 50%;
+    top: clamp(3.55rem, 15svh, 4.9rem);
+    transform: translateX(-50%);
+    width: min(76vw, calc((100svh - 7.5rem) * 16 / 9));
+    height: min(43vw, calc(100svh - 7.5rem));
+    max-width: calc(100vw - 9rem);
+    max-height: calc(100svh - 7.5rem);
+    object-fit: contain;
+  }
+
+  body.hockey-playing .hockey-control {
+    min-width: clamp(48px, 9vw, 68px);
+    min-height: clamp(44px, 8vw, 62px);
+    padding: 0.34rem 0.46rem;
+    font-size: clamp(1rem, 3.8vw, 1.45rem);
+  }
+
+  body.hockey-playing .hockey-control--stick {
+    min-width: clamp(58px, 12vw, 82px);
+  }
+}
