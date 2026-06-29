@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.10 - Document-Level D-pad Hit Testing
+
+- Shipped **Hockey Smash v0.5.10** with visible build badge `Build 2026-06-29.7`.
+- Added document-level D-pad hit testing so movement can trigger even if the button's own listener is not receiving the event.
+- Added a global `window.HOCKEY_SMASH_DPAD` fallback API for direct movement calls.
+- Increased the D-pad tap movement step so a press should be visibly obvious.
+- Updated browser tests and static verification for the global D-pad fallback.
+
 ## 0.5.9 - Direct D-pad Movement Fallback
 
 - Shipped **Hockey Smash v0.5.9** with visible build badge `Build 2026-06-29.6`.
@@ -77,7 +85,7 @@
 - Added Daniel health bar, invincibility after damage, and Try Again flow.
 - Added summer Soldotna-inspired background rendering and sidewalk/ground tile layer.
 - Added asset fallback placeholders for missing sprites and scenery.
-- Added salmon hazards, a major salmon run sequence, bears, moose, Mom/Sister interruption bubbles, and Dad boss concept with dad-joke attacks.
+- Added salmon hazards, a major salmon run sequence, bears, moose, Mom/Sister interruption bubbles, a major salmon run, and Dad boss concept with dad-joke attacks.
 - Added temporary mobile portrait rotate hint and no-scroll gameplay controls.
 - Added Hockey Smash design, workflow, and dev checklist documentation.
 
@@ -97,7 +105,7 @@
 - Added a denser RPG interface with party strip, room scanner, gear deck, inventory, log, status meters, and development Help overlay.
 - Kept the existing canvas renderer as a fallback while making the new DOM viewport the primary presentation.
 - Added state-driven visual classes for walls, gates, items, monsters, exits, the mansion, the underpass, the conservatory, and Soldotna Creek Wayside.
-- Updated README, QA notes, changelog, and progress documentation.
+- Updated README, QA notes, and progress documentation.
 - WarClass was used for visual/interface inspiration only; no WarClass assets were copied.
 
 ## 0.2.8 - Soldotna Wayside And Help Overlay
