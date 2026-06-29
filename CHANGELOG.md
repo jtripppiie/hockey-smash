@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.13.6 - Charged Shots And Salmon Patterns
+
+- Shipped **Hockey Smash v0.13.6** with visible build badge `Build 2026-06-29.52`.
+- Added charged puck/pointe-shoe shooting with hold-to-charge and release-to-fire controls.
+- Tightened projectile cooldown to 180ms for more responsive tap shooting.
+- Extended the charge window to 720ms and strengthened charged shot damage, size, glow, feedback text, and arcing physics.
+- Preserved Daniel puck behavior and Sofie Dance Smash pointe-shoe behavior instead of replacing the integrated character layer.
+- Added explicit salmon patterns: `highArc`, `low`, and `school`.
+- Improved salmon dodge rules so highArc salmon require a higher jump and low salmon require sliding.
+- Added combo encounter spawns so difficulty can create a second encounter shortly after the first.
+- Added safe puck-speed power-ups from defeated bears/moose. Power-ups live in the projectile layer instead of `state.entities`, so the old core collision loop cannot treat them as damage hazards.
+- Added `js/games/hockey-smash-v0110.js` as the final v0.13.6 release marker and updated cache keys, package version, docs, and verifier checks.
+
 ## 0.13.5 - Compact No-Scroll Splash
 
 - Shipped **Hockey Smash v0.13.5** with visible build badge `Build 2026-06-29.51`.
@@ -8,7 +21,6 @@
 - Shrunk the Daniel/Sofie character buttons and player name input.
 - Added short-screen and portrait overrides in `style.css` and `hockey-smash-custom.css`.
 - Kept all splash content visible: image, title, copy, character selector, player name input, Start Game button, and note.
-- Updated cache keys, package version, README, workflow docs, QA docs, dev checklist, progress notes, beginner handoff guide, and static verifier checks for `0.13.5`.
 
 ## 0.13.4 - Start Countdown And Right-Side Salmon Guard
 
@@ -18,8 +30,6 @@
 - Holds back salmon, wildlife, family interruptions, Dad jokes, and boss progression during the countdown.
 - Skips the countdown in `?computerMode=1` so Computer Play and automated diagnostics still start quickly.
 - Forces salmon/fish to enter from the right side only and move left toward the player.
-- Added extra beginner-friendly comments in `js/games/hockey-smash-v0109.js` explaining dev mode, the countdown, spawn holds, and the salmon direction guard.
-- Updated cache keys, package version, README, workflow docs, QA docs, dev checklist, progress notes, beginner handoff guide, and static verifier checks for `0.13.4`.
 
 ## 0.13.3 - Normal Splash And Dev-Only Computer Play
 
@@ -36,19 +46,6 @@
 - Added pointe-shoe projectile behavior for Sofie while Daniel keeps puck behavior.
 - Added shoe-specific hit feedback through the score/floating-text layer.
 
-## 0.13.1 - Splash And Title Cleanup
-
-- Fixed the public title language so the splash says **Hockey Smash**.
-- Kept Fullscreen inside gameplay instead of showing it as a splash-screen action.
-- Continued cache-key cleanup so deployed GitHub Pages checkpoints are easier to verify.
-
-## 0.13.0 - CSS Manifest And Hidden Screen Repair
-
-- Switched `index.html` to load one CSS entry point: `hockey-smash.css`.
-- Moved individual CSS layer imports into the CSS manifest.
-- Added hard `[hidden]` overrides so hidden splash/gameplay/transition/try-again screens cannot remain clickable.
-- Preserved debug tools while keeping them out of normal player flow.
-
 ## Earlier History
 
-See prior repository history for v0.9.x through v0.12.x gameplay, control, score, projectile, character, and layout checkpoints.
+See prior repository history for v0.9.x through v0.13.1 gameplay, control, score, projectile, character, and layout checkpoints.
