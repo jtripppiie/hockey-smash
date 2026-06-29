@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.12.1 - Puck Variants, Floating Feedback, And Run Summary
+
+- Shipped **Hockey Smash v0.12.1** with visible build badge `Build 2026-06-29.36`.
+- Added powered puck variants in `js/games/hockey-smash-v0103.js`.
+- Normal slapshots keep the base puck behavior.
+- Slide pucks deal more damage and use a low blue visual treatment.
+- Aerial slapshots deal the most damage and use a brighter gold visual treatment.
+- Added floating feedback text from the score layer for puck hits, fish dodges, combo gains, and damage.
+- Added a Try Again run summary with distance, score, best combo, puck hits, and fish dodges.
+- Added peak combo, puck-hit, fish-dodge, and damage stats to the score layer.
+- Updated cache keys, package version, and verifier checks for `0.12.1`.
+
 ## 0.12.0 - Score, Combo, High Score, And Difficulty Ramp
 
 - Shipped **Hockey Smash v0.12.0** with visible build badge `Build 2026-06-29.35`.
