@@ -218,9 +218,16 @@ harness.elements['hockey-play'].dispatch('click');
 harness.frame();
 
 let state = api.getState();
-assert(api.getVersion() === 'Hockey Smash v0.5.2', 'Version should be Hockey Smash v0.5.2.');
+assert(api.getVersion() === 'Hockey Smash v0.5.3', 'Version should be Hockey Smash v0.5.3.');
 assert(state.mode === 'playing', 'Clicking Play should enter playing mode.');
 assert(state.player.width === 144 && state.player.height === 152, 'Player should use the larger visible size.');
+assert(api.tuning.groundRatio === 0.82, `Ground ratio should align actors to sidewalk: ${api.tuning.groundRatio}.`);
+
+const groundY = api.tuning.groundRatio * 576;
+assert(
+  Math.abs(state.player.y + state.player.height - groundY) < 0.001,
+  `Player feet should start on sidewalk ground line: feet=${state.player.y + state.player.height}, ground=${groundY}.`
+);
 
 const startX = state.player.x;
 harness.dispatchKey('keydown', 'ArrowRight');
@@ -237,7 +244,6 @@ state = api.getState();
 const leftX = state.player.x;
 assert(leftX < rightX - 20, `Left movement failed: right=${rightX}, left=${leftX}.`);
 
-const groundY = api.tuning.groundRatio * 576;
 const groundedY = state.player.y;
 harness.dispatchKey('keydown', ' ');
 harness.frames(5);

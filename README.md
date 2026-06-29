@@ -1,6 +1,6 @@
 # Hockey Smash
 
-Current playable version: **Hockey Smash v0.5.2**
+Current playable version: **Hockey Smash v0.5.3**
 
 Live GitHub Pages preview:
 
@@ -14,13 +14,13 @@ Hockey Smash is now the primary public playable mode in this repo. The project u
 
 ## What This Prototype Includes
 
-- Hockey Smash splash screen and visible `Hockey Smash v0.5.2` version text.
+- Hockey Smash splash screen and visible `Hockey Smash v0.5.3` version text.
 - Play button with a short "Entering Hockey Smash..." transition.
 - Full browser-viewport gameplay screen.
 - 1024x576 landscape-first canvas layout.
-- Ground line at `canvasHeight * 0.60`.
+- Ground line at `canvasHeight * 0.82`, aligned to the visible sidewalk in the background art.
 - Hockey player fixed-screen side-scroller movement with a visible debug marker.
-- Left/right movement, jump, slide, and stick swing coverage for v0.5.2.
+- Left/right movement, jump, slide, and stick swing coverage for v0.5.3.
 - Responsive jump, hold-to-slide speed boost, and hockey stick combo attack.
 - One health bar with brief invincibility after damage.
 - Try Again screen when health reaches zero.

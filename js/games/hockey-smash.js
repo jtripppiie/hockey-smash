@@ -5,7 +5,7 @@
 
   // These design constants are the "virtual screen" size. The canvas can scale
   // up or down with CSS, but all game math happens in this 1024x576 world.
-  const VERSION = 'Hockey Smash v0.5.2';
+  const VERSION = 'Hockey Smash v0.5.3';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const TRANSITION_MS = 2400;
@@ -39,7 +39,10 @@
     slideSpeed: 455,
     jumpVelocity: 810,
     gravity: 2250,
-    groundRatio: 0.60,
+    // The Soldotna backgrounds already include the sidewalk near the bottom of
+    // the artwork. This shared ground line places every character's feet on
+    // that sidewalk instead of floating over the storefronts.
+    groundRatio: 0.82,
     comboWindow: 420,
     invincibleMs: 760,
   };
@@ -565,7 +568,7 @@
       vx: 0,
       hp: 3,
       damage: 6,
-      bubble: type === 'mom' ? 'Daniel, clean your room!' : 'Daniel, you smell!',
+      bubble: type === 'mom' ? 'Daniel, clean your room!' : 'Daniel, heads up!',
     });
   }
 

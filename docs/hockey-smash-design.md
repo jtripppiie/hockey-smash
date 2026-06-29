@@ -2,14 +2,14 @@
 
 ## Title And Version
 
-**Hockey Smash v0.5.2**
+**Hockey Smash v0.5.3**
 
 Hockey Smash is now the primary playable mode in this static HTML/CSS/JavaScript repo. The public launch screen should present Hockey Smash clearly, with the local splash sprite and Soldotna-inspired background sequence.
 
 ## Launch Flow
 
 1. Splash screen shows `Hockey Smash`.
-2. Visible version reads `Hockey Smash v0.5.2`.
+2. Visible version reads `Hockey Smash v0.5.3`.
 3. Play shows a 2-3 second transition: `Entering Hockey Smash...`.
 4. Gameplay opens in a full browser-viewport screen.
 5. The page/body does not scroll while gameplay is active.
@@ -19,8 +19,8 @@ Hockey Smash is now the primary playable mode in this static HTML/CSS/JavaScript
 - Fixed-screen side-scroller.
 - Landscape-first 16:9 canvas.
 - Internal canvas size: `1024x576`.
-- Ground line: `groundY = canvasHeight * 0.60`.
-- The hockey player and all major characters align to the invisible ground line.
+- Ground line: `groundY = canvasHeight * 0.82`.
+- The hockey player and all major characters align to the visible sidewalk in the background art.
 - Bottom-left controls are for left/right movement.
 - Bottom-right controls are Jump, Slide, and Stick.
 
@@ -54,7 +54,7 @@ The hockey stick clears hazards, salmon, interruption bubbles, Dad jokes, and da
 ## Health
 
 - Daniel has one health bar.
-- No lives system in v0.5.2.
+- No lives system in v0.5.3.
 - Hazards reduce health.
 - Daniel gains brief invincibility after damage.
 - At zero health, show Try Again instead of instantly restarting.
@@ -70,7 +70,7 @@ The first level is a summer Soldotna, Alaska-inspired street scene. The backgrou
 - Salmon: fly/jump across the screen and can be knocked away.
 - Major salmon run: a short chaotic sequence before the boss.
 - Mom: appears with an interruption bubble such as `Daniel, clean your room!`.
-- Sister: appears with a playful teasing bubble such as `Daniel, you smell!`.
+- Sister: appears with a playful warning bubble such as `Daniel, heads up!`.
 - Dad: enters after salmon run and attacks with dad-joke hazards.
 
 ## Dad Boss
@@ -99,7 +99,7 @@ assets/hockey-smash/sprites/sister_text.png
 
 ## Prototype Scope
 
-v0.5.2 is a playable prototype, not a finished content-complete game. It should prove launch flow, canvas layout, player visibility, left/right movement, jump, slide, stick attack, debug/computer mode, health, no-scroll controls, placeholders, stick-clearable obstacles, family interruptions, salmon run, and Dad boss.
+v0.5.3 is a playable prototype, not a finished content-complete game. It should prove launch flow, canvas layout, sidewalk-aligned player visibility, left/right movement, jump, slide, stick attack, debug/computer mode, health, no-scroll controls, placeholders, stick-clearable obstacles, family interruptions, salmon run, and Dad boss.
 
 ## Future Upgrades
 

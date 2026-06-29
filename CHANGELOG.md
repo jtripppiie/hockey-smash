@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.3 - Sidewalk Ground Alignment
+
+- Shipped **Hockey Smash v0.5.3** with visible build badge `Build 2026-06-28.8`.
+- Moved the shared invisible ground line from `0.60` to `0.82` of canvas height so Daniel, bears, moose, family characters, and Dad stand on the visible sidewalk instead of floating above it.
+- Replaced the old sister insult interruption with `Daniel, heads up!`.
+
 ## 0.5.2 - Player Visibility Marker
 
 - Shipped **Hockey Smash v0.5.2** with visible build badge `Build 2026-06-28.7`.

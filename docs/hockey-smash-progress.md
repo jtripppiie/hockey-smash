@@ -2,6 +2,20 @@
 
 This file tracks implementation progress so work can continue safely across sessions.
 
+## 2026-06-28 Checkpoint: Hockey Smash v0.5.3 Sidewalk Alignment
+
+Implemented:
+
+- Shipped **Hockey Smash v0.5.3** with visible build badge `Build 2026-06-28.8`.
+- Moved the shared collision ground line to `canvasHeight * 0.82` so Daniel, bears, moose, family characters, and Dad stand on the visible sidewalk in the Soldotna background art.
+- Replaced the sister interruption insult with `Daniel, heads up!`.
+
+Verify:
+
+- Open `https://jtripppiie.github.io/hockey-smash/` after the push and confirm the badge reads `Hockey Smash v0.5.3 · Build 2026-06-28.8`.
+- Press Play in normal mode, without `?computerMode=1`, and confirm Daniel appears standing on the sidewalk.
+- Confirm left/right movement, jump, slide, and stick still work from keyboard and touch controls.
+
 ## 2026-06-28 Checkpoint: Hockey Smash v0.5.0 Pivot
 
 The public-facing game has pivoted to **Hockey Smash v0.5.0** inside this existing repo. Hockey Smash files remain in the background as reusable infrastructure and history, but the main launch screen now presents Hockey Smash only.
