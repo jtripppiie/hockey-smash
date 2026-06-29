@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.9.3';
-  const DISPLAY_BUILD = 'Build 2026-06-29.14';
+  const DISPLAY_VERSION = 'Hockey Smash v0.11.6';
+  const DISPLAY_BUILD = 'Build 2026-06-29.31';
   const DESIGN_WIDTH = 1024;
   const RIGHT_EDGE = 810;
   const LEFT_ENTRY = 108;
@@ -8,18 +8,18 @@
   const RETURN_EDGE = 170;
   const STAGE_SECONDS = [0.5, 10.5, 20.5, 27.5, 34.5];
   const STAGE_BACKGROUNDS = [
-    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1920x1080.png',
-    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_02_1920x1080.png',
-    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_03_1920x1080.png',
-    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_04_1920x1080.png',
-    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_05_1920x1080.png',
+    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1280x720.webp',
+    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_02_1280x720.webp',
+    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_03_1280x720.webp',
+    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_04_1280x720.webp',
+    'assets/hockey-smash/backgrounds/soldotna_cityscape_background_05_1280x720.webp',
   ];
   const params = new URLSearchParams(window.location.search);
   const computerMode = params.get('computerMode') === '1';
-  const preloadedBackgrounds = STAGE_BACKGROUNDS.map((src) => {
+  const preloadedBackgrounds = STAGE_BACKGROUNDS.map((src, index) => {
     const image = new Image();
     image.decoding = 'async';
-    image.src = src;
+    if (index === 0) image.src = src;
     return image;
   });
 
@@ -51,6 +51,7 @@
 
     let stage = 0;
     let lastStageTime = 0;
+    let renderedStage = 0;
 
     function getState() {
       const state = api.getState?.();
@@ -62,13 +63,17 @@
       if (!stageBackground || !canvas || computerMode) return;
       const rect = canvas.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
+      const image = preloadedBackgrounds[stage];
+      if (image && !image.src) image.src = STAGE_BACKGROUNDS[stage];
+      if (image?.complete && image.naturalWidth) renderedStage = stage;
       stageBackground.style.left = `${rect.left}px`;
       stageBackground.style.top = `${rect.top}px`;
       stageBackground.style.width = `${rect.width}px`;
       stageBackground.style.height = `${rect.height}px`;
-      stageBackground.style.backgroundImage = `url("${STAGE_BACKGROUNDS[stage]}")`;
-      stageBackground.dataset.stage = String(stage + 1);
-      stageBackground.dataset.ready = preloadedBackgrounds[stage]?.complete ? 'true' : 'loading';
+      stageBackground.style.backgroundImage = `url("${STAGE_BACKGROUNDS[renderedStage]}")`;
+      stageBackground.dataset.stage = String(renderedStage + 1);
+      stageBackground.dataset.targetStage = String(stage + 1);
+      stageBackground.dataset.ready = renderedStage === stage ? 'true' : 'loading';
     }
 
     function setStage(state, nextStage, direction) {

@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.11.1';
-  const DISPLAY_BUILD = 'Build 2026-06-29.26';
+  const DISPLAY_VERSION = 'Hockey Smash v0.11.6';
+  const DISPLAY_BUILD = 'Build 2026-06-29.31';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const GROUND_Y = DESIGN_HEIGHT * 0.82;
@@ -61,6 +61,18 @@
       damage: 5,
       bubble: 'Daniel, clean your room!',
       message: 'Mom interruption moving in!'
+    },
+    {
+      type: 'sister',
+      x: DESIGN_WIDTH + 70,
+      y: GROUND_Y - 94,
+      width: 84,
+      height: 94,
+      vx: -175,
+      hp: 2,
+      damage: 7,
+      bubble: 'Spin move!',
+      message: 'Sister spinning in!'
     },
     {
       type: 'moose',

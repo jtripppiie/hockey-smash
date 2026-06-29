@@ -14,11 +14,11 @@
   // it easy to verify assets and swap art without hunting through drawing code.
   const ASSETS = {
     splash: 'assets/hockey-smash/sprites/splash.png',
-    background01: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1920x1080.png',
-    background02: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_02_1920x1080.png',
-    background03: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_03_1920x1080.png',
-    background04: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_04_1920x1080.png',
-    background05: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_05_1920x1080.png',
+    background01: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1280x720.webp',
+    background02: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_02_1280x720.webp',
+    background03: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_03_1280x720.webp',
+    background04: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_04_1280x720.webp',
+    background05: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_05_1280x720.webp',
     daniel: 'assets/hockey-smash/sprites/hockey-player.png',
     salmon: 'assets/hockey-smash/sprites/salmon.png',
     bear: 'assets/hockey-smash/sprites/bear.png',
@@ -31,6 +31,7 @@
     sisterText: 'assets/hockey-smash/sprites/sister_text.png',
   };
   const BACKGROUND_SEQUENCE = ['background01', 'background02', 'background03', 'background04', 'background05'];
+  const DEFERRED_ASSETS = new Set(['background02', 'background03', 'background04', 'background05']);
 
   // TUNING is the game's feel panel. If movement is too slow, jumps are too
   // floaty, or the ground feels wrong, start by changing these numbers.
@@ -79,6 +80,7 @@
   const images = {};
   const processedImages = {};
   const missingAssets = [];
+  let lastReadyBackgroundKey = 'background01';
 
   function start() {
     // Boot order matters: find DOM nodes, start image loading, wire controls,
@@ -113,20 +115,27 @@
     // Images load asynchronously. When each image finishes, render once so the
     // player sees art appear as soon as the browser has it.
     Object.entries(ASSETS).forEach(([key, src]) => {
-      const image = new Image();
-      image.onload = () => {
-        // The hockey-player sprite came with a white background. This turns
-        // white pixels transparent so the character sits naturally on the scene.
-        if (key === 'daniel') processedImages[key] = makeWhiteTransparent(image);
-        render();
-      };
-      image.onerror = () => {
-        missingAssets.push(src);
-        debugLog('asset', `Missing ${src}; using labeled placeholder.`);
-      };
-      image.src = src;
-      images[key] = image;
+      if (!DEFERRED_ASSETS.has(key)) loadAsset(key, src);
     });
+  }
+
+  function loadAsset(key, src = ASSETS[key]) {
+    if (!src || images[key]) return images[key];
+    const image = new Image();
+    image.decoding = 'async';
+    image.onload = () => {
+      // The hockey-player sprite came with a white background. This turns
+      // white pixels transparent so the character sits naturally on the scene.
+      if (key === 'daniel') processedImages[key] = makeWhiteTransparent(image);
+      render();
+    };
+    image.onerror = () => {
+      missingAssets.push(src);
+      debugLog('asset', `Missing ${src}; using labeled placeholder.`);
+    };
+    images[key] = image;
+    image.src = src;
+    return image;
   }
 
   function bindEvents() {
@@ -634,9 +643,16 @@
     // Backgrounds are 1920x1080 art files. drawCoverImage crops them like a CSS
     // background-size: cover image so the canvas is always filled.
     const key = backgroundKeyForState();
+    loadAsset(key);
     const bg = images[key];
     if (bg?.complete && bg.naturalWidth) {
+      lastReadyBackgroundKey = key;
       drawCoverImage(ctx, bg, 0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
+      return;
+    }
+    const fallbackBg = images[lastReadyBackgroundKey];
+    if (fallbackBg?.complete && fallbackBg.naturalWidth) {
+      drawCoverImage(ctx, fallbackBg, 0, 0, DESIGN_WIDTH, DESIGN_HEIGHT);
       return;
     }
     ctx.fillStyle = '#7ec9f2';

@@ -32,7 +32,7 @@ body:not(.hockey-playing) .hockey-fullscreen-chip {
 }
 
 body.hockey-stage-background-active .hockey-canvas {
-  opacity: 0.02;
+  opacity: 1;
 }
 
 .hockey-status:empty {

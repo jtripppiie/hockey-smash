@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.11.6 - Health HUD Override
+
+- Shipped **Hockey Smash v0.11.6** with visible build badge `Build 2026-06-29.31`.
+- Strengthened the playing-mode CSS selectors so older responsive HUD rules cannot keep the health meter on the right.
+- Set the health HUD to the left side of the game frame and scaled it to about 15% larger.
+
+## 0.11.5 - Optimized Road Backgrounds
+
+- Shipped **Hockey Smash v0.11.5** with visible build badge `Build 2026-06-29.30`.
+- Converted the five Soldotna road backgrounds from 1920x1080 PNG to 1280x720 WebP.
+- Reduced each road background from about 2.5 MB to roughly 120-140 KB.
+- Updated the canvas and stage-background loaders to use the optimized WebP files.
+- Kept the original PNG files in place as source/reference art.
+
+## 0.11.4 - Left Health HUD
+
+- Shipped **Hockey Smash v0.11.4** with visible build badge `Build 2026-06-29.29`.
+- Moved Daniel's in-game health meter from the right side of the canvas to the left.
+- Increased the health HUD sizing by about 20% across desktop and mobile layouts.
+
+## 0.11.3 - Lazy Background Loading
+
+- Shipped **Hockey Smash v0.11.3** with visible build badge `Build 2026-06-29.28`.
+- Kept only the first road background as an eager HTML preload.
+- Deferred later road background image loads until the player reaches those sections.
+- Kept drawing the last decoded background while the next one loads to avoid black flashes.
+- Left the current full-scene art in place; recommended future replacement is game-sized full-scene WebP/JPEG sections rather than tiny tiles.
+
+## 0.11.2 - Sliding And Sister Sprites
+
+- Shipped **Hockey Smash v0.11.2** with visible build badge `Build 2026-06-29.27`.
+- Swapped Daniel's overlay to `hockey-player-sliding.png` while the slide state is active.
+- Swapped Sister's overlay to `sister-spinning.png`.
+- Added Sister to the normal moving encounter wave so the spinning sprite appears during play.
+- Preloaded the new gameplay sprites and refreshed the static verifier for the current v0.11.x files.
+
 ## 0.11.1 - In-Canvas Health HUD Layout
 
 - Shipped **Hockey Smash v0.11.1** with visible build badge `Build 2026-06-29.26`.

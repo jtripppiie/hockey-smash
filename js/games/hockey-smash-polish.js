@@ -11,12 +11,16 @@
   const DIRECT_MOVE_SPEED = 390;
   const DIRECT_TAP_STEP = 86;
   const JUMP_VISIBLE_MS = 440;
+  const PLAYER_ASSETS = {
+    normal: 'assets/hockey-smash/sprites/hockey-player.png',
+    sliding: 'assets/hockey-smash/sprites/hockey-player-sliding.png',
+  };
   const ENTITY_ASSETS = {
     salmon: 'assets/hockey-smash/sprites/salmon.png',
     bear: 'assets/hockey-smash/sprites/bear.png',
     moose: 'assets/hockey-smash/sprites/moose.png',
     mom: 'assets/hockey-smash/sprites/mom.png',
-    sister: 'assets/hockey-smash/sprites/sister.png',
+    sister: 'assets/hockey-smash/sprites/sister-spinning.png',
     dad: 'assets/hockey-smash/sprites/dad.png',
     dadJoke: 'assets/hockey-smash/sprites/dad.png',
   };
@@ -48,7 +52,7 @@
 
       const playerSprite = document.createElement('img');
       playerSprite.className = 'hockey-player-overlay__sprite';
-      playerSprite.src = 'assets/hockey-smash/sprites/hockey-player.png';
+      playerSprite.src = PLAYER_ASSETS.normal;
       playerSprite.alt = '';
 
       const playerLabel = document.createElement('span');
@@ -385,6 +389,13 @@
       playerOverlay.style.zIndex = '9';
       playerOverlay.dataset.facing = player.facing < 0 ? 'left' : 'right';
       playerOverlay.dataset.x = String(Math.round(player.x));
+
+      const playerSprite = playerOverlay.querySelector('.hockey-player-overlay__sprite');
+      if (playerSprite) {
+        const sliding = playerOverlay.dataset.sliding === 'true' || document.body.classList.contains('hockey-slide-active');
+        const nextSrc = sliding ? PLAYER_ASSETS.sliding : PLAYER_ASSETS.normal;
+        if (!playerSprite.src.endsWith(nextSrc)) playerSprite.src = nextSrc;
+      }
     }
 
     function entityLabel(entity) {
