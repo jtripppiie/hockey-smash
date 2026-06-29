@@ -9,20 +9,180 @@
     <link rel="preload" as="image" href="assets/hockey-smash/sprites/hockey-player-sliding.webp">
     <link rel="preload" as="image" href="assets/hockey-smash/sprites/sister-spinning.webp">
     <link rel="preload" as="image" href="assets/hockey-smash/sprites/dancer-player.webp">
-    <link rel="stylesheet" href="style.css?v=0.12.4-20260629.39">
-    <link rel="stylesheet" href="hockey-smash-polish.css?v=0.12.4-20260629.39">
-    <link rel="stylesheet" href="hockey-smash-touch.css?v=0.12.4-20260629.39">
-    <link rel="stylesheet" href="hockey-smash-custom.css?v=0.12.4-20260629.39">
-    <link rel="stylesheet" href="hockey-smash-v09.css?v=0.12.4-20260629.39">
-    <link rel="stylesheet" href="hockey-smash-v094.css?v=0.12.4-20260629.39">
-    <link rel="stylesheet" href="hockey-smash-v095.css?v=0.12.4-20260629.39">
-    <link rel="stylesheet" href="hockey-smash-v0111.css?v=0.12.4-20260629.39">
+    <link rel="stylesheet" href="style.css?v=0.12.5-20260629.40">
+    <link rel="stylesheet" href="hockey-smash-polish.css?v=0.12.5-20260629.40">
+    <link rel="stylesheet" href="hockey-smash-touch.css?v=0.12.5-20260629.40">
+    <link rel="stylesheet" href="hockey-smash-custom.css?v=0.12.5-20260629.40">
+    <link rel="stylesheet" href="hockey-smash-v09.css?v=0.12.5-20260629.40">
+    <link rel="stylesheet" href="hockey-smash-v094.css?v=0.12.5-20260629.40">
+    <link rel="stylesheet" href="hockey-smash-v095.css?v=0.12.5-20260629.40">
+    <link rel="stylesheet" href="hockey-smash-v0111.css?v=0.12.5-20260629.40">
   </head>
   <body>
+    <script>
+      (function () {
+        const startedAt = performance.now();
+        const rows = [];
+        let panel = null;
+        let list = null;
+        let stateLine = null;
+        let minimized = false;
+
+        function now() {
+          return `${Math.round(performance.now() - startedAt)}ms`;
+        }
+
+        function text(value) {
+          if (value == null) return '';
+          if (typeof value === 'string') return value;
+          try { return JSON.stringify(value); }
+          catch (error) { return String(value); }
+        }
+
+        function getScreenState() {
+          const ids = ['hockey-splash', 'hockey-transition', 'hockey-game', 'hockey-try-again'];
+          const parts = ids.map((id) => {
+            const el = document.getElementById(id);
+            if (!el) return `${id}:missing`;
+            return `${id}:${el.hidden ? 'hidden' : 'visible'}`;
+          });
+          return [
+            `ready:${document.readyState}`,
+            `api:${window.RTA_HOCKEY_SMASH ? 'yes' : 'no'}`,
+            `body:${document.body?.className || 'none'}`,
+            `badge:${document.getElementById('hockey-build-badge')?.textContent?.trim() || 'missing'}`,
+            ...parts,
+          ].join(' | ');
+        }
+
+        function ensurePanel() {
+          if (panel || !document.body) return;
+          const style = document.createElement('style');
+          style.textContent = `
+            #hockey-boot-log{position:fixed;left:.75rem;bottom:.75rem;z-index:2147483647;width:min(520px,calc(100vw - 1.5rem));max-height:52vh;border:2px solid #fff27a;border-radius:14px;background:rgba(4,7,12,.94);color:#f8fafc;font:12px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace;box-shadow:0 18px 45px rgba(0,0,0,.55);overflow:hidden}
+            #hockey-boot-log header{display:flex;align-items:center;gap:.45rem;padding:.45rem .55rem;background:rgba(255,242,122,.16);font-weight:900;color:#fff27a}
+            #hockey-boot-log button{border:1px solid rgba(255,255,255,.35);border-radius:999px;background:#111827;color:#fff;padding:.2rem .48rem;font:inherit;font-weight:800;cursor:pointer}
+            #hockey-boot-log pre{margin:0;padding:.55rem;max-height:35vh;overflow:auto;white-space:pre-wrap;word-break:break-word}
+            #hockey-boot-log .state{padding:.45rem .55rem;border-top:1px solid rgba(255,255,255,.18);color:#c7f9ff;background:rgba(15,23,42,.72)}
+            #hockey-boot-log.is-minimized pre,#hockey-boot-log.is-minimized .state{display:none}
+            #hockey-boot-log .spacer{flex:1}
+          `;
+          document.head.appendChild(style);
+
+          panel = document.createElement('aside');
+          panel.id = 'hockey-boot-log';
+          panel.setAttribute('role', 'status');
+          panel.innerHTML = `
+            <header>
+              <span>Hockey Debug Log</span>
+              <span class="spacer"></span>
+              <button type="button" data-boot-action="copy">Copy</button>
+              <button type="button" data-boot-action="splash">Show splash</button>
+              <button type="button" data-boot-action="toggle">Min</button>
+            </header>
+            <pre id="hockey-boot-log-rows"></pre>
+            <div class="state" id="hockey-boot-log-state"></div>
+          `;
+          document.body.appendChild(panel);
+          list = document.getElementById('hockey-boot-log-rows');
+          stateLine = document.getElementById('hockey-boot-log-state');
+          panel.addEventListener('click', (event) => {
+            const action = event.target?.closest?.('button')?.dataset?.bootAction;
+            if (action === 'copy') copyLog();
+            if (action === 'splash') showSplashRescue();
+            if (action === 'toggle') togglePanel();
+          });
+          render();
+        }
+
+        function render() {
+          ensurePanel();
+          if (list) list.textContent = rows.slice(-80).join('\n');
+          if (stateLine) stateLine.textContent = getScreenState();
+        }
+
+        function log(source, message, detail) {
+          const line = `[${now()}] ${source}: ${message}${detail ? ` ${text(detail)}` : ''}`;
+          rows.push(line);
+          render();
+          return line;
+        }
+
+        function snapshot(label) {
+          log('screen', label || 'snapshot', getScreenState());
+        }
+
+        function copyLog() {
+          const dump = rows.join('\n') + '\n' + getScreenState();
+          navigator.clipboard?.writeText(dump)
+            .then(() => log('overlay', 'Copied debug log.'))
+            .catch(() => log('overlay', 'Copy failed; select text manually.'));
+        }
+
+        function showSplashRescue() {
+          const splash = document.getElementById('hockey-splash');
+          const transition = document.getElementById('hockey-transition');
+          const game = document.getElementById('hockey-game');
+          const tryAgain = document.getElementById('hockey-try-again');
+          document.body.classList.remove('hockey-playing');
+          if (splash) splash.hidden = false;
+          if (transition) transition.hidden = true;
+          if (game) game.hidden = true;
+          if (tryAgain) tryAgain.hidden = true;
+          log('rescue', 'Forced splash visible.');
+          snapshot('after-rescue');
+        }
+
+        function togglePanel() {
+          minimized = !minimized;
+          panel?.classList.toggle('is-minimized', minimized);
+        }
+
+        window.HOCKEY_BOOT_LOG = {
+          log,
+          snapshot,
+          dump: () => rows.join('\n'),
+          showSplash: showSplashRescue,
+        };
+
+        const originalConsoleError = console.error.bind(console);
+        console.error = function () {
+          log('console.error', Array.from(arguments).map(text).join(' '));
+          originalConsoleError.apply(console, arguments);
+        };
+
+        window.addEventListener('error', (event) => {
+          const target = event.target;
+          if (target && target !== window && (target.src || target.href)) {
+            log('resource-error', target.src || target.href);
+            return;
+          }
+          log('js-error', event.message || 'Unknown error', `${event.filename || ''}:${event.lineno || ''}:${event.colno || ''}`);
+        }, true);
+
+        window.addEventListener('unhandledrejection', (event) => {
+          log('promise-error', event.reason?.message || event.reason || 'Unhandled promise rejection');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+          log('dom', 'DOMContentLoaded');
+          snapshot('dom-ready');
+        });
+        window.addEventListener('load', () => {
+          log('window', 'load');
+          snapshot('window-load');
+        });
+        window.addEventListener('pageshow', () => snapshot('pageshow'));
+        window.setInterval(() => render(), 500);
+        window.setTimeout(() => snapshot('1s-check'), 1000);
+        log('overlay', 'Boot logger installed before game scripts.');
+      })();
+    </script>
+
     <main id="app" class="app-shell hockey-app">
       <section id="hockey-smash" class="hockey-shell" aria-labelledby="hockey-title">
         <div id="hockey-build-badge" class="hockey-build-badge" aria-label="Current deployed build">
-          Hockey Smash v0.12.4 · Build 2026-06-29.39
+          Hockey Smash v0.12.5 · Build 2026-06-29.40
         </div>
         <section id="hockey-splash" class="hockey-splash">
           <div class="hockey-splash__content">
@@ -137,19 +297,20 @@
       </section>
     </main>
 
-    <script src="js/games/hockey-smash.js?v=0.12.4-20260629.39"></script>
-    <script src="js/games/hockey-smash-polish.js?v=0.12.4-20260629.39"></script>
-    <script src="js/games/hockey-smash-v091.js?v=0.12.4-20260629.39"></script>
-    <script src="script.js?v=0.12.4-20260629.39"></script>
-    <script src="js/games/hockey-smash-v095.js?v=0.12.4-20260629.39"></script>
-    <script src="js/games/hockey-smash-v096.js?v=0.12.4-20260629.39"></script>
-    <script src="js/games/hockey-smash-v099.js?v=0.12.4-20260629.39"></script>
-    <script src="js/games/hockey-smash-v0100.js?v=0.12.4-20260629.39"></script>
-    <script src="js/games/hockey-smash-v0102.js?v=0.12.4-20260629.39"></script>
-    <script src="js/games/hockey-smash-v0103.js?v=0.12.4-20260629.39"></script>
-    <script src="js/games/hockey-smash-v0104.js?v=0.12.4-20260629.39"></script>
-    <script src="js/games/hockey-smash-v0105.js?v=0.12.4-20260629.39"></script>
-    <script src="js/games/hockey-smash-v0106.js?v=0.12.4-20260629.39"></script>
-    <script src="js/games/hockey-smash-v0107.js?v=0.12.4-20260629.39"></script>
+    <script src="js/games/hockey-smash.js?v=0.12.5-20260629.40"></script>
+    <script src="js/games/hockey-smash-polish.js?v=0.12.5-20260629.40"></script>
+    <script src="js/games/hockey-smash-v091.js?v=0.12.5-20260629.40"></script>
+    <script src="script.js?v=0.12.5-20260629.40"></script>
+    <script src="js/games/hockey-smash-v095.js?v=0.12.5-20260629.40"></script>
+    <script src="js/games/hockey-smash-v096.js?v=0.12.5-20260629.40"></script>
+    <script src="js/games/hockey-smash-v099.js?v=0.12.5-20260629.40"></script>
+    <script src="js/games/hockey-smash-v0100.js?v=0.12.5-20260629.40"></script>
+    <script src="js/games/hockey-smash-v0102.js?v=0.12.5-20260629.40"></script>
+    <script src="js/games/hockey-smash-v0103.js?v=0.12.5-20260629.40"></script>
+    <script src="js/games/hockey-smash-v0104.js?v=0.12.5-20260629.40"></script>
+    <script src="js/games/hockey-smash-v0105.js?v=0.12.5-20260629.40"></script>
+    <script src="js/games/hockey-smash-v0106.js?v=0.12.5-20260629.40"></script>
+    <script src="js/games/hockey-smash-v0107.js?v=0.12.5-20260629.40"></script>
+    <script src="js/games/hockey-smash-v0108.js?v=0.12.5-20260629.40"></script>
   </body>
 </html>
