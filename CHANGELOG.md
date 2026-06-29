@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.3 - Normal Mode Polish Follow-up
+
+- Kept visible versioning only in the top-right build badge.
+- Removed the duplicate splash/footer version label and the duplicate HUD version label.
+- Added a normal-mode polish layer that hides the debug overlay unless `?computerMode=1` is active.
+- Added a normal-mode victory overlay after the final challenge is cleared.
+- Added verification coverage for the new polish CSS/script and top-right-only versioning.
+
 ## 0.5.3 - Sidewalk Ground Alignment
 
 - Shipped **Hockey Smash v0.5.3** with visible build badge `Build 2026-06-28.8`.
