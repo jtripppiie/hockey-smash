@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.12.3';
-  const DISPLAY_BUILD = 'Build 2026-06-29.38';
+  const DISPLAY_VERSION = 'Hockey Smash v0.13.1';
+  const DISPLAY_BUILD = 'Build 2026-06-29.46';
   const STORAGE_KEY = 'hockeySmashPlayerConfig';
   const DEFAULT_NAMES = ['Daniel', 'DANIEL', 'Sofie', 'SOFIE'];
   const PLAYER_NAME_RE = /\b(Daniel|DANIEL|Sofie|SOFIE)\b/g;
@@ -11,6 +11,12 @@
       name: 'Daniel',
       label: 'Daniel',
       overlayLabel: 'DANIEL',
+      gameTitle: 'Hockey Slash 2',
+      splashTagline: 'Customize your runner!',
+      transitionHeading: 'Entering Hockey Smash...',
+      actionText: '🏒',
+      actionLabel: 'Hockey stick attack',
+      actionTitle: 'Hockey stick attack',
       hero: 'assets/hockey-smash/sprites/splash.webp',
       sprite: 'assets/hockey-smash/sprites/hockey-player.webp',
       slideSprite: 'assets/hockey-smash/sprites/hockey-player-sliding.webp',
@@ -21,10 +27,16 @@
       name: 'Sofie',
       label: 'Sofie',
       overlayLabel: 'SOFIE',
+      gameTitle: 'Dance Smash',
+      splashTagline: 'Sofie spins into the salmon run!',
+      transitionHeading: 'Entering Dance Smash...',
+      actionText: '🩰',
+      actionLabel: 'Throw pointe shoe',
+      actionTitle: 'Throw pointe shoe',
       hero: 'assets/hockey-smash/sprites/dancer-player.webp',
       sprite: 'assets/hockey-smash/sprites/dancer-player.webp',
       slideSprite: 'assets/hockey-smash/sprites/sister-spinning.webp',
-      alt: 'Sofie joins Hockey Smash',
+      alt: 'Sofie joins Dance Smash',
     },
   };
 
@@ -72,6 +84,10 @@
       label: characterDef.label,
       overlayLabel: name.toUpperCase(),
     };
+  }
+
+  function characterDef() {
+    return CHARACTERS[config.character] || CHARACTERS.daniel;
   }
 
   function patchAssetsForSavedCharacter() {
@@ -169,15 +185,31 @@
       splashHero.classList.remove('is-loading-fallback');
       splashHero.src = config.hero;
     }
-    if (splashHero) splashHero.alt = config.alt || `${config.name} character preview`;
+    if (splashHero) splashHero.alt = characterDef().alt || `${config.name} character preview`;
+
+    updateModeLabels();
+    updateStaticLabels();
+  }
+
+  function updateModeLabels() {
+    const def = characterDef();
 
     const title = document.getElementById('hockey-title');
-    if (title) title.textContent = config.character === 'sofie' ? 'Sofie Smash' : 'Hockey Slash 2';
+    if (title) title.textContent = def.gameTitle;
 
     const tagline = document.querySelector('.hockey-splash__tagline');
-    if (tagline) tagline.textContent = config.character === 'sofie' ? 'Sofie spins into the salmon run!' : 'Customize your runner!';
+    if (tagline) tagline.textContent = def.splashTagline;
 
-    updateStaticLabels();
+    const transitionHeading = document.querySelector('#hockey-transition h2');
+    if (transitionHeading) transitionHeading.textContent = def.transitionHeading;
+
+    const actionButton = document.querySelector('[data-action="stick"]');
+    if (actionButton) {
+      actionButton.textContent = def.actionText;
+      actionButton.setAttribute('aria-label', def.actionLabel);
+      actionButton.setAttribute('title', def.actionTitle);
+      actionButton.dataset.actionTheme = config.character === 'sofie' ? 'pointe-shoe' : 'hockey-stick';
+    }
   }
 
   function updateStaticLabels() {
@@ -230,6 +262,7 @@
   }
 
   function syncPersonalizationLoop() {
+    updateModeLabels();
     updateStaticLabels();
     updateOverlaySprite();
     syncStateText();
