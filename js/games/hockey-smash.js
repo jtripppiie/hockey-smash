@@ -5,7 +5,7 @@
 
   // These design constants are the "virtual screen" size. The canvas can scale
   // up or down with CSS, but all game math happens in this 1024x576 world.
-  const VERSION = 'Hockey Smash v0.5.1';
+  const VERSION = 'Hockey Smash v0.5.2';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const TRANSITION_MS = 2400;
@@ -672,7 +672,6 @@
     const p = state.player;
     ctx.save();
     if (p.invincible > 0 && Math.floor(performance.now() / 80) % 2 === 0) ctx.globalAlpha = 0.55;
-    drawPlayerMarker(ctx, p);
     if (p.facing < 0) {
       ctx.translate(p.x + p.width, p.y);
       ctx.scale(-1, 1);
@@ -681,6 +680,7 @@
       drawSpriteOrPlaceholder(ctx, 'daniel', p.x, p.y, p.width, p.height, 'DANIEL');
     }
     ctx.restore();
+    drawPlayerMarker(ctx, p);
     if (p.attackTimer > 0) {
       const box = attackBox();
       ctx.fillStyle = 'rgba(255, 242, 120, 0.45)';
@@ -692,18 +692,21 @@
     // Temporary teaching/debug marker. It makes the player easy to find while
     // we stabilize movement and sprite scale.
     ctx.save();
-    ctx.globalAlpha = 0.72;
+    ctx.globalAlpha = 0.95;
+    ctx.fillStyle = 'rgba(255, 242, 122, 0.24)';
+    ctx.fillRect(player.x - 8, player.y - 8, player.width + 16, player.height + 16);
     ctx.strokeStyle = '#fff27a';
     ctx.lineWidth = 5;
+    ctx.strokeRect(player.x - 8, player.y - 8, player.width + 16, player.height + 16);
     ctx.beginPath();
     ctx.ellipse(player.x + player.width / 2, player.y + player.height - 9, player.width * 0.42, 13, 0, 0, Math.PI * 2);
     ctx.stroke();
     ctx.fillStyle = 'rgba(5, 8, 13, 0.76)';
-    ctx.fillRect(player.x + player.width / 2 - 42, player.y - 24, 84, 20);
+    ctx.fillRect(player.x + player.width / 2 - 60, player.y - 34, 120, 26);
     ctx.fillStyle = '#fff2cf';
-    ctx.font = 'bold 13px sans-serif';
+    ctx.font = 'bold 16px sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('PLAYER', player.x + player.width / 2, player.y - 9);
+    ctx.fillText('PLAYER HERE', player.x + player.width / 2, player.y - 15);
     ctx.restore();
   }
 

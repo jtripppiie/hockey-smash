@@ -12,6 +12,7 @@ const requiredFiles = [
   'docs/hockey-smash-dev-checklist.md',
   'docs/hockey-smash-progress.md',
   'docs/hockey-smash-qa.md',
+  'scripts/verify-hockey-smash-actions.js',
 ];
 
 const requiredAssetPaths = [
@@ -54,7 +55,7 @@ const changelog = read('CHANGELOG.md');
   ['README.md', readme],
   ['CHANGELOG.md', changelog],
 ].forEach(([file, content]) => {
-if (!content.includes('Hockey Smash v0.5.1')) errors.push(`${file} missing Hockey Smash v0.5.1.`);
+if (!content.includes('Hockey Smash v0.5.2')) errors.push(`${file} missing Hockey Smash v0.5.2.`);
 });
 
 if (!html.includes('Entering Hockey Smash')) errors.push('Transition text is missing.');
@@ -62,7 +63,7 @@ if (!html.includes('assets/hockey-smash/sprites/splash.png')) errors.push('Splas
 if (!html.includes('Hockey Slash 2')) errors.push('Splash title is missing.');
 if (!html.includes("He's back with a vengance!")) errors.push('Splash tagline is missing.');
 if (!html.includes('Rotate for the best gaming experience.')) errors.push('Rotate guidance is missing from the public UI.');
-if (!html.includes('Hockey Smash v0.5.1 · Build 2026-06-28.6')) errors.push('Visible build overlay is missing or stale.');
+if (!html.includes('Hockey Smash v0.5.2 · Build 2026-06-28.7')) errors.push('Visible build overlay is missing or stale.');
 if (!html.includes('id="hockey-canvas"')) errors.push('Hockey canvas is missing.');
 if (!html.includes('id="hockey-debug"')) errors.push('Debug overlay is missing.');
 if (!html.includes('data-action="left"') || !html.includes('data-action="right"')) errors.push('D-pad left/right actions are missing.');
@@ -92,4 +93,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('Hockey Smash static verification passed for v0.5.1.');
+console.log('Hockey Smash static verification passed for v0.5.2.');

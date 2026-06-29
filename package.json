@@ -1,12 +1,13 @@
 {
   "name": "hockey-smash",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "private": true,
   "description": "Static Hockey Smash browser game verification helpers.",
   "scripts": {
-    "verify": "npm run verify:syntax && npm run verify:hockey",
-    "verify:syntax": "node --check script.js && node --check js/games/hockey-smash.js && node --check scripts/verify-hockey-smash.js",
+    "verify": "npm run verify:syntax && npm run verify:hockey && npm run verify:actions",
+    "verify:syntax": "node --check script.js && node --check js/games/hockey-smash.js && node --check scripts/verify-hockey-smash.js && node --check scripts/verify-hockey-smash-actions.js",
     "verify:hockey": "node scripts/verify-hockey-smash.js",
+    "verify:actions": "node scripts/verify-hockey-smash-actions.js",
     "test:browser": "playwright test",
     "test:browser:install": "npx playwright install chromium"
   },

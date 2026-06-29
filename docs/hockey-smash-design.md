@@ -2,14 +2,14 @@
 
 ## Title And Version
 
-**Hockey Smash v0.5.1**
+**Hockey Smash v0.5.2**
 
 Hockey Smash is now the primary playable mode in this static HTML/CSS/JavaScript repo. The public launch screen should present Hockey Smash clearly, with the local splash sprite and Soldotna-inspired background sequence.
 
 ## Launch Flow
 
 1. Splash screen shows `Hockey Smash`.
-2. Visible version reads `Hockey Smash v0.5.1`.
+2. Visible version reads `Hockey Smash v0.5.2`.
 3. Play shows a 2-3 second transition: `Entering Hockey Smash...`.
 4. Gameplay opens in a full browser-viewport screen.
 5. The page/body does not scroll while gameplay is active.
@@ -54,7 +54,7 @@ The hockey stick clears hazards, salmon, interruption bubbles, Dad jokes, and da
 ## Health
 
 - Daniel has one health bar.
-- No lives system in v0.5.1.
+- No lives system in v0.5.2.
 - Hazards reduce health.
 - Daniel gains brief invincibility after damage.
 - At zero health, show Try Again instead of instantly restarting.
@@ -99,7 +99,7 @@ assets/hockey-smash/sprites/sister_text.png
 
 ## Prototype Scope
 
-v0.5.1 is a playable prototype, not a finished content-complete game. It should prove launch flow, canvas layout, player visibility, left/right movement, jump, slide, stick attack, debug/computer mode, health, no-scroll controls, placeholders, stick-clearable obstacles, family interruptions, salmon run, and Dad boss.
+v0.5.2 is a playable prototype, not a finished content-complete game. It should prove launch flow, canvas layout, player visibility, left/right movement, jump, slide, stick attack, debug/computer mode, health, no-scroll controls, placeholders, stick-clearable obstacles, family interruptions, salmon run, and Dad boss.
 
 ## Future Upgrades
 

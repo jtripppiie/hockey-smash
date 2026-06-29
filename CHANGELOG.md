@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.2 - Player Visibility Marker
+
+- Shipped **Hockey Smash v0.5.2** with visible build badge `Build 2026-06-28.7`.
+- Moved the player debug marker after sprite drawing so the art cannot cover it.
+- Enlarged the marker into a bright box with `PLAYER HERE` text for unmistakable visibility while testing.
+
 ## 0.5.1 - Player Sprite, Debug, And Obstacle Stabilization
 
 - Shipped **Hockey Smash v0.5.1** with visible build badge `Build 2026-06-28.6`.
