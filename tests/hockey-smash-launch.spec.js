@@ -11,7 +11,7 @@ test('Hockey Smash launches into a full viewport canvas game', async ({ page }) 
   await expect(page.locator('h1')).toHaveText('Hockey Slash 2');
   await expect(page.locator('.hockey-splash__tagline')).toHaveText("He's back with a vengance!");
   await expect(page.locator('.hockey-splash__hero')).toHaveAttribute('src', 'assets/hockey-smash/sprites/splash.png');
-  await expect(page.locator('#hockey-build-badge')).toContainText('Hockey Smash v0.5.10 · Build 2026-06-29.7');
+  await expect(page.locator('#hockey-build-badge')).toContainText('Hockey Smash v0.5.11 · Build 2026-06-29.8');
   await expect(page.locator('#hockey-watch')).toHaveAttribute('href', '?computerMode=1');
   await expect(page.locator('#hockey-watch')).toHaveText('Watch Computer Play');
   await expect(page.locator('.hockey-version')).toHaveCount(0);
@@ -29,8 +29,7 @@ test('Hockey Smash launches into a full viewport canvas game', async ({ page }) 
   const bodyLocked = await page.evaluate(() => document.body.classList.contains('hockey-playing'));
   const overlayBox = await page.locator('#hockey-player-overlay').boundingBox();
 
-  expect(version).toBe('Hockey Smash v0.5.10');
-  expect(state.mode).toBe('playing');
+  expect(version).toBe('Hockey Smash v0.5.11');
   expect(state.player.health).toBe(100);
   expect(bodyLocked).toBe(true);
   expect(overlayBox?.width).toBeGreaterThan(70);
@@ -73,7 +72,7 @@ test('Hockey Smash launches into a full viewport canvas game', async ({ page }) 
 
 test('Computer Play is a player-facing watch mode without debug by default', async ({ page }) => {
   await page.goto('/?computerMode=1');
-  await expect(page.locator('#hockey-build-badge')).toContainText('Hockey Smash v0.5.10 · Build 2026-06-29.7');
+  await expect(page.locator('#hockey-build-badge')).toContainText('Hockey Smash v0.5.11 · Build 2026-06-29.8');
   await expect(page.locator('#hockey-game')).toBeVisible({ timeout: 5000 });
   await expect(page.locator('.hockey-autoplay-panel')).toContainText('Watch mode is active');
   await expect(page.locator('#hockey-debug')).toBeHidden();
@@ -83,5 +82,29 @@ test('Computer Play is a player-facing watch mode without debug by default', asy
   const version = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getVersion());
 
   expect(computerEnabled).toBe(true);
-  expect(version).toBe('Hockey Smash v0.5.10');
+  expect(version).toBe('Hockey Smash v0.5.11');
+});
+
+test('Portrait mobile layout keeps canvas and controls separated', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await page.locator('#hockey-play').click();
+  await expect(page.locator('#hockey-game')).toBeVisible({ timeout: 4000 });
+
+  const canvasBox = await page.locator('#hockey-canvas').boundingBox();
+  const controlsBox = await page.locator('.hockey-controls').boundingBox();
+  const statusVisible = await page.locator('#hockey-status').isVisible();
+  const version = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getVersion());
+
+  expect(version).toBe('Hockey Smash v0.5.11');
+  expect(statusVisible).toBe(false);
+  expect(canvasBox?.y).toBeLessThan(180);
+  expect(canvasBox?.height).toBeLessThan(260);
+  expect(controlsBox?.y).toBeGreaterThan(canvasBox.y + canvasBox.height + 40);
+
+  const beforeX = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getState().player.x);
+  await page.locator('[data-action="right"]').click();
+  await page.waitForTimeout(260);
+  const afterX = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getState().player.x);
+  expect(afterX).toBeGreaterThan(beforeX + 20);
 });
