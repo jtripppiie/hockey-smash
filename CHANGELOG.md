@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.10.2 - Movement And Encounter Repair
+
+- Shipped **Hockey Smash v0.10.2** with visible build badge `Build 2026-06-29.23`.
+- Removed the v0.10.1 platformer-feel movement takeover from the live page because it could block the working control chain.
+- Kept the earlier v0.9.7 smooth left/right and slide movement layer loaded.
+- Added `js/games/hockey-smash-v0102.js` as a small repair layer that does not control movement.
+- Added a visible starter gameplay cast in normal play: salmon/fish, Mom, bear, and moose spawn after play begins.
+- Kept Game Over / Try Again and Computer Mode sizing loaded.
+
 ## 0.10.1 - Platformer Movement Feel
 
 - Shipped **Hockey Smash v0.10.1** with visible build badge `Build 2026-06-29.22`.
@@ -57,13 +66,3 @@
 - Added duplicate event suppression so repeated desktop clicks do not stack pointerdown and click impulses.
 - Left jump, slide, and hockey-stick controls unchanged.
 - Updated package metadata and static verification for the movement smoothing patch.
-
-## 0.9.5 - Splash Start, Rotate Warning, And Faster Jump
-
-- Shipped **Hockey Smash v0.9.5** with visible build badge `Build 2026-06-29.16`.
-- Added a normal-mode splash start guard so the game returns to the splash screen first unless Computer Play is active or the player has tapped Play.
-- Added a mobile portrait rotate prompt on the splash screen.
-- Added a persistent portrait gameplay rotate warning.
-- Disabled the Daniel overlay position transition so the jump button feels immediate instead of laggy.
-- Kept the small Daniel-down alignment override so his feet sit closer to the sidewalk.
-- Updated package metadata and static verification for the v0.9.5 startup/mobile feel fixes.
