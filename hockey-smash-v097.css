@@ -1,0 +1,8 @@
+.hockey-slide-active .hockey-player-overlay {
+  transform: translateY(14px) scaleX(1.12) scaleY(0.72);
+  transform-origin: bottom center;
+}
+
+.hockey-slide-active .hockey-player-overlay__label {
+  opacity: 0.72;
+}
