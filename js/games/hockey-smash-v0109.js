@@ -1,12 +1,16 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.13.3';
-  const DISPLAY_BUILD = 'Build 2026-06-29.49';
+  const DISPLAY_VERSION = 'Hockey Smash v0.13.4';
+  const DISPLAY_BUILD = 'Build 2026-06-29.50';
   const DEV_STORAGE_KEY = 'hockeySmashDevModeSession';
   const DEV_TAP_WINDOW_MS = 1500;
   const DEV_TAP_TARGET = 3;
+  const START_COUNTDOWN_SECONDS = 10;
+  const HAZARD_TYPES = new Set(['salmon', 'bear', 'moose', 'mom', 'sister', 'dadJoke']);
+  const countdownStartByState = new WeakMap();
   let devTapCount = 0;
   let firstDevTapAt = 0;
   let devModeEnabled = false;
+  let countdownBadge = null;
 
   function actionFromTarget(target) {
     return target?.closest?.('[data-action]')?.dataset?.action || 'none';
@@ -23,7 +27,8 @@
     const state = window.RTA_HOCKEY_SMASH?.getState?.();
     const player = state?.player;
     if (!state || !player) return 'state/player missing';
-    return `mode=${state.mode} x=${Math.round(player.x)} y=${Math.round(player.y)} vx=${Math.round(player.vx || 0)} vy=${Math.round(player.vy || 0)} grounded=${player.grounded ? 1 : 0}`;
+    const countdown = state.readyCountdownActive ? ` countdown=${Math.ceil(state.readyCountdownSeconds || 0)}` : '';
+    return `mode=${state.mode} x=${Math.round(player.x)} y=${Math.round(player.y)} vx=${Math.round(player.vx || 0)} vy=${Math.round(player.vy || 0)} grounded=${player.grounded ? 1 : 0}${countdown}`;
   }
 
   function log(source, event, extra) {
@@ -46,6 +51,10 @@
       canvas.style.transform = '';
       delete canvas.dataset.shaking;
     }
+  }
+
+  function isComputerMode() {
+    return new URLSearchParams(window.location.search).get('computerMode') === '1';
   }
 
   function shouldAutoEnableDevMode() {
@@ -113,19 +122,149 @@
     }, { passive: true });
   }
 
+  function ensureCountdownBadge() {
+    if (countdownBadge) return countdownBadge;
+    const game = document.getElementById('hockey-game');
+    if (!game) return null;
+    if (!game.style.position) game.style.position = 'relative';
+
+    countdownBadge = document.createElement('div');
+    countdownBadge.id = 'hockey-start-countdown';
+    countdownBadge.setAttribute('role', 'status');
+    countdownBadge.setAttribute('aria-live', 'polite');
+    countdownBadge.hidden = true;
+    countdownBadge.style.cssText = [
+      'position:absolute',
+      'left:50%',
+      'top:50%',
+      'transform:translate(-50%,-50%)',
+      'z-index:40',
+      'min-width:min(520px,calc(100% - 2rem))',
+      'padding:1rem 1.2rem',
+      'border:3px solid #fff27a',
+      'border-radius:22px',
+      'background:rgba(5,8,13,.88)',
+      'color:#fff2cf',
+      'box-shadow:0 18px 48px rgba(0,0,0,.45)',
+      'text-align:center',
+      'font:900 clamp(1.1rem,3vw,2rem)/1.2 system-ui,sans-serif',
+      'pointer-events:none',
+    ].join(';');
+    game.appendChild(countdownBadge);
+    return countdownBadge;
+  }
+
+  function hideCountdownBadge() {
+    const badge = ensureCountdownBadge();
+    if (badge) badge.hidden = true;
+    document.body.classList.remove('hockey-countdown-active');
+    delete document.body.dataset.hockeyCountdown;
+  }
+
+  function showCountdownBadge(seconds) {
+    const badge = ensureCountdownBadge();
+    const wholeSeconds = Math.max(1, Math.ceil(seconds));
+    if (!badge) return;
+    badge.hidden = false;
+    badge.innerHTML = `<span style="display:block;color:#fff27a;font-size:1.15em;">${wholeSeconds}</span><span style="display:block;font-size:.52em;letter-spacing:.08em;text-transform:uppercase;">Practice the buttons before the salmon run starts</span>`;
+    document.body.classList.add('hockey-countdown-active');
+    document.body.dataset.hockeyCountdown = String(wholeSeconds);
+  }
+
+  function holdSpawnTimers(state) {
+    if (!state?.spawn) return;
+    state.spawn.wildlife = Math.max(state.spawn.wildlife || 0, 0.75);
+    state.spawn.salmon = Math.max(state.spawn.salmon || 0, 0.75);
+    state.spawn.family = Math.max(state.spawn.family || 0, 0.75);
+    state.spawn.dadJoke = Math.max(state.spawn.dadJoke || 0, 0.75);
+  }
+
+  function clearCountdownHazards(state) {
+    if (!Array.isArray(state?.entities)) return;
+    state.entities = state.entities.filter((entity) => !HAZARD_TYPES.has(entity?.type));
+  }
+
+  function runStartCountdown() {
+    const state = window.RTA_HOCKEY_SMASH?.getState?.();
+    if (!state?.player || state.mode !== 'playing' || isComputerMode()) {
+      hideCountdownBadge();
+      return;
+    }
+
+    if (!countdownStartByState.has(state)) {
+      countdownStartByState.set(state, performance.now());
+      state.readyDelayComplete = false;
+      window.HOCKEY_BOOT_LOG?.log?.('countdown', '10-second practice countdown started.');
+    }
+
+    const elapsedSeconds = (performance.now() - countdownStartByState.get(state)) / 1000;
+    const remainingSeconds = Math.max(0, START_COUNTDOWN_SECONDS - elapsedSeconds);
+
+    if (remainingSeconds > 0) {
+      state.time = 0;
+      state.salmonRunStarted = false;
+      state.salmonRunTimer = 0;
+      state.bossIntroTimer = 0;
+      state.dad = null;
+      state.readyCountdownActive = true;
+      state.readyCountdownSeconds = remainingSeconds;
+      state.readyDelayComplete = false;
+      state.message = `Get ready: ${Math.ceil(remainingSeconds)} seconds. Practice the buttons!`;
+      holdSpawnTimers(state);
+      clearCountdownHazards(state);
+      showCountdownBadge(remainingSeconds);
+      return;
+    }
+
+    if (state.readyCountdownActive || !state.readyDelayComplete) {
+      state.readyCountdownActive = false;
+      state.readyCountdownSeconds = 0;
+      state.readyDelayComplete = true;
+      state.message = 'Go! Salmon incoming from the right!';
+      if (state.spawn) {
+        state.spawn.wildlife = Math.max(state.spawn.wildlife || 0, 1.1);
+        state.spawn.salmon = Math.max(state.spawn.salmon || 0, 1.4);
+        state.spawn.family = Math.max(state.spawn.family || 0, 3.5);
+      }
+      hideCountdownBadge();
+      window.HOCKEY_BOOT_LOG?.log?.('countdown', 'Practice countdown complete. Hazards released.');
+    }
+  }
+
+  function forceSalmonFromRight() {
+    const state = window.RTA_HOCKEY_SMASH?.getState?.();
+    if (!Array.isArray(state?.entities)) return;
+    const canvasWidth = document.getElementById('hockey-canvas')?.width || 1024;
+
+    state.entities.forEach((entity) => {
+      if (entity?.type !== 'salmon') return;
+      const cameFromLeft = entity.vx > 0 || entity.flip === 1;
+      if (!cameFromLeft) return;
+      entity.x = canvasWidth + 90 + Math.random() * 36;
+      entity.vx = -Math.abs(entity.vx || 390);
+      entity.flip = -1;
+    });
+  }
+
+  function gameplaySafetyLoop() {
+    runStartCountdown();
+    forceSalmonFromRight();
+    window.requestAnimationFrame(gameplaySafetyLoop);
+  }
+
   function onReady() {
     const api = window.RTA_HOCKEY_SMASH;
     const badge = document.getElementById('hockey-build-badge');
     if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
     if (api?.getVersion) api.getVersion = () => DISPLAY_VERSION;
-    document.body.dataset.hockeyButtonDebug = 'v0.13.3';
+    document.body.dataset.hockeyButtonDebug = 'v0.13.4';
 
     normalizeSofieLabels();
     if (shouldAutoEnableDevMode()) enableDevMode('debug/dev URL or active session');
     else disableDevModeByDefault();
     bindDevModeUnlock();
 
-    window.HOCKEY_BOOT_LOG?.log?.('v0109', 'Normal splash hides dev controls. Triple-tap splash image to unlock dev mode.');
+    window.HOCKEY_BOOT_LOG?.log?.('v0109', 'Normal splash hides dev controls. Triple-tap splash image to unlock dev mode. Start countdown and right-side salmon guard are active.');
     window.HOCKEY_BOOT_LOG?.snapshot?.('v0109-ready');
 
     ['pointerdown', 'pointerup', 'click', 'touchstart', 'touchend'].forEach((type) => {
@@ -152,6 +291,7 @@
       window.requestAnimationFrame(cameraSafetyLoop);
     }
     window.requestAnimationFrame(cameraSafetyLoop);
+    window.requestAnimationFrame(gameplaySafetyLoop);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onReady);
