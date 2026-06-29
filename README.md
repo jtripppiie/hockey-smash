@@ -1,6 +1,6 @@
 # Hockey Smash
 
-Current playable version: **Hockey Smash v0.12.2**
+Current playable version: **Hockey Smash v0.12.3**
 
 Live GitHub Pages preview:
 
@@ -16,27 +16,30 @@ https://jtripppiie.github.io/hockey-smash/?computerMode=1
 
 ## Current Status
 
-Hockey Smash is the primary public playable mode in this repo. It is a static GitHub Pages canvas game with local WebP assets, fullscreen support, mobile controls, continuous road progression, smooth side-scroller movement, moving wildlife/family/fish encounters, puck gameplay, score, distance, combo streaks, high-score persistence, floating feedback, end-of-run summaries, health, and Try Again flow.
+Hockey Smash is the primary public playable mode in this repo. It is a static GitHub Pages canvas game with local WebP assets, fullscreen support, mobile controls, player name customization, Daniel/Sofie character selection, continuous road progression, smooth side-scroller movement, moving wildlife/family/fish encounters, puck gameplay, score, distance, combo streaks, high-score persistence, floating feedback, end-of-run summaries, health, and Try Again flow.
 
 ## Latest Visible Build
 
 The top-right badge should read:
 
 ```text
-Hockey Smash v0.12.2 · Build 2026-06-29.37
+Hockey Smash v0.12.3 · Build 2026-06-29.38
 ```
 
-Use that badge to confirm GitHub Pages is serving the latest checkpoint. The package version is also `0.12.2`.
+Use that badge to confirm GitHub Pages is serving the latest checkpoint. The package version is also `0.12.3`.
 
-## What v0.12.2 Includes
+## What v0.12.3 Includes
 
-- Fixes on-screen touch controls in `js/games/hockey-smash-v096.js`.
-- Tracks active pointer IDs so D-pad left/right holds and releases are more reliable.
-- Handles `pointercancel`, `lostpointercapture`, `touchcancel`, window blur, and visibility changes so movement does not get stuck.
-- Keeps keyboard controls on the same smooth movement path.
-- Adds `hockey-smash-touch.css` for `touch-action: none`, tap-highlight suppression, and pressed-button visual feedback.
-- Adds `js/games/hockey-smash-v0105.js` as the final release marker so the visible badge settles on the newest checkpoint after all layers load.
-- Current cache key: `0.12.2-20260629.37`.
+- Adds splash-screen player customization.
+- Adds a player name input with a 12-character limit.
+- Adds a character selector for Daniel and Sofie the Dancer.
+- Uses `dancer-player.webp` for Sofie and `sister-spinning.webp` for her slide/spin state.
+- Adds `hockey-smash-custom.css` for the name and character controls.
+- Adds `js/games/hockey-smash-v0106.js` as the loaded-last customization layer.
+- Exposes `setPlayerConfig()` and `getPlayerConfig()` on `window.RTA_HOCKEY_SMASH`.
+- Persists the chosen character/name in `localStorage`.
+- Updates splash hero art, HUD name, player overlay label, overlay sprite, Try Again text, Computer Play copy, status messages, and text bubbles.
+- Current cache key: `0.12.3-20260629.38`.
 
 ## Core Gameplay Already Included
 
@@ -45,11 +48,11 @@ Use that badge to confirm GitHub Pages is serving the latest checkpoint. The pac
 - Computer Mode feeds its autoplay phases into that same smooth movement controller instead of skipping it.
 - Moving encounter pass in `js/games/hockey-smash-v0102.js` runs in normal play and Computer Mode.
 - Fish/salmon fly across the road and require a duck/slide or jump dodge.
-- Bears and moose move toward Daniel and can be cleared with the stick/puck gameplay.
-- Mom and Sister can enter as moving interruptions with speech bubbles.
+- Bears and moose move toward the player and can be cleared with the stick/puck gameplay.
+- Mom and Sister can enter as moving interruptions with speech bubbles that use the chosen player name.
 - Hockey puck layer in `js/games/hockey-smash-v0103.js` launches normal, slide, and aerial pucks from stick input.
 - `js/games/hockey-smash-v0104.js` handles distance, score, combo, high score, difficulty state, screen shake, floating text, and run summary.
-- Try Again flow appears when Daniel's health reaches zero.
+- Try Again flow appears when the player's health reaches zero.
 
 ## Controls
 
@@ -75,7 +78,7 @@ Open the game with:
 http://localhost:8080/?computerMode=1
 ```
 
-Computer Play starts the game automatically and cycles through right, left, jump, slide, and stick actions. As of v0.12.2, it uses the same movement, moving encounter, puck, score, distance, combo, high-score, floating-feedback, run-summary, and difficulty-ramp layers as normal play. The difference should be the driver: a human controls normal mode, and the computer controls Watch Mode.
+Computer Play starts the game automatically and cycles through right, left, jump, slide, and stick actions. As of v0.12.3, it uses the same movement, moving encounter, puck, score, distance, combo, high-score, floating-feedback, run-summary, customization, and difficulty-ramp layers as normal play. The difference should be the driver: a human controls normal mode, and the computer controls Watch Mode.
 
 For diagnostics, use:
 
@@ -101,10 +104,11 @@ http://localhost:8080/
 
 ## Main Files
 
-- `index.html`: Hockey Smash public shell, visible build badge, controls, score HUD, and script/css loading order.
+- `index.html`: Hockey Smash public shell, visible build badge, splash customization controls, HUD, and script/css loading order.
 - `style.css`: full-screen layout, splash, HUD, canvas scaling, and mobile controls.
 - `hockey-smash-polish.css`: presentation polish, player overlay, debug hiding, portrait mobile layout, and victory overlay styles.
 - `hockey-smash-touch.css`: touch-control reliability and pressed-button visual feedback.
+- `hockey-smash-custom.css`: player name and character selector styling.
 - `hockey-smash-v09.css`: fullscreen, entity overlay, and landscape-phone layout overrides.
 - `hockey-smash-v094.css`, `hockey-smash-v095.css`, `hockey-smash-v0111.css`: later layout and HUD polish layers.
 - `script.js`: app bootstrap.
@@ -117,7 +121,8 @@ http://localhost:8080/
 - `js/games/hockey-smash-v0102.js`: moving gameplay encounter pass with difficulty ramp and encounter variants.
 - `js/games/hockey-smash-v0103.js`: puck action layer, powered puck variants, fish dodge rules, and score-event hooks.
 - `js/games/hockey-smash-v0104.js`: distance, score, combo, high score, difficulty state, screen shake, floating text, and run summary layer.
-- `js/games/hockey-smash-v0105.js`: final release marker for the current visible version.
+- `js/games/hockey-smash-v0105.js`: touch-control release marker from the prior checkpoint.
+- `js/games/hockey-smash-v0106.js`: player customization layer and final visible version setter.
 - `assets/hockey-smash/`: expected Hockey Smash sprite/background files.
 
 ## Verification
@@ -138,11 +143,12 @@ npm run test:browser
 
 Manual smoke checks before calling a checkpoint good:
 
-- Open `/` and confirm the visible badge says `Hockey Smash v0.12.2 · Build 2026-06-29.37`.
-- Start normal Play and confirm keyboard movement still works.
-- Confirm D-pad left/right works as a held control on mobile or device emulation.
-- Confirm Jump and Slide buttons respond on touch.
-- Confirm no direction gets stuck after dragging off a button or switching tabs.
+- Open `/` and confirm the visible badge says `Hockey Smash v0.12.3 · Build 2026-06-29.38`.
+- Confirm the splash screen shows the character selector and name input.
+- Select Daniel, enter a custom name, and confirm the HUD/overlay/status text uses that name.
+- Select Sofie and confirm the splash hero and player overlay use the dancer art.
+- Start normal Play and confirm keyboard and touch movement still work.
+- Confirm Mom/Sister text bubbles use the chosen name.
 - Confirm normal, slide, and aerial pucks still have different visuals/power.
 - Confirm score, floating feedback, Try Again summary, and high score still work.
-- Open `?computerMode=1` and confirm autoplay still runs through movement, encounters, puck, and score systems.
+- Open `?computerMode=1` and confirm autoplay still runs through movement, encounters, puck, score, and customization systems.
