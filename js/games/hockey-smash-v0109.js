@@ -24,7 +24,7 @@
 
   // These are the things that can hurt or distract the player. During the
   // countdown, we remove these so the player has a safe practice moment.
-  const HAZARD_TYPES = new Set(['salmon', 'bear', 'moose', 'mom', 'sister', 'dadJoke']);
+  const HAZARD_TYPES = new Set(['salmon', 'bear', 'moose', 'mom', 'sister', 'teacher', 'danceInstructor', 'dadJoke']);
 
   // WeakMap lets us remember "when did this exact run start?" without writing a
   // permanent global variable into the core game state. New run = new state object.
@@ -295,9 +295,9 @@
     /*
      * Salmon direction guard:
      *
-     * The original spawn function had a 50/50 chance to create salmon on the
-     * left or right. The requested design is simpler: fish should only enter from
-     * the right side and fly left toward the player.
+     * Older builds had a 50/50 chance to create sideways salmon from the left
+     * or right. The current design lets rain-style fish fall from the top, while
+     * preserving this guard for any older sideways salmon that still appear.
      *
      * This final layer watches all salmon and flips any accidental left-spawned
      * salmon back to the right side. That is safer than editing old core code
@@ -309,6 +309,7 @@
 
     state.entities.forEach((entity) => {
       if (entity?.type !== 'salmon') return;
+      if (entity.fallingFish) return;
       const cameFromLeft = entity.vx > 0 || entity.flip === 1;
       if (!cameFromLeft) return;
       entity.x = canvasWidth + 90 + Math.random() * 36;

@@ -4,6 +4,7 @@
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const STORAGE_KEY = 'hockeySmashHighScore';
+  const LEGACY_STORAGE_KEY = 'hockeyHighScore';
   const BASE_DISTANCE_SPEED = 14;
   const COMBO_TIMEOUT = 2.5;
 
@@ -39,7 +40,10 @@
 
   function loadHighScore() {
     try {
-      return Number(window.localStorage.getItem(STORAGE_KEY) || 0) || 0;
+      return Math.max(
+        Number(window.localStorage.getItem(STORAGE_KEY) || 0) || 0,
+        Number(window.localStorage.getItem(LEGACY_STORAGE_KEY) || 0) || 0
+      );
     } catch (error) {
       return 0;
     }
@@ -48,6 +52,7 @@
   function saveHighScore(value) {
     try {
       window.localStorage.setItem(STORAGE_KEY, String(value));
+      window.localStorage.setItem(LEGACY_STORAGE_KEY, String(value));
     } catch (error) {
       // localStorage can be unavailable in private browsing or strict contexts.
     }
@@ -276,15 +281,22 @@
     if (scoreEl) {
       const comboText = metrics.combo > 1 ? ` | Combo x${metrics.combo}` : '';
       const highText = metrics.newHighScore ? ' | NEW HIGH!' : ` | High ${metrics.highScore}`;
-      scoreEl.textContent = `Distance ${Math.floor(metrics.distance)}m | Score ${metrics.score}${comboText}${highText}`;
+      const progressionText = progressionLabel(metrics.highScore || metrics.score);
+      scoreEl.textContent = `Distance ${Math.floor(metrics.distance)}m | Score ${metrics.score}${comboText}${highText} | ${progressionText}`;
       scoreEl.dataset.combo = String(metrics.combo);
       scoreEl.style.transform = metrics.combo > 1 ? 'scale(1.045)' : '';
     }
     if (splashHighEl) splashHighEl.textContent = `High Score: ${metrics.highScore}`;
 
     if (state?.mode === 'tryAgain' && metrics.score >= metrics.highScore) {
-      saveHighScore(metrics.highScore);
+      saveHighScore(Math.max(metrics.highScore, metrics.score));
     }
+  }
+
+  function progressionLabel(score) {
+    if (score >= 1000) return 'Rank: Trick Shot';
+    if (score >= 500) return 'Rank: Fire Shot';
+    return `Next Rank ${Math.max(0, 500 - score)}`;
   }
 
   function updateSummaryPanel(state) {

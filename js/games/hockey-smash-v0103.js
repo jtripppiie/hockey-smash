@@ -17,6 +17,8 @@
   const PUCK_ARC_GRAVITY = 680;
   const FISH_DODGE_DAMAGE = 8;
   const POWERUP_DURATION_MS = 6500;
+  const EARTHQUAKE_POWERUP_CHANCE = 0.25;
+  const PUCK_SPEED_POWERUP_CHANCE = 0.3;
 
   let api = null;
   let canvas = null;
@@ -27,6 +29,7 @@
   let lastSeenSwing = 0;
   let puckChargeStart = 0;
   let activePointerChargeId = null;
+  let currentPuckType = 'normal';
   let puckSpeedBoostUntil = 0;
   let pucks = [];
   let powerups = [];
@@ -46,6 +49,7 @@
 
   function bindStickLaunchers() {
     window.addEventListener('keydown', (event) => {
+      if (setPuckTypeFromKey(event)) return;
       if (!['f', 'F', 'Enter'].includes(event.key)) return;
       // Holding the action key starts a charge. We fire on keyup so the player can
       // choose between a tap shot and a charged slap shot.
@@ -83,6 +87,24 @@
     });
   }
 
+  function setPuckTypeFromKey(event) {
+    const key = event.key?.toLowerCase?.() || '';
+    const nextType = key === 'q' || (key === 'f' && event.shiftKey)
+      ? 'fire'
+      : key === 'e'
+        ? 'bounce'
+        : key === 'r'
+          ? 'normal'
+          : '';
+    if (!nextType) return false;
+    currentPuckType = nextType;
+    const state = getPlayableState();
+    const label = nextType === 'fire' ? 'Fire puck ready!' : nextType === 'bounce' ? 'Bounce puck ready!' : 'Normal puck ready!';
+    if (state) state.message = label;
+    if (status) status.textContent = label;
+    return true;
+  }
+
   function notifyScoreLayer(method, payload) {
     window.RTA_HOCKEY_SMASH_SCORE?.[method]?.(payload);
   }
@@ -111,6 +133,10 @@
 
   function speedBoostActive() {
     return performance.now() < puckSpeedBoostUntil;
+  }
+
+  function earthquakeActive() {
+    return window.RTA_HOCKEY_SMASH_EARTHQUAKE?.isActive?.() === true;
   }
 
   function projectileHitLabel(variant, charged) {
@@ -197,11 +223,12 @@
     };
   }
 
-  function firePuck(chargeTime = 0) {
+  function firePuck(chargeTime = 0, type = currentPuckType) {
     const state = getPlayableState();
     if (!state) return;
     const now = performance.now();
-    if (now - lastPuckAt < PUCK_COOLDOWN_MS) return;
+    const cooldown = earthquakeActive() ? Math.round(PUCK_COOLDOWN_MS * 0.55) : PUCK_COOLDOWN_MS;
+    if (now - lastPuckAt < cooldown) return;
     lastPuckAt = now;
     const player = state.player;
     const facing = player.facing < 0 ? -1 : 1;
@@ -209,16 +236,19 @@
     const speedMultiplier = speedBoostActive() ? 1.25 : 1;
     const speed = (PUCK_MIN_SPEED + (PUCK_BASE_SPEED * 0.65 * chargeFactor)) * speedMultiplier;
     const puckStats = puckStatsForPlayer(player, chargeFactor);
+    const puckType = ['fire', 'bounce'].includes(type) ? type : 'normal';
     const heightOffset = chargeFactor * -20;
     pucks.push({
       x: facing > 0 ? player.x + player.width + 10 : player.x - 40,
       y: player.y + player.height * 0.45 + heightOffset,
       width: puckStats.width,
       height: puckStats.height,
-      vx: speed * facing,
-      vy: chargeFactor * -220,
+      vx: speed * facing * (puckType === 'fire' ? 1.25 : 1),
+      vy: puckType === 'bounce' ? -280 : chargeFactor * -220,
       life: 2.2,
-      damage: puckStats.damage,
+      damage: puckStats.damage + (puckType === 'fire' ? 1 : 0),
+      type: puckType,
+      bounces: puckType === 'bounce' ? 2 : 0,
       variant: puckStats.variant,
       projectileType: puckStats.projectileType,
       charged: puckStats.charged,
@@ -248,6 +278,19 @@
     return node;
   }
 
+  function decorateProjectileNode(puck) {
+    if (!puck?.node) return;
+    puck.node.dataset.puckType = puck.type || 'normal';
+    if (puck.type === 'fire') {
+      puck.node.style.background = 'radial-gradient(circle at 35% 30%, #fff7ad 0 18%, #f97316 44%, #dc2626 72%, #111827 100%)';
+      puck.node.style.boxShadow = '0 0 0 3px rgba(255,255,255,.85), 0 0 30px rgba(248,113,113,.95), 0 0 54px rgba(249,115,22,.72)';
+    }
+    if (puck.type === 'bounce') {
+      puck.node.style.background = 'radial-gradient(circle at 35% 30%, #dcfce7 0 18%, #22c55e 48%, #14532d 100%)';
+      puck.node.style.boxShadow = '0 0 0 3px rgba(255,255,255,.85), 0 0 28px rgba(74,222,128,.9)';
+    }
+  }
+
   function runPuckAndDodgeLayer(now) {
     const dt = Math.min(0.034, Math.max(0.008, (now - lastFrame) / 1000 || 0.016));
     lastFrame = now;
@@ -256,6 +299,7 @@
     else {
       neutralizeSalmonDamage(state);
       launchFromCoreStickSwing(state);
+      updateBurningTargets(state, dt);
       updatePucks(state, dt);
       updatePowerups(state, dt);
       handleSalmonDodgeRules(state);
@@ -291,13 +335,15 @@
       puck.y += (puck.vy || 0) * dt;
       puck.vy = (puck.vy || 0) + PUCK_ARC_GRAVITY * dt;
       puck.life -= dt;
+      if (puck.type === 'bounce') maybeBouncePuck(puck);
       const target = (state.entities || []).find((entity) => {
         if (!entity || entity.dead) return false;
-        if (!(entity.type === 'bear' || entity.type === 'moose')) return false;
+        if (!['bear', 'moose', 'chargingMoose', 'bird'].includes(entity.type)) return false;
         return rectsOverlap(puck, entity);
       });
       if (!target) return;
       target.hp -= puck.damage || PUCK_DAMAGE;
+      if (puck.type === 'fire') target.burning = Math.max(target.burning || 0, 2.5);
       puck.life = 0;
       const hitLabel = projectileHitLabel(puck.variant, puck.charged);
       state.effects?.push?.({ x: target.x + target.width / 2, y: target.y - 10, text: hitLabel, life: 0.35 });
@@ -307,9 +353,9 @@
         target.dead = true;
         maybeDropPowerup(target);
         if (state.computer?.results) state.computer.results.clearedObstacle = true;
-        state.message = target.type === 'moose' ? `MOOSE DOWN after the ${word} hit!` : `BEAR DOWN after the ${word} hit!`;
+        state.message = `${targetName(target)} DOWN after the ${word} hit!`;
       } else {
-        state.message = target.type === 'moose' ? `${capitalize(word)} hit the moose. Keep firing!` : `${capitalize(word)} hit the bear!`;
+        state.message = `${capitalize(word)} hit the ${targetName(target).toLowerCase()}${puck.type === 'fire' ? ' and set it burning!' : '!'}`;
       }
       notifyScoreLayer('recordPuckHit', { state, target, destroyed, puckVariant: puck.variant, projectileType: puck.projectileType, damage: puck.damage || PUCK_DAMAGE, charged: puck.charged });
       if (status) status.textContent = state.message;
@@ -321,11 +367,48 @@
     });
   }
 
+  function maybeBouncePuck(puck) {
+    if (!puck.bounces || puck.life <= 0.3 || puck.vy <= 0) return;
+    const bounceFloor = GROUND_Y - puck.height * 0.65;
+    if (puck.y < bounceFloor) return;
+    puck.y = bounceFloor;
+    puck.vy = -Math.abs(puck.vy) * 0.7;
+    puck.bounces -= 1;
+    puck.life += 0.18;
+  }
+
+  function updateBurningTargets(state, dt) {
+    (state.entities || []).forEach((entity) => {
+      if (!entity?.burning || entity.dead) return;
+      entity.burning = Math.max(0, entity.burning - dt);
+      entity._burnTick = (entity._burnTick || 0) + dt;
+      if (entity._burnTick < 0.5) return;
+      entity._burnTick = 0;
+      entity.hp = (entity.hp || 1) - 1;
+      state.effects?.push?.({ x: entity.x + entity.width / 2, y: entity.y - 18, text: 'BURN!', life: 0.35 });
+      if (entity.hp <= 0) {
+        entity.dead = true;
+        maybeDropPowerup(entity);
+        notifyScoreLayer('recordPuckHit', { state, target: entity, destroyed: true, puckVariant: 'fire', projectileType: 'puck', damage: 1, charged: false });
+      }
+    });
+  }
+
+  function targetName(target) {
+    if (target?.type === 'chargingMoose') return 'CHARGING MOOSE';
+    if (target?.type === 'bird') return 'BIRD';
+    if (target?.type === 'moose') return 'MOOSE';
+    return 'BEAR';
+  }
+
   function maybeDropPowerup(target) {
     // Power-ups stay in this layer instead of state.entities. The old core loop
     // damages the player for every entity overlap, so storing power-ups locally
     // avoids accidentally turning a reward into a hazard.
-    if (!target || Math.random() >= 0.4) return;
+    if (!target) return;
+    const roll = Math.random();
+    if (roll >= EARTHQUAKE_POWERUP_CHANCE + PUCK_SPEED_POWERUP_CHANCE) return;
+    const power = roll < EARTHQUAKE_POWERUP_CHANCE ? 'earthquake' : 'puckSpeed';
     powerups.push({
       x: target.x + target.width / 2 - 24,
       y: Math.max(80, target.y - 40),
@@ -333,21 +416,27 @@
       width: 48,
       height: 48,
       life: 5.5,
-      power: 'puckSpeed',
-      node: createPowerupNode(),
+      power,
+      node: createPowerupNode(power),
     });
   }
 
-  function createPowerupNode() {
+  function createPowerupNode(power) {
+    const earthquake = power === 'earthquake';
     const node = document.createElement('div');
     node.setAttribute('aria-hidden', 'true');
-    node.textContent = '⚡';
+    node.dataset.powerup = power || 'puckSpeed';
+    node.textContent = earthquake ? '🌎' : '⚡';
     Object.assign(node.style, {
       position: 'fixed', left: '0', top: '0', width: '28px', height: '28px',
       zIndex: '8', pointerEvents: 'none', borderRadius: '999px',
       display: 'grid', placeItems: 'center',
-      background: 'radial-gradient(circle, #fef08a 0 30%, #22c55e 72%, #064e3b 100%)',
-      boxShadow: '0 0 0 3px rgba(255,255,255,.85), 0 0 26px rgba(34,197,94,.85)',
+      background: earthquake
+        ? 'radial-gradient(circle, #fef3c7 0 24%, #ef4444 62%, #451a03 100%)'
+        : 'radial-gradient(circle, #fef08a 0 30%, #22c55e 72%, #064e3b 100%)',
+      boxShadow: earthquake
+        ? '0 0 0 3px rgba(255,255,255,.85), 0 0 30px rgba(239,68,68,.9)'
+        : '0 0 0 3px rgba(255,255,255,.85), 0 0 26px rgba(34,197,94,.85)',
       fontSize: '22px', lineHeight: '1',
     });
     document.body.appendChild(node);
@@ -360,9 +449,15 @@
       powerup.life -= dt;
       if (rectsOverlap(powerup, state.player)) {
         powerup.life = 0;
-        puckSpeedBoostUntil = performance.now() + POWERUP_DURATION_MS;
-        state.effects?.push?.({ x: state.player.x + state.player.width / 2, y: state.player.y - 18, text: 'PUCK BOOST!', life: 0.45 });
-        state.message = `${currentPlayerName()} grabbed a puck speed boost!`;
+        if (powerup.power === 'earthquake') {
+          window.activateEarthquake?.(9000);
+          state.effects?.push?.({ x: state.player.x + state.player.width / 2, y: state.player.y - 18, text: 'QUAKE!', life: 0.55 });
+          state.message = `${currentPlayerName()} triggered Earthquake Mode!`;
+        } else {
+          puckSpeedBoostUntil = performance.now() + POWERUP_DURATION_MS;
+          state.effects?.push?.({ x: state.player.x + state.player.width / 2, y: state.player.y - 18, text: 'PUCK BOOST!', life: 0.45 });
+          state.message = `${currentPlayerName()} grabbed a puck speed boost!`;
+        }
         if (status) status.textContent = state.message;
       }
     });
@@ -377,12 +472,13 @@
     const player = state.player;
     (state.entities || []).forEach((entity) => {
       if (!entity || entity.dead || entity.type !== 'salmon' || entity._dodgeLayerResolved) return;
-      if (!horizontalOverlap(player, entity)) return;
+      const shouldResolve = entity.fallingFish ? fallingFishReachedPlayer(player, entity) : horizontalOverlap(player, entity);
+      if (!shouldResolve) return;
       entity._dodgeLayerResolved = true;
       if (playerIsDodgingSalmon(player, entity)) {
-        const label = entity.variant === 'school' ? 'BIG DODGE!' : 'DODGE!';
+        const label = String(entity.variant || '').includes('school') ? 'BIG DODGE!' : 'DODGE!';
         state.effects?.push?.({ x: player.x + player.width / 2, y: player.y - 10, text: label, life: 0.35 });
-        state.message = entity.variant === 'highArc' ? `${currentPlayerName()} jumped the high salmon arc!` : `${currentPlayerName()} dodged the fish!`;
+        state.message = entity.fallingFish ? `${currentPlayerName()} dodged the raining fish!` : entity.variant === 'highArc' ? `${currentPlayerName()} jumped the high salmon arc!` : `${currentPlayerName()} dodged the fish!`;
         notifyScoreLayer('recordDodge', { state, entity });
       } else {
         damagePlayerFromFish(state, entity.dodgeDamage || FISH_DODGE_DAMAGE);
@@ -392,6 +488,7 @@
   }
 
   function playerIsDodgingSalmon(player, entity) {
+    if (entity?.fallingFish) return !rectsOverlap(player, entity);
     const sliding = document.body.classList.contains('hockey-slide-active') || document.getElementById('hockey-player-overlay')?.dataset?.sliding === 'true';
     const jumping = !player.grounded && player.y + player.height < GROUND_Y - 45;
     const highEnough = player.y < GROUND_Y - 120;
@@ -426,6 +523,7 @@
     const scaleX = rect.width / DESIGN_WIDTH;
     const scaleY = rect.height / DESIGN_HEIGHT;
     pucks.forEach((puck) => {
+      decorateProjectileNode(puck);
       Object.assign(puck.node.style, {
         left: `${rect.left + puck.x * scaleX}px`,
         top: `${rect.top + puck.y * scaleY}px`,
@@ -474,6 +572,11 @@
 
   function horizontalOverlap(a, b) {
     return a.x < b.x + b.width && a.x + a.width > b.x;
+  }
+
+  function fallingFishReachedPlayer(player, entity) {
+    const playerMidY = player.y + player.height * 0.35;
+    return entity.y + entity.height >= playerMidY;
   }
 
   function rectsOverlap(a, b) {

@@ -21,17 +21,30 @@
     background05: 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_05_1280x720.webp',
     daniel: 'assets/hockey-smash/sprites/hockey-player.webp',
     salmon: 'assets/hockey-smash/sprites/salmon.webp',
+    bird: 'assets/hockey-smash/sprites/eagle_mid_flap.webp',
     bear: 'assets/hockey-smash/sprites/bear.webp',
+    bearWalk1: 'assets/hockey-smash/sprites/bear-1.webp',
+    bearWalk2: 'assets/hockey-smash/sprites/bear-2.webp',
     moose: 'assets/hockey-smash/sprites/moose.webp',
+    mooseWalk1: 'assets/hockey-smash/sprites/moose-1.webp',
+    mooseWalk2: 'assets/hockey-smash/sprites/moose-2.webp',
+    mooseWalk3: 'assets/hockey-smash/sprites/moose-3.webp',
     dadMower: 'assets/hockey-smash/sprites/dad.webp',
     dad: 'assets/hockey-smash/sprites/dad.webp',
     mom: 'assets/hockey-smash/sprites/mom.webp',
     momText: 'assets/hockey-smash/sprites/mom_text.png',
     sister: 'assets/hockey-smash/sprites/sister.png',
     sisterText: 'assets/hockey-smash/sprites/sister_text.png',
+    teacher: 'assets/hockey-smash/sprites/teacher.png',
+    danceInstructor: 'assets/hockey-smash/sprites/dance_instructor.webp',
   };
   const BACKGROUND_SEQUENCE = ['background01', 'background02', 'background03', 'background04', 'background05'];
   const DEFERRED_ASSETS = new Set(['background02', 'background03', 'background04', 'background05']);
+  const WALK_FRAME_KEYS = {
+    bear: ['bearWalk1', 'bearWalk2'],
+    moose: ['mooseWalk1', 'mooseWalk2', 'mooseWalk3'],
+    chargingMoose: ['mooseWalk1', 'mooseWalk2', 'mooseWalk3'],
+  };
 
   // TUNING is the game's feel panel. If movement is too slow, jumps are too
   // floaty, or the ground feels wrong, start by changing these numbers.
@@ -551,34 +564,46 @@
   }
 
   function spawnSalmon() {
-    const fromLeft = Math.random() > 0.5;
+    const width = 74;
+    const height = 42;
     state.entities.push({
       type: 'salmon',
-      x: fromLeft ? -90 : DESIGN_WIDTH + 90,
-      y: DESIGN_HEIGHT * (0.33 + Math.random() * 0.18),
-      width: 74,
-      height: 42,
-      vx: fromLeft ? 390 : -390,
-      vy: -150 + Math.random() * 90,
+      x: 36 + Math.random() * (DESIGN_WIDTH - width - 72),
+      y: -height - Math.random() * 90,
+      width,
+      height,
+      vx: -80 + Math.random() * 160,
+      vy: 420 + Math.random() * 150,
       hp: 1,
-      damage: 8,
-      flip: fromLeft ? 1 : -1,
+      damage: 0,
+      dodgeDamage: 8,
+      fallingFish: true,
+      variant: 'rain',
+      flip: Math.random() > 0.5 ? 1 : -1,
     });
   }
 
   function spawnFamily() {
-    const type = Math.random() > 0.5 ? 'mom' : 'sister';
+    const type = modeAdultType();
+    const label = type === 'danceInstructor' ? 'Dance instructor' : 'Teacher';
     state.entities.push({
       type,
       x: DESIGN_WIDTH - 160,
       y: DESIGN_HEIGHT * TUNING.groundRatio - 96,
       width: 96,
       height: 96,
-      vx: 0,
+      vx: -80,
       hp: 3,
       damage: 6,
-      bubble: type === 'mom' ? 'Daniel, clean your room!' : 'Daniel, heads up!',
+      bubble: type === 'danceInstructor' ? 'Point those toes!' : 'Eyes on the puck!',
     });
+    state.message = `${label} challenge incoming. Keep moving!`;
+  }
+
+  function modeAdultType() {
+    const config = window.RTA_HOCKEY_SMASH?.getPlayerConfig?.();
+    const character = config?.character || state?.playerCharacter || state?.player?.character || 'daniel';
+    return character === 'sofie' ? 'danceInstructor' : 'teacher';
   }
 
   function spawnDadJoke() {
@@ -600,10 +625,21 @@
     // Every entity moves by velocity. If it overlaps the player, it causes
     // damage. Dead or far-off entities get removed to keep the game light.
     state.entities.forEach((entity) => {
+      if (entity.type === 'chargingMoose' && entity.x < 600 && !entity.charging) {
+        entity.charging = true;
+        entity.vx = -Math.abs(entity.chargeSpeed || 480);
+        state.effects.push({ x: entity.x + entity.width / 2, y: entity.y - 16, text: 'CHARGE!', life: 0.45 });
+      }
       entity.x += (entity.vx || 0) * dt;
       entity.y += (entity.vy || 0) * dt;
-      if (entity.type === 'salmon') entity.vy += 460 * dt;
-      if (!entity.dead && rectsOverlap(entity, state.player)) damagePlayer(entity.damage || 8);
+      if (entity.type === 'salmon' || entity.type === 'bird') entity.vy += 460 * dt;
+      if (entity.type === 'icePatch' && !entity.dead && rectsOverlap(entity, state.player)) {
+        state.player.vx *= 0.4;
+        state.player.iceSlipTimer = 0.35;
+        state.message = 'Slippery ice!';
+      } else if (!entity.dead && rectsOverlap(entity, state.player)) {
+        damagePlayer(entity.damage ?? 8);
+      }
     });
     state.entities = state.entities.filter((entity) => !entity.dead && entity.x > -260 && entity.x < DESIGN_WIDTH + 260 && entity.y < DESIGN_HEIGHT + 120);
     state.effects.forEach((effect) => { effect.life -= dt; effect.y -= 24 * dt; });
@@ -736,14 +772,25 @@
       drawBubble(ctx, entity.x, entity.y, entity.width, entity.height, entity.bubble, '#fff7d6');
       return;
     }
-    drawSpriteOrPlaceholder(ctx, entity.type, entity.x, entity.y, entity.width, entity.height, entity.type.toUpperCase());
-    if (entity.type === 'bear' || entity.type === 'moose') drawObstacleLabel(ctx, entity);
+    if (entity.type === 'icePatch') {
+      drawIcePatch(ctx, entity);
+      return;
+    }
+    drawSpriteOrPlaceholder(ctx, entityAssetKey(entity), entity.x, entity.y, entity.width, entity.height, entity.type.toUpperCase());
+    if (entity.type === 'bear' || entity.type === 'moose' || entity.type === 'chargingMoose') drawObstacleLabel(ctx, entity);
     if (entity.bubble) drawBubble(ctx, entity.x - 178, entity.y - 26, 210, 58, entity.bubble, '#fff7d6');
+  }
+
+  function entityAssetKey(entity) {
+    const walkFrames = WALK_FRAME_KEYS[entity.type];
+    if (!walkFrames) return entity.type;
+    const frame = Math.floor((state?.time || 0) * 5) % walkFrames.length;
+    return walkFrames[frame];
   }
 
   function drawObstacleLabel(ctx, entity) {
     // Obstacles teach the player what to do: "HIT IT" plus a small HP bar.
-    const label = entity.type === 'moose' ? 'MOOSE - HIT IT' : 'BEAR - HIT IT';
+    const label = entity.type === 'chargingMoose' ? 'CHARGING MOOSE' : entity.type === 'moose' ? 'MOOSE - HIT IT' : 'BEAR - HIT IT';
     ctx.fillStyle = 'rgba(5, 8, 13, 0.78)';
     ctx.fillRect(entity.x + 8, entity.y - 29, entity.width - 16, 22);
     ctx.fillStyle = '#fff2cf';
@@ -753,7 +800,27 @@
     ctx.fillStyle = '#111';
     ctx.fillRect(entity.x + 8, entity.y - 6, entity.width - 16, 6);
     ctx.fillStyle = '#ffcf5a';
-    ctx.fillRect(entity.x + 8, entity.y - 6, (entity.width - 16) * (entity.hp / entity.maxHp), 6);
+    ctx.fillRect(entity.x + 8, entity.y - 6, (entity.width - 16) * (entity.hp / (entity.maxHp || entity.hp || 1)), 6);
+  }
+
+  function drawIcePatch(ctx, entity) {
+    ctx.save();
+    ctx.globalAlpha = 0.9;
+    const gradient = ctx.createLinearGradient(entity.x, entity.y, entity.x + entity.width, entity.y + entity.height);
+    gradient.addColorStop(0, 'rgba(219, 234, 254, 0.72)');
+    gradient.addColorStop(0.5, 'rgba(125, 211, 252, 0.86)');
+    gradient.addColorStop(1, 'rgba(240, 249, 255, 0.72)');
+    ctx.fillStyle = gradient;
+    roundRect(ctx, entity.x, entity.y, entity.width, entity.height, 16);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.9)';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(8,47,73,.76)';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('ICE', entity.x + entity.width / 2, entity.y + entity.height / 2 + 5);
+    ctx.restore();
   }
 
   function drawDad(ctx) {
@@ -898,6 +965,8 @@
       moose: 'Moose clears the sidewalk.',
       mom: 'Room-cleaning bubble popped.',
       sister: 'Teasing bubble popped.',
+      teacher: 'Teacher skates aside.',
+      danceInstructor: 'Dance instructor spins away.',
       dadJoke: 'Dad joke destroyed.',
     }[type] || 'Hazard cleared.';
   }

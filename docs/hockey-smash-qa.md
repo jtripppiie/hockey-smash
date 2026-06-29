@@ -2,19 +2,19 @@
 
 ## Current Preview
 
-- Public game: `Hockey Smash v0.13.6`
-- Visible build badge: `Hockey Smash v0.13.6 · Build 2026-06-29.52`
-- Package version: `0.13.6`
+- Public game: `Hockey Smash v0.13.7`
+- Visible build badge: `Hockey Smash v0.13.7 · Build 2026-06-29.53`
+- Package version: `0.13.7`
 - GitHub Pages URL: `https://jtripppiie.github.io/hockey-smash/`
-- Fresh cache-bust URL: `https://jtripppiie.github.io/hockey-smash/?fresh=0136`
+- Fresh cache-bust URL: `https://jtripppiie.github.io/hockey-smash/?fresh=0137`
 - Computer Play URL: `https://jtripppiie.github.io/hockey-smash/?computerMode=1`
 
-## v0.13.6 Gameplay QA
+## v0.13.7 Gameplay QA
 
 ### Launch / Layout
 
-1. Open `https://jtripppiie.github.io/hockey-smash/?fresh=0136`.
-2. Confirm the top-right badge says `Hockey Smash v0.13.6 · Build 2026-06-29.52`.
+1. Open `https://jtripppiie.github.io/hockey-smash/?fresh=0137`.
+2. Confirm the top-right badge says `Hockey Smash v0.13.7 · Build 2026-06-29.53`.
 3. Confirm the compact splash still fits without obvious scrolling.
 4. Click Start Game.
 5. Confirm the 10-second countdown appears before hazards begin.
@@ -30,13 +30,13 @@
 7. Confirm Sofie still throws pointe shoes.
 8. Confirm hit feedback and score feedback still appear.
 
-### Salmon Patterns
+### Falling Fish
 
-1. Confirm all salmon enter from the right side only.
-2. Confirm normal salmon can be dodged by jump or slide.
-3. Confirm `highArc` salmon require a higher jump.
-4. Confirm `low` salmon require sliding.
-5. Confirm `school` salmon appear wider and hit harder if missed.
+1. Confirm salmon/fish rain down from the top of the screen.
+2. Confirm falling fish can be dodged by moving out from under them.
+3. Confirm `heavyRain` fish fall faster.
+4. Confirm `fastRain` fish add quick dodge pressure.
+5. Confirm `schoolRain` fish appear wider and hit harder if missed.
 6. Confirm missed salmon reduce health.
 7. Confirm successful salmon dodges show feedback.
 
@@ -74,5 +74,5 @@ npm run test:browser
 ## Known QA Notes
 
 - The current architecture is layered: the core runtime loads first, then later scripts patch or extend movement, HUD, encounters, Try Again, projectiles, character mode, dev tools, layout, and final safety rules.
-- The visible badge, package version, cache key, final release marker, README, changelog, workflow docs, QA docs, checklist, progress docs, and beginner handoff guide should all agree on v0.13.6.
+- The visible badge, package version, cache key, final release marker, README, changelog, workflow docs, QA docs, checklist, progress docs, and beginner handoff guide should all agree on v0.13.7.
 - Browser QA still matters because the game uses canvas, DOM overlays, pointer controls, localStorage, sessionStorage, media queries, and requestAnimationFrame loops.

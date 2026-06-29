@@ -2,12 +2,12 @@
 
 ## Current Checkpoint
 
-- [ ] Confirm visible version says `Hockey Smash v0.13.6 · Build 2026-06-29.52`.
-- [ ] Confirm `package.json` version is `0.13.6`.
-- [ ] Confirm `index.html` cache keys use `0.13.6-20260629.52`.
-- [ ] Confirm `hockey-smash.css` imports CSS layers with `0.13.6-20260629.52`.
+- [ ] Confirm visible version says `Hockey Smash v0.13.7 · Build 2026-06-29.53`.
+- [ ] Confirm `package.json` version is `0.13.7`.
+- [ ] Confirm `index.html` cache keys use `0.13.7-20260629.53`.
+- [ ] Confirm `hockey-smash.css` imports CSS layers with `0.13.7-20260629.53`.
 - [ ] Confirm `js/games/hockey-smash-v0110.js` is loaded last.
-- [ ] Confirm README, CHANGELOG, QA, workflow, checklist, progress, and beginner handoff docs mention v0.13.6.
+- [ ] Confirm README, CHANGELOG, QA, workflow, checklist, progress, and beginner handoff docs mention v0.13.7.
 - [ ] Run `npm run verify`.
 
 ## Compact Splash
@@ -35,12 +35,12 @@
 - [ ] Confirm Sofie still throws pointe shoes.
 - [ ] Confirm the score/floating feedback still records projectile hits.
 
-## Salmon Patterns
+## Falling Fish
 
-- [ ] Confirm fish/salmon fly in from the **right side only**.
-- [ ] Confirm `highArc` salmon appear and require a higher jump.
-- [ ] Confirm `low` salmon appear and require sliding.
-- [ ] Confirm `school` salmon appear wider and show bigger dodge pressure.
+- [ ] Confirm fish/salmon rain down from the **top**.
+- [ ] Confirm `heavyRain` fish fall faster.
+- [ ] Confirm `fastRain` fish add quick dodge pressure.
+- [ ] Confirm `schoolRain` fish appear wider and show bigger dodge pressure.
 - [ ] Confirm missed salmon lowers health.
 - [ ] Confirm successful dodges show feedback.
 
@@ -62,5 +62,5 @@
 ## Documentation / Kid Handoff
 
 - [ ] Confirm code comments explain why charged shots and safe power-ups work the way they do.
-- [ ] Confirm the beginner handoff guide explains where to adjust shot/salmon/power-up behavior.
-- [ ] Confirm the changelog has a v0.13.6 entry.
+- [ ] Confirm the beginner handoff guide explains where to adjust shot/falling-fish/power-up behavior.
+- [ ] Confirm the changelog has a v0.13.7 entry.

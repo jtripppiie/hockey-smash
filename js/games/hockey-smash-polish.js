@@ -21,8 +21,21 @@
     moose: 'assets/hockey-smash/sprites/moose.webp',
     mom: 'assets/hockey-smash/sprites/mom.webp',
     sister: 'assets/hockey-smash/sprites/sister-spinning.webp',
+    teacher: 'assets/hockey-smash/sprites/teacher.png',
+    danceInstructor: 'assets/hockey-smash/sprites/dance_instructor.webp',
     dad: 'assets/hockey-smash/sprites/dad.webp',
     dadJoke: 'assets/hockey-smash/sprites/dad.webp',
+  };
+  const ENTITY_WALK_ASSETS = {
+    bear: [
+      'assets/hockey-smash/sprites/bear-1.webp',
+      'assets/hockey-smash/sprites/bear-2.webp',
+    ],
+    moose: [
+      'assets/hockey-smash/sprites/moose-1.webp',
+      'assets/hockey-smash/sprites/moose-2.webp',
+      'assets/hockey-smash/sprites/moose-3.webp',
+    ],
   };
 
   function onReady() {
@@ -408,13 +421,15 @@
         moose: 'MOOSE',
         mom: 'MOM',
         sister: 'SISTER',
+        teacher: 'TEACHER',
+        danceInstructor: 'DANCE INSTRUCTOR',
         dad: 'DAD',
         dadJoke: 'DAD JOKE',
       }[entity.type] || entity.type.toUpperCase();
     }
 
     function entityIsGrounded(type) {
-      return ['bear', 'moose', 'mom', 'sister', 'dad'].includes(type);
+      return ['bear', 'moose', 'mom', 'sister', 'teacher', 'danceInstructor', 'dad'].includes(type);
     }
 
     function syncEntityOverlays(state) {
@@ -452,7 +467,8 @@
 
         const img = node.querySelector('img');
         const label = node.querySelector('span');
-        img.src = ENTITY_ASSETS[entity.type];
+        const nextSrc = entityAssetSrc(entity, state);
+        if (!img.src.endsWith(nextSrc)) img.src = nextSrc;
         label.textContent = entity.bubble || entityLabel(entity);
         node.dataset.type = entity.type;
         node.dataset.facing = entity.vx > 0 || entity.flip > 0 ? 'right' : 'left';
@@ -482,6 +498,13 @@
           entityNodes.delete(key);
         }
       });
+    }
+
+    function entityAssetSrc(entity, state) {
+      const walkFrames = ENTITY_WALK_ASSETS[entity.type];
+      if (!walkFrames) return ENTITY_ASSETS[entity.type];
+      const frame = Math.floor((state?.time || 0) * 5) % walkFrames.length;
+      return walkFrames[frame];
     }
 
     function watchNormalMode() {

@@ -4,12 +4,12 @@ This guide explains the game in plain language so a beginner can safely help lat
 
 ## Current Version
 
-Current checkpoint: **Hockey Smash v0.13.6 · Build 2026-06-29.52**
+Current checkpoint: **Hockey Smash v0.13.7 · Build 2026-06-29.53**
 
 Preview:
 
 ```text
-https://jtripppiie.github.io/hockey-smash/?fresh=0136
+https://jtripppiie.github.io/hockey-smash/?fresh=0137
 ```
 
 ## Big Idea
@@ -20,7 +20,7 @@ It uses:
 
 - `HTML` for the page and buttons.
 - `CSS` for layout, colors, size, and mobile controls.
-- `JavaScript` for movement, enemies, score, countdowns, projectiles, salmon patterns, power-ups, and game rules.
+- `JavaScript` for movement, enemies, score, countdowns, projectiles, falling-fish patterns, power-ups, and game rules.
 - `Canvas` for drawing the game scene.
 
 There is no server. There are no accounts. There is no build step to play the game locally.
@@ -33,7 +33,7 @@ Think of the files like clear plastic sheets:
 
 1. `js/games/hockey-smash.js` is the first drawing.
 2. Later files add movement, score, projectiles, character labels, and safety fixes on top.
-3. `js/games/hockey-smash-v0110.js` loads last as the v0.13.6 release marker.
+3. `js/games/hockey-smash-v0110.js` loads last as the v0.13.7 release marker.
 
 ## Main Files
 
@@ -73,9 +73,10 @@ Look here for:
 - Moose movement.
 - Mom/Sister movement.
 - Difficulty ramp.
-- `highArc` salmon.
-- `low` salmon.
-- `school` salmon.
+- `rain` fish.
+- `heavyRain` fish.
+- `fastRain` fish.
+- `schoolRain` fish.
 - Combo encounter spawns.
 
 ### `js/games/hockey-smash-v0103.js`
@@ -91,7 +92,7 @@ Look here for:
 - Projectile damage.
 - Projectile arc/gravity.
 - Hit feedback text.
-- HighArc/low/school salmon dodge rules.
+- Falling-fish dodge rules.
 - Safe puck-speed power-ups.
 
 Important safety note: power-ups stay inside this layer instead of `state.entities`. The old core collision code damages the player when they overlap normal entities, so putting power-ups in `state.entities` could accidentally make a reward hurt the player.
@@ -106,11 +107,11 @@ This owns Daniel/Sofie character settings, Hockey Smash vs Dance Smash labels, a
 
 ### `js/games/hockey-smash-v0109.js`
 
-This owns hidden dev mode, triple-tap unlock, debug logs, accidental shake lock, 10-second countdown, and right-side-only salmon guard.
+This owns hidden dev mode, triple-tap unlock, debug logs, accidental shake lock, 10-second countdown, and the legacy sideways-salmon guard.
 
 ### `js/games/hockey-smash-v0110.js`
 
-This tiny file loads last and keeps the visible badge/version on v0.13.6 after older layers boot.
+This tiny file loads last and keeps the visible badge/version on v0.13.7 after older layers boot.
 
 ## Where To Change Common Things
 
@@ -133,7 +134,7 @@ const PUCK_ARC_GRAVITY = 680;
 
 Change these numbers slowly and test after each change.
 
-### Change salmon patterns
+### Change falling-fish patterns
 
 Open:
 
@@ -195,9 +196,9 @@ hockey-smash-custom.css
 6. Charged shot arcs.
 7. Daniel still fires pucks.
 8. Sofie still throws pointe shoes.
-9. highArc salmon can be jumped.
-10. low salmon can be slid under.
-11. school salmon appears wider.
+9. Fish rain down from the top.
+10. Falling fish can be dodged by moving out from under them.
+11. schoolRain fish appears wider.
 12. Power-up collection does not hurt the player.
 13. Try Again works when health reaches zero.
 14. Computer Mode still starts with `?computerMode=1`.
@@ -216,16 +217,15 @@ hockey-smash-custom.css
 9. Run `npm run verify`.
 10. Push only when the game still starts.
 
-## Current v0.13.6 Behavior To Preserve
+## Current v0.13.7 Behavior To Preserve
 
 - Splash screen is compact.
 - Start Game leads to a 10-second safe countdown.
-- Salmon/fish enter from the right side only.
+- Salmon/fish rain down from the top.
 - Daniel uses Hockey Smash / puck behavior.
 - Sofie uses Dance Smash / pointe-shoe behavior.
 - Action can be tapped for quick shots or held/released for charged shots.
-- highArc salmon require a high jump.
-- low salmon require slide/duck.
-- school salmon are wider and more dangerous.
+- Falling fish are dodged by moving out from under them.
+- schoolRain fish are wider and more dangerous.
 - Safe power-ups can boost puck speed without damaging the player.
 - Computer Mode still starts quickly and uses the same gameplay systems.

@@ -93,6 +93,8 @@ body.hockey-stage-background-active .hockey-canvas {
 
 .hockey-entity-overlay[data-type='mom'] .hockey-entity-overlay__label,
 .hockey-entity-overlay[data-type='sister'] .hockey-entity-overlay__label,
+.hockey-entity-overlay[data-type='teacher'] .hockey-entity-overlay__label,
+.hockey-entity-overlay[data-type='danceInstructor'] .hockey-entity-overlay__label,
 .hockey-entity-overlay[data-type='dadJoke'] .hockey-entity-overlay__label {
   border-color: rgba(156, 231, 255, 0.82);
   color: #9ce7ff;

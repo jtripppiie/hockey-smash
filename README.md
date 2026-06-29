@@ -1,11 +1,11 @@
 # Hockey Smash
 
-Current playable version: **Hockey Smash v0.13.6**
+Current playable version: **Hockey Smash v0.13.7**
 
 Live GitHub Pages preview:
 
 ```text
-https://jtripppiie.github.io/hockey-smash/?fresh=0136
+https://jtripppiie.github.io/hockey-smash/?fresh=0137
 ```
 
 Normal clean URL:
@@ -22,36 +22,39 @@ https://jtripppiie.github.io/hockey-smash/?computerMode=1
 
 ## Current Status
 
-Hockey Smash is the primary public playable mode in this repo. It is a static GitHub Pages canvas game with local WebP assets, fullscreen support, mobile controls, player name customization, Daniel/Sofie character selection, compact splash layout, 10-second practice countdown, right-side-only salmon, charged puck/pointe-shoe shooting, high/low/school salmon patterns, combo encounter spawns, safe puck-speed power-ups, score, distance, combo streaks, high-score persistence, floating feedback, Try Again flow, dev-only Computer Play, and a hidden debug unlock.
+Hockey Smash is the primary public playable mode in this repo. It is a static GitHub Pages canvas game with local WebP assets, fullscreen support, mobile controls, player name customization, Daniel/Sofie character selection, compact splash layout, 10-second practice countdown, raining fish hazards, charged puck/pointe-shoe shooting, bear/moose combat encounters, combo encounter spawns, safe power-ups, score, distance, combo streaks, high-score persistence, floating feedback, Try Again flow, dev-only Computer Play, and a hidden debug unlock.
 
 ## Latest Visible Build
 
 The top-right badge should read:
 
 ```text
-Hockey Smash v0.13.6 · Build 2026-06-29.52
+Hockey Smash v0.13.7 · Build 2026-06-29.53
 ```
 
 Current cache key:
 
 ```text
-0.13.6-20260629.52
+0.13.7-20260629.53
 ```
 
-## What v0.13.6 Includes
+## What v0.13.7 Includes
 
+- Makes salmon/fish rain down from the top of the screen instead of entering sideways.
+- Adds rain, heavyRain, fastRain, and schoolRain falling-fish variants.
+- Falling fish are dodged by moving out from under them while bears and moose stay as fightable ground threats.
+- Keeps combo encounter pressure so falling fish can overlap with bear/moose fights as difficulty rises.
 - Adds charged shooting for Daniel's puck and Sofie's pointe shoe.
 - Action key/button now charges on hold and fires on release.
 - Faster 180ms projectile cooldown for more responsive tap shooting.
 - Stronger charged shots with a longer 720ms charge window, bigger projectile visuals, stronger hit text, more damage, and arcing physics.
-- Adds explicit salmon patterns: normal, highArc, low, school, and fast variants.
-- HighArc salmon require a higher jump; low salmon require sliding; school salmon are wider and hit harder if missed.
 - Adds combo encounter spawns so a second object can follow shortly after the first one as difficulty rises.
-- Adds safe puck-speed power-ups that drop from defeated bears/moose without entering the core hazard collision system.
+- Adds safe power-ups that drop from defeated bears/moose without entering the core hazard collision system.
 - Adds `js/games/hockey-smash-v0110.js` as a tiny final release marker so the newest visible badge wins after older layers boot.
 
 ## Recent v0.13.x Stabilization
 
+- **v0.13.7:** fish rain down from the top while bear/moose combat remains on the ground.
 - **v0.13.6:** charged shots, stronger projectile physics, salmon patterns, combo spawns, and safe power-ups.
 - **v0.13.5:** compact no-scroll splash layout.
 - **v0.13.4:** 10-second practice countdown and right-side-only fish/salmon guard.
@@ -89,7 +92,7 @@ Touch:
 6. A 10-second countdown starts.
 7. During the countdown, practice moving, jumping, sliding, and charging/firing.
 8. When the countdown finishes, hazards begin.
-9. Salmon/fish should enter from the right side only.
+9. Salmon/fish should rain down from the top while wildlife enters from the side.
 
 ## Main Files
 
@@ -99,12 +102,12 @@ Touch:
 - `hockey-smash-custom.css`: compact player name and character selector styling.
 - `js/games/hockey-smash.js`: original core runtime, state machine, spawns, collision, rendering, and asset fallbacks.
 - `js/games/hockey-smash-v096.js`: smooth movement controller, keyboard controls, touch controls, and Computer Mode input bridge.
-- `js/games/hockey-smash-v0102.js`: moving encounter layer; owns highArc/low/school salmon and combo encounter spawns.
-- `js/games/hockey-smash-v0103.js`: charged projectile layer; owns puck/pointe-shoe charge, arcs, dodge rules, and safe puck-speed power-ups.
+- `js/games/hockey-smash-v0102.js`: moving encounter layer; owns falling-fish patterns, wildlife threats, and combo encounter spawns.
+- `js/games/hockey-smash-v0103.js`: charged projectile layer; owns puck/pointe-shoe charge, arcs, falling-fish dodge rules, and safe power-ups.
 - `js/games/hockey-smash-v0104.js`: distance, score, combo, high score, difficulty state, floating text, and run summary layer.
 - `js/games/hockey-smash-v0106.js`: player customization layer, Daniel/Sofie mode labels, and final character text updates.
-- `js/games/hockey-smash-v0109.js`: final safety/release layer; owns dev unlock, debug button logs, accidental shake lock, 10-second countdown, and right-side-only salmon guard.
-- `js/games/hockey-smash-v0110.js`: final v0.13.6 release marker so the current badge/version wins after older layers load.
+- `js/games/hockey-smash-v0109.js`: final safety/release layer; owns dev unlock, debug button logs, accidental shake lock, 10-second countdown, and legacy sideways-salmon guard.
+- `js/games/hockey-smash-v0110.js`: final v0.13.7 release marker so the current badge/version wins after older layers load.
 - `scripts/verify-hockey-smash.js`: static verification for versions, cache keys, docs, files, and key feature markers.
 - `docs/hockey-smash-kid-handoff.md`: beginner guide explaining how the code is organized and where to safely change things.
 
@@ -146,13 +149,13 @@ npm run test:browser
 
 Manual smoke checks before calling this checkpoint good:
 
-- Open `/` and confirm the visible badge says `Hockey Smash v0.13.6 · Build 2026-06-29.52`.
+- Open `/` and confirm the visible badge says `Hockey Smash v0.13.7 · Build 2026-06-29.53`.
 - Confirm the compact splash still fits without obvious scrolling.
 - Confirm Start Game enters gameplay and shows the 10-second countdown.
 - Hold/release action and confirm charged shots fire.
 - Confirm charged shots arc, glow, hit harder, and show stronger feedback.
-- Confirm highArc, low, and school salmon appear.
-- Confirm highArc salmon require a higher jump and low salmon require sliding.
-- Confirm salmon/fish come from the right side only.
+- Confirm rain, heavyRain, fastRain, and schoolRain fish fall from the top.
+- Confirm falling fish are dodged by moving out from under them.
+- Confirm bears and moose still enter as fightable ground threats.
 - Confirm power-ups can drop from defeated bears/moose and can be collected without damaging the player.
 - Open `?computerMode=1` and confirm autoplay still runs through movement, encounters, projectile, score, and customization systems.

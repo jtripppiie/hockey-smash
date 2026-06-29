@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.13.7 - Falling Fish Hazards
+
+- Shipped **Hockey Smash v0.13.7** with visible build badge `Build 2026-06-29.53`.
+- Changed salmon/fish hazards so they rain down from the top of the screen instead of entering sideways.
+- Added rain, heavyRain, fastRain, and schoolRain falling-fish variants.
+- Updated fish dodge rules so falling fish resolve when they cross the player vertically and reward moving out from under them.
+- Kept bears and moose as fightable ground threats while combo spawns can overlap them with falling fish.
+- Updated cache keys, package version, README, docs, and verifier checks for v0.13.7.
+
 ## 0.13.6 - Charged Shots And Salmon Patterns
 
 - Shipped **Hockey Smash v0.13.6** with visible build badge `Build 2026-06-29.52`.
