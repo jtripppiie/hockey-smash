@@ -2,12 +2,24 @@
 
 ## Current Checkpoint
 
-- [ ] Confirm visible version says `Hockey Smash v0.13.4 · Build 2026-06-29.50`.
-- [ ] Confirm `package.json` version is `0.13.4`.
-- [ ] Confirm `index.html` cache keys use `0.13.4-20260629.50`.
-- [ ] Confirm `hockey-smash.css` imports CSS layers with `0.13.4-20260629.50`.
+- [ ] Confirm visible version says `Hockey Smash v0.13.5 · Build 2026-06-29.51`.
+- [ ] Confirm `package.json` version is `0.13.5`.
+- [ ] Confirm `index.html` cache keys use `0.13.5-20260629.51`.
+- [ ] Confirm `hockey-smash.css` imports CSS layers with `0.13.5-20260629.51`.
 - [ ] Confirm README, CHANGELOG, QA, workflow, checklist, progress, and beginner handoff docs are updated when behavior changes.
 - [ ] Confirm `scripts/verify-hockey-smash.js` checks the new feature markers.
+
+## Compact Splash
+
+- [ ] Confirm the splash screen fits without scrolling on a normal desktop browser height.
+- [ ] Confirm the splash screen fits without scrolling in a phone-sized portrait viewport when possible.
+- [ ] Confirm the hero image is smaller than the earlier oversized version.
+- [ ] Confirm the Hockey Smash title is smaller but still readable.
+- [ ] Confirm the tagline and copy are still visible.
+- [ ] Confirm the Daniel/Sofie buttons are still visible and tappable.
+- [ ] Confirm the player name input is still visible and usable.
+- [ ] Confirm Start Game is visible without scrolling.
+- [ ] Confirm the note below Start Game is still visible or at least does not push Start Game below the fold.
 
 ## Local Run
 
@@ -18,16 +30,6 @@
 - [ ] Confirm Start Game shows the transition screen.
 - [ ] Confirm the game fills the browser viewport.
 - [ ] Confirm the page does not scroll during gameplay.
-
-## Splash Customization
-
-- [ ] Confirm the splash screen shows a Daniel/Sofie character selector.
-- [ ] Confirm the splash screen shows the player name input.
-- [ ] Confirm selecting Daniel uses the normal Hockey Smash splash/player art.
-- [ ] Confirm selecting Sofie uses the dancer-player art on the splash screen.
-- [ ] Confirm entering a custom name updates the HUD label.
-- [ ] Confirm the chosen name/character persist after refresh.
-- [ ] Confirm the visible badge settles on `Hockey Smash v0.13.4 · Build 2026-06-29.50` after all scripts load.
 
 ## Start Countdown
 
@@ -42,57 +44,6 @@
 - [ ] Confirm salmon, bear, moose, Mom, Sister, Dad jokes, and Dad boss do not attack during the countdown.
 - [ ] Confirm hazards begin after the countdown finishes.
 - [ ] Confirm `?computerMode=1` skips the normal-play countdown.
-
-## Normal Controls
-
-- [ ] Confirm keyboard left/right movement still works smoothly.
-- [ ] Confirm keyboard jump still works.
-- [ ] Confirm keyboard slide/duck still works.
-- [ ] Confirm the action button still works.
-- [ ] Confirm Daniel fires/uses hockey puck behavior.
-- [ ] Confirm Sofie fires/uses pointe-shoe behavior.
-- [ ] Confirm the health bar updates with the chosen player name.
-- [ ] Confirm mobile landscape layout works.
-- [ ] Confirm the rotate overlay appears temporarily in portrait.
-
-## Touch Control Reliability
-
-- [ ] Confirm D-pad left works as a held touch control.
-- [ ] Confirm D-pad right works as a held touch control.
-- [ ] Confirm releasing left/right stops the player reliably.
-- [ ] Confirm Jump responds from the on-screen `J` button.
-- [ ] Confirm Slide responds from the on-screen `S` button.
-- [ ] Confirm dragging off a touch button does not leave the player stuck moving.
-- [ ] Confirm switching browser tabs or apps resets held input.
-- [ ] Confirm `?debug=1` can show useful input/state details.
-
-## Player Name Text
-
-- [ ] Confirm the player overlay label uses the chosen name.
-- [ ] Confirm status messages replace Daniel/Sofie with the chosen name.
-- [ ] Confirm Mom/Sister bubbles use the chosen name.
-- [ ] Confirm Try Again copy uses the chosen name.
-- [ ] Confirm Computer Play copy uses the chosen name.
-
-## Puck, Pointe Shoe, And Feedback Polish
-
-- [ ] Confirm Daniel's normal stick action fires the standard puck.
-- [ ] Confirm Daniel's slide stick action fires the low blue puck.
-- [ ] Confirm Daniel's airborne stick action fires the stronger gold aerial puck.
-- [ ] Confirm Sofie's action uses pointe-shoe language and visuals.
-- [ ] Confirm projectile hits show floating text.
-- [ ] Confirm fish dodges show floating text.
-- [ ] Confirm damage shows floating text and resets combo.
-
-## Score And Replay
-
-- [ ] Confirm distance and score appear in the HUD.
-- [ ] Confirm distance and score rise during play.
-- [ ] Confirm combo feedback appears after skillful actions.
-- [ ] Confirm combo resets when the player loses health.
-- [ ] Confirm the high score persists after refresh.
-- [ ] Confirm accidental canvas shake does not stay stuck after impact.
-- [ ] Confirm the Try Again screen shows distance, score, best combo, projectile hits, and fish dodges.
 
 ## Gameplay Encounters
 
