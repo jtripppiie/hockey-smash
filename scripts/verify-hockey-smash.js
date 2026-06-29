@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = 'Hockey Smash v0.13.1';
-const BUILD = 'Build 2026-06-29.46';
-const CACHE_KEY = '0.13.1-20260629.46';
+const VERSION = 'Hockey Smash v0.13.2';
+const BUILD = 'Build 2026-06-29.48';
+const CACHE_KEY = '0.13.2-20260629.48';
 
 const requiredFiles = [
   'index.html',
@@ -73,10 +73,12 @@ const v0107 = read('js/games/hockey-smash-v0107.js');
 const v0108 = read('js/games/hockey-smash-v0108.js');
 const v0109 = read('js/games/hockey-smash-v0109.js');
 
-if (!pkg.includes('"version": "0.13.1"')) errors.push('Package version is stale.');
+if (!pkg.includes('"version": "0.13.2"')) errors.push('Package version is stale.');
 if (!html.includes(`${VERSION} · ${BUILD}`)) errors.push('Build badge is stale.');
 if (!html.includes(`hockey-smash.css?v=${CACHE_KEY}`)) errors.push('Single CSS manifest is not linked or cache-busted.');
 if (!html.includes(`js/games/hockey-smash-v0109.js?v=${CACHE_KEY}`)) errors.push('Final script is not linked or cache-busted.');
+if (!html.includes('<h1 id="hockey-title">Hockey Smash</h1>')) errors.push('Hockey splash title should say Hockey Smash.');
+if (html.includes('Hockey Slash 2')) errors.push('Index should not say Hockey Slash 2.');
 if (!html.includes('>Sofie</button>')) errors.push('Sofie button should say only Sofie.');
 if (html.includes('Sofie the Dancer')) errors.push('Index still says Sofie the Dancer.');
 if (html.includes('style.css?v=') || html.includes('hockey-smash-polish.css?v=') || html.includes('hockey-smash-touch.css?v=') || html.includes('hockey-smash-custom.css?v=')) errors.push('index.html should not load individual CSS layer links anymore.');
@@ -95,6 +97,8 @@ if (!v0109.includes('normalizeSofieLabels') || !v0109.includes('lockAccidentalCa
 if (!v0109.includes('hockey-earthquake-active')) errors.push('Earthquake escape hatch for future intentional shake is missing.');
 if (!v0109.includes('pointerdown') || !v0109.includes('pointerup') || !v0109.includes('touchstart')) errors.push('Button debug coverage is missing.');
 if (!v0109.includes('stateSummary') || !v0109.includes('heartbeat')) errors.push('Button debug state output is missing.');
+if (!v0106.includes("gameTitle: 'Hockey Smash'")) errors.push('Daniel/Hockey mode title should be Hockey Smash.');
+if (v0106.includes('Hockey Slash 2')) errors.push('Character config should not say Hockey Slash 2.');
 if (!v0106.includes("label: 'Sofie'")) errors.push('Sofie character label should be Sofie.');
 if (!v0106.includes("gameTitle: 'Dance Smash'") || !v0106.includes("transitionHeading: 'Entering Dance Smash...'") || !v0106.includes("actionText: '🩰'") || !v0106.includes("actionLabel: 'Throw pointe shoe'")) errors.push('Dance Smash transition/action button labels are missing.');
 if (!v0106.includes('updateModeLabels') || !v0106.includes('data-action="stick"') || !v0106.includes('pointe-shoe')) errors.push('Character-specific action button update is missing.');
