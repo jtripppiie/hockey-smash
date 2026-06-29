@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.10.1 - Platformer Movement Feel
+
+- Shipped **Hockey Smash v0.10.1** with visible build badge `Build 2026-06-29.22`.
+- Reviewed `ZeroDayArcade/HTML5_Platformer` for movement inspiration: separate run, jump, attack, crouch, and hurt sprites are loaded up front, which makes the character state changes read clearly.
+- Added `js/games/hockey-smash-v0101.js` as a loaded-last platformer-feel movement layer.
+- Added acceleration and friction so left/right movement eases in and out instead of feeling like repeated button shoves.
+- Added jump buffering and coyote-time forgiveness so the jump button is more responsive.
+- Added variable jump height when the jump button is released early.
+- Improved slide/crouch as a short controlled movement state with a lower, stretched visual.
+- Kept Computer Mode, normal encounters, Game Over, and Try Again intact.
+
 ## 0.10.0 - Game Over And Try Again Flow
 
 - Shipped **Hockey Smash v0.10.0** with visible build badge `Build 2026-06-29.21`.
