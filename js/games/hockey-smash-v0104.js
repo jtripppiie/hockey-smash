@@ -1,6 +1,6 @@
 (function () {
   const DISPLAY_VERSION = 'Hockey Smash v0.13.0';
-  const DISPLAY_BUILD = 'Build 2026-06-29.45';
+  const DISPLAY_BUILD = 'Build 2026-06-29.46';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const STORAGE_KEY = 'hockeySmashHighScore';
@@ -231,6 +231,19 @@
   }
 
   function updateProgress(state, dt) {
+    // Skip real progression during the 10-second practice countdown.
+    // Keep combo cleanup alive so stale combo state does not carry forward.
+    if (
+      state?.readyCountdownActive ||
+      (typeof state?.readyCountdownSeconds === 'number' && state.readyCountdownSeconds > 0.1)
+    ) {
+      if (metrics.comboTimer > 0) {
+        metrics.comboTimer = Math.max(0, metrics.comboTimer - dt);
+        if (metrics.comboTimer === 0) metrics.combo = 0;
+      }
+      return;
+    }
+
     const player = state.player;
     metrics.survivalTime += dt;
     metrics.distance += (BASE_DISTANCE_SPEED + Math.abs(player.vx || 0) * 0.018) * dt;
