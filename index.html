@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#101923">
     <title>Hockey Smash</title>
-    <link rel="stylesheet" href="style.css?v=0.5.11-20260629.8">
-    <link rel="stylesheet" href="hockey-smash-polish.css?v=0.5.11-20260629.8">
+    <link rel="stylesheet" href="style.css?v=0.5.12-20260629.9">
+    <link rel="stylesheet" href="hockey-smash-polish.css?v=0.5.12-20260629.9">
   </head>
   <body>
     <main id="app" class="app-shell hockey-app">
       <section id="hockey-smash" class="hockey-shell" aria-labelledby="hockey-title">
         <div id="hockey-build-badge" class="hockey-build-badge" aria-label="Current deployed build">
-          Hockey Smash v0.5.11 · Build 2026-06-29.8
+          Hockey Smash v0.5.12 · Build 2026-06-29.9
         </div>
         <section id="hockey-splash" class="hockey-splash">
           <div class="hockey-splash__content">
@@ -27,9 +27,10 @@
             <p class="hockey-splash__copy">Play it yourself, or watch the computer take Daniel through the sidewalk survival run.</p>
             <div class="hockey-mode-actions" aria-label="Choose how to play Hockey Smash">
               <button id="hockey-play" class="hockey-button hockey-button--primary" type="button">Play Hockey Smash</button>
+              <button class="hockey-button hockey-button--secondary hockey-fullscreen-button" type="button" data-fullscreen-toggle>Fullscreen</button>
               <a id="hockey-watch" class="hockey-button hockey-button--secondary" href="?computerMode=1">Watch Computer Play</a>
             </div>
-            <p class="hockey-mode-note">Computer Play is now treated as a real watch/autoplay mode. Add <code>&debug=1</code> only when you want the diagnostic overlay.</p>
+            <p class="hockey-mode-note">Computer Play is now treated as a real watch/autoplay mode. Use Fullscreen on mobile to hide the browser bars. Add <code>&debug=1</code> only when you want the diagnostic overlay.</p>
           </div>
         </section>
 
@@ -42,6 +43,7 @@
         </section>
 
         <section id="hockey-game" class="hockey-game" hidden aria-label="Hockey Smash gameplay">
+          <button class="hockey-fullscreen-chip" type="button" data-fullscreen-toggle aria-label="Toggle fullscreen">Fullscreen</button>
           <canvas
             id="hockey-canvas"
             class="hockey-canvas"
@@ -108,8 +110,8 @@
       </section>
     </main>
 
-    <script src="js/games/hockey-smash.js?v=0.5.11-20260629.8"></script>
-    <script src="js/games/hockey-smash-polish.js?v=0.5.11-20260629.8"></script>
-    <script src="script.js?v=0.5.11-20260629.8"></script>
+    <script src="js/games/hockey-smash.js?v=0.5.12-20260629.9"></script>
+    <script src="js/games/hockey-smash-polish.js?v=0.5.12-20260629.9"></script>
+    <script src="script.js?v=0.5.12-20260629.9"></script>
   </body>
 </html>
