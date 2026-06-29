@@ -1,11 +1,14 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.5.7';
-  const DISPLAY_BUILD = 'Build 2026-06-29.4';
+  const DISPLAY_VERSION = 'Hockey Smash v0.5.8';
+  const DISPLAY_BUILD = 'Build 2026-06-29.5';
   const params = new URLSearchParams(window.location.search);
   const computerMode = params.get('computerMode') === '1';
   const debugMode = params.get('debug') === '1';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
+  const CORE_GROUND_RATIO = 0.82;
+  const VISUAL_GROUND_RATIO = 0.80;
+  const TAP_HOLD_MS = 260;
 
   function onReady() {
     document.body.classList.toggle('hockey-computer-mode', computerMode);
@@ -40,6 +43,8 @@
       playerOverlay.appendChild(playerLabel);
       game.appendChild(playerOverlay);
     }
+
+    enhanceTapControls();
 
     const autoplayPanel = createAutoplayPanel();
     if (autoplayPanel) game.appendChild(autoplayPanel);
@@ -106,6 +111,27 @@
       return panel;
     }
 
+    function enhanceTapControls() {
+      const keyByAction = {
+        left: 'ArrowLeft',
+        right: 'ArrowRight',
+        jump: ' ',
+        slide: 'Shift',
+        stick: 'f',
+      };
+
+      document.querySelectorAll('[data-action]').forEach((button) => {
+        button.addEventListener('click', () => {
+          const key = keyByAction[button.dataset.action];
+          if (!key) return;
+          window.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+          window.setTimeout(() => {
+            window.dispatchEvent(new KeyboardEvent('keyup', { key, bubbles: true }));
+          }, TAP_HOLD_MS);
+        });
+      });
+    }
+
     function syncPlayerOverlay(state) {
       if (!canvas) return;
       if (!state?.player || state.mode === 'splash' || state.mode === 'transition' || state.mode === 'tryAgain') return;
@@ -116,14 +142,23 @@
       const player = state.player;
       const scaleX = rect.width / DESIGN_WIDTH;
       const scaleY = rect.height / DESIGN_HEIGHT;
+      const displayWidth = Math.max(86, player.width * scaleX * 0.82);
+      const displayHeight = Math.max(108, player.height * scaleY * 0.82);
+      const coreGroundY = DESIGN_HEIGHT * CORE_GROUND_RATIO;
+      const playerFeetY = player.y + player.height;
+      const jumpLift = Math.max(0, (coreGroundY - playerFeetY) * scaleY);
+      const visualFeetY = rect.top + rect.height * VISUAL_GROUND_RATIO - jumpLift;
+      const visualCenterX = rect.left + (player.x + player.width / 2) * scaleX;
+
       playerOverlay.hidden = false;
       playerOverlay.style.display = 'block';
-      playerOverlay.style.left = `${rect.left + player.x * scaleX}px`;
-      playerOverlay.style.top = `${rect.top + player.y * scaleY}px`;
-      playerOverlay.style.width = `${Math.max(112, player.width * scaleX)}px`;
-      playerOverlay.style.height = `${Math.max(136, player.height * scaleY)}px`;
-      playerOverlay.style.zIndex = '9999';
+      playerOverlay.style.left = `${visualCenterX - displayWidth / 2}px`;
+      playerOverlay.style.top = `${visualFeetY - displayHeight}px`;
+      playerOverlay.style.width = `${displayWidth}px`;
+      playerOverlay.style.height = `${displayHeight}px`;
+      playerOverlay.style.zIndex = '9';
       playerOverlay.dataset.facing = player.facing < 0 ? 'left' : 'right';
+      playerOverlay.dataset.x = String(Math.round(player.x));
     }
 
     function watchNormalMode() {
