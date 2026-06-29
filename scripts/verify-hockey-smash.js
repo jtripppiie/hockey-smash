@@ -34,6 +34,11 @@ const requiredFiles = [
   'js/games/hockey-smash-v0108.js',
   'js/games/hockey-smash-v0109.js',
   'scripts/verify-hockey-smash-actions.js',
+  'docs/hockey-smash-workflow.md',
+  'docs/hockey-smash-dev-checklist.md',
+  'docs/hockey-smash-qa.md',
+  'docs/hockey-smash-progress.md',
+  'docs/hockey-smash-kid-handoff.md',
   'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1280x720.webp',
   'assets/hockey-smash/backgrounds/soldotna_cityscape_background_02_1280x720.webp',
   'assets/hockey-smash/backgrounds/soldotna_cityscape_background_03_1280x720.webp',
@@ -59,6 +64,13 @@ requiredFiles.forEach(read);
 const html = read('index.html');
 const pkg = read('package.json');
 const cssManifest = read('hockey-smash.css');
+const readme = read('README.md');
+const changelog = read('CHANGELOG.md');
+const workflow = read('docs/hockey-smash-workflow.md');
+const checklist = read('docs/hockey-smash-dev-checklist.md');
+const qa = read('docs/hockey-smash-qa.md');
+const progress = read('docs/hockey-smash-progress.md');
+const kidGuide = read('docs/hockey-smash-kid-handoff.md');
 const core = read('js/games/hockey-smash.js');
 const polish = read('js/games/hockey-smash-polish.js');
 const touchCss = read('hockey-smash-touch.css');
@@ -105,6 +117,7 @@ if (!v0109.includes('pointerdown') || !v0109.includes('pointerup') || !v0109.inc
 if (!v0109.includes('stateSummary') || !v0109.includes('heartbeat')) errors.push('Button debug state output is missing.');
 if (!v0109.includes('START_COUNTDOWN_SECONDS = 10') || !v0109.includes('runStartCountdown') || !v0109.includes('hockey-start-countdown') || !v0109.includes('Practice the buttons')) errors.push('Start-game 10-second practice countdown is missing.');
 if (!v0109.includes('forceSalmonFromRight') || !v0109.includes('entity.vx = -Math.abs') || !v0109.includes('entity.flip = -1')) errors.push('Right-side-only salmon guard is missing.');
+if (!v0109.includes('Kid-friendly rule') || !v0109.includes('Start countdown brain') || !v0109.includes('Salmon direction guard')) errors.push('Beginner comments are missing from final safety layer.');
 if (!v0106.includes("gameTitle: 'Hockey Smash'")) errors.push('Daniel/Hockey mode title should be Hockey Smash.');
 if (v0106.includes('Hockey Slash 2')) errors.push('Character config should not say Hockey Slash 2.');
 if (!v0106.includes("label: 'Sofie'")) errors.push('Sofie character label should be Sofie.');
@@ -134,6 +147,18 @@ if (!v0104.includes('createFloatingTextNear')) errors.push('Floating feedback te
 if (!v0102.includes('BASE_SPAWN_MS') || !v0102.includes('state.difficulty') || !v0102.includes('applyVariant')) errors.push('Difficulty ramp checks are stale.');
 if (!v096.includes('RUN_ACCEL') || !v096.includes('COYOTE_MS') || !v096.includes('SLIDE_MS')) errors.push('Smooth movement checks are stale.');
 if (core.includes('_1920x1080.png')) errors.push('Large background paths are still referenced.');
+
+const docsToCheck = { readme, changelog, workflow, checklist, qa, progress, kidGuide };
+Object.entries(docsToCheck).forEach(([name, text]) => {
+  if (!text.includes('v0.13.4') && !text.includes('0.13.4')) errors.push(`${name} does not mention the current version.`);
+});
+if (!readme.includes('10-second safe practice countdown') || !readme.includes('right side only') || !readme.includes('hockey-smash-kid-handoff.md')) errors.push('README does not document the countdown, salmon direction, and beginner handoff guide.');
+if (!changelog.includes('0.13.4 - Start Countdown And Right-Side Salmon Guard')) errors.push('Changelog is missing the v0.13.4 entry.');
+if (!workflow.includes('Current v0.13.4 Behavior Notes') || !workflow.includes('hockey-smash-kid-handoff.md')) errors.push('Workflow doc is stale.');
+if (!checklist.includes('Start Countdown') || !checklist.includes('fish/salmon fly in from the **right side only**')) errors.push('Dev checklist does not cover the latest gameplay checks.');
+if (!qa.includes('10-Second Start Countdown') || !qa.includes('right side only')) errors.push('QA doc does not cover the latest gameplay checks.');
+if (!progress.includes('Current Checkpoint: Hockey Smash v0.13.4') || !progress.includes('Start Countdown And Right-Side Salmon')) errors.push('Progress doc is stale.');
+if (!kidGuide.includes('How The Files Load') || !kidGuide.includes('Change the countdown length') || !kidGuide.includes('Current v0.13.4 Behavior To Preserve')) errors.push('Beginner handoff guide is missing key sections.');
 
 const textToScan = { html, cssManifest, core, polish, v0102, v0103, v0104, v0105, v0106, v0107, v0108, v0109 };
 Object.entries(textToScan).forEach(([name, text]) => {
