@@ -1,9 +1,9 @@
 const fs = require('fs');
 
-const DISPLAY_VERSION = 'Hockey Smash v0.5.10';
-const DISPLAY_BUILD = 'Build 2026-06-29.7';
+const DISPLAY_VERSION = 'Hockey Smash v0.5.11';
+const DISPLAY_BUILD = 'Build 2026-06-29.8';
 const DISPLAY_BADGE = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
-const CACHE_KEY = '0.5.10-20260629.7';
+const CACHE_KEY = '0.5.11-20260629.8';
 
 const requiredFiles = [
   'index.html',
@@ -77,6 +77,8 @@ if (!html.includes('assets/hockey-smash/sprites/hockey-player.png')) errors.push
 if (!polishJs.includes('getElementById(\'hockey-player-overlay\')')) errors.push('Polish script should reuse the hard-coded player overlay.');
 if (!polishJs.includes('VISUAL_GROUND_RATIO = 0.80')) errors.push('Player overlay should be anchored to the visual road ground.');
 if (!polishJs.includes('visualFeetY')) errors.push('Player overlay should use visual feet anchoring.');
+if (!polishJs.includes('getPlayableState')) errors.push('D-pad should be able to move from Ready/transition state.');
+if (!polishJs.includes("state.mode = 'playing'")) errors.push('D-pad fallback should force a playable state when needed.');
 if (!polishJs.includes('enhanceDpadControls')) errors.push('Direct D-pad fallback is missing.');
 if (!polishJs.includes('DIRECT_TAP_STEP')) errors.push('D-pad tap movement step is missing.');
 if (!polishJs.includes('getActionAtPoint')) errors.push('Document-level D-pad hit testing is missing.');
@@ -84,6 +86,10 @@ if (!polishJs.includes('window.HOCKEY_SMASH_DPAD')) errors.push('Global D-pad fa
 if (!polishJs.includes('document.addEventListener(\'pointerdown\'')) errors.push('Document-level pointerdown fallback is missing.');
 if (!polishJs.includes('movePlayer(action, DIRECT_TAP_STEP)')) errors.push('D-pad click should move the player directly.');
 if (!polishJs.includes('setPointerCapture')) errors.push('D-pad should capture pointer input while held.');
+if (!polishCss.includes('@media (orientation: portrait) and (max-width: 760px)')) errors.push('Portrait mobile gameplay layout is missing.');
+if (!polishCss.includes('body.hockey-playing .hockey-canvas')) errors.push('Portrait canvas placement is missing.');
+if (!polishCss.includes('body.hockey-playing .hockey-status')) errors.push('Portrait HUD/status compaction is missing.');
+if (!polishCss.includes('body.hockey-playing .hockey-control')) errors.push('Portrait control sizing is missing.');
 if (!polishCss.includes('transition: left 80ms linear, top 80ms linear')) errors.push('Player overlay should animate position changes smoothly.');
 if (!polishCss.includes('.hockey-player-overlay')) errors.push('Player overlay CSS is missing.');
 if (!polishCss.includes('.hockey-player-overlay__label')) errors.push('Player overlay label CSS is missing.');
@@ -118,4 +124,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`${DISPLAY_VERSION} static verification passed for document-level D-pad fallback.`);
+console.log(`${DISPLAY_VERSION} static verification passed for portrait mobile layout and Ready-state D-pad movement.`);
