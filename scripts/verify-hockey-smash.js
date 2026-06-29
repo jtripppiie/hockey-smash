@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = 'Hockey Smash v0.13.3';
-const BUILD = 'Build 2026-06-29.49';
-const CACHE_KEY = '0.13.3-20260629.49';
+const VERSION = 'Hockey Smash v0.13.4';
+const BUILD = 'Build 2026-06-29.50';
+const CACHE_KEY = '0.13.4-20260629.50';
 
 const requiredFiles = [
   'index.html',
@@ -73,7 +73,7 @@ const v0107 = read('js/games/hockey-smash-v0107.js');
 const v0108 = read('js/games/hockey-smash-v0108.js');
 const v0109 = read('js/games/hockey-smash-v0109.js');
 
-if (!pkg.includes('"version": "0.13.3"')) errors.push('Package version is stale.');
+if (!pkg.includes('"version": "0.13.4"')) errors.push('Package version is stale.');
 if (!html.includes(`${VERSION} · ${BUILD}`)) errors.push('Build badge is stale.');
 if (!html.includes(`hockey-smash.css?v=${CACHE_KEY}`)) errors.push('Single CSS manifest is not linked or cache-busted.');
 if (!html.includes(`js/games/hockey-smash-v0109.js?v=${CACHE_KEY}`)) errors.push('Final script is not linked or cache-busted.');
@@ -103,6 +103,8 @@ if (!v0109.includes('normalizeSofieLabels') || !v0109.includes('lockAccidentalCa
 if (!v0109.includes('hockey-earthquake-active')) errors.push('Earthquake escape hatch for future intentional shake is missing.');
 if (!v0109.includes('pointerdown') || !v0109.includes('pointerup') || !v0109.includes('touchstart')) errors.push('Button debug coverage is missing.');
 if (!v0109.includes('stateSummary') || !v0109.includes('heartbeat')) errors.push('Button debug state output is missing.');
+if (!v0109.includes('START_COUNTDOWN_SECONDS = 10') || !v0109.includes('runStartCountdown') || !v0109.includes('hockey-start-countdown') || !v0109.includes('Practice the buttons')) errors.push('Start-game 10-second practice countdown is missing.');
+if (!v0109.includes('forceSalmonFromRight') || !v0109.includes('entity.vx = -Math.abs') || !v0109.includes('entity.flip = -1')) errors.push('Right-side-only salmon guard is missing.');
 if (!v0106.includes("gameTitle: 'Hockey Smash'")) errors.push('Daniel/Hockey mode title should be Hockey Smash.');
 if (v0106.includes('Hockey Slash 2')) errors.push('Character config should not say Hockey Slash 2.');
 if (!v0106.includes("label: 'Sofie'")) errors.push('Sofie character label should be Sofie.');
