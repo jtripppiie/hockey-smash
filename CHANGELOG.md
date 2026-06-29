@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.12.4 - Gameplay Control Stabilization
+
+- Shipped **Hockey Smash v0.12.4** with visible build badge `Build 2026-06-29.39`.
+- Reworked `js/games/hockey-smash-v096.js` as a less aggressive movement owner.
+- Removed capture-phase control listeners, `stopImmediatePropagation()`, and the old click timing guard from the movement layer.
+- Kept keyboard and touch controls writing to the same simple input state.
+- Kept pointer tracking, pointer release, touch cancel, blur, and visibility reset behavior.
+- Kept Computer Mode on the same movement path while avoiding the prior input fight.
+- Added `js/games/hockey-smash-v0107.js` as the final gameplay repair marker for the visible badge and `getVersion()`.
+- Updated cache keys, package version, and verifier checks for `0.12.4`.
+
 ## 0.12.3 - Player Name And Character Select
 
 - Shipped **Hockey Smash v0.12.3** with visible build badge `Build 2026-06-29.38`.
