@@ -95,11 +95,8 @@
       return state;
     }
 
-    function activeGameplayEntities(state) {
-      return state.entities.filter((entity) => {
-        if (!entity || entity.dead) return false;
-        return ['salmon', 'bear', 'moose', 'mom', 'sister', 'dadJoke'].includes(entity.type);
-      });
+    function activeMovingGameplayEntities(state) {
+      return state.entities.filter((entity) => entity && !entity.dead && entity.fromMovingGameplayPass);
     }
 
     function spawnMovingEncounter(state) {
@@ -123,7 +120,7 @@
           firstPlayableAt = now;
           nextSpawnAt = now + 700;
         }
-        if (now >= nextSpawnAt && activeGameplayEntities(state).length < 2) {
+        if (now >= nextSpawnAt && activeMovingGameplayEntities(state).length < 2) {
           spawnMovingEncounter(state);
           nextSpawnAt = now + 2400;
         }
