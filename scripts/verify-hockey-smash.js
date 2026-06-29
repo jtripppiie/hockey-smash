@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = 'Hockey Smash v0.13.0';
-const BUILD = 'Build 2026-06-29.45';
-const CACHE_KEY = '0.13.0-20260629.45';
+const VERSION = 'Hockey Smash v0.13.1';
+const BUILD = 'Build 2026-06-29.46';
+const CACHE_KEY = '0.13.1-20260629.46';
 
 const requiredFiles = [
   'index.html',
@@ -73,7 +73,7 @@ const v0107 = read('js/games/hockey-smash-v0107.js');
 const v0108 = read('js/games/hockey-smash-v0108.js');
 const v0109 = read('js/games/hockey-smash-v0109.js');
 
-if (!pkg.includes('"version": "0.13.0"')) errors.push('Package version is stale.');
+if (!pkg.includes('"version": "0.13.1"')) errors.push('Package version is stale.');
 if (!html.includes(`${VERSION} · ${BUILD}`)) errors.push('Build badge is stale.');
 if (!html.includes(`hockey-smash.css?v=${CACHE_KEY}`)) errors.push('Single CSS manifest is not linked or cache-busted.');
 if (!html.includes(`js/games/hockey-smash-v0109.js?v=${CACHE_KEY}`)) errors.push('Final script is not linked or cache-busted.');
@@ -96,6 +96,8 @@ if (!v0109.includes('hockey-earthquake-active')) errors.push('Earthquake escape 
 if (!v0109.includes('pointerdown') || !v0109.includes('pointerup') || !v0109.includes('touchstart')) errors.push('Button debug coverage is missing.');
 if (!v0109.includes('stateSummary') || !v0109.includes('heartbeat')) errors.push('Button debug state output is missing.');
 if (!v0106.includes("label: 'Sofie'")) errors.push('Sofie character label should be Sofie.');
+if (!v0106.includes("gameTitle: 'Dance Smash'") || !v0106.includes("transitionHeading: 'Entering Dance Smash...'") || !v0106.includes("actionText: '🩰'") || !v0106.includes("actionLabel: 'Throw pointe shoe'")) errors.push('Dance Smash transition/action button labels are missing.');
+if (!v0106.includes('updateModeLabels') || !v0106.includes('data-action="stick"') || !v0106.includes('pointe-shoe')) errors.push('Character-specific action button update is missing.');
 if (!v0103.includes('pointe-shoe') || !v0103.includes('throws a pointe shoe') || !v0103.includes('🩰')) errors.push('Sofie pointe shoe projectile is missing.');
 if (!v0104.includes('projectileHitLabel') || !v0104.includes('POINTE SHOE') || !v0104.includes('Projectile Hits')) errors.push('Score feedback should support pointe shoe projectiles.');
 if (!v096.includes('const activePointers = new Map()')) errors.push('Pointer tracking is missing from movement layer.');
