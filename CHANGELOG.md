@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.3 - Player Border Removal And Background Preload
+
+- Shipped **Hockey Smash v0.9.3** with visible build badge `Build 2026-06-29.14`.
+- Removed the debug border, glow, and background box from the Daniel DOM overlay.
+- Added HTML preload links for all five Soldotna road backgrounds.
+- Added runtime image preloading for all five road backgrounds with async decoding hints.
+- Synced the stage background before resetting Daniel to the left side so transitions feel faster.
+- Updated static verification so the player border and missing background preload cannot regress.
+
 ## 0.9.2 - Hidden Startup Overlay And Visible Stage Backgrounds
 
 - Shipped **Hockey Smash v0.9.2** with visible build badge `Build 2026-06-29.13`.
