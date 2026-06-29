@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.9.8 - Normal Gameplay Encounters
+
+- Shipped **Hockey Smash v0.9.8** with visible build badge `Build 2026-06-29.19`.
+- Added `js/games/hockey-smash-v098.js` as a normal-mode gameplay encounter pass.
+- Brought Computer Mode-style characters into normal play as staged road-section encounters.
+- Added fish/salmon dodge hazards.
+- Added bear and moose obstacle encounters that can be cleared with stick attacks or dodged where appropriate.
+- Added Mom and Sister interruption moments with speech bubbles and small health/slowdown effects.
+- Added a late Dad challenge plus Dad joke hazard.
+- Kept this as a first gameplay integration pass, not final level tuning.
+
 ## 0.9.7 - Smooth Slide Dash
 
 - Shipped **Hockey Smash v0.9.7** with visible build badge `Build 2026-06-29.18`.
