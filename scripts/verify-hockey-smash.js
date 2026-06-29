@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = 'Hockey Smash v0.12.9';
-const BUILD = 'Build 2026-06-29.44';
-const CACHE_KEY = '0.12.9-20260629.44';
+const VERSION = 'Hockey Smash v0.13.0';
+const BUILD = 'Build 2026-06-29.45';
+const CACHE_KEY = '0.13.0-20260629.45';
 
 const requiredFiles = [
   'index.html',
@@ -73,7 +73,7 @@ const v0107 = read('js/games/hockey-smash-v0107.js');
 const v0108 = read('js/games/hockey-smash-v0108.js');
 const v0109 = read('js/games/hockey-smash-v0109.js');
 
-if (!pkg.includes('"version": "0.12.9"')) errors.push('Package version is stale.');
+if (!pkg.includes('"version": "0.13.0"')) errors.push('Package version is stale.');
 if (!html.includes(`${VERSION} · ${BUILD}`)) errors.push('Build badge is stale.');
 if (!html.includes(`hockey-smash.css?v=${CACHE_KEY}`)) errors.push('Single CSS manifest is not linked or cache-busted.');
 if (!html.includes(`js/games/hockey-smash-v0109.js?v=${CACHE_KEY}`)) errors.push('Final script is not linked or cache-busted.');
@@ -96,6 +96,8 @@ if (!v0109.includes('hockey-earthquake-active')) errors.push('Earthquake escape 
 if (!v0109.includes('pointerdown') || !v0109.includes('pointerup') || !v0109.includes('touchstart')) errors.push('Button debug coverage is missing.');
 if (!v0109.includes('stateSummary') || !v0109.includes('heartbeat')) errors.push('Button debug state output is missing.');
 if (!v0106.includes("label: 'Sofie'")) errors.push('Sofie character label should be Sofie.');
+if (!v0103.includes('pointe-shoe') || !v0103.includes('throws a pointe shoe') || !v0103.includes('🩰')) errors.push('Sofie pointe shoe projectile is missing.');
+if (!v0104.includes('projectileHitLabel') || !v0104.includes('POINTE SHOE') || !v0104.includes('Projectile Hits')) errors.push('Score feedback should support pointe shoe projectiles.');
 if (!v096.includes('const activePointers = new Map()')) errors.push('Pointer tracking is missing from movement layer.');
 if (!v096.includes('button.addEventListener(\'pointerdown\'')) errors.push('Button pointerdown handler is missing.');
 if (!v096.includes('button.addEventListener(\'pointerup\'')) errors.push('Button pointerup handler is missing.');
@@ -113,7 +115,7 @@ if (!html.includes('id="player-name"')) errors.push('Player name input is missin
 if (!html.includes('data-character="sofie"')) errors.push('Sofie character button is missing.');
 if (!v0106.includes('setPlayerConfig') || !v0106.includes('getPlayerConfig')) errors.push('Player config API is missing.');
 if (!v0106.includes('dancer-player.webp') || !v0106.includes('sister-spinning.webp')) errors.push('Sofie dancer sprite config is missing.');
-if (!v0103.includes('puckStatsForPlayer') || !v0103.includes('puck.damage')) errors.push('Puck power variants are missing.');
+if (!v0103.includes('puckStatsForPlayer') || !v0103.includes('puck.damage')) errors.push('Projectile power variants are missing.');
 if (!v0104.includes('createFloatingTextNear')) errors.push('Floating feedback text is missing.');
 if (!v0102.includes('BASE_SPAWN_MS') || !v0102.includes('state.difficulty') || !v0102.includes('applyVariant')) errors.push('Difficulty ramp checks are stale.');
 if (!v096.includes('RUN_ACCEL') || !v096.includes('COYOTE_MS') || !v096.includes('SLIDE_MS')) errors.push('Smooth movement checks are stale.');
