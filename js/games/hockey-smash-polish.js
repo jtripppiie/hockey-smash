@@ -12,17 +12,17 @@
   const DIRECT_TAP_STEP = 86;
   const JUMP_VISIBLE_MS = 440;
   const PLAYER_ASSETS = {
-    normal: 'assets/hockey-smash/sprites/hockey-player.png',
-    sliding: 'assets/hockey-smash/sprites/hockey-player-sliding.png',
+    normal: 'assets/hockey-smash/sprites/hockey-player.webp',
+    sliding: 'assets/hockey-smash/sprites/hockey-player-sliding.webp',
   };
   const ENTITY_ASSETS = {
-    salmon: 'assets/hockey-smash/sprites/salmon.png',
-    bear: 'assets/hockey-smash/sprites/bear.png',
-    moose: 'assets/hockey-smash/sprites/moose.png',
-    mom: 'assets/hockey-smash/sprites/mom.png',
-    sister: 'assets/hockey-smash/sprites/sister-spinning.png',
-    dad: 'assets/hockey-smash/sprites/dad.png',
-    dadJoke: 'assets/hockey-smash/sprites/dad.png',
+    salmon: 'assets/hockey-smash/sprites/salmon.webp',
+    bear: 'assets/hockey-smash/sprites/bear.webp',
+    moose: 'assets/hockey-smash/sprites/moose.webp',
+    mom: 'assets/hockey-smash/sprites/mom.webp',
+    sister: 'assets/hockey-smash/sprites/sister-spinning.webp',
+    dad: 'assets/hockey-smash/sprites/dad.webp',
+    dadJoke: 'assets/hockey-smash/sprites/dad.webp',
   };
 
   function onReady() {

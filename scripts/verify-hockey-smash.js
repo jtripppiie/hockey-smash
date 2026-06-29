@@ -29,8 +29,8 @@ const requiredFiles = [
   'assets/hockey-smash/backgrounds/soldotna_cityscape_background_03_1280x720.webp',
   'assets/hockey-smash/backgrounds/soldotna_cityscape_background_04_1280x720.webp',
   'assets/hockey-smash/backgrounds/soldotna_cityscape_background_05_1280x720.webp',
-  'assets/hockey-smash/sprites/hockey-player-sliding.png',
-  'assets/hockey-smash/sprites/sister-spinning.png',
+  'assets/hockey-smash/sprites/hockey-player-sliding.webp',
+  'assets/hockey-smash/sprites/sister-spinning.webp',
 ];
 
 const errors = [];
