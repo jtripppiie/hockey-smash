@@ -67,15 +67,20 @@ button {
 .hockey-transition,
 .hockey-try-again {
   min-height: 100vh;
+  min-height: 100svh;
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(1rem, 4vw, 2rem);
+  gap: clamp(0.55rem, 2vw, 1.1rem);
   align-items: center;
   justify-items: center;
-  padding: clamp(1rem, 5vw, 4rem);
+  padding: clamp(0.85rem, 2.5vw, 1.75rem);
   background:
     radial-gradient(circle at 50% 42%, rgba(255,255,255,0.06), transparent 14rem),
     #000;
+}
+
+.hockey-splash {
+  overflow: hidden;
 }
 
 .hockey-transition,
@@ -86,19 +91,19 @@ button {
 }
 
 .hockey-eyebrow {
-  margin: 0 0 0.6rem;
+  margin: 0 0 0.25rem;
   color: var(--hockey-ice);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.8rem;
+  font-size: clamp(0.66rem, 1.4vw, 0.76rem);
 }
 
 .hockey-splash h1 {
   margin: 0;
   max-width: min(12ch, 92vw);
   color: #fff8df;
-  font-size: clamp(2.6rem, 9vw, 7rem);
+  font-size: clamp(2.05rem, 6.4vw, 4.4rem);
   line-height: 0.95;
   letter-spacing: 0;
   text-align: center;
@@ -107,36 +112,38 @@ button {
 
 .hockey-splash__hero {
   display: block;
-  width: min(52vw, 430px);
-  max-width: 86vw;
-  max-height: min(52vh, 430px);
+  width: min(34vw, 285px);
+  max-width: 72vw;
+  max-height: min(32vh, 285px);
   object-fit: contain;
   image-rendering: pixelated;
-  filter: drop-shadow(0 20px 26px rgba(0,0,0,0.62)) drop-shadow(0 0 18px rgba(156,231,255,0.26));
+  filter: drop-shadow(0 14px 20px rgba(0,0,0,0.58)) drop-shadow(0 0 14px rgba(156,231,255,0.22));
 }
 
 .hockey-splash__tagline {
-  margin: -0.2rem 0 0;
+  margin: -0.1rem 0 0;
   color: var(--hockey-sun);
-  font-size: clamp(1.05rem, 3vw, 2rem);
+  font-size: clamp(0.95rem, 2.2vw, 1.35rem);
   font-weight: 1000;
-  line-height: 1.15;
+  line-height: 1.08;
   text-align: center;
   text-shadow: 0 3px 0 rgba(0,0,0,0.56);
 }
 
 .hockey-splash__copy {
-  max-width: 42rem;
+  max-width: 34rem;
+  margin: 0;
   color: rgba(255,242,207,0.86);
-  font-size: clamp(1rem, 2vw, 1.3rem);
-  line-height: 1.55;
+  font-size: clamp(0.86rem, 1.5vw, 1rem);
+  line-height: 1.35;
   text-align: center;
 }
 
 .hockey-splash__content {
   display: grid;
   justify-items: center;
-  gap: 0.75rem;
+  gap: clamp(0.32rem, 1.1vw, 0.52rem);
+  width: min(100%, 46rem);
 }
 
 .hockey-button,
@@ -153,9 +160,9 @@ button {
 }
 
 .hockey-button {
-  min-height: 58px;
-  padding: 0.9rem 1.35rem;
-  font-size: 1.05rem;
+  min-height: 48px;
+  padding: 0.68rem 1.05rem;
+  font-size: clamp(0.9rem, 1.75vw, 1rem);
 }
 
 .hockey-button:active,
@@ -331,6 +338,29 @@ button {
   100% { opacity: 0; }
 }
 
+@media (max-height: 720px) {
+  .hockey-splash {
+    align-content: center;
+    padding-top: max(0.7rem, env(safe-area-inset-top));
+    padding-bottom: max(0.55rem, env(safe-area-inset-bottom));
+  }
+
+  .hockey-splash__hero {
+    width: min(28vw, 210px);
+    max-height: min(25vh, 210px);
+  }
+
+  .hockey-splash h1 {
+    font-size: clamp(1.8rem, 5.2vw, 3.35rem);
+  }
+
+  .hockey-splash__tagline,
+  .hockey-splash__copy,
+  .hockey-mode-note {
+    line-height: 1.22;
+  }
+}
+
 @media (orientation: portrait) and (max-width: 760px) {
   .hockey-rotate-note {
     display: block;
@@ -341,22 +371,44 @@ button {
   .hockey-try-again {
     align-content: start;
     min-height: 100svh;
-    padding: 2.55rem 0.85rem 0.85rem;
-    gap: 0.85rem;
+    padding: 1.25rem 0.65rem 0.65rem;
+    gap: 0.45rem;
+  }
+
+  .hockey-splash {
+    align-content: center;
   }
 
   .hockey-splash__content {
     display: grid;
-    gap: 0.65rem;
+    gap: 0.36rem;
+  }
+
+  .hockey-splash__hero {
+    width: min(42vw, 165px);
+    max-height: min(22svh, 165px);
   }
 
   .hockey-splash__copy,
-  .hockey-version {
+  .hockey-version,
+  .hockey-mode-note {
     margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.22;
   }
 
   .hockey-splash h1 {
-    font-size: clamp(3rem, 17vw, 5rem);
+    font-size: clamp(1.95rem, 11vw, 3.2rem);
+  }
+
+  .hockey-splash__tagline {
+    font-size: clamp(0.88rem, 4vw, 1.05rem);
+  }
+
+  .hockey-button {
+    min-height: 44px;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.9rem;
   }
 
   .hockey-hud {
