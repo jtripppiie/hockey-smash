@@ -162,3 +162,124 @@ body:not(.hockey-debug-enabled) .hockey-debug {
   font-size: clamp(1rem, 2.4vw, 1.25rem);
   line-height: 1.45;
 }
+
+@media (orientation: portrait) and (max-width: 760px) {
+  body.hockey-playing .hockey-game {
+    display: block;
+    overflow: hidden;
+    background: #05080d;
+  }
+
+  body.hockey-playing .hockey-build-badge {
+    top: max(0.35rem, env(safe-area-inset-top));
+    right: 0.35rem;
+    max-width: 68vw;
+    padding: 0.24rem 0.45rem;
+    font-size: 0.66rem;
+    white-space: nowrap;
+  }
+
+  body.hockey-playing .hockey-hud {
+    top: max(0.38rem, env(safe-area-inset-top));
+    left: 0.4rem;
+    right: 0.4rem;
+    z-index: 10;
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+    pointer-events: none;
+  }
+
+  body.hockey-playing .hockey-hud__title,
+  body.hockey-playing .hockey-health,
+  body.hockey-playing .hockey-status {
+    border-width: 1px;
+    border-radius: 10px;
+    padding: 0.34rem 0.48rem;
+    background: rgba(5, 8, 13, 0.7);
+  }
+
+  body.hockey-playing .hockey-hud__title {
+    padding-right: 42vw;
+  }
+
+  body.hockey-playing .hockey-hud__title strong {
+    font-size: 1rem;
+    line-height: 1.05;
+  }
+
+  body.hockey-playing .hockey-hud__title span,
+  body.hockey-playing .hockey-health span {
+    font-size: 0.7rem;
+  }
+
+  body.hockey-playing .hockey-health {
+    max-width: 100%;
+  }
+
+  body.hockey-playing .hockey-health meter {
+    height: 10px;
+  }
+
+  body.hockey-playing .hockey-status {
+    display: none;
+  }
+
+  body.hockey-playing .hockey-canvas {
+    position: fixed;
+    left: 0;
+    top: clamp(7.25rem, 18svh, 9.25rem);
+    width: 100vw;
+    height: 56.25vw;
+    max-width: 100vw;
+    max-height: 42svh;
+    object-fit: contain;
+  }
+
+  body.hockey-playing .hockey-player-overlay {
+    border-width: 1px;
+    border-radius: 10px;
+    box-shadow: 0 0 0 1px rgba(5, 8, 13, 0.38), 0 7px 14px rgba(0, 0, 0, 0.28), 0 0 9px rgba(255, 242, 122, 0.22);
+  }
+
+  body.hockey-playing .hockey-player-overlay__label {
+    top: -1.35rem;
+    padding: 0.16rem 0.4rem;
+    font-size: 0.58rem;
+  }
+
+  body.hockey-playing .hockey-controls {
+    left: 0.55rem;
+    right: 0.55rem;
+    bottom: max(0.65rem, env(safe-area-inset-bottom));
+    z-index: 20;
+    gap: 0.45rem;
+    align-items: end;
+  }
+
+  body.hockey-playing .hockey-dpad,
+  body.hockey-playing .hockey-actions {
+    gap: 0.42rem;
+  }
+
+  body.hockey-playing .hockey-control {
+    min-width: clamp(58px, 18vw, 78px);
+    min-height: clamp(54px, 16vw, 72px);
+    padding: 0.45rem 0.55rem;
+    border-width: 2px;
+    border-radius: 10px;
+    font-size: clamp(1.1rem, 6vw, 1.65rem);
+    box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.2), 0 5px 0 rgba(0, 0, 0, 0.28);
+  }
+
+  body.hockey-playing .hockey-control--stick {
+    min-width: clamp(74px, 23vw, 96px);
+  }
+
+  body.hockey-playing .hockey-autoplay-panel {
+    left: 0.55rem;
+    right: 0.55rem;
+    bottom: calc(max(0.65rem, env(safe-area-inset-bottom)) + 5.2rem);
+    max-width: none;
+    padding: 0.5rem 0.65rem;
+  }
+}
