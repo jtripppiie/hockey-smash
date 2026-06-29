@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.6 - Smooth Left And Right Controls
+
+- Shipped **Hockey Smash v0.9.6** with visible build badge `Build 2026-06-29.17`.
+- Added `js/games/hockey-smash-v096.js` as a focused movement-smoothing override.
+- Changed left/right to smooth hold movement with a smaller tap nudge.
+- Added duplicate event suppression so repeated desktop clicks do not stack pointerdown and click impulses.
+- Left jump, slide, and hockey-stick controls unchanged.
+- Updated package metadata and static verification for the movement smoothing patch.
+
 ## 0.9.5 - Splash Start, Rotate Warning, And Faster Jump
 
 - Shipped **Hockey Smash v0.9.5** with visible build badge `Build 2026-06-29.16`.
@@ -48,16 +57,3 @@
 - Added a visible jump impulse so the mobile `J` button clearly moves Daniel upward.
 - Preserved D-pad fallback movement and Watch Computer Play mode.
 - Updated README, static verification, and browser tests for the v0.9 milestone.
-
-## 0.5.11 - Portrait Mobile Layout Fix
-
-- Shipped **Hockey Smash v0.5.11** with visible build badge `Build 2026-06-29.8`.
-- Added portrait-specific gameplay layout so the HUD, canvas, Daniel, and controls no longer stack into each other on phones.
-- Compacted the mobile HUD and hid the oversized Ready/status panel in portrait play.
-- Positioned the canvas near the top of the portrait viewport and kept controls separated below it.
-- Relaxed D-pad movement state checks so the buttons can move Daniel even if the game still reports a Ready/transition state.
-- Added portrait browser test coverage for canvas/control separation and D-pad movement.
-
-## 0.5.10 - Document-Level D-pad Hit Testing
-
-- Shipped **Hockey Smash v0.5.10** with visible build badge `Build 2026-06-29.7`.
