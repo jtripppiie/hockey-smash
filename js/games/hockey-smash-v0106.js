@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.13.1';
-  const DISPLAY_BUILD = 'Build 2026-06-29.46';
+  const DISPLAY_VERSION = 'Hockey Smash v0.13.2';
+  const DISPLAY_BUILD = 'Build 2026-06-29.47';
   const STORAGE_KEY = 'hockeySmashPlayerConfig';
   const DEFAULT_NAMES = ['Daniel', 'DANIEL', 'Sofie', 'SOFIE'];
   const PLAYER_NAME_RE = /\b(Daniel|DANIEL|Sofie|SOFIE)\b/g;
@@ -11,7 +11,7 @@
       name: 'Daniel',
       label: 'Daniel',
       overlayLabel: 'DANIEL',
-      gameTitle: 'Hockey Slash 2',
+      gameTitle: 'Hockey Smash',
       splashTagline: 'Customize your runner!',
       transitionHeading: 'Entering Hockey Smash...',
       actionText: '🏒',
@@ -20,7 +20,7 @@
       hero: 'assets/hockey-smash/sprites/splash.webp',
       sprite: 'assets/hockey-smash/sprites/hockey-player.webp',
       slideSprite: 'assets/hockey-smash/sprites/hockey-player-sliding.webp',
-      alt: 'Daniel returns for Hockey Slash 2',
+      alt: 'Daniel returns for Hockey Smash',
     },
     sofie: {
       id: 'sofie',
