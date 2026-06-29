@@ -82,6 +82,32 @@ Change this when you need to edit:
 
 Be careful: changing script order can break the game.
 
+### `style.css`
+
+This has the main layout.
+
+Change this when you need to adjust:
+
+- Compact splash screen size.
+- Hero image size.
+- Title size.
+- Splash copy size.
+- Start Game button size.
+- Fullscreen layout.
+- Canvas size behavior.
+- HUD layout.
+- Controls layout.
+
+### `hockey-smash-custom.css`
+
+This styles the player name input and character buttons.
+
+Change this when:
+
+- Daniel/Sofie selector looks wrong.
+- The player name field needs layout changes.
+- The splash still feels too tall after the compact splash pass.
+
 ### `hockey-smash.css`
 
 This is the CSS manifest.
@@ -93,37 +119,6 @@ Change this when you need to:
 - Update CSS cache keys.
 - Add a new CSS file to the page.
 - Keep hidden screens truly hidden.
-
-### `style.css`
-
-This has the main layout.
-
-Change this when you need to adjust:
-
-- Fullscreen layout.
-- Splash screen layout.
-- Canvas size behavior.
-- HUD layout.
-- Controls layout.
-
-### `hockey-smash-touch.css`
-
-This helps phone/tablet controls.
-
-Change this when:
-
-- Buttons feel hard to tap.
-- Touches cause scrolling.
-- Pressed-button feedback looks wrong.
-
-### `hockey-smash-custom.css`
-
-This styles the player name input and character buttons.
-
-Change this when:
-
-- Daniel/Sofie selector looks wrong.
-- The player name field needs layout changes.
 
 ### `js/games/hockey-smash.js`
 
@@ -224,6 +219,21 @@ It currently owns:
 This file has extra comments because it is the newest gameplay safety layer.
 
 ## Where To Change Common Things
+
+### Make the splash smaller or larger
+
+Open:
+
+```text
+style.css
+hockey-smash-custom.css
+```
+
+Use `style.css` for the image, title, copy, gaps, and Start Game button.
+
+Use `hockey-smash-custom.css` for the Daniel/Sofie buttons and player name input.
+
+After changing splash size, test a normal browser window, a short browser window, and a phone-sized portrait viewport.
 
 ### Change the countdown length
 
@@ -342,24 +352,26 @@ Update all of these together:
 - `docs/hockey-smash-dev-checklist.md`
 - `docs/hockey-smash-workflow.md`
 - `docs/hockey-smash-progress.md`
+- `docs/hockey-smash-kid-handoff.md`
 
 ## What To Test After Any Change
 
 Always test these basics:
 
 1. Splash screen loads.
-2. Start Game works.
-3. Countdown appears in normal play.
-4. Controls work during countdown.
-5. Hazards start after countdown.
-6. Salmon/fish come from the right side only.
-7. Left/right movement works.
-8. Jump works.
-9. Slide works.
-10. Action works.
-11. Try Again works when health reaches zero.
-12. Computer Mode still starts with `?computerMode=1`.
-13. `npm run verify` passes.
+2. Splash screen is compact enough that Start Game is visible.
+3. Start Game works.
+4. Countdown appears in normal play.
+5. Controls work during countdown.
+6. Hazards start after countdown.
+7. Salmon/fish come from the right side only.
+8. Left/right movement works.
+9. Jump works.
+10. Slide works.
+11. Action works.
+12. Try Again works when health reaches zero.
+13. Computer Mode still starts with `?computerMode=1`.
+14. `npm run verify` passes.
 
 ## Debug Mode
 
@@ -420,8 +432,9 @@ Use this pattern:
 9. Run `npm run verify`.
 10. Push only when the game still starts.
 
-## Current v0.13.4 Behavior To Preserve
+## Current v0.13.5 Behavior To Preserve
 
+- Splash screen is compact and should not require scrolling on common screen sizes.
 - Normal splash is clean.
 - Watch Computer Play is hidden unless dev mode is active.
 - Dev mode unlocks by triple-tapping the splash image.
