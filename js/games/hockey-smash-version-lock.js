@@ -1,6 +1,6 @@
 (function () {
-  const VERSION = 'Hockey Smash v0.14.38';
-  const BUILD = 'Build 2026-06-30.94';
+  const VERSION = 'Hockey Smash v0.14.39';
+  const BUILD = 'Build 2026-06-30.95';
   const LABEL = `${VERSION} · ${BUILD}`;
 
   function writeVersion() {
