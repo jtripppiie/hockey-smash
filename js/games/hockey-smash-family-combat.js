@@ -4,6 +4,7 @@
   const CAST_TYPES = new Set(['teacher', 'danceInstructor', 'sister', 'adultCoach', 'dad', 'mom', 'daniel']);
   let nextEntityId = 0;
   let nextOrder = 0;
+  let doubleJumpBound = false;
 
   function api() { return window.RTA_HOCKEY_SMASH; }
   function state() {
@@ -21,6 +22,7 @@
   function effect(s, x, y, text, life = 0.45) { s.effects?.push?.({ x, y, text, life }); }
   function status(text) { const el = document.getElementById('hockey-status'); if (el && text) el.textContent = text; }
   function syncHealth(s) { const el = document.getElementById('hockey-health'); if (el && s?.player) { el.value = s.player.health; el.textContent = `${s.player.health} health`; } }
+  function invincibleSeconds() { return Math.max(0.1, Number(api()?.tuning?.invincibleMs || 760) / 1000); }
 
   function endRun(s) {
     s.mode = 'tryAgain';
@@ -32,8 +34,9 @@
   }
 
   function bindDoubleJump() {
-    if (document.body.dataset.doubleJumpBound === 'v0.14.40') return;
-    document.body.dataset.doubleJumpBound = 'v0.14.40';
+    if (doubleJumpBound) return;
+    doubleJumpBound = true;
+    document.body.dataset.doubleJumpBound = 'true';
     window.addEventListener('keydown', (event) => {
       if (event.repeat || !['ArrowUp', 'w', 'W', 'j', 'J'].includes(event.key || '')) return;
       doubleJump();
@@ -123,7 +126,7 @@
 
     const amount = Math.max(1, Number(contact._contactAmount) || contactAmount(contact.type));
     p.health = Math.max(0, p.health - amount);
-    p.invincible = 0.9;
+    p.invincible = invincibleSeconds();
     contact._familyContactResolved = true;
     contact.dead = true;
 
@@ -209,9 +212,9 @@
   }
 
   function ready() {
-    document.body.dataset.hockeyFamilyCombat = 'v0.14.40';
+    document.body.dataset.hockeyFamilyCombat = 'v0.14.43';
     bindDoubleJump();
-    window.HOCKEY_BOOT_LOG?.log?.('family-combat', 'Family/cast combat cleaned: salmon rules moved to the salmon collectible layer.');
+    window.HOCKEY_BOOT_LOG?.log?.('family-combat', 'Family/cast combat loaded with shared invincibility timing and non-versioned double-jump binding.');
     window.requestAnimationFrame(loop);
   }
 
