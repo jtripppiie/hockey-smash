@@ -1,6 +1,4 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.33 Salmon Collectibles';
-  const DISPLAY_BUILD = 'Build 2026-06-30.89';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const GROUND_Y = DESIGN_HEIGHT * 0.82;
@@ -14,8 +12,6 @@
   function onReady() {
     api = window.RTA_HOCKEY_SMASH;
     status = document.getElementById('hockey-status');
-    // Do not write the build badge here. The final release/eagle layer owns the
-    // visible badge so older feature files cannot fight each other.
     window.requestAnimationFrame(loop);
   }
 
@@ -43,12 +39,13 @@
     collectedThisRun = new Set();
   }
 
-  function neutralizeSalmon(entity) {
+  function markCollectibleSalmon(entity) {
     entity.damage = 0;
     entity.dodgeDamage = 0;
-    entity._dodgeLayerResolved = true;
     entity.collectibleSalmon = true;
     entity.safeCollectible = true;
+    entity._salmonRulesOwner = 'hockey-smash-salmon-collectibles';
+    entity._dodgeLayerResolved = true;
   }
 
   function playerCatchBox(player) {
@@ -77,9 +74,7 @@
     collectedThisRun.add(id);
 
     entity.dead = true;
-    entity.damage = 0;
-    entity.dodgeDamage = 0;
-    entity._dodgeLayerResolved = true;
+    markCollectibleSalmon(entity);
     entity._v139warn?.remove?.();
 
     s.message = `${playerName()} collected salmon! +${SALMON_POINTS}`;
@@ -100,9 +95,7 @@
 
   function missSalmon(entity) {
     entity.dead = true;
-    entity.damage = 0;
-    entity.dodgeDamage = 0;
-    entity._dodgeLayerResolved = true;
+    markCollectibleSalmon(entity);
     entity._v139warn?.remove?.();
   }
 
@@ -110,15 +103,13 @@
     const playerBox = playerCatchBox(s.player);
     s.entities.forEach((entity) => {
       if (!entity || entity.dead || entity.type !== 'salmon') return;
-      neutralizeSalmon(entity);
+      markCollectibleSalmon(entity);
 
       if (rectsOverlap(playerBox, salmonCatchBox(entity))) {
         collectSalmon(s, entity);
         return;
       }
 
-      // Missing salmon has no penalty. Kill it before the old splash-zone layer
-      // can resolve the landing as damage or dodge scoring.
       if ((entity.y || 0) > DESIGN_HEIGHT + 80 || (entity.y || 0) + (entity.height || 0) >= GROUND_Y - 6) {
         missSalmon(entity);
       }
