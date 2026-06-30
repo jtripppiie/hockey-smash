@@ -1,9 +1,8 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.12 Arena Mode';
-  const BUILD_LABEL = 'Hockey Smash v0.14.12 · Build 2026-06-30.68';
+  const DISPLAY_VERSION = 'Hockey Smash v0.14.14 Arena Mode';
+  const BUILD_LABEL = 'Hockey Smash v0.14.14 · Build 2026-06-30.70';
   const DESIGN_WIDTH = 1024;
-  const ARENA_MIN_X = 250;
-  const ARENA_MAX_X = 630;
+  const ARENA_EDGE_PADDING = 22;
   const ARENA_CENTER_X = 440;
 
   let activeState = null;
@@ -30,19 +29,10 @@
     styleNode = document.createElement('style');
     styleNode.textContent = `
       body[data-hockey-arena-mode="true"] .hockey-hud__title span::after {
-        content: ' · one arena';
+        content: ' · full screen';
       }
       .hockey-arena-rail {
-        position: fixed;
-        top: 0;
-        width: 4px;
-        height: 0;
-        z-index: 6;
-        pointer-events: none;
-        border-radius: 999px;
-        background: rgba(255,242,122,.5);
-        box-shadow: 0 0 16px rgba(255,242,122,.55);
-        opacity: .45;
+        display: none !important;
       }
     `;
     document.head.appendChild(styleNode);
@@ -56,21 +46,21 @@
 
   function syncCopy() {
     const splashCopy = document.querySelector('.hockey-splash__copy');
-    if (splashCopy) splashCopy.textContent = 'Hold your ground in one arena: collect salmon, dodge hazards, and clear obstacles.';
+    if (splashCopy) splashCopy.textContent = 'Use the whole single-screen arena: collect salmon, dodge hazards, and clear obstacles.';
 
     const modeNote = document.querySelector('.hockey-mode-note');
-    if (modeNote) modeNote.textContent = 'No side-scrolling: survive the single-screen arena.';
+    if (modeNote) modeNote.textContent = 'No side-scrolling: use the full screen and survive the arena.';
 
     const hudSubtitle = document.querySelector('.hockey-hud__title span');
     if (hudSubtitle && !hudSubtitle.dataset.arenaText) {
-      hudSubtitle.textContent = 'Single-screen arena';
+      hudSubtitle.textContent = 'Full-screen arena';
       hudSubtitle.dataset.arenaText = 'true';
     }
 
     const left = document.querySelector('[data-action="left"]');
-    if (left) left.setAttribute('aria-label', 'Dodge left');
+    if (left) left.setAttribute('aria-label', 'Move left');
     const right = document.querySelector('[data-action="right"]');
-    if (right) right.setAttribute('aria-label', 'Dodge right');
+    if (right) right.setAttribute('aria-label', 'Move right');
   }
 
   function resetForRun(current) {
@@ -83,46 +73,31 @@
     return Math.max(min, Math.min(max, value));
   }
 
+  function movementBounds(player) {
+    return {
+      min: ARENA_EDGE_PADDING,
+      max: DESIGN_WIDTH - (player?.width || 0) - ARENA_EDGE_PADDING,
+    };
+  }
+
   function enforceArena(current) {
     if (!isPlayable(current)) return;
     const player = current.player;
+    const bounds = movementBounds(player);
 
     if (!initializedRun) {
-      player.x = ARENA_CENTER_X;
+      player.x = clamp(ARENA_CENTER_X, bounds.min, bounds.max);
       player.facing = 1;
       initializedRun = true;
       current.arenaMode = true;
-      current.message = 'Arena mode: dodge, collect, and shoot. No running to the next screen.';
+      current.message = 'Arena mode: use the whole screen. No running to the next screen.';
       lastMessageAt = performance.now();
     }
 
     const oldX = player.x;
-    player.x = clamp(player.x, ARENA_MIN_X, ARENA_MAX_X);
+    player.x = clamp(player.x, bounds.min, bounds.max);
     if (player.x !== oldX && Math.sign(player.vx || 0) === Math.sign(oldX - player.x)) player.vx = 0;
     current.arenaMode = true;
-  }
-
-  function syncArenaRails() {
-    const canvas = document.getElementById('hockey-canvas');
-    const rect = canvas?.getBoundingClientRect?.();
-    if (!rect?.width || !rect?.height) return;
-    const scaleX = rect.width / DESIGN_WIDTH;
-    const railTop = rect.top + rect.height * 0.18;
-    const railHeight = rect.height * 0.62;
-
-    [['left', ARENA_MIN_X], ['right', ARENA_MAX_X + 144]].forEach(([side, worldX]) => {
-      let rail = document.querySelector(`.hockey-arena-rail[data-side="${side}"]`);
-      if (!rail) {
-        rail = document.createElement('div');
-        rail.className = 'hockey-arena-rail';
-        rail.dataset.side = side;
-        document.body.appendChild(rail);
-      }
-      rail.style.left = `${rect.left + worldX * scaleX}px`;
-      rail.style.top = `${railTop}px`;
-      rail.style.height = `${railHeight}px`;
-      rail.hidden = false;
-    });
   }
 
   function hideArenaRails() {
@@ -174,7 +149,7 @@
 
     if (isPlayable(current)) {
       enforceArena(current);
-      syncArenaRails();
+      hideArenaRails();
       rewriteScoreHud(current);
       maybeKeepArenaMessage(current);
     } else {
