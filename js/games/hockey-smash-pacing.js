@@ -1,6 +1,4 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.29 Pacing';
-  const DISPLAY_BUILD = 'Build 2026-06-30.85';
   const BIG_TYPES = new Set(['bear', 'moose', 'chargingMoose']);
   const PERSON_TYPES = new Set(['teacher', 'danceInstructor', 'sister', 'adultCoach', 'dad', 'mom']);
   const TUNING = {
@@ -105,11 +103,8 @@
   }
 
   function ready() {
-    const badge = document.getElementById('hockey-build-badge');
-    if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
-    if (api()?.getVersion) api().getVersion = () => DISPLAY_VERSION;
-    document.body.dataset.hockeyButtonDebug = 'v0.14.29';
-    window.HOCKEY_BOOT_LOG?.log?.('pacing', 'Progressive pacing loaded: wider timing gaps, slower early hazards, and Mom included in person tuning.');
+    document.body.dataset.hockeyPacing = 'v0.14.42';
+    window.HOCKEY_BOOT_LOG?.log?.('pacing', 'Progressive pacing loaded without owning the version badge.');
     window.requestAnimationFrame(loop);
   }
 
