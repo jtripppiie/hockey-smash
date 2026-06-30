@@ -1,11 +1,9 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.2';
-  const DISPLAY_BUILD = 'Build 2026-06-29.58';
   const FISH_TARGET = 5;
   const FISH_MAX_SECONDS = 28;
   const FISH_TYPES = new Set(['salmon']);
   const WILDLIFE_TYPES = new Set(['bear', 'moose', 'chargingMoose', 'bird']);
-  const PEOPLE_TYPES = new Set(['teacher', 'danceInstructor', 'sister', 'adultCoach', 'dad']);
+  const PEOPLE_TYPES = new Set(['teacher', 'danceInstructor', 'sister', 'adultCoach', 'dad', 'mom', 'daniel']);
   const BOSS_TYPES = new Set(['dadJoke']);
   const phaseByState = new WeakMap();
   let wrappedScoreHooks = false;
@@ -56,7 +54,6 @@
   }
 
   function holdOldTimeline(s) {
-    // Prevent the older salmon-run/boss timeline from jumping ahead during the new staged intro.
     if (s.mode === 'bossIntro' || s.mode === 'bossFight') s.mode = 'playing';
     s.salmonRunStarted = false;
     s.salmonRunTimer = 0;
@@ -79,7 +76,6 @@
       return;
     }
 
-    // Wildlife stage: keep wildlife, fish, and the family/cast encounters in the arena.
     s.entities = s.entities.filter((entity) => {
       if (!entity || entity.dead) return false;
       if (BOSS_TYPES.has(entity.type)) return false;
@@ -145,11 +141,8 @@
   }
 
   function ready() {
-    const badge = document.getElementById('hockey-build-badge');
-    if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
-    if (api()?.getVersion) api().getVersion = () => DISPLAY_VERSION;
-    document.body.dataset.hockeyButtonDebug = 'v0.14.2';
-    window.HOCKEY_BOOT_LOG?.log?.('stage-flow', 'Staged run loaded: fish dodge level first, then moose/bear level; people/cast suppressed as hazards.');
+    document.body.dataset.hockeyStageFlow = 'v0.14.43';
+    window.HOCKEY_BOOT_LOG?.log?.('stage-flow', 'Staged run loaded without owning the version badge.');
     window.requestAnimationFrame(loop);
   }
 
