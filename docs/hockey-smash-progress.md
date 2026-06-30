@@ -34,7 +34,7 @@ Implemented:
 - Improved dodge rules so falling fish reward moving out from under the drop.
 - Added combo encounter spawns as difficulty rises.
 - Added safe puck-speed power-ups from defeated bears/moose. These live in the projectile layer instead of `state.entities` so the old core collision loop cannot damage the player for collecting a reward.
-- Added `js/games/hockey-smash-v0114.js` as the final v0.14.4 release layer.
+- Added `js/games/hockey-smash-release.js` as the final v0.14.4 release layer.
 - Updated package version, cache keys, verifier, README, changelog, workflow, QA, checklist, progress notes, and beginner handoff docs.
 
 Verify:

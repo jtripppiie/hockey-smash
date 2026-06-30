@@ -142,7 +142,7 @@
     if (api()?.getVersion) api().getVersion = () => DISPLAY_VERSION;
     document.body.dataset.hockeyButtonDebug = 'v0.14.1';
     overrideEarthquake();
-    window.HOCKEY_BOOT_LOG?.log?.('v0112', 'v0.14.1 removes earthquake shake, slows bears more, and adds Sofie cute-boy dance cameo.');
+    window.HOCKEY_BOOT_LOG?.log?.('spotlight', 'Removes earthquake shake, slows bears more, and adds Sofie cute-boy dance cameo.');
     window.requestAnimationFrame(loop);
   }
 

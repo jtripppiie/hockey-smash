@@ -6,7 +6,7 @@
 - [ ] Confirm `package.json` version is `0.14.4`.
 - [ ] Confirm `index.html` cache keys use `0.14.4-20260630.60`.
 - [ ] Confirm `hockey-smash.css` imports CSS layers with `0.14.4-20260630.60`.
-- [ ] Confirm `js/games/hockey-smash-v0110.js` is loaded last.
+- [ ] Confirm `js/games/hockey-smash-release.js` is loaded last.
 - [ ] Confirm README, CHANGELOG, QA, workflow, checklist, progress, and beginner handoff docs mention v0.14.4.
 - [ ] Run `npm run verify`.
 

@@ -109,7 +109,7 @@
     if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
     if (api()?.getVersion) api().getVersion = () => DISPLAY_VERSION;
     document.body.dataset.hockeyButtonDebug = 'v0.14.0';
-    window.HOCKEY_BOOT_LOG?.log?.('v0111', 'v0.14.0 progressive pacing loaded: slower early bears/moose/people, harder late run.');
+    window.HOCKEY_BOOT_LOG?.log?.('pacing', 'Progressive pacing loaded: slower early bears/moose/people, harder late run.');
     window.requestAnimationFrame(loop);
   }
 

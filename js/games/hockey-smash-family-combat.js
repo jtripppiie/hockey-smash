@@ -54,7 +54,7 @@
     s.message = `${name()} double jumps higher!`;
     effect(s, p.x + p.width / 2, p.y - 12, 'DOUBLE JUMP!', 0.5);
     status(s.message);
-    window.HOCKEY_BOOT_LOG?.log?.('v0110', `Double jump from ${source}.`);
+    window.HOCKEY_BOOT_LOG?.log?.('family-combat', `Double jump from ${source}.`);
   }
 
   function tuneFamily(s, e) {
@@ -234,7 +234,7 @@
     if (api()?.getVersion) api().getVersion = () => DISPLAY_VERSION;
     document.body.dataset.hockeyButtonDebug = 'v0.13.9';
     bindDoubleJump();
-    window.HOCKEY_BOOT_LOG?.log?.('v0110', 'v0.13.9 fish warnings, dance chase, shoe/puck family hits, single wildlife, and double jump loaded.');
+    window.HOCKEY_BOOT_LOG?.log?.('family-combat', 'Fish warnings, dance chase, shoe/puck family hits, single wildlife, and double jump loaded.');
     window.requestAnimationFrame(loop);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready);

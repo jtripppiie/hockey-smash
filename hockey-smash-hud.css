@@ -1,6 +1,4 @@
 /*
- * v0.11.1 gameplay layout polish.
- *
  * Goal: keep the game screen clear on phones.
  * The old HUD sat above the canvas and stole vertical space. This file turns
  * the HUD into a small health-only overlay inside the game frame.

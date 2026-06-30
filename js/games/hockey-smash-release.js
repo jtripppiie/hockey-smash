@@ -267,7 +267,7 @@
     syncFinalReleaseState();
     exposeCastDebugApi();
     ensureCastDebugButton();
-    window.HOCKEY_BOOT_LOG?.log?.('v0114', 'v0.14.4 adds Space fire, cast QA spawns, and sideline cameos.');
+    window.HOCKEY_BOOT_LOG?.log?.('release', 'v0.14.4 adds Space fire, cast QA spawns, and sideline cameos.');
     window.requestAnimationFrame(loop);
   }
 

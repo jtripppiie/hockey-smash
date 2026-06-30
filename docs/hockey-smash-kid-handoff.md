@@ -29,11 +29,11 @@ There is no server. There are no accounts. There is no build step to play the ga
 
 Open `index.html` and scroll to the bottom. Script files load from top to bottom.
 
-Think of the files like clear plastic sheets:
+Think of the files like named layers:
 
 1. `js/games/hockey-smash.js` is the first drawing.
 2. Later files add movement, score, projectiles, character labels, and safety fixes on top.
-3. `js/games/hockey-smash-v0114.js` loads last as the v0.14.4 release layer.
+3. `js/games/hockey-smash-release.js` loads last as the v0.14.4 release layer.
 
 ## Main Files
 
@@ -59,11 +59,11 @@ This is the original game brain. It owns the core state, player, old spawns, col
 
 Be careful in this file because many later layers depend on it.
 
-### `js/games/hockey-smash-v096.js`
+### `js/games/hockey-smash-input.js`
 
 This owns smooth movement, jump buffer, coyote time, slide timing, touch tracking, and Computer Mode input bridge.
 
-### `js/games/hockey-smash-v0102.js`
+### `js/games/hockey-smash-encounters.js`
 
 This owns moving encounters.
 
@@ -79,7 +79,7 @@ Look here for:
 - `schoolRain` fish.
 - Combo encounter spawns.
 
-### `js/games/hockey-smash-v0103.js`
+### `js/games/hockey-smash-projectiles.js`
 
 This owns charged projectiles and fish dodge rules.
 
@@ -97,25 +97,37 @@ Look here for:
 
 Important safety note: power-ups stay inside this layer instead of `state.entities`. The old core collision code damages the player when they overlap normal entities, so putting power-ups in `state.entities` could accidentally make a reward hurt the player.
 
-### `js/games/hockey-smash-v0104.js`
+### `js/games/hockey-smash-score.js`
 
 This owns score, distance, combo, high score, floating text, and Try Again summary.
 
-### `js/games/hockey-smash-v0106.js`
+### `js/games/hockey-smash-characters.js`
 
 This owns Daniel/Sofie character settings, Hockey Smash vs Dance Smash labels, action label, player name, and character sprites.
 
-### `js/games/hockey-smash-v0109.js`
+### `js/games/hockey-smash-safety.js`
 
 This owns hidden dev mode, triple-tap unlock, debug logs, accidental shake lock, 10-second countdown, and the legacy sideways-salmon guard.
 
-### `js/games/hockey-smash-v0110.js`
+### `js/games/hockey-smash-family-combat.js`
 
 This adds double jump, fish splash warnings, one-big-animal pressure, and projectile hits for family/dance encounters.
 
-### `js/games/hockey-smash-v0111.js` through `js/games/hockey-smash-v0114.js`
+### `js/games/hockey-smash-pacing.js`
 
-These are the newest small tuning layers. `v0111` adjusts pacing, `v0112` removes shake and slows bears, `v0113` stages the fish-dodge level before wildlife, and `v0114` loads last to keep the visible badge/version on v0.14.4.
+This adjusts pacing so early runs are slower and late runs get harder.
+
+### `js/games/hockey-smash-spotlight.js`
+
+This removes accidental shake, slows bears, and handles Sofie cameo support.
+
+### `js/games/hockey-smash-stage-flow.js`
+
+This stages the fish-dodge level before the wildlife level.
+
+### `js/games/hockey-smash-release.js`
+
+This loads last to keep the visible badge/version current and apply final release tuning.
 
 ## Where To Change Common Things
 
@@ -124,7 +136,7 @@ These are the newest small tuning layers. `v0111` adjusts pacing, `v0112` remove
 Open:
 
 ```text
-js/games/hockey-smash-v0103.js
+js/games/hockey-smash-projectiles.js
 ```
 
 Look for:
@@ -143,7 +155,7 @@ Change these numbers slowly and test after each change.
 Open:
 
 ```text
-js/games/hockey-smash-v0102.js
+js/games/hockey-smash-encounters.js
 ```
 
 Look for the `WAVE` array and `applyVariant()`.
@@ -156,7 +168,7 @@ Use `applyVariant()` to add random difficulty-based changes.
 Open:
 
 ```text
-js/games/hockey-smash-v0103.js
+js/games/hockey-smash-projectiles.js
 ```
 
 Look for:
@@ -172,7 +184,7 @@ That function decides whether a salmon was dodged or hit the player.
 Open:
 
 ```text
-js/games/hockey-smash-v0109.js
+js/games/hockey-smash-safety.js
 ```
 
 Find:

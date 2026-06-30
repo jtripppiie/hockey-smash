@@ -2,11 +2,10 @@
   /*
    * Hockey Smash final safety / release layer.
    *
-   * Think of the game as a stack of clear plastic sheets:
+   * Think of the game as a stack of named layers:
    * 1. `js/games/hockey-smash.js` draws the first version of the game.
-   * 2. The v09/v010x files are extra sheets placed on top.
-   * 3. This file loads last, so it is the best place for small safety rules,
-   *    final version labels, debug-mode guards, and tiny gameplay fixes.
+   * 2. The feature files add movement, encounters, projectiles, score, and UI.
+   * 3. This file owns small safety rules, debug-mode guards, and countdown fixes.
    *
    * Kid-friendly rule: do not put a giant new game system here. If a feature gets
    * big, make a new file, name it clearly, load it after this one, and document it
@@ -339,8 +338,8 @@
     else disableDevModeByDefault();
     bindDevModeUnlock();
 
-    window.HOCKEY_BOOT_LOG?.log?.('v0109', 'Normal splash hides dev controls. Triple-tap splash image to unlock dev mode. Start countdown and right-side salmon guard are active.');
-    window.HOCKEY_BOOT_LOG?.snapshot?.('v0109-ready');
+    window.HOCKEY_BOOT_LOG?.log?.('safety', 'Normal splash hides dev controls. Triple-tap splash image to unlock dev mode. Start countdown and right-side salmon guard are active.');
+    window.HOCKEY_BOOT_LOG?.snapshot?.('safety-ready');
 
     ['pointerdown', 'pointerup', 'click', 'touchstart', 'touchend'].forEach((type) => {
       document.addEventListener(type, (event) => {

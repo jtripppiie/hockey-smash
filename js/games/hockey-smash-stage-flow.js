@@ -80,7 +80,7 @@
     }
 
     // Wildlife stage: keep bears/moose/birds/ice/fish, but suppress people/cast and boss bits.
-    // Cast cameos are DOM-only in v0114 so they cannot chase, damage, or block the player.
+    // Cast cameos are DOM-only in the release layer so they cannot chase, damage, or block the player.
     s.entities = s.entities.filter((entity) => {
       if (!entity || entity.dead) return false;
       if (PEOPLE_TYPES.has(entity.type) || BOSS_TYPES.has(entity.type)) return false;
@@ -149,7 +149,7 @@
     if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
     if (api()?.getVersion) api().getVersion = () => DISPLAY_VERSION;
     document.body.dataset.hockeyButtonDebug = 'v0.14.2';
-    window.HOCKEY_BOOT_LOG?.log?.('v0113', 'v0.14.2 staged run loaded: fish dodge level first, then moose/bear level; people/cast suppressed as hazards.');
+    window.HOCKEY_BOOT_LOG?.log?.('stage-flow', 'Staged run loaded: fish dodge level first, then moose/bear level; people/cast suppressed as hazards.');
     window.requestAnimationFrame(loop);
   }
 

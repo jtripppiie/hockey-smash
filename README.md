@@ -50,7 +50,7 @@ Current cache key:
 - Stronger charged shots with a longer 720ms charge window, bigger projectile visuals, stronger hit text, more damage, and arcing physics.
 - Adds safe power-ups that drop from defeated bears/moose without entering the core hazard collision system.
 - Adds double jump, slower early pacing, Sofie dance cameo support, staged fish/wildlife progression, and final bear-speed tuning.
-- Uses `js/games/hockey-smash-v0114.js` as the final visible release layer so the newest badge wins after older layers boot.
+- Uses `js/games/hockey-smash-release.js` as the final visible release layer so the newest badge wins after older layers boot.
 - Adds a dev-only Spawn Cast shortcut for quickly QAing Daniel/Sofie cast encounters.
 - Makes Space fire the desktop action shot instead of jumping.
 
@@ -109,17 +109,17 @@ Touch:
 - `style.css`: full-screen layout, compact splash layout, HUD, canvas scaling, and mobile controls.
 - `hockey-smash-custom.css`: compact player name and character selector styling.
 - `js/games/hockey-smash.js`: original core runtime, state machine, spawns, collision, rendering, and asset fallbacks.
-- `js/games/hockey-smash-v096.js`: smooth movement controller, keyboard controls, touch controls, and Computer Mode input bridge.
-- `js/games/hockey-smash-v0102.js`: moving encounter layer; owns falling-fish patterns, wildlife threats, and combo encounter spawns.
-- `js/games/hockey-smash-v0103.js`: charged projectile layer; owns puck/pointe-shoe charge, arcs, falling-fish dodge rules, and safe power-ups.
-- `js/games/hockey-smash-v0104.js`: distance, score, combo, high score, difficulty state, floating text, and run summary layer.
-- `js/games/hockey-smash-v0106.js`: player customization layer, Daniel/Sofie mode labels, and final character text updates.
-- `js/games/hockey-smash-v0109.js`: safety layer; owns dev unlock, debug button logs, accidental shake lock, 10-second countdown, and legacy sideways-salmon guard.
-- `js/games/hockey-smash-v0110.js`: double jump, fish warnings, projectile hits on family/dance encounters, and one-big-animal pressure.
-- `js/games/hockey-smash-v0111.js`: progressive encounter pacing.
-- `js/games/hockey-smash-v0112.js`: no-shake spotlight boost, slower bears, and Sofie dance cameo support.
-- `js/games/hockey-smash-v0113.js`: staged fish-dodge level followed by moose/bear wildlife level.
-- `js/games/hockey-smash-v0114.js`: final v0.14.4 release layer and bear-speed tuning.
+- `js/games/hockey-smash-input.js`: smooth movement controller, keyboard controls, touch controls, and Computer Mode input bridge.
+- `js/games/hockey-smash-encounters.js`: moving encounter layer; owns falling-fish patterns, wildlife threats, and combo encounter spawns.
+- `js/games/hockey-smash-projectiles.js`: charged projectile layer; owns puck/pointe-shoe charge, arcs, falling-fish dodge rules, and safe power-ups.
+- `js/games/hockey-smash-score.js`: distance, score, combo, high score, difficulty state, floating text, and run summary layer.
+- `js/games/hockey-smash-characters.js`: player customization layer, Daniel/Sofie mode labels, and final character text updates.
+- `js/games/hockey-smash-safety.js`: safety layer; owns dev unlock, debug button logs, accidental shake lock, 10-second countdown, and legacy sideways-salmon guard.
+- `js/games/hockey-smash-family-combat.js`: double jump, fish warnings, projectile hits on family/dance encounters, and one-big-animal pressure.
+- `js/games/hockey-smash-pacing.js`: progressive encounter pacing.
+- `js/games/hockey-smash-spotlight.js`: no-shake spotlight boost, slower bears, and Sofie dance cameo support.
+- `js/games/hockey-smash-stage-flow.js`: staged fish-dodge level followed by moose/bear wildlife level.
+- `js/games/hockey-smash-release.js`: final v0.14.4 release layer and bear-speed tuning.
 - `scripts/verify-hockey-smash.js`: static verification for versions, cache keys, docs, files, and key feature markers.
 - `docs/hockey-smash-kid-handoff.md`: beginner guide explaining how the code is organized and where to safely change things.
 
