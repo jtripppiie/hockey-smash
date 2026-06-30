@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.21';
-  const BUILD_LABEL = 'Hockey Smash v0.14.21 · Build 2026-06-30.77';
+  const DISPLAY_VERSION = 'Hockey Smash v0.14.22';
+  const BUILD_LABEL = 'Hockey Smash v0.14.22 · Build 2026-06-30.78';
 
   let badgeObserver = null;
   let styleNode = null;
