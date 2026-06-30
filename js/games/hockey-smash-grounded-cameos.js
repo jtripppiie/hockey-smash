@@ -1,5 +1,5 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.9 Grounded Cameos';
+  const DISPLAY_VERSION = 'Hockey Smash v0.14.11 Grounded Cameos';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const GROUND_Y = DESIGN_HEIGHT * 0.82;
@@ -11,16 +11,20 @@
 
   const DAD_START_X = 1060;
   const DAD_STOP_X = 735;
+  const DAD_EXIT_X = DESIGN_WIDTH + 170;
   const DAD_WIDTH = 118;
   const DAD_HEIGHT = 104;
   const DAD_SPEED = 185;
-  const DAD_VISIBLE_MS = 9000;
+  const DAD_EXIT_SPEED = 235;
+  const DAD_LINE_HOLD_MS = 3400;
   const DAD_TRIGGER_TIME = 42;
 
   let activeState = null;
   let cameoStartedAt = 0;
   let cameoDone = false;
   let dadStartedAt = 0;
+  let dadArrivedAt = 0;
+  let dadLeaving = false;
   let dadDone = false;
   let dadWorldX = DAD_START_X;
   let dadNode = null;
@@ -47,10 +51,10 @@
   }
 
   function syncBuildBadge() {
-    const text = 'Hockey Smash v0.14.9 · Build 2026-06-30.65';
+    const text = 'Hockey Smash v0.14.11 · Build 2026-06-30.67';
     const badge = document.getElementById('hockey-build-badge');
     if (badge && badge.textContent !== text) badge.textContent = text;
-    if (api()?.getVersion) api().getVersion = () => 'Hockey Smash v0.14.9';
+    if (api()?.getVersion) api().getVersion = () => 'Hockey Smash v0.14.11';
   }
 
   function ensureOverrides() {
@@ -77,6 +81,8 @@
         width: 100%;
         height: 100%;
         object-fit: contain;
+        transform-origin: 50% 50%;
+        transition: transform 0.22s ease;
       }
       .hockey-dad-ride-in__bubble {
         position: absolute;
@@ -94,6 +100,9 @@
         box-shadow: 0 10px 24px rgba(0,0,0,.35);
         white-space: nowrap;
       }
+      .hockey-dad-ride-in.is-leaving .hockey-dad-ride-in__bubble {
+        opacity: 0;
+      }
     `;
     document.head.appendChild(styleNode);
   }
@@ -103,6 +112,8 @@
     cameoStartedAt = 0;
     cameoDone = false;
     dadStartedAt = 0;
+    dadArrivedAt = 0;
+    dadLeaving = false;
     dadDone = false;
     dadWorldX = DAD_START_X;
     removeDadNode();
@@ -232,6 +243,11 @@
     dadNode.style.top = `${rect.top + (GROUND_Y - DAD_HEIGHT) * scaleY}px`;
     dadNode.style.width = `${Math.max(88, DAD_WIDTH * scaleX)}px`;
     dadNode.style.height = `${Math.max(78, DAD_HEIGHT * scaleY)}px`;
+    dadNode.classList.toggle('is-leaving', dadLeaving);
+
+    const sprite = dadNode.querySelector('img');
+    if (sprite) sprite.style.transform = dadLeaving ? 'scaleX(-1)' : 'scaleX(1)';
+
     const bubble = dadNode.querySelector('.hockey-dad-ride-in__bubble');
     if (bubble) bubble.textContent = `${playerName()}, do your homework!`;
   }
@@ -246,22 +262,42 @@
     if (state.dad) state.dad.bubble = `${playerName()}, do your homework!`;
   }
 
+  function startDadRideIn() {
+    dadStartedAt = performance.now();
+    dadArrivedAt = 0;
+    dadLeaving = false;
+    dadWorldX = DAD_START_X;
+  }
+
   function updateDadRideIn(state, dt) {
     normalizeDadBubbles(state);
-    if (shouldStartDad(state)) dadStartedAt = performance.now();
+    if (shouldStartDad(state)) startDadRideIn();
     if (!dadStartedAt || dadDone) return;
 
     ensureDadNode();
-    dadWorldX = Math.max(DAD_STOP_X, dadWorldX - DAD_SPEED * dt);
+
+    if (!dadArrivedAt) {
+      dadWorldX = Math.max(DAD_STOP_X, dadWorldX - DAD_SPEED * dt);
+      if (dadWorldX <= DAD_STOP_X + 0.5) dadArrivedAt = performance.now();
+    } else if (!dadLeaving && performance.now() - dadArrivedAt >= DAD_LINE_HOLD_MS) {
+      dadLeaving = true;
+    }
+
+    if (dadLeaving) {
+      dadWorldX += DAD_EXIT_SPEED * dt;
+      if (dadWorldX >= DAD_EXIT_X) {
+        dadDone = true;
+        removeDadNode();
+        return;
+      }
+    }
+
     positionDadNode();
 
-    state.message = `${playerName()}, do your homework!`;
-    const status = document.getElementById('hockey-status');
-    if (status) status.textContent = state.message;
-
-    if (performance.now() - dadStartedAt >= DAD_VISIBLE_MS) {
-      dadDone = true;
-      removeDadNode();
+    if (!dadLeaving) {
+      state.message = `${playerName()}, do your homework!`;
+      const status = document.getElementById('hockey-status');
+      if (status) status.textContent = state.message;
     }
   }
 
