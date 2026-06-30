@@ -1,9 +1,30 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.13';
-  const BUILD_LABEL = 'Hockey Smash v0.14.13 · Build 2026-06-30.69';
+  const DISPLAY_VERSION = 'Hockey Smash v0.14.19';
+  const BUILD_LABEL = 'Hockey Smash v0.14.19 · Build 2026-06-30.75';
 
   function api() {
     return window.RTA_HOCKEY_SMASH;
+  }
+
+  function state() {
+    return api()?.getState?.() || null;
+  }
+
+  function metrics() {
+    return window.RTA_HOCKEY_SMASH_SCORE?.getMetrics?.() || {};
+  }
+
+  function formatTime(seconds) {
+    const total = Math.max(0, Math.floor(Number(seconds) || 0));
+    const mins = Math.floor(total / 60);
+    const secs = total % 60;
+    return mins ? `${mins}:${String(secs).padStart(2, '0')}` : `${secs}s`;
+  }
+
+  function progressionLabel(score) {
+    if (score >= 1000) return 'Rank: Trick Shot';
+    if (score >= 500) return 'Rank: Fire Shot';
+    return `Next Rank ${Math.max(0, 500 - score)}`;
   }
 
   function applyVersion() {
@@ -17,11 +38,43 @@
     window.HOCKEY_SMASH_BUILD_LABEL = BUILD_LABEL;
   }
 
+  function lockArenaHud() {
+    const current = state();
+    const scoreEl = document.getElementById('hockey-score');
+    const data = metrics();
+    if (!scoreEl || !current?.player || ['splash', 'transition', 'tryAgain'].includes(current.mode)) return;
+
+    const score = Math.floor(Number(data.score ?? current.score) || 0);
+    const salmon = Math.floor(Number(data.salmonCollected ?? current.salmonCollected) || 0);
+    const high = Math.floor(Number(data.highScore) || 0);
+    const combo = Number(data.combo) > 1 ? ` | Combo x${Math.floor(Number(data.combo))}` : '';
+    const highText = high ? ` | High ${high}` : '';
+    scoreEl.textContent = `Time ${formatTime(current.time)} | Score ${score} | Salmon: ${salmon}${combo}${highText} | ${progressionLabel(high || score)}`;
+  }
+
+  function removeOldCues() {
+    document.querySelectorAll('.hockey-right-arrow-cue').forEach((node) => {
+      node.hidden = true;
+      node.style.display = 'none';
+      node.remove();
+    });
+
+    const playerOverlay = document.getElementById('hockey-player-overlay');
+    if (new URLSearchParams(window.location.search).get('computerMode') === '1' && playerOverlay) {
+      playerOverlay.hidden = true;
+      playerOverlay.style.display = 'none';
+      document.body.classList.add('hockey-canvas-player-only');
+    }
+  }
+
   function loop() {
     applyVersion();
+    lockArenaHud();
+    removeOldCues();
     window.requestAnimationFrame(loop);
   }
 
   applyVersion();
+  removeOldCues();
   window.requestAnimationFrame(loop);
 })();
