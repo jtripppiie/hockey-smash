@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.4';
-  const DISPLAY_BUILD = 'Build 2026-06-30.60';
+  const DISPLAY_VERSION = 'Hockey Smash v0.14.5';
+  const DISPLAY_BUILD = 'Build 2026-06-30.61';
   const BEAR_START_SPEED = 82;
   const BEAR_LATE_SPEED = 132;
   const GROUND_Y = 576 * 0.82;
@@ -10,11 +10,11 @@
   const CAMEO_ASSETS = {
     daniel: {
       src: 'assets/hockey-smash/sprites/alaskan_girl.webp',
-      label: 'Nice shot!',
+      label: "Hey, you're cute",
     },
     sofie: {
       src: 'assets/hockey-smash/sprites/alaskan_boy.webp',
-      label: 'Nice moves!',
+      label: "Hey, you're cute",
     },
   };
   let nextCastAt = 0;
@@ -68,13 +68,13 @@
     ];
     if (character() === 'sofie') {
       return [
-        { type: 'alaskanBoy', bubble: 'Nice moves!', message: 'Alaskan boy cheers the dance run!', width: 84, height: 96, speed: 118, hp: 3 },
+        { type: 'alaskanBoy', bubble: "Hey, you're cute", message: 'Alaskan boy cheers the dance run!', width: 84, height: 96, speed: 118, hp: 3 },
         ...shared,
         { type: 'danceInstructor', bubble: 'Point those toes!', message: 'Dance instructor challenge moving in!', width: 92, height: 100, speed: 126, hp: 4 },
       ];
     }
     return [
-      { type: 'alaskanGirl', bubble: 'Nice shot!', message: 'Alaskan girl cheers the hockey run!', width: 84, height: 96, speed: 118, hp: 3 },
+      { type: 'alaskanGirl', bubble: "Hey, you're cute", message: 'Alaskan girl cheers the hockey run!', width: 84, height: 96, speed: 118, hp: 3 },
       ...shared,
     ];
   }
@@ -139,7 +139,7 @@
 
     cameoNode = document.createElement('div');
     cameoNode.className = 'hockey-sideline-cameo';
-    cameoNode.dataset.hockeySidelineCameo = 'v0.14.4';
+    cameoNode.dataset.hockeySidelineCameo = 'v0.14.5';
     cameoNode.setAttribute('aria-hidden', 'true');
     Object.assign(cameoNode.style, {
       position: 'absolute',
@@ -263,11 +263,11 @@
     const badge = document.getElementById('hockey-build-badge');
     if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
     if (api()?.getVersion) api().getVersion = () => DISPLAY_VERSION;
-    document.body.dataset.hockeyButtonDebug = 'v0.14.4';
+    document.body.dataset.hockeyButtonDebug = 'v0.14.5';
     syncFinalReleaseState();
     exposeCastDebugApi();
     ensureCastDebugButton();
-    window.HOCKEY_BOOT_LOG?.log?.('release', 'v0.14.4 adds Space fire, cast QA spawns, and sideline cameos.');
+    window.HOCKEY_BOOT_LOG?.log?.('release', 'v0.14.5 disables Earthquake, improves fish feedback, adds Mom blocker, and updates desktop controls.');
     window.requestAnimationFrame(loop);
   }
 
