@@ -1,6 +1,4 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.13.2';
-  const DISPLAY_BUILD = 'Build 2026-06-29.47';
   const STORAGE_KEY = 'hockeySmashPlayerConfig';
   const DEFAULT_NAMES = ['Daniel', 'DANIEL', 'Sofie', 'SOFIE'];
   const PLAYER_NAME_RE = /\b(Daniel|DANIEL|Sofie|SOFIE)\b/g;
@@ -15,8 +13,8 @@
       splashTagline: 'Customize your runner!',
       transitionHeading: 'Entering Hockey Smash...',
       actionText: '🏒',
-      actionLabel: 'Hockey stick attack',
-      actionTitle: 'Hockey stick attack',
+      actionLabel: 'Hockey stick swing',
+      actionTitle: 'Hockey stick swing',
       hero: 'assets/hockey-smash/sprites/splash.webp',
       sprite: 'assets/hockey-smash/sprites/hockey-player.webp',
       slideSprite: 'assets/hockey-smash/sprites/hockey-player-sliding.webp',
@@ -101,7 +99,6 @@
     if (!api) return;
     api.setPlayerConfig = (next) => applyConfig(next, { save: true });
     api.getPlayerConfig = () => ({ ...config });
-    if (api.getVersion) api.getVersion = () => DISPLAY_VERSION;
   }
 
   function personalizeText(text) {
@@ -116,10 +113,6 @@
     api = window.RTA_HOCKEY_SMASH || api;
     patchAssetsForSavedCharacter();
     patchApi();
-
-    const badge = document.getElementById('hockey-build-badge');
-    if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
-
     bindSplashControls();
     applyConfig(config, { save: false });
     window.requestAnimationFrame(syncPersonalizationLoop);
