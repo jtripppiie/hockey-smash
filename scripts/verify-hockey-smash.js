@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const VERSION = 'Hockey Smash v0.13.7';
-const BUILD = 'Build 2026-06-29.53';
-const CACHE_KEY = '0.13.7-20260629.53';
+const VERSION = 'Hockey Smash v0.14.3';
+const BUILD = 'Build 2026-06-29.59';
+const CACHE_KEY = '0.14.3-20260629.59';
 
 const requiredFiles = [
   'index.html',
@@ -36,6 +36,10 @@ const requiredFiles = [
   'js/games/hockey-smash-v0108-weather.js',
   'js/games/hockey-smash-v0109.js',
   'js/games/hockey-smash-v0110.js',
+  'js/games/hockey-smash-v0111.js',
+  'js/games/hockey-smash-v0112.js',
+  'js/games/hockey-smash-v0113.js',
+  'js/games/hockey-smash-v0114.js',
   'scripts/verify-hockey-smash-actions.js',
   'docs/hockey-smash-workflow.md',
   'docs/hockey-smash-dev-checklist.md',
@@ -91,24 +95,34 @@ const weather = read('js/games/hockey-smash-v0108-weather.js');
 const v0106 = read('js/games/hockey-smash-v0106.js');
 const v0109 = read('js/games/hockey-smash-v0109.js');
 const v0110 = read('js/games/hockey-smash-v0110.js');
+const v0111 = read('js/games/hockey-smash-v0111.js');
+const v0112 = read('js/games/hockey-smash-v0112.js');
+const v0113 = read('js/games/hockey-smash-v0113.js');
+const v0114 = read('js/games/hockey-smash-v0114.js');
 
-requireText('package.json', pkg, '"version": "0.13.7"', 'Package version is stale.');
+requireText('package.json', pkg, '"version": "0.14.3"', 'Package version is stale.');
 requireText('index.html', html, `${VERSION} · ${BUILD}`, 'Build badge is stale.');
 requireText('index.html', html, `hockey-smash.css?v=${CACHE_KEY}`, 'CSS manifest is not linked or cache-busted.');
-requireText('index.html', html, `js/games/hockey-smash-v0110.js?v=${CACHE_KEY}`, 'Final v0110 release marker is not linked or cache-busted.');
+requireText('index.html', html, `js/games/hockey-smash-v0114.js?v=${CACHE_KEY}`, 'Final v0114 release layer is not linked or cache-busted.');
 requireText('index.html', html, `js/games/hockey-smash-v0106-earthquake.js?v=${CACHE_KEY}`, 'Earthquake mode layer is not linked or cache-busted.');
 requireText('index.html', html, `js/games/hockey-smash-v0108-weather.js?v=${CACHE_KEY}`, 'Weather layer is not linked or cache-busted.');
 requireText('hockey-smash.css', cssManifest, `style.css?v=${CACHE_KEY}`, 'CSS manifest cache key is stale.');
 requireText('hockey-smash.css', cssManifest, '[hidden]', 'Hidden screen hard override is missing.');
 requireText('style.css', style, 'max-height: min(32vh, 285px)', 'Compact no-scroll splash sizing is missing from style.css.');
 requireText('hockey-smash-custom.css', customCss, 'padding: 0.4rem 0.78rem', 'Compact customization control sizing is missing.');
-requireText('js/games/hockey-smash-v0110.js', v0110, VERSION, 'Final marker version is stale.');
-requireText('js/games/hockey-smash-v0110.js', v0110, BUILD, 'Final marker build is stale.');
+requireText('js/games/hockey-smash-v0114.js', v0114, VERSION, 'Final release layer version is stale.');
+requireText('js/games/hockey-smash-v0114.js', v0114, BUILD, 'Final release layer build is stale.');
+requireText('js/games/hockey-smash-v0110.js', v0110, 'doubleJump', 'Double-jump layer is missing.');
+requireText('js/games/hockey-smash-v0111.js', v0111, 'progressive pacing', 'Progressive pacing layer is missing.');
+requireText('js/games/hockey-smash-v0112.js', v0112, 'slowBears', 'Bear-speed tuning layer is missing.');
+requireText('js/games/hockey-smash-v0113.js', v0113, 'Fish Dodge Level', 'Staged fish-dodge level is missing.');
+requireText('js/games/hockey-smash-v0114.js', v0114, 'BEAR_START_SPEED = 82', 'Final bear-speed tuning is missing.');
 requireText('js/games/hockey-smash-v0109.js', v0109, 'START_COUNTDOWN_SECONDS = 10', 'Start-game 10-second practice countdown is missing.');
 requireText('js/games/hockey-smash-v0109.js', v0109, 'forceSalmonFromRight', 'Right-side-only salmon guard is missing.');
 requireText('js/games/hockey-smash-v0103.js', v0103, 'PUCK_MAX_CHARGE_MS = 720', 'Stronger charge window is missing.');
 requireText('js/games/hockey-smash-v0103.js', v0103, 'PUCK_COOLDOWN_MS = 180', 'Faster charged-shot cooldown is missing.');
 requireText('js/games/hockey-smash-v0103.js', v0103, 'PUCK_ARC_GRAVITY = 680', 'Charged projectile arc physics are missing.');
+requireText('js/games/hockey-smash-v0103.js', v0103, 'const shotDirection = 1', 'Projectiles should always fire to the right.');
 requireText('js/games/hockey-smash-v0103.js', v0103, 'puckSpeedBoostUntil', 'Safe puck-speed power-up state is missing.');
 requireText('js/games/hockey-smash-v0103.js', v0103, "'earthquake'", 'Earthquake power-up drop is missing.');
 requireText('js/games/hockey-smash-v0103.js', v0103, 'earthquakeActive', 'Earthquake puck-fire-rate boost is missing.');
@@ -139,11 +153,11 @@ requireText('hockey-smash-touch.css', touchCss, 'touch-action: none', 'Touch-act
 
 const docsToCheck = { readme, changelog, workflow, checklist, qa, progress, kidGuide };
 Object.entries(docsToCheck).forEach(([name, text]) => {
-  if (!text.includes('v0.13.7') && !text.includes('0.13.7')) errors.push(`${name} does not mention the current version.`);
+  if (!text.includes('v0.14.3') && !text.includes('0.14.3')) errors.push(`${name} does not mention the current version.`);
 });
 requireText('README.md', readme, 'charged', 'README does not document charged shots.');
 requireText('README.md', readme, 'salmon', 'README does not document salmon gameplay.');
-requireText('CHANGELOG.md', changelog, '0.13.7 - Falling Fish Hazards', 'Changelog is missing the v0.13.7 entry.');
+requireText('CHANGELOG.md', changelog, '0.14.3 - Staged Run Stabilization', 'Changelog is missing the v0.14.3 entry.');
 
 const textToScan = { html, cssManifest, core, v0102, v0103, v0104, v0106, v0109, v0110 };
 Object.entries(textToScan).forEach(([name, text]) => {

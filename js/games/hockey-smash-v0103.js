@@ -231,7 +231,7 @@
     if (now - lastPuckAt < cooldown) return;
     lastPuckAt = now;
     const player = state.player;
-    const facing = player.facing < 0 ? -1 : 1;
+    const shotDirection = 1;
     const chargeFactor = Math.min(1, Math.max(0, chargeTime / PUCK_MAX_CHARGE_MS));
     const speedMultiplier = speedBoostActive() ? 1.25 : 1;
     const speed = (PUCK_MIN_SPEED + (PUCK_BASE_SPEED * 0.65 * chargeFactor)) * speedMultiplier;
@@ -239,11 +239,11 @@
     const puckType = ['fire', 'bounce'].includes(type) ? type : 'normal';
     const heightOffset = chargeFactor * -20;
     pucks.push({
-      x: facing > 0 ? player.x + player.width + 10 : player.x - 40,
+      x: player.x + player.width + 10,
       y: player.y + player.height * 0.45 + heightOffset,
       width: puckStats.width,
       height: puckStats.height,
-      vx: speed * facing * (puckType === 'fire' ? 1.25 : 1),
+      vx: speed * shotDirection * (puckType === 'fire' ? 1.25 : 1),
       vy: puckType === 'bounce' ? -280 : chargeFactor * -220,
       life: 2.2,
       damage: puckStats.damage + (puckType === 'fire' ? 1 : 0),

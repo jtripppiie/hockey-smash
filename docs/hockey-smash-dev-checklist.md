@@ -2,12 +2,12 @@
 
 ## Current Checkpoint
 
-- [ ] Confirm visible version says `Hockey Smash v0.13.7 · Build 2026-06-29.53`.
-- [ ] Confirm `package.json` version is `0.13.7`.
-- [ ] Confirm `index.html` cache keys use `0.13.7-20260629.53`.
-- [ ] Confirm `hockey-smash.css` imports CSS layers with `0.13.7-20260629.53`.
+- [ ] Confirm visible version says `Hockey Smash v0.14.3 · Build 2026-06-29.59`.
+- [ ] Confirm `package.json` version is `0.14.3`.
+- [ ] Confirm `index.html` cache keys use `0.14.3-20260629.59`.
+- [ ] Confirm `hockey-smash.css` imports CSS layers with `0.14.3-20260629.59`.
 - [ ] Confirm `js/games/hockey-smash-v0110.js` is loaded last.
-- [ ] Confirm README, CHANGELOG, QA, workflow, checklist, progress, and beginner handoff docs mention v0.13.7.
+- [ ] Confirm README, CHANGELOG, QA, workflow, checklist, progress, and beginner handoff docs mention v0.14.3.
 - [ ] Run `npm run verify`.
 
 ## Compact Splash
@@ -63,4 +63,4 @@
 
 - [ ] Confirm code comments explain why charged shots and safe power-ups work the way they do.
 - [ ] Confirm the beginner handoff guide explains where to adjust shot/falling-fish/power-up behavior.
-- [ ] Confirm the changelog has a v0.13.7 entry.
+- [ ] Confirm the changelog has a v0.14.3 entry.

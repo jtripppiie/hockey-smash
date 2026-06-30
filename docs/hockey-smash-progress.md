@@ -2,18 +2,18 @@
 
 This file tracks implementation progress so work can continue safely across sessions.
 
-## Current Checkpoint: Hockey Smash v0.13.7
+## Current Checkpoint: Hockey Smash v0.14.3
 
 Visible build badge:
 
 ```text
-Hockey Smash v0.13.7 · Build 2026-06-29.53
+Hockey Smash v0.14.3 · Build 2026-06-29.59
 ```
 
 Current cache key:
 
 ```text
-0.13.7-20260629.53
+0.14.3-20260629.59
 ```
 
 Current public preview:
@@ -34,13 +34,13 @@ Implemented:
 - Improved dodge rules so falling fish reward moving out from under the drop.
 - Added combo encounter spawns as difficulty rises.
 - Added safe puck-speed power-ups from defeated bears/moose. These live in the projectile layer instead of `state.entities` so the old core collision loop cannot damage the player for collecting a reward.
-- Added `js/games/hockey-smash-v0110.js` as the final v0.13.7 release marker.
+- Added `js/games/hockey-smash-v0114.js` as the final v0.14.3 release layer.
 - Updated package version, cache keys, verifier, README, changelog, workflow, QA, checklist, progress notes, and beginner handoff docs.
 
 Verify:
 
 - Open `https://jtripppiie.github.io/hockey-smash/?fresh=0137`.
-- Confirm the visible badge says `Hockey Smash v0.13.7 · Build 2026-06-29.53`.
+- Confirm the visible badge says `Hockey Smash v0.14.3 · Build 2026-06-29.59`.
 - Confirm quick tap shots still fire.
 - Confirm hold/release charged shots arc and hit harder.
 - Confirm rain, heavyRain, fastRain, and schoolRain fish fall from the top.
@@ -76,7 +76,7 @@ Verify:
 
 ## Next Recommended Work
 
-1. Manually QA v0.13.7 on the live GitHub Pages URL.
+1. Manually QA v0.14.3 on the live GitHub Pages URL.
 2. Run `npm run verify` locally.
 3. Run Playwright browser tests if the local checkout has dependencies installed.
 4. Tune charged-shot timing/damage after playing a few runs.

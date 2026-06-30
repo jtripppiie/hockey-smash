@@ -3,6 +3,7 @@
   const DISPLAY_BUILD = 'Build 2026-06-29.59';
   const BEAR_START_SPEED = 82;
   const BEAR_LATE_SPEED = 132;
+  const computerMode = new URLSearchParams(window.location.search).get('computerMode') === '1';
 
   function api() { return window.RTA_HOCKEY_SMASH; }
   function getState() {
@@ -12,6 +13,21 @@
   }
   function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
   function difficultyFor(state) { return clamp(Number(state?.difficulty) || ((state?.time || 0) / 140), 0, 1); }
+
+  function syncFinalReleaseState() {
+    const badge = document.getElementById('hockey-build-badge');
+    if (badge && badge.textContent !== `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`) {
+      badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
+    }
+    if (api()?.getVersion) api().getVersion = () => DISPLAY_VERSION;
+
+    if (!computerMode) return;
+    const overlay = document.getElementById('hockey-player-overlay');
+    if (!overlay) return;
+    overlay.hidden = true;
+    overlay.style.display = 'none';
+    document.body.classList.add('hockey-canvas-player-only');
+  }
 
   function slowBearsAgain(state) {
     if (!Array.isArray(state?.entities)) return;
@@ -25,6 +41,7 @@
   }
 
   function loop() {
+    syncFinalReleaseState();
     const state = getState();
     if (state) slowBearsAgain(state);
     window.requestAnimationFrame(loop);
@@ -35,6 +52,7 @@
     if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
     if (api()?.getVersion) api().getVersion = () => DISPLAY_VERSION;
     document.body.dataset.hockeyButtonDebug = 'v0.14.3';
+    syncFinalReleaseState();
     window.HOCKEY_BOOT_LOG?.log?.('v0114', 'v0.14.3 bear speed reduced again.');
     window.requestAnimationFrame(loop);
   }

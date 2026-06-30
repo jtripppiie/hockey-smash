@@ -1,11 +1,11 @@
 # Hockey Smash
 
-Current playable version: **Hockey Smash v0.13.7**
+Current playable version: **Hockey Smash v0.14.3**
 
 Live GitHub Pages preview:
 
 ```text
-https://jtripppiie.github.io/hockey-smash/?fresh=0137
+https://jtripppiie.github.io/hockey-smash/?fresh=0143
 ```
 
 Normal clean URL:
@@ -29,31 +29,36 @@ Hockey Smash is the primary public playable mode in this repo. It is a static Gi
 The top-right badge should read:
 
 ```text
-Hockey Smash v0.13.7 · Build 2026-06-29.53
+Hockey Smash v0.14.3 · Build 2026-06-29.59
 ```
 
 Current cache key:
 
 ```text
-0.13.7-20260629.53
+0.14.3-20260629.59
 ```
 
-## What v0.13.7 Includes
+## What v0.14.3 Includes
 
 - Makes salmon/fish rain down from the top of the screen instead of entering sideways.
 - Adds rain, heavyRain, fastRain, and schoolRain falling-fish variants.
-- Falling fish are dodged by moving out from under them while bears and moose stay as fightable ground threats.
-- Keeps combo encounter pressure so falling fish can overlap with bear/moose fights as difficulty rises.
+- Starts normal runs with a fish-dodge level before ramping into the moose/bear wildlife level.
+- Keeps bears and moose as fightable ground threats after the opening fish stage.
 - Adds charged shooting for Daniel's puck and Sofie's pointe shoe.
 - Action key/button now charges on hold and fires on release.
 - Faster 180ms projectile cooldown for more responsive tap shooting.
 - Stronger charged shots with a longer 720ms charge window, bigger projectile visuals, stronger hit text, more damage, and arcing physics.
-- Adds combo encounter spawns so a second object can follow shortly after the first one as difficulty rises.
 - Adds safe power-ups that drop from defeated bears/moose without entering the core hazard collision system.
-- Adds `js/games/hockey-smash-v0110.js` as a tiny final release marker so the newest visible badge wins after older layers boot.
+- Adds double jump, slower early pacing, Sofie dance cameo support, staged fish/wildlife progression, and final bear-speed tuning.
+- Uses `js/games/hockey-smash-v0114.js` as the final visible release layer so the newest badge wins after older layers boot.
 
-## Recent v0.13.x Stabilization
+## Recent Stabilization
 
+- **v0.14.3:** staged fish-dodge opening, slower bear tuning, and final badge/cache-key alignment.
+- **v0.14.2:** fish-dodge level first, then moose/bear wildlife level.
+- **v0.14.1:** removed earthquake shake, slowed bears, and added Sofie dance cameo support.
+- **v0.14.0:** progressive pacing for wildlife and people encounters.
+- **v0.13.9:** fish warnings, family projectile hits, one-big-animal pressure, and double jump.
 - **v0.13.7:** fish rain down from the top while bear/moose combat remains on the ground.
 - **v0.13.6:** charged shots, stronger projectile physics, salmon patterns, combo spawns, and safe power-ups.
 - **v0.13.5:** compact no-scroll splash layout.
@@ -92,7 +97,8 @@ Touch:
 6. A 10-second countdown starts.
 7. During the countdown, practice moving, jumping, sliding, and charging/firing.
 8. When the countdown finishes, hazards begin.
-9. Salmon/fish should rain down from the top while wildlife enters from the side.
+9. Salmon/fish should rain down from the top for the fish-dodge level.
+10. After enough dodges or roughly 28 seconds, Level 2 introduces moose and bears.
 
 ## Main Files
 
@@ -106,8 +112,12 @@ Touch:
 - `js/games/hockey-smash-v0103.js`: charged projectile layer; owns puck/pointe-shoe charge, arcs, falling-fish dodge rules, and safe power-ups.
 - `js/games/hockey-smash-v0104.js`: distance, score, combo, high score, difficulty state, floating text, and run summary layer.
 - `js/games/hockey-smash-v0106.js`: player customization layer, Daniel/Sofie mode labels, and final character text updates.
-- `js/games/hockey-smash-v0109.js`: final safety/release layer; owns dev unlock, debug button logs, accidental shake lock, 10-second countdown, and legacy sideways-salmon guard.
-- `js/games/hockey-smash-v0110.js`: final v0.13.7 release marker so the current badge/version wins after older layers load.
+- `js/games/hockey-smash-v0109.js`: safety layer; owns dev unlock, debug button logs, accidental shake lock, 10-second countdown, and legacy sideways-salmon guard.
+- `js/games/hockey-smash-v0110.js`: double jump, fish warnings, projectile hits on family/dance encounters, and one-big-animal pressure.
+- `js/games/hockey-smash-v0111.js`: progressive encounter pacing.
+- `js/games/hockey-smash-v0112.js`: no-shake spotlight boost, slower bears, and Sofie dance cameo support.
+- `js/games/hockey-smash-v0113.js`: staged fish-dodge level followed by moose/bear wildlife level.
+- `js/games/hockey-smash-v0114.js`: final v0.14.3 release layer and bear-speed tuning.
 - `scripts/verify-hockey-smash.js`: static verification for versions, cache keys, docs, files, and key feature markers.
 - `docs/hockey-smash-kid-handoff.md`: beginner guide explaining how the code is organized and where to safely change things.
 
@@ -149,13 +159,13 @@ npm run test:browser
 
 Manual smoke checks before calling this checkpoint good:
 
-- Open `/` and confirm the visible badge says `Hockey Smash v0.13.7 · Build 2026-06-29.53`.
+- Open `/` and confirm the visible badge says `Hockey Smash v0.14.3 · Build 2026-06-29.59`.
 - Confirm the compact splash still fits without obvious scrolling.
 - Confirm Start Game enters gameplay and shows the 10-second countdown.
 - Hold/release action and confirm charged shots fire.
 - Confirm charged shots arc, glow, hit harder, and show stronger feedback.
 - Confirm rain, heavyRain, fastRain, and schoolRain fish fall from the top.
-- Confirm falling fish are dodged by moving out from under them.
-- Confirm bears and moose still enter as fightable ground threats.
+- Confirm the first level focuses on falling-fish dodges.
+- Confirm Level 2 introduces bears and moose as fightable ground threats.
 - Confirm power-ups can drop from defeated bears/moose and can be collected without damaging the player.
 - Open `?computerMode=1` and confirm autoplay still runs through movement, encounters, projectile, score, and customization systems.

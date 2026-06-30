@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Hockey Smash is a static browser canvas game served through GitHub Pages. The current public checkpoint is **Hockey Smash v0.13.7 · Build 2026-06-29.53**.
+Hockey Smash is a static browser canvas game served through GitHub Pages. The current public checkpoint is **Hockey Smash v0.14.3 · Build 2026-06-29.59**.
 
 Fresh cache-bust preview:
 
@@ -16,7 +16,7 @@ Computer Play:
 https://jtripppiie.github.io/hockey-smash/?computerMode=1
 ```
 
-## Current v0.13.7 Behavior Notes
+## Current v0.14.3 Behavior Notes
 
 - Splash screen stays compact from v0.13.5.
 - Start Game still leads into a 10-second safe practice countdown.
@@ -27,7 +27,7 @@ https://jtripppiie.github.io/hockey-smash/?computerMode=1
 - Tap shooting is faster because projectile cooldown is 180ms.
 - `js/games/hockey-smash-v0102.js` owns rain, heavyRain, fastRain, schoolRain fish patterns and combo encounter spawns.
 - `js/games/hockey-smash-v0103.js` owns charged projectiles, stronger arc physics, falling-fish dodge rules, and safe power-ups.
-- `js/games/hockey-smash-v0110.js` is the final release marker so the visible badge/version stays current after older layers load.
+- `js/games/hockey-smash-v0114.js` is the final release layer so the visible badge/version stays current after older layers load.
 
 ## File Map
 
@@ -42,7 +42,7 @@ https://jtripppiie.github.io/hockey-smash/?computerMode=1
 - `js/games/hockey-smash-v0104.js`: distance, score, combo, high score, difficulty, floating text, and run summary layer.
 - `js/games/hockey-smash-v0106.js`: player customization, Daniel/Sofie mode labels, and character-specific action labels.
 - `js/games/hockey-smash-v0109.js`: dev unlock, debug logs, countdown, and legacy sideways-salmon guard.
-- `js/games/hockey-smash-v0110.js`: v0.13.7 final release marker.
+- `js/games/hockey-smash-v0114.js`: v0.14.3 final release layer.
 - `scripts/verify-hockey-smash.js`: static launch/docs/file verifier.
 - `docs/hockey-smash-kid-handoff.md`: beginner handoff guide.
 
@@ -64,13 +64,13 @@ When changing visible behavior:
 
 1. Update `index.html` badge and cache keys.
 2. Update `hockey-smash.css` cache imports.
-3. Update the latest overlay/release marker.
+3. Update the latest overlay/release layer.
 4. Update `package.json`.
 5. Update `scripts/verify-hockey-smash.js`.
 6. Update README, CHANGELOG, QA, checklist, progress, workflow, and kid handoff docs.
 7. Run `npm run verify` and browser QA.
 
-## QA Focus For v0.13.7
+## QA Focus For v0.14.3
 
 - Hold/release action for charged shooting.
 - Confirm tap shooting still works quickly.

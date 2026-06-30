@@ -2,19 +2,19 @@
 
 ## Current Preview
 
-- Public game: `Hockey Smash v0.13.7`
-- Visible build badge: `Hockey Smash v0.13.7 · Build 2026-06-29.53`
-- Package version: `0.13.7`
+- Public game: `Hockey Smash v0.14.3`
+- Visible build badge: `Hockey Smash v0.14.3 · Build 2026-06-29.59`
+- Package version: `0.14.3`
 - GitHub Pages URL: `https://jtripppiie.github.io/hockey-smash/`
 - Fresh cache-bust URL: `https://jtripppiie.github.io/hockey-smash/?fresh=0137`
 - Computer Play URL: `https://jtripppiie.github.io/hockey-smash/?computerMode=1`
 
-## v0.13.7 Gameplay QA
+## v0.14.3 Gameplay QA
 
 ### Launch / Layout
 
 1. Open `https://jtripppiie.github.io/hockey-smash/?fresh=0137`.
-2. Confirm the top-right badge says `Hockey Smash v0.13.7 · Build 2026-06-29.53`.
+2. Confirm the top-right badge says `Hockey Smash v0.14.3 · Build 2026-06-29.59`.
 3. Confirm the compact splash still fits without obvious scrolling.
 4. Click Start Game.
 5. Confirm the 10-second countdown appears before hazards begin.
@@ -74,5 +74,5 @@ npm run test:browser
 ## Known QA Notes
 
 - The current architecture is layered: the core runtime loads first, then later scripts patch or extend movement, HUD, encounters, Try Again, projectiles, character mode, dev tools, layout, and final safety rules.
-- The visible badge, package version, cache key, final release marker, README, changelog, workflow docs, QA docs, checklist, progress docs, and beginner handoff guide should all agree on v0.13.7.
+- The visible badge, package version, cache key, final release layer, README, changelog, workflow docs, QA docs, checklist, progress docs, and beginner handoff guide should all agree on v0.14.3.
 - Browser QA still matters because the game uses canvas, DOM overlays, pointer controls, localStorage, sessionStorage, media queries, and requestAnimationFrame loops.

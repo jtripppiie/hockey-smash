@@ -4,7 +4,7 @@ This guide explains the game in plain language so a beginner can safely help lat
 
 ## Current Version
 
-Current checkpoint: **Hockey Smash v0.13.7 · Build 2026-06-29.53**
+Current checkpoint: **Hockey Smash v0.14.3 · Build 2026-06-29.59**
 
 Preview:
 
@@ -33,7 +33,7 @@ Think of the files like clear plastic sheets:
 
 1. `js/games/hockey-smash.js` is the first drawing.
 2. Later files add movement, score, projectiles, character labels, and safety fixes on top.
-3. `js/games/hockey-smash-v0110.js` loads last as the v0.13.7 release marker.
+3. `js/games/hockey-smash-v0114.js` loads last as the v0.14.3 release layer.
 
 ## Main Files
 
@@ -111,7 +111,11 @@ This owns hidden dev mode, triple-tap unlock, debug logs, accidental shake lock,
 
 ### `js/games/hockey-smash-v0110.js`
 
-This tiny file loads last and keeps the visible badge/version on v0.13.7 after older layers boot.
+This adds double jump, fish splash warnings, one-big-animal pressure, and projectile hits for family/dance encounters.
+
+### `js/games/hockey-smash-v0111.js` through `js/games/hockey-smash-v0114.js`
+
+These are the newest small tuning layers. `v0111` adjusts pacing, `v0112` removes shake and slows bears, `v0113` stages the fish-dodge level before wildlife, and `v0114` loads last to keep the visible badge/version on v0.14.3.
 
 ## Where To Change Common Things
 
@@ -217,7 +221,7 @@ hockey-smash-custom.css
 9. Run `npm run verify`.
 10. Push only when the game still starts.
 
-## Current v0.13.7 Behavior To Preserve
+## Current v0.14.3 Behavior To Preserve
 
 - Splash screen is compact.
 - Start Game leads to a 10-second safe countdown.

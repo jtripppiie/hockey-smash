@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.14.3 - Staged Run Stabilization
+
+- Shipped **Hockey Smash v0.14.3** with visible build badge `Build 2026-06-29.59`.
+- Kept the current shell, package version, CSS manifest, README, docs, and verifier aligned on `0.14.3-20260629.59`.
+- Added syntax/static verification for the loaded `v0111` through `v0114` layers.
+- Documented the staged flow: fish-dodge level first, then the moose/bear wildlife level.
+- Preserved the recent double-jump, progressive pacing, Sofie cameo, and final bear-speed tuning layers.
+- Updated cache keys, package version, README, docs, and verifier checks for v0.14.3.
+
 ## 0.13.7 - Falling Fish Hazards
 
 - Shipped **Hockey Smash v0.13.7** with visible build badge `Build 2026-06-29.53`.
