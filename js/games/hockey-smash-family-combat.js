@@ -23,6 +23,7 @@
   function status(text) { const el = document.getElementById('hockey-status'); if (el && text) el.textContent = text; }
   function syncHealth(s) { const el = document.getElementById('hockey-health'); if (el && s?.player) { el.value = s.player.health; el.textContent = `${s.player.health} health`; } }
   function invincibleSeconds() { return Math.max(0.1, Number(api()?.tuning?.invincibleMs || 760) / 1000); }
+  function momLine() { return `${playerName()}, clean your room!`; }
 
   function endRun(s) {
     s.mode = 'tryAgain';
@@ -60,7 +61,6 @@
   function contactAmount(type) {
     if (type === 'danceInstructor') return 7;
     if (type === 'dad') return 6;
-    if (type === 'mom') return 5;
     if (type === 'sister') return 4;
     if (type === 'daniel') return 4;
     return 5;
@@ -76,9 +76,25 @@
     return 'Cast member';
   }
 
+  function tuneStationaryMom(entity) {
+    entity.vx = 0;
+    entity.vy = 0;
+    entity.damage = 0;
+    entity._contactAmount = 0;
+    entity.nonContact = true;
+    entity.stationarySupport = true;
+    entity.prettyBubble = momLine();
+    entity.bubble = '';
+    entity._dodgeLayerResolved = true;
+  }
+
   function tuneCastEntity(s, entity) {
     if (!CAST_TYPES.has(entity?.type) || entity.dead) return;
     if (entity.type === 'adultCoach') entity.type = 'danceInstructor';
+    if (entity.type === 'mom') {
+      tuneStationaryMom(entity);
+      return;
+    }
     order(entity);
     entity.damage = 0;
     entity._dodgeLayerResolved = true;
@@ -121,7 +137,7 @@
     const p = s.player;
     if (!p || p.invincible > 0) return;
     const pBox = playerBox(p);
-    const contact = s.entities.find((entity) => entity && !entity.dead && CAST_TYPES.has(entity.type) && !entity._familyContactResolved && overlap(pBox, entityBox(entity)));
+    const contact = s.entities.find((entity) => entity && !entity.dead && entity.type !== 'mom' && !entity.nonContact && CAST_TYPES.has(entity.type) && !entity._familyContactResolved && overlap(pBox, entityBox(entity)));
     if (!contact) return;
 
     const amount = Math.max(1, Number(contact._contactAmount) || contactAmount(contact.type));
@@ -159,7 +175,7 @@
   }
 
   function resolveProjectileContacts(s) {
-    const targets = s.entities.filter((entity) => CAST_TYPES.has(entity?.type) && !entity.dead);
+    const targets = s.entities.filter((entity) => CAST_TYPES.has(entity?.type) && entity.type !== 'mom' && !entity.nonContact && !entity.dead);
     if (!targets.length) return;
     document.querySelectorAll('[data-projectile-type]').forEach((node) => {
       const box = projectileBox(node);
@@ -212,9 +228,9 @@
   }
 
   function ready() {
-    document.body.dataset.hockeyFamilyCombat = 'v0.14.43';
+    document.body.dataset.hockeyFamilyCombat = 'v0.14.44';
     bindDoubleJump();
-    window.HOCKEY_BOOT_LOG?.log?.('family-combat', 'Family/cast combat loaded with shared invincibility timing and non-versioned double-jump binding.');
+    window.HOCKEY_BOOT_LOG?.log?.('family-combat', 'Mom is stationary support and excluded from contact/projectile combat.');
     window.requestAnimationFrame(loop);
   }
 
