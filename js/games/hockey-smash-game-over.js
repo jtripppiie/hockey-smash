@@ -1,17 +1,10 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.10.0';
-  const DISPLAY_BUILD = 'Build 2026-06-29.21';
-
   function onReady() {
     const api = window.RTA_HOCKEY_SMASH;
-    const badge = document.getElementById('hockey-build-badge');
     const tryAgain = document.getElementById('hockey-try-again');
     const retryButton = document.getElementById('hockey-retry');
     const status = document.getElementById('hockey-status');
     const healthMeter = document.getElementById('hockey-health');
-
-    if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
-    if (api?.getVersion) api.getVersion = () => DISPLAY_VERSION;
     if (!api || !tryAgain) return;
 
     const style = document.createElement('style');
@@ -94,6 +87,7 @@
       window.requestAnimationFrame(watchGameOver);
     }
 
+    window.HOCKEY_BOOT_LOG?.log?.('game-over', 'Game-over layer loaded without owning version or badge.');
     watchGameOver();
   }
 
