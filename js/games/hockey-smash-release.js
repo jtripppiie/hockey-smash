@@ -12,6 +12,12 @@
       'Water break after this!',
     ],
     dad: [],
+    daniel: [
+      'I got your back!',
+      'Hockey brother assist!',
+      'Keep dancing!',
+      'Stick side is clear!',
+    ],
     danceInstructor: [
       'Point those toes!',
       'Big finish!',
@@ -70,7 +76,10 @@
       { type: 'dad', width: 92, height: 96, speed: 70, hp: 4, damage: 6 },
     ];
     if (character() === 'sofie') {
-      return shared.concat({ type: 'danceInstructor', width: 92, height: 100, speed: 92, hp: 4, damage: 7 });
+      return shared.concat(
+        { type: 'daniel', width: 92, height: 104, speed: 86, hp: 3, damage: 4, role: 'brother' },
+        { type: 'danceInstructor', width: 92, height: 100, speed: 92, hp: 4, damage: 7 }
+      );
     }
     return shared;
   }
@@ -96,6 +105,7 @@
     return {
       mom: 'Mom',
       dad: 'Dad',
+      daniel: 'Brother',
       danceInstructor: 'Dance instructor',
       sister: 'Sister',
     }[type] || `${type[0].toUpperCase()}${type.slice(1)}`;
@@ -104,6 +114,7 @@
   function templateMessage(type, bubble) {
     if (type === 'mom') return `Mom skates in: ${bubble}`;
     if (type === 'dad') return `Dad says: ${bubble}`;
+    if (type === 'daniel') return `Brother Daniel: ${bubble}`;
     if (type === 'danceInstructor') return `Dance instructor: ${bubble}`;
     return `${labelFor(type)} challenge incoming.`;
   }
@@ -204,7 +215,7 @@
   }
 
   function shouldPrettyBubble(entity) {
-    return entity && !entity.dead && ['mom', 'dad', 'danceInstructor', 'sister', 'teacher', 'adultCoach'].includes(entity.type);
+    return entity && !entity.dead && ['mom', 'dad', 'daniel', 'danceInstructor', 'sister', 'teacher', 'adultCoach'].includes(entity.type);
   }
 
   function normalizeBubble(entity) {
@@ -335,12 +346,12 @@
   }
 
   function ready() {
-    document.body.dataset.hockeyRelease = 'v0.14.38';
+    document.body.dataset.hockeyRelease = 'v0.14.39';
     syncFinalReleaseState();
     exposeCastDebugApi();
     ensureCastDebugButton();
     removeSidelineCameo();
-    window.HOCKEY_BOOT_LOG?.log?.('release', 'Cast source cleaned: Mom appears for both characters and the cast rotates cleanly.');
+    window.HOCKEY_BOOT_LOG?.log?.('release', 'Sofie dancer mode now includes Daniel as the hockey-player brother cast member.');
     window.requestAnimationFrame(loop);
   }
 
