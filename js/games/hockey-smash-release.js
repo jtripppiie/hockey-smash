@@ -70,6 +70,10 @@
     return `${playerName()}, clean your room!`;
   }
 
+  function salmonRunActive() {
+    return document.body.dataset.hockeyStagePhase === 'salmonRun';
+  }
+
   function syncFinalReleaseState() {
     const overlay = document.getElementById('hockey-player-overlay');
     if (!overlay) return;
@@ -161,6 +165,7 @@
   }
 
   function spawnStationaryMom(state, options = {}) {
+    if (salmonRunActive()) return null;
     if (!Array.isArray(state?.entities)) return null;
     const now = performance.now();
     const existing = state.entities.find((entity) => entity && !entity.dead && entity.type === 'mom' && entity.stationarySupport);
@@ -210,6 +215,7 @@
   }
 
   function spawnCastEncounter(state, options = {}) {
+    if (salmonRunActive()) return null;
     if (!Array.isArray(state?.entities)) return null;
     if (options.type === 'mom') return spawnStationaryMom(state, { force: true });
     if (!options.force && !castStageHasStarted(state)) return null;
@@ -247,6 +253,7 @@
   }
 
   function runCastLogic(state) {
+    if (salmonRunActive()) return;
     if (!castStageHasStarted(state)) return;
     spawnStationaryMom(state);
     const now = performance.now();
@@ -424,12 +431,12 @@
   }
 
   function ready() {
-    document.body.dataset.hockeyRelease = 'v0.14.45';
+    document.body.dataset.hockeyRelease = 'v0.14.46';
     syncFinalReleaseState();
     exposeCastDebugApi();
     ensureCastDebugButton();
     removeSidelineCameo();
-    window.HOCKEY_BOOT_LOG?.log?.('release', 'Mom is temporary support; moving cast is unblocked.');
+    window.HOCKEY_BOOT_LOG?.log?.('release', 'Cast waits until the 20-salmon opening run is complete.');
     window.requestAnimationFrame(loop);
   }
 
