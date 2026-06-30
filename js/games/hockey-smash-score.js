@@ -1,12 +1,13 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.13.8';
-  const DISPLAY_BUILD = 'Build 2026-06-29.54';
+  const DISPLAY_VERSION = 'Hockey Smash v0.14.8';
+  const DISPLAY_BUILD = 'Build 2026-06-30.64';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const STORAGE_KEY = 'hockeySmashHighScore';
   const LEGACY_STORAGE_KEY = 'hockeyHighScore';
   const BASE_DISTANCE_SPEED = 14;
   const COMBO_TIMEOUT = 2.5;
+  const SALMON_COLLECT_POINTS = 67;
 
   let api = null;
   let canvas = null;
@@ -34,6 +35,7 @@
       newHighScore: false,
       pucksHit: 0,
       fishDodged: 0,
+      salmonCollected: 0,
       damageTaken: 0,
     };
   }
@@ -154,6 +156,20 @@
         metrics.fishDodged += 1;
         addComboBonus(70, 'DODGE!', payload.state, payload.entity || payload.state?.player);
       },
+      recordSalmonCollect(payload = {}) {
+        const points = Number(payload.points) || SALMON_COLLECT_POINTS;
+        const state = payload.state || activeState;
+        const entity = payload.entity || state?.player;
+        metrics.salmonCollected += 1;
+        metrics.bonusScore += points;
+        if (state) {
+          const playerName = window.RTA_HOCKEY_SMASH?.getPlayerConfig?.().name || 'Daniel';
+          state.message = `${playerName} collected salmon! +${points}`;
+          state.salmonCollected = metrics.salmonCollected;
+        }
+        createFloatingTextNear(state, entity, `+${points}`, '#fff27a');
+        pulseScoreHud();
+      },
       recordDamage(payload = {}) {
         const amount = Number(payload.amount) || 0;
         metrics.damageTaken += amount;
@@ -269,6 +285,7 @@
     state.peakCombo = metrics.peakCombo;
     state.pucksHit = metrics.pucksHit;
     state.fishDodged = metrics.fishDodged;
+    state.salmonCollected = metrics.salmonCollected;
     player.combo = metrics.combo;
     player.comboTimer = metrics.comboTimer;
   }
@@ -295,7 +312,7 @@
       const comboText = metrics.combo > 1 ? ` | Combo x${metrics.combo}` : '';
       const highText = metrics.newHighScore ? ' | NEW HIGH!' : ` | High ${metrics.highScore}`;
       const progressionText = progressionLabel(metrics.highScore || metrics.score);
-      scoreEl.textContent = `Distance ${Math.floor(metrics.distance)}m | Score ${metrics.score}${comboText}${highText} | ${progressionText}`;
+      scoreEl.textContent = `Distance ${Math.floor(metrics.distance)}m | Score ${metrics.score} | Salmon: ${metrics.salmonCollected}${comboText}${highText} | ${progressionText}`;
       scoreEl.dataset.combo = String(metrics.combo);
       scoreEl.style.transform = metrics.combo > 1 ? 'scale(1.045)' : '';
     }
@@ -325,7 +342,7 @@
       <span>Score: ${metrics.score}${metrics.newHighScore ? ' — New High!' : ''}</span>
       <span>Best Combo: x${metrics.peakCombo}</span>
       <span>Projectile Hits: ${metrics.pucksHit}</span>
-      <span>Fish Dodged: ${metrics.fishDodged}</span>
+      <span>Salmon Collected: ${metrics.salmonCollected}</span>
     `;
   }
 
