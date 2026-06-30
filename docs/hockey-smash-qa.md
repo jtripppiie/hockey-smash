@@ -2,22 +2,30 @@
 
 ## Current Preview
 
-- Public game: `Hockey Smash v0.14.3`
-- Visible build badge: `Hockey Smash v0.14.3 · Build 2026-06-29.59`
-- Package version: `0.14.3`
+- Public game: `Hockey Smash v0.14.4`
+- Visible build badge: `Hockey Smash v0.14.4 · Build 2026-06-29.60`
+- Package version: `0.14.4`
 - GitHub Pages URL: `https://jtripppiie.github.io/hockey-smash/`
-- Fresh cache-bust URL: `https://jtripppiie.github.io/hockey-smash/?fresh=0137`
+- Fresh cache-bust URL: `https://jtripppiie.github.io/hockey-smash/?fresh=0144`
 - Computer Play URL: `https://jtripppiie.github.io/hockey-smash/?computerMode=1`
 
-## v0.14.3 Gameplay QA
+## v0.14.4 Gameplay QA
 
 ### Launch / Layout
 
-1. Open `https://jtripppiie.github.io/hockey-smash/?fresh=0137`.
-2. Confirm the top-right badge says `Hockey Smash v0.14.3 · Build 2026-06-29.59`.
+1. Open `https://jtripppiie.github.io/hockey-smash/?fresh=0144`.
+2. Confirm the top-right badge says `Hockey Smash v0.14.4 · Build 2026-06-29.60`.
 3. Confirm the compact splash still fits without obvious scrolling.
 4. Click Start Game.
 5. Confirm the 10-second countdown appears before hazards begin.
+
+### Staged Flow
+
+1. Confirm Level 1 is focused on falling fish.
+2. Confirm Level 2 starts after 5 fish dodges or about 28 seconds.
+3. Confirm Level 2 introduces moose and bears as the main ground threats.
+4. Confirm teacher/dance instructor/mom/dad do not chase the player.
+5. Confirm Alaskan boy/girl cameo is visual only and does not damage, block, or collide.
 
 ### Charged Projectiles
 
@@ -48,6 +56,12 @@
 4. Confirm collecting the power-up does not damage the player.
 5. Confirm later shots are boosted/glow while the boost is active.
 
+### Parallax Starter
+
+1. Confirm parallax is not active yet.
+2. Confirm parallax preload hooks remain commented until assets exist.
+3. Confirm `js/games/hockey-smash-v0115-parallax-starter.js` is documented but not loaded.
+
 ### Computer Play / Watch Mode
 
 1. Open `https://jtripppiie.github.io/hockey-smash/?computerMode=1`.
@@ -74,5 +88,5 @@ npm run test:browser
 ## Known QA Notes
 
 - The current architecture is layered: the core runtime loads first, then later scripts patch or extend movement, HUD, encounters, Try Again, projectiles, character mode, dev tools, layout, and final safety rules.
-- The visible badge, package version, cache key, final release layer, README, changelog, workflow docs, QA docs, checklist, progress docs, and beginner handoff guide should all agree on v0.14.3.
+- The visible badge, package version, cache key, final release layer, README, changelog, workflow docs, QA docs, checklist, progress docs, and beginner handoff guide should all agree on v0.14.4.
 - Browser QA still matters because the game uses canvas, DOM overlays, pointer controls, localStorage, sessionStorage, media queries, and requestAnimationFrame loops.
