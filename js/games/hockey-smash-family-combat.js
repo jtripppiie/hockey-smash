@@ -1,11 +1,12 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.13.9';
-  const DISPLAY_BUILD = 'Build 2026-06-29.55';
+  const DISPLAY_VERSION = 'Hockey Smash v0.14.8 Family Combat';
+  const DISPLAY_BUILD = 'Build 2026-06-30.64';
   const W = 1024;
   const H = 576;
   const GROUND_Y = H * 0.82;
   const BIG = new Set(['bear', 'moose', 'chargingMoose']);
   const FAMILY = new Set(['teacher', 'danceInstructor', 'sister', 'adultCoach', 'alaskanBoy', 'alaskanGirl', 'mom', 'dad']);
+  const SALMON_POINTS = 67;
   let eid = 0;
   let order = 0;
 
@@ -70,8 +71,8 @@
     }
     if (e.type === 'danceInstructor') e.bubble = e.bubble || 'Point those toes!';
     if (e.type === 'teacher') e.bubble = e.bubble || 'Eyes on the puck!';
-    if (e.type === 'alaskanBoy') e.bubble = e.bubble || 'Nice moves!';
-    if (e.type === 'alaskanGirl') e.bubble = e.bubble || 'Nice shot!';
+    if (e.type === 'alaskanBoy') e.bubble = e.bubble || "Hey, you're cute";
+    if (e.type === 'alaskanGirl') e.bubble = e.bubble || "Hey, you're cute";
     if (e.type === 'mom') e.bubble = e.bubble || 'Keep going!';
     if (e.type === 'dad') e.bubble = e.bubble || 'You got this!';
     const delta = s.player.x + s.player.width / 2 - (e.x + e.width / 2);
@@ -150,7 +151,7 @@
     e._v139radius = Math.max(58, Math.min(110, (e.width || 74) * 0.78));
     e.fallingFish = true;
     e.damage = 0;
-    e.dodgeDamage = e.variant === 'schoolRain' || e.variant === 'heavyRain' ? 12 : 8;
+    e.dodgeDamage = e.safeCollectible || e.collectibleSalmon ? 0 : (e.variant === 'schoolRain' || e.variant === 'heavyRain' ? 12 : 8);
     e.vx = 0;
     e.vy = 230 + (Number(s.difficulty) || 0) * 70;
     e._dodgeLayerResolved = true;
@@ -175,6 +176,19 @@
     const landedOnPlayer = splashHits(p, e);
     e.dead = true;
     e._v139warn?.remove?.();
+
+    if (e.safeCollectible || e.collectibleSalmon) {
+      e.damage = 0;
+      e.dodgeDamage = 0;
+      if (overlap(p, e)) {
+        s.message = `${name()} collected salmon! +${SALMON_POINTS}`;
+        effect(s, e.x + e.width / 2, Math.max(70, e.y - 8), `+${SALMON_POINTS}`, 0.6);
+        window.RTA_HOCKEY_SMASH_SCORE?.recordSalmonCollect?.({ state: s, entity: e, points: SALMON_POINTS });
+        status(s.message);
+      }
+      return;
+    }
+
     if (landedOnPlayer && p.invincible <= 0) {
       const amount = e.dodgeDamage || 8;
       p.health = Math.max(0, p.health - amount);
@@ -203,6 +217,7 @@
       if (e.variant === 'heavyRain' || e.variant === 'schoolRain') speed *= 0.92;
       e._dodgeLayerResolved = true;
       e.damage = 0;
+      if (e.safeCollectible || e.collectibleSalmon) e.dodgeDamage = 0;
       e.fallingFish = true;
       e.vx = 0;
       e.vy = speed;
@@ -234,7 +249,7 @@
     if (api()?.getVersion) api().getVersion = () => DISPLAY_VERSION;
     document.body.dataset.hockeyButtonDebug = 'v0.13.9';
     bindDoubleJump();
-    window.HOCKEY_BOOT_LOG?.log?.('family-combat', 'Fish warnings, dance chase, shoe/puck family hits, single wildlife, and double jump loaded.');
+    window.HOCKEY_BOOT_LOG?.log?.('family-combat', 'Fish warnings, dance chase, shoe/puck family hits, single wildlife, double jump, and salmon collectible landing rules loaded.');
     window.requestAnimationFrame(loop);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready);
