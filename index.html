@@ -19,7 +19,7 @@
   <body>
     <main id='app' class='app-shell hockey-app'>
       <section id='hockey-smash' class='hockey-shell' aria-labelledby='hockey-title'>
-        <div id='hockey-build-badge' class='hockey-build-badge' aria-label='Current deployed build'>Hockey Smash v0.14.13 · Build 2026-06-30.69</div>
+        <div id='hockey-build-badge' class='hockey-build-badge' aria-label='Current deployed build'>Hockey Smash v0.14.14 · Build 2026-06-30.70</div>
 
         <section id='hockey-splash' class='hockey-splash'>
           <div class='hockey-splash__content'>
@@ -27,7 +27,7 @@
             <img id='splash-hero' class='hockey-splash__hero' src='assets/hockey-smash/sprites/splash.webp' alt='Daniel returns for Hockey Smash'>
             <h1 id='hockey-title'>Hockey Smash</h1>
             <p class='hockey-splash__tagline'>Customize your runner!</p>
-            <p class='hockey-splash__copy'>Hold your ground in one arena: collect salmon, dodge hazards, and clear obstacles.</p>
+            <p class='hockey-splash__copy'>Use the whole single-screen arena: collect salmon, dodge hazards, and clear obstacles.</p>
 
             <div class='hockey-character-select' aria-label='Choose a Hockey Smash character'>
               <span class='hockey-character-select__label'>Choose character</span>
@@ -46,7 +46,7 @@
               <button id='hockey-play' class='hockey-button hockey-button--primary' type='button'>Start Game</button>
               <a id='hockey-watch' class='hockey-button hockey-button--secondary' href='?computerMode=1' aria-hidden='true' tabindex='-1'>Watch Computer Play</a>
             </div>
-            <p class='hockey-mode-note'>No side-scrolling: survive the single-screen arena.</p>
+            <p class='hockey-mode-note'>No side-scrolling: use the full screen and survive the arena.</p>
           </div>
         </section>
 
@@ -70,7 +70,7 @@
           <div class='hockey-hud' aria-live='polite'>
             <div class='hockey-hud__title'>
               <strong>Hockey Smash</strong>
-              <span>Single-screen arena</span>
+              <span>Full-screen arena</span>
             </div>
             <div class='hockey-health' aria-label='Player health'>
               <span id='hockey-player-health-label'>Daniel</span>
@@ -84,9 +84,9 @@
           <div id='hockey-rotate' class='hockey-rotate' hidden>Rotate for the best gaming experience.</div>
 
           <div class='hockey-controls' aria-label='Hockey Smash arena controls'>
-            <div class='hockey-dpad' aria-label='Dodge controls'>
-              <button class='hockey-control hockey-control--left' type='button' data-action='left' aria-label='Dodge left'>◀</button>
-              <button class='hockey-control hockey-control--right' type='button' data-action='right' aria-label='Dodge right'>▶</button>
+            <div class='hockey-dpad' aria-label='Movement controls'>
+              <button class='hockey-control hockey-control--left' type='button' data-action='left' aria-label='Move left'>◀</button>
+              <button class='hockey-control hockey-control--right' type='button' data-action='right' aria-label='Move right'>▶</button>
             </div>
             <div class='hockey-actions' aria-label='Action controls'>
               <button class='hockey-control' type='button' data-action='jump' aria-label='Jump'>J</button>
@@ -135,8 +135,7 @@
     <script src='js/games/hockey-smash-gameplay-fixes.js?v=0.14.6-20260630.62'></script>
     <script src='js/games/hockey-smash-mom-damage-restore.js?v=0.14.5-20260630.61'></script>
     <script src='js/games/hockey-smash-grounded-cameos.js?v=0.14.11-20260630.67'></script>
-    <script src='js/games/hockey-smash-arena-mode.js?v=0.14.12-20260630.68'></script>
     <script src='js/games/hockey-smash-day-night.js?v=0.14.13-20260630.69'></script>
-    <script src='js/games/hockey-smash-version-lock.js?v=0.14.13-20260630.69'></script>
+    <script src='js/games/hockey-smash-arena-mode.js?v=0.14.14-20260630.70'></script>
   </body>
 </html>
