@@ -12,6 +12,20 @@
     <link rel='preload' as='image' href='assets/hockey-smash/sprites/hockey-player-sliding.webp'>
     <link rel='preload' as='image' href='assets/hockey-smash/sprites/sister-spinning.webp'>
     <link rel='preload' as='image' href='assets/hockey-smash/sprites/dancer-player.webp'>
+    <!--
+      PARALLAX ASSET HOOKS — DISABLED UNTIL ASSETS EXIST
+
+      Generate these files first, then uncomment these two preload lines:
+
+      <link rel='preload' as='image' href='assets/hockey-smash/backgrounds/parallax-midground-loop.webp'>
+      <link rel='preload' as='image' href='assets/hockey-smash/backgrounds/parallax-foreground-loop.webp'>
+
+      Required asset specs:
+      - parallax-midground-loop.webp: 2048x576, transparent, seamless left/right loop.
+      - parallax-foreground-loop.webp: 2048x576, transparent, seamless left/right loop.
+
+      See js/games/hockey-smash-v0115-parallax-starter.js for full instructions.
+    -->
     <link rel='stylesheet' href='hockey-smash.css?v=0.14.3-20260629.59'>
   </head>
   <body>
@@ -128,5 +142,13 @@
     <script src='js/games/hockey-smash-v0112.js?v=0.14.3-20260629.59'></script>
     <script src='js/games/hockey-smash-v0113.js?v=0.14.3-20260629.59'></script>
     <script src='js/games/hockey-smash-v0114.js?v=0.14.3-20260629.59'></script>
+    <!--
+      PARALLAX SCRIPT HOOK — DISABLED UNTIL ASSETS EXIST
+
+      After generating the two parallax assets and uncommenting the implementation block inside
+      js/games/hockey-smash-v0115-parallax-starter.js, uncomment this script tag:
+
+      <script src='js/games/hockey-smash-v0115-parallax-starter.js?v=0.14.4-20260629.60'></script>
+    -->
   </body>
 </html>
