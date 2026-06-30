@@ -1,17 +1,31 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.8 Grounded Cameos';
+  const DISPLAY_VERSION = 'Hockey Smash v0.14.9 Grounded Cameos';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const GROUND_Y = DESIGN_HEIGHT * 0.82;
+
   const CAMEO_WORLD_X = 720;
   const CAMEO_WIDTH = 84;
   const CAMEO_HEIGHT = 96;
   const CAMEO_VISIBLE_MS = 8000;
 
+  const DAD_START_X = 1060;
+  const DAD_STOP_X = 735;
+  const DAD_WIDTH = 118;
+  const DAD_HEIGHT = 104;
+  const DAD_SPEED = 185;
+  const DAD_VISIBLE_MS = 9000;
+  const DAD_TRIGGER_TIME = 42;
+
   let activeState = null;
   let cameoStartedAt = 0;
   let cameoDone = false;
+  let dadStartedAt = 0;
+  let dadDone = false;
+  let dadWorldX = DAD_START_X;
+  let dadNode = null;
   let styleNode = null;
+  let lastFrame = performance.now();
 
   function api() {
     return window.RTA_HOCKEY_SMASH;
@@ -20,7 +34,12 @@
   function getState() {
     const state = api()?.getState?.();
     if (!state || !state.player || ['splash', 'transition', 'tryAgain'].includes(state.mode)) return null;
+    if (!Array.isArray(state.entities)) state.entities = [];
     return state;
+  }
+
+  function playerName() {
+    return api()?.getPlayerConfig?.()?.name || 'Daniel';
   }
 
   function canvasRect() {
@@ -28,10 +47,10 @@
   }
 
   function syncBuildBadge() {
-    const text = 'Hockey Smash v0.14.8 · Build 2026-06-30.64';
+    const text = 'Hockey Smash v0.14.9 · Build 2026-06-30.65';
     const badge = document.getElementById('hockey-build-badge');
     if (badge && badge.textContent !== text) badge.textContent = text;
-    if (api()?.getVersion) api().getVersion = () => 'Hockey Smash v0.14.8';
+    if (api()?.getVersion) api().getVersion = () => 'Hockey Smash v0.14.9';
   }
 
   function ensureOverrides() {
@@ -43,6 +62,38 @@
         bottom: calc(100% + 8px) !important;
         transform: translateX(-50%) !important;
       }
+      .hockey-dad-ride-in {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 118px;
+        height: 104px;
+        z-index: 34;
+        pointer-events: none;
+        filter: drop-shadow(0 10px 14px rgba(0,0,0,.38));
+      }
+      .hockey-dad-ride-in img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .hockey-dad-ride-in__bubble {
+        position: absolute;
+        left: calc(50% - 44px);
+        bottom: calc(100% + 10px);
+        transform: translateX(-50%);
+        min-width: 250px;
+        padding: 0.6rem 0.72rem;
+        border: 3px solid rgba(255,255,255,.95);
+        border-radius: 1rem;
+        background: rgba(15,23,42,.94);
+        color: #fff7d6;
+        font: 1000 15px/1.18 system-ui, sans-serif;
+        text-align: center;
+        box-shadow: 0 10px 24px rgba(0,0,0,.35);
+        white-space: nowrap;
+      }
     `;
     document.head.appendChild(styleNode);
   }
@@ -51,12 +102,16 @@
     activeState = state;
     cameoStartedAt = 0;
     cameoDone = false;
+    dadStartedAt = 0;
+    dadDone = false;
+    dadWorldX = DAD_START_X;
+    removeDadNode();
   }
 
   function wildlifeStageHasStarted(state) {
     if (!state) return false;
     const time = Number(state.time) || 0;
-    const hasWildlife = Array.isArray(state.entities) && state.entities.some((entity) => (
+    const hasWildlife = state.entities.some((entity) => (
       entity && !entity.dead && ['bear', 'moose', 'chargingMoose'].includes(entity.type)
     ));
     return hasWildlife || time > 32;
@@ -108,8 +163,6 @@
       const pos = groundedPositionFor(node);
       if (!pos) return;
 
-      // The release layer creates the Alaska boy/girl as a sideline cameo.
-      // Keep that behavior, but place it on the same ground baseline as Mom and the player.
       node.hidden = false;
       Object.assign(node.style, {
         display: 'block',
@@ -140,24 +193,99 @@
     });
   }
 
-  function runAfterReleaseLayer() {
+  function shouldStartDad(state) {
+    if (!state || dadDone || dadStartedAt) return false;
+    return wildlifeStageHasStarted(state) || Number(state.time || 0) >= DAD_TRIGGER_TIME;
+  }
+
+  function ensureDadNode() {
+    if (dadNode?.isConnected) return dadNode;
+    dadNode = document.createElement('div');
+    dadNode.className = 'hockey-dad-ride-in';
+    dadNode.dataset.hockeyDadRideIn = DISPLAY_VERSION;
+
+    const img = document.createElement('img');
+    img.src = 'assets/hockey-smash/sprites/dad.webp';
+    img.alt = '';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'hockey-dad-ride-in__bubble';
+    bubble.textContent = `${playerName()}, do your homework!`;
+
+    dadNode.appendChild(img);
+    dadNode.appendChild(bubble);
+    document.body.appendChild(dadNode);
+    return dadNode;
+  }
+
+  function removeDadNode() {
+    dadNode?.remove?.();
+    dadNode = null;
+  }
+
+  function positionDadNode() {
+    const rect = canvasRect();
+    if (!rect?.width || !rect?.height || !dadNode) return;
+    const scaleX = rect.width / DESIGN_WIDTH;
+    const scaleY = rect.height / DESIGN_HEIGHT;
+    dadNode.style.left = `${rect.left + dadWorldX * scaleX}px`;
+    dadNode.style.top = `${rect.top + (GROUND_Y - DAD_HEIGHT) * scaleY}px`;
+    dadNode.style.width = `${Math.max(88, DAD_WIDTH * scaleX)}px`;
+    dadNode.style.height = `${Math.max(78, DAD_HEIGHT * scaleY)}px`;
+    const bubble = dadNode.querySelector('.hockey-dad-ride-in__bubble');
+    if (bubble) bubble.textContent = `${playerName()}, do your homework!`;
+  }
+
+  function normalizeDadBubbles(state) {
+    state.entities.forEach((entity) => {
+      if (!entity || entity.dead) return;
+      if (entity.type === 'dad' || entity.type === 'dadJoke') {
+        entity.bubble = `${playerName()}, do your homework!`;
+      }
+    });
+    if (state.dad) state.dad.bubble = `${playerName()}, do your homework!`;
+  }
+
+  function updateDadRideIn(state, dt) {
+    normalizeDadBubbles(state);
+    if (shouldStartDad(state)) dadStartedAt = performance.now();
+    if (!dadStartedAt || dadDone) return;
+
+    ensureDadNode();
+    dadWorldX = Math.max(DAD_STOP_X, dadWorldX - DAD_SPEED * dt);
+    positionDadNode();
+
+    state.message = `${playerName()}, do your homework!`;
+    const status = document.getElementById('hockey-status');
+    if (status) status.textContent = state.message;
+
+    if (performance.now() - dadStartedAt >= DAD_VISIBLE_MS) {
+      dadDone = true;
+      removeDadNode();
+    }
+  }
+
+  function runAfterReleaseLayer(dt) {
     const state = getState();
     if (state && state !== activeState) resetForState(state);
     if (!state) {
       activeState = null;
       hideAlaskaCameos();
+      removeDadNode();
       return;
     }
     groundAlaskaCameo(state);
+    updateDadRideIn(state, dt);
   }
 
-  function loop() {
+  function loop(now) {
+    const dt = Math.min(0.05, Math.max(0.008, (now - lastFrame) / 1000 || 0.016));
+    lastFrame = now;
     ensureOverrides();
     syncBuildBadge();
 
-    // Run after the release layer's own requestAnimationFrame work so this file wins
-    // when it limits the Alaska boy/girl cameo to one short appearance per run.
-    window.setTimeout(runAfterReleaseLayer, 0);
+    // Run after the release layer's own requestAnimationFrame work so this file wins.
+    window.setTimeout(() => runAfterReleaseLayer(dt), 0);
     window.requestAnimationFrame(loop);
   }
 
