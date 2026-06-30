@@ -6,13 +6,10 @@
   const CAST_MIN_GAP_MS = 9000;
   const CAST_GAP_JITTER_MS = 3500;
   const CAST_START_TIME = 8;
+  const MOM_X = 112;
+  const MOM_WIDTH = 92;
+  const MOM_HEIGHT = 100;
   const BUBBLE_LINES = {
-    mom: [
-      'Helmet on, kiddo!',
-      'Keep your head up!',
-      'Use the whole sidewalk!',
-      'Water break after this!',
-    ],
     dad: [],
     daniel: [
       'I got your back!',
@@ -42,6 +39,7 @@
   let castDebugButton = null;
   let bubbleLayer = null;
   const bubbleNodes = new Map();
+  const stationaryMomByState = new WeakSet();
 
   function api() { return window.RTA_HOCKEY_SMASH; }
 
@@ -67,6 +65,10 @@
     return api()?.getPlayerConfig?.()?.name || (character() === 'sofie' ? 'Sofie' : 'Daniel');
   }
 
+  function momLine() {
+    return `${playerName()}, clean your room!`;
+  }
+
   function syncFinalReleaseState() {
     const overlay = document.getElementById('hockey-player-overlay');
     if (!overlay) return;
@@ -88,7 +90,6 @@
 
   function castForCurrentCharacter() {
     const shared = [
-      { type: 'mom', width: 92, height: 100, speed: 82, hp: 3, damage: 5 },
       { type: 'dad', width: 92, height: 96, speed: 72, hp: 4, damage: 6 },
     ];
     if (character() === 'sofie') {
@@ -106,6 +107,7 @@
   }
 
   function pickLine(type) {
+    if (type === 'mom') return momLine();
     if (type === 'dad') return `${playerName()}, do your homework!`;
     const lines = BUBBLE_LINES[type] || [];
     if (!lines.length) return '';
@@ -128,7 +130,7 @@
   }
 
   function templateMessage(type, bubble) {
-    if (type === 'mom') return `Mom skates in: ${bubble}`;
+    if (type === 'mom') return `Mom says: ${bubble}`;
     if (type === 'dad') return `Dad says: ${bubble}`;
     if (type === 'daniel') return `Brother Daniel: ${bubble}`;
     if (type === 'danceInstructor') return `Dance instructor: ${bubble}`;
@@ -148,10 +150,56 @@
     return cast[start];
   }
 
+  function spawnStationaryMom(state, options = {}) {
+    if (!Array.isArray(state?.entities)) return null;
+    const existing = state.entities.find((entity) => entity && !entity.dead && entity.type === 'mom' && entity.stationarySupport);
+    if (existing) {
+      existing.x = MOM_X;
+      existing.y = GROUND_Y - MOM_HEIGHT;
+      existing.vx = 0;
+      existing.vy = 0;
+      existing.damage = 0;
+      existing.prettyBubble = momLine();
+      existing.bubble = '';
+      return existing;
+    }
+    if (!options.force && stationaryMomByState.has(state)) return null;
+    stationaryMomByState.add(state);
+
+    const bubble = momLine();
+    const entity = {
+      type: 'mom',
+      width: MOM_WIDTH,
+      height: MOM_HEIGHT,
+      x: MOM_X,
+      y: GROUND_Y - MOM_HEIGHT,
+      vx: 0,
+      vy: 0,
+      hp: 999,
+      maxHp: 999,
+      damage: 0,
+      bubble: '',
+      prettyBubble: bubble,
+      message: templateMessage('mom', bubble),
+      key: `stationary-mom-${Date.now()}`,
+      stationarySupport: true,
+      nonContact: true,
+      fromStationaryMom: true,
+      variant: 'support',
+    };
+    state.entities.push(entity);
+    state.message = entity.message;
+    const status = document.getElementById('hockey-status');
+    if (status) status.textContent = entity.message;
+    window.HOCKEY_BOOT_LOG?.log?.('cast', 'Spawned stationary Mom support character.');
+    return entity;
+  }
+
   function spawnCastEncounter(state, options = {}) {
     if (!Array.isArray(state?.entities)) return null;
+    if (options.type === 'mom') return spawnStationaryMom(state, { force: true });
     if (!options.force && !castStageHasStarted(state)) return null;
-    const activeCast = state.entities.filter((entity) => entity && !entity.dead && entity.fromFinalCastPass);
+    const activeCast = state.entities.filter((entity) => entity && !entity.dead && entity.fromFinalCastPass && !entity.stationarySupport);
     if (!options.force && activeCast.length >= 1) return null;
 
     const difficulty = difficultyFor(state);
@@ -186,6 +234,7 @@
 
   function runCastLogic(state) {
     if (!castStageHasStarted(state)) return;
+    spawnStationaryMom(state);
     const now = performance.now();
     if (!castStarted) {
       castStarted = true;
@@ -234,6 +283,7 @@
 
   function normalizeBubble(entity) {
     if (!shouldPrettyBubble(entity)) return '';
+    if (entity.type === 'mom') entity.prettyBubble = momLine();
     if (entity.type === 'dad') entity.prettyBubble = `${playerName()}, do your homework!`;
     if (!entity.prettyBubble) entity.prettyBubble = entity.bubble || pickLine(entity.type) || '';
     entity.bubble = '';
@@ -306,7 +356,7 @@
   function exposeCastDebugApi() {
     window.RTA_HOCKEY_SMASH_CAST = {
       spawnNow: spawnCastNow,
-      currentCast: () => castForCurrentCharacter().map((entry) => entry.type),
+      currentCast: () => ['mom'].concat(castForCurrentCharacter().map((entry) => entry.type)),
     };
   }
 
@@ -360,12 +410,12 @@
   }
 
   function ready() {
-    document.body.dataset.hockeyRelease = 'v0.14.41';
+    document.body.dataset.hockeyRelease = 'v0.14.44';
     syncFinalReleaseState();
     exposeCastDebugApi();
     ensureCastDebugButton();
     removeSidelineCameo();
-    window.HOCKEY_BOOT_LOG?.log?.('release', 'Mom now appears as the first early cast character.');
+    window.HOCKEY_BOOT_LOG?.log?.('release', 'Mom is stationary support and only says the clean-room line.');
     window.requestAnimationFrame(loop);
   }
 
