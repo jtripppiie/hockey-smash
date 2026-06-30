@@ -9,6 +9,7 @@
   const MOM_X = 112;
   const MOM_WIDTH = 92;
   const MOM_HEIGHT = 100;
+  const MOM_VISIBLE_MS = 4800;
   const BUBBLE_LINES = {
     dad: [],
     daniel: [
@@ -150,15 +151,27 @@
     return cast[start];
   }
 
+  function expireStationaryMom(entity, now) {
+    if (!entity || entity.dead || !entity.stationarySupport) return false;
+    if (!entity._momExpiresAt) entity._momExpiresAt = now + MOM_VISIBLE_MS;
+    if (now < entity._momExpiresAt) return false;
+    entity.dead = true;
+    entity._momExpired = true;
+    return true;
+  }
+
   function spawnStationaryMom(state, options = {}) {
     if (!Array.isArray(state?.entities)) return null;
+    const now = performance.now();
     const existing = state.entities.find((entity) => entity && !entity.dead && entity.type === 'mom' && entity.stationarySupport);
     if (existing) {
+      if (expireStationaryMom(existing, now)) return null;
       existing.x = MOM_X;
       existing.y = GROUND_Y - MOM_HEIGHT;
       existing.vx = 0;
       existing.vy = 0;
       existing.damage = 0;
+      existing.nonContact = true;
       existing.prettyBubble = momLine();
       existing.bubble = '';
       return existing;
@@ -186,12 +199,13 @@
       nonContact: true,
       fromStationaryMom: true,
       variant: 'support',
+      _momExpiresAt: now + MOM_VISIBLE_MS,
     };
     state.entities.push(entity);
     state.message = entity.message;
     const status = document.getElementById('hockey-status');
     if (status) status.textContent = entity.message;
-    window.HOCKEY_BOOT_LOG?.log?.('cast', 'Spawned stationary Mom support character.');
+    window.HOCKEY_BOOT_LOG?.log?.('cast', 'Spawned temporary stationary Mom support character.');
     return entity;
   }
 
@@ -410,12 +424,12 @@
   }
 
   function ready() {
-    document.body.dataset.hockeyRelease = 'v0.14.44';
+    document.body.dataset.hockeyRelease = 'v0.14.45';
     syncFinalReleaseState();
     exposeCastDebugApi();
     ensureCastDebugButton();
     removeSidelineCameo();
-    window.HOCKEY_BOOT_LOG?.log?.('release', 'Mom is stationary support and only says the clean-room line.');
+    window.HOCKEY_BOOT_LOG?.log?.('release', 'Mom is temporary support; moving cast is unblocked.');
     window.requestAnimationFrame(loop);
   }
 
