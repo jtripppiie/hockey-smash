@@ -1,11 +1,10 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.8 Family Combat';
-  const DISPLAY_BUILD = 'Build 2026-06-30.64';
   const W = 1024;
   const H = 576;
   const GROUND_Y = H * 0.82;
+  const SALMON_POINTS = 67;
   const BIG = new Set(['bear', 'moose', 'chargingMoose']);
-  const FAMILY = new Set(['teacher', 'danceInstructor', 'sister', 'adultCoach', 'dad']);
+  const FAMILY = new Set(['teacher', 'danceInstructor', 'sister', 'adultCoach', 'dad', 'mom']);
   let eid = 0;
   let order = 0;
 
@@ -35,8 +34,8 @@
   }
 
   function bindDoubleJump() {
-    if (document.body.dataset.doubleJumpBound === 'v0.13.9') return;
-    document.body.dataset.doubleJumpBound = 'v0.13.9';
+    if (document.body.dataset.doubleJumpBound === 'v0.14.37') return;
+    document.body.dataset.doubleJumpBound = 'v0.14.37';
     window.addEventListener('keydown', (ev) => {
       if (ev.repeat || !['ArrowUp', 'w', 'W', 'j', 'J'].includes(ev.key || '')) return;
       doubleJump('keyboard');
@@ -45,6 +44,7 @@
       if (ev.target?.closest?.('[data-action]')?.dataset?.action === 'jump') doubleJump('button');
     }, { capture: true, passive: true });
   }
+
   function doubleJump(source) {
     const s = state();
     const p = s?.player;
@@ -57,6 +57,24 @@
     window.HOCKEY_BOOT_LOG?.log?.('family-combat', `Double jump from ${source}.`);
   }
 
+  function defaultContactDamage(type) {
+    if (type === 'danceInstructor') return 7;
+    if (type === 'dad') return 6;
+    if (type === 'mom') return 5;
+    if (type === 'sister') return 4;
+    return 5;
+  }
+
+  function labelFor(type) {
+    if (type === 'danceInstructor') return 'Dance instructor';
+    if (type === 'adultCoach') return 'Dance instructor';
+    if (type === 'teacher') return 'Teacher';
+    if (type === 'dad') return 'Dad';
+    if (type === 'mom') return 'Mom';
+    if (type === 'sister') return 'Sister';
+    return 'Challenge';
+  }
+
   function tuneFamily(s, e) {
     if (!FAMILY.has(e?.type) || e.dead) return;
     ord(e);
@@ -67,13 +85,57 @@
       const hp = e.type === 'sister' ? 3 : 4;
       e.hp = Math.max(Number(e.hp) || 0, hp);
       e.maxHp = Math.max(Number(e.maxHp) || 0, hp);
+      e._contactDamage = Math.max(Number(e.damage) || 0, defaultContactDamage(e.type));
     }
-    if (e.type === 'danceInstructor') e.bubble = e.bubble || 'Point those toes!';
-    if (e.type === 'teacher') e.bubble = e.bubble || 'Keep skating!';
-    if (e.type === 'dad') e.bubble = e.bubble || 'You got this!';
+    if (e.type === 'danceInstructor') {
+      e.prettyBubble = e.prettyBubble || 'Big finish!';
+      e.bubble = '';
+    }
+    if (e.type === 'teacher') e.prettyBubble = e.prettyBubble || 'Keep skating!';
+    if (e.type === 'dad') e.prettyBubble = `${name()}, do your homework!`;
+    e.damage = 0;
     const delta = s.player.x + s.player.width / 2 - (e.x + e.width / 2);
     const speed = e.type === 'danceInstructor' ? 170 : 145;
     e.vx = Math.abs(delta) > 28 ? clamp(delta * 1.35, -speed, speed * 0.72) : 0;
+  }
+
+  function playerContactBox(p) {
+    return {
+      x: p.x + 12,
+      y: p.y + 8,
+      width: Math.max(24, p.width - 24),
+      height: Math.max(24, p.height - 10),
+    };
+  }
+
+  function familyContactBox(e) {
+    return {
+      x: e.x + 10,
+      y: e.y + 10,
+      width: Math.max(24, e.width - 20),
+      height: Math.max(24, e.height - 14),
+    };
+  }
+
+  function familyPlayerContacts(s) {
+    const p = s.player;
+    if (!p || p.invincible > 0) return;
+    const playerBox = playerContactBox(p);
+    const hit = s.entities.find((e) => e && !e.dead && FAMILY.has(e.type) && !e._familyContactResolved && overlap(playerBox, familyContactBox(e)));
+    if (!hit) return;
+
+    const amount = Math.max(1, Number(hit._contactDamage) || defaultContactDamage(hit.type));
+    p.health = Math.max(0, p.health - amount);
+    p.invincible = 0.9;
+    hit._familyContactResolved = true;
+    hit.dead = true;
+
+    const label = labelFor(hit.type);
+    s.message = `${label} bumped ${name()} for ${amount} damage!`;
+    effect(s, hit.x + hit.width / 2, hit.y - 14, hit.type === 'danceInstructor' ? 'DANCE HIT!' : 'BUMP!', 0.55);
+    status(s.message);
+    health(s);
+    if (p.health <= 0) endRun(s);
   }
 
   function projectileBox(node) {
@@ -84,11 +146,13 @@
     if (!cr.width || !cr.height || !r.width || !r.height) return null;
     return { x: (r.left - cr.left) / cr.width * W, y: (r.top - cr.top) / cr.height * H, width: r.width / cr.width * W, height: r.height / cr.height * H };
   }
+
   function shotPower(node) {
     const v = node.dataset.puckVariant || 'normal';
     if (node.dataset.charged === 'true' || v === 'aerial') return 4;
     return v === 'slide' ? 3 : 2;
   }
+
   function projectileFamilyHits(s) {
     const targets = s.entities.filter((e) => FAMILY.has(e?.type) && !e.dead);
     if (!targets.length) return;
@@ -106,9 +170,9 @@
         effect(s, e.x + e.width / 2, e.y - 12, node.dataset.projectileType === 'pointe-shoe' ? 'SHOE HIT!' : 'PUCK HIT!');
         if (e.hp <= 0) {
           e.dead = true;
-          s.message = `${e.type === 'danceInstructor' ? 'Dance instructor' : e.type === 'teacher' ? 'Teacher' : e.type === 'dad' ? 'Dad' : 'Sister'} cleared by the shot!`;
+          s.message = `${labelFor(e.type)} cleared by the shot!`;
         } else {
-          s.message = `Dance challenge HP ${e.hp}/${e.maxHp || 4}.`;
+          s.message = `${labelFor(e.type)} HP ${e.hp}/${e.maxHp || 4}.`;
         }
         window.RTA_HOCKEY_SMASH_SCORE?.recordPuckHit?.({ state: s, target: e, destroyed: e.dead, puckVariant: node.dataset.puckVariant || 'normal', projectileType: node.dataset.projectileType || 'puck', damage: amount, charged: node.dataset.charged === 'true' });
         status(s.message);
@@ -139,6 +203,7 @@
     e._v139warn = n;
     return n;
   }
+
   function prepFish(e, s, now) {
     if (e._v139fish) return;
     e._v139fish = true;
@@ -152,6 +217,7 @@
     e.vy = 230 + (Number(s.difficulty) || 0) * 70;
     e._dodgeLayerResolved = true;
   }
+
   function placeWarning(e) {
     const n = warnNode(e);
     const c = document.getElementById('hockey-canvas');
@@ -162,11 +228,13 @@
     const progress = clamp(((e.y || 0) + (e.height || 42)) / GROUND_Y, 0, 1);
     Object.assign(n.style, { left: `${r.left + e._v139landX * sx}px`, top: `${r.top + (GROUND_Y - 8) * sy}px`, width: `${Math.max(38, e._v139radius * 2 * sx)}px`, height: `${Math.max(12, 24 * sy)}px`, opacity: String(0.45 + progress * 0.5), transform: `translate(-50%,-50%) scale(${(0.85 + progress * 0.45).toFixed(2)})` });
   }
+
   function splashHits(p, e) {
     const center = p.x + p.width / 2;
     const high = !p.grounded && p.y + p.height < GROUND_Y - 78;
     return Math.abs(center - e._v139landX) <= e._v139radius && !high;
   }
+
   function landFish(s, e) {
     const p = s.player;
     const landedOnPlayer = splashHits(p, e);
@@ -201,6 +269,7 @@
     }
     status(s.message);
   }
+
   function fishLoop(s, now) {
     const ids = new Set();
     s.entities.forEach((e) => {
@@ -232,6 +301,7 @@
       oneBigAnimal(s);
       fishLoop(s, performance.now());
       projectileFamilyHits(s);
+      familyPlayerContacts(s);
       health(s);
     } else {
       document.querySelectorAll('[data-hockey-fish-warning]').forEach((n) => n.remove());
@@ -240,14 +310,12 @@
   }
 
   function ready() {
-    const badge = document.getElementById('hockey-build-badge');
-    if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
-    if (api()?.getVersion) api().getVersion = () => DISPLAY_VERSION;
-    document.body.dataset.hockeyButtonDebug = 'v0.13.9';
+    document.body.dataset.hockeyFamilyCombat = 'v0.14.37';
     bindDoubleJump();
-    window.HOCKEY_BOOT_LOG?.log?.('family-combat', 'Fish warnings, dance chase, shoe/puck family hits, single wildlife, double jump, and salmon collectible landing rules loaded.');
+    window.HOCKEY_BOOT_LOG?.log?.('family-combat', 'Family/dance contact damage, projectile hits, single wildlife, double jump, and salmon landing rules loaded.');
     window.requestAnimationFrame(loop);
   }
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready);
   else ready();
 })();
