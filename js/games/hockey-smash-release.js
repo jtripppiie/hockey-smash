@@ -1,9 +1,11 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.28';
-  const DISPLAY_BUILD = 'Build 2026-06-30.84';
-  const BEAR_START_SPEED = 82;
-  const BEAR_LATE_SPEED = 132;
+  const DISPLAY_VERSION = 'Hockey Smash v0.14.29';
+  const DISPLAY_BUILD = 'Build 2026-06-30.85';
+  const BEAR_START_SPEED = 78;
+  const BEAR_LATE_SPEED = 124;
   const GROUND_Y = 576 * 0.82;
+  const CAST_MIN_GAP_MS = 12000;
+  const CAST_GAP_JITTER_MS = 6500;
   const CAMEO_ASSETS = {
     daniel: {
       src: 'assets/hockey-smash/sprites/alaskan_girl.webp',
@@ -14,12 +16,43 @@
       label: "Hey, you're cute",
     },
   };
+  const BUBBLE_LINES = {
+    mom: [
+      'Helmet on, kiddo!',
+      'Keep your head up!',
+      'Use the whole sidewalk!',
+      'Water break after this!',
+    ],
+    dad: [
+      'Skate like you mean it!',
+      'That was almost a slapshot!',
+      'I packed snacks!',
+      'Watch the moose!',
+    ],
+    danceInstructor: [
+      'Point those toes!',
+      'Big finish!',
+      'Spot your turn!',
+      'Graceful escape!',
+    ],
+    sister: [
+      'Spin move!',
+      'Too slow!',
+      'Try catching this!',
+      'I call rematch!',
+    ],
+  };
   let castIndex = 0;
-  let dadRideInDone = false;
+  let castStarted = false;
+  let nextCastAt = 0;
+  let lastCastType = '';
+  let lastBubbleLine = '';
   let castDebugButton = null;
   let cameoNode = null;
   let cameoSprite = null;
   let cameoLabel = null;
+  let bubbleLayer = null;
+  const bubbleNodes = new Map();
 
   function api() { return window.RTA_HOCKEY_SMASH; }
   function getState() {
@@ -58,16 +91,16 @@
   }
 
   function castForCurrentCharacter() {
-    const shared = [
-      { type: 'dad', bubble: '', message: '', width: 92, height: 96, speed: 88, hp: 4 },
-    ];
     if (character() === 'sofie') {
       return [
-        ...shared,
-        { type: 'danceInstructor', bubble: 'Point those toes!', message: 'Dance instructor challenge moving in!', width: 92, height: 100, speed: 126, hp: 4 },
+        { type: 'dad', width: 92, height: 96, speed: 72, hp: 4, damage: 6 },
+        { type: 'danceInstructor', width: 92, height: 100, speed: 92, hp: 4, damage: 5 },
       ];
     }
-    return shared;
+    return [
+      { type: 'mom', width: 92, height: 100, speed: 74, hp: 3, damage: 5 },
+      { type: 'dad', width: 92, height: 96, speed: 70, hp: 4, damage: 6 },
+    ];
   }
 
   function devModeActive() {
@@ -75,28 +108,62 @@
     return params.get('debug') === '1' || params.get('dev') === '1' || params.get('computerMode') === '1' || document.body.classList.contains('hockey-dev-mode');
   }
 
+  function pickLine(type) {
+    const lines = BUBBLE_LINES[type] || [];
+    if (!lines.length) return '';
+    let line = lines[Math.floor(Math.random() * lines.length)];
+    if (lines.length > 1 && line === lastBubbleLine) {
+      line = lines[(lines.indexOf(line) + 1) % lines.length];
+    }
+    lastBubbleLine = line;
+    return line;
+  }
+
+  function labelFor(type) {
+    return {
+      mom: 'Mom',
+      dad: 'Dad',
+      danceInstructor: 'Dance instructor',
+      sister: 'Sister',
+    }[type] || `${type[0].toUpperCase()}${type.slice(1)}`;
+  }
+
+  function templateMessage(type, bubble) {
+    if (type === 'mom') return `Mom skates in: ${bubble}`;
+    if (type === 'dad') return `Dad rides in: ${bubble}`;
+    if (type === 'danceInstructor') return `Dance instructor: ${bubble}`;
+    return `${labelFor(type)} challenge incoming.`;
+  }
+
+  function nextCastTemplate(options = {}) {
+    const cast = castForCurrentCharacter();
+    if (options.type) return cast.find((entry) => entry.type === options.type) || cast[0];
+    const preferred = cast.find((entry) => entry.type !== lastCastType);
+    return preferred || cast[castIndex % cast.length];
+  }
+
   function spawnCastEncounter(state, options = {}) {
     if (!Array.isArray(state?.entities)) return null;
     if (!options.force && !wildlifeStageHasStarted(state)) return null;
     const activeCast = state.entities.filter((entity) => entity && !entity.dead && entity.fromFinalCastPass);
+    if (!options.force && activeCast.length >= 1) return null;
+
     const difficulty = difficultyFor(state);
-    const activeLimit = difficulty > 0.55 ? 2 : 1;
-    if (!options.force && activeCast.length >= activeLimit) return null;
-    const cast = castForCurrentCharacter();
-    const requestedType = options.type || '';
-    const template = cast.find((entry) => entry.type === requestedType) || cast[castIndex % cast.length];
+    const template = nextCastTemplate(options);
     castIndex += 1;
-    const speedBoost = 1 + difficulty * 0.28;
-    const dadLine = `${playerName()}, do your homework!`;
+    lastCastType = template.type;
+    const speedBoost = 1 + difficulty * 0.18;
+    const bubble = pickLine(template.type) || `${playerName()}, keep moving!`;
     const entity = {
       ...template,
-      bubble: template.type === 'dad' ? dadLine : template.bubble,
-      message: template.type === 'dad' ? `Dad rides in: ${dadLine}` : template.message,
+      bubble,
+      prettyBubble: bubble,
+      message: templateMessage(template.type, bubble),
       key: `final-cast-${template.type}-${Date.now()}-${castIndex}`,
-      x: 1024 + 60 + Math.random() * 100,
+      x: 1024 + 80 + Math.random() * 120,
       y: GROUND_Y - template.height,
       vx: -template.speed * speedBoost,
-      damage: template.type === 'dad' ? 7 : 5,
+      damage: template.damage || 5,
       maxHp: template.hp,
       fromFinalCastPass: true,
       fromMovingGameplayPass: true,
@@ -111,9 +178,15 @@
   }
 
   function runCastLogic(state) {
-    if (dadRideInDone || !wildlifeStageHasStarted(state)) return;
-    dadRideInDone = true;
-    spawnCastEncounter(state, { type: 'dad' });
+    if (!wildlifeStageHasStarted(state)) return;
+    const now = performance.now();
+    if (!castStarted) {
+      castStarted = true;
+      nextCastAt = now + 5000;
+    }
+    if (now < nextCastAt) return;
+    const spawned = spawnCastEncounter(state);
+    if (spawned) nextCastAt = now + CAST_MIN_GAP_MS + Math.random() * CAST_GAP_JITTER_MS;
   }
 
   function wildlifeStageHasStarted(state) {
@@ -131,7 +204,7 @@
 
     cameoNode = document.createElement('div');
     cameoNode.className = 'hockey-sideline-cameo';
-    cameoNode.dataset.hockeySidelineCameo = 'v0.14.28';
+    cameoNode.dataset.hockeySidelineCameo = 'v0.14.29';
     cameoNode.setAttribute('aria-hidden', 'true');
     Object.assign(cameoNode.style, {
       position: 'absolute',
@@ -190,6 +263,99 @@
     if (cameoLabel) cameoLabel.textContent = config.label;
   }
 
+  function ensureBubbleLayer() {
+    if (bubbleLayer?.isConnected) return bubbleLayer;
+    bubbleLayer = document.createElement('div');
+    bubbleLayer.className = 'hockey-pretty-bubble-layer';
+    bubbleLayer.setAttribute('aria-hidden', 'true');
+    Object.assign(bubbleLayer.style, {
+      position: 'fixed',
+      left: '0',
+      top: '0',
+      width: '0',
+      height: '0',
+      zIndex: '18',
+      pointerEvents: 'none',
+    });
+    document.body.appendChild(bubbleLayer);
+    return bubbleLayer;
+  }
+
+  function bubbleId(entity) {
+    if (!entity._prettyBubbleId) entity._prettyBubbleId = `bubble-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    return entity._prettyBubbleId;
+  }
+
+  function shouldPrettyBubble(entity) {
+    return entity && !entity.dead && ['mom', 'dad', 'danceInstructor', 'sister', 'teacher', 'adultCoach'].includes(entity.type);
+  }
+
+  function normalizeBubble(entity) {
+    if (!shouldPrettyBubble(entity)) return '';
+    if (!entity.prettyBubble) entity.prettyBubble = entity.bubble || pickLine(entity.type) || '';
+    // The base canvas bubble is one line only. Clear it after saving the text so
+    // the richer DOM bubble can wrap and stay readable.
+    entity.bubble = '';
+    return entity.prettyBubble;
+  }
+
+  function syncPrettyBubbles(state) {
+    const layer = ensureBubbleLayer();
+    const canvas = document.getElementById('hockey-canvas');
+    const rect = canvas?.getBoundingClientRect?.();
+    if (!layer || !rect?.width || !rect?.height || !Array.isArray(state?.entities)) {
+      bubbleNodes.forEach((node) => node.remove());
+      bubbleNodes.clear();
+      return;
+    }
+
+    const alive = new Set();
+    state.entities.forEach((entity) => {
+      const text = normalizeBubble(entity);
+      if (!text) return;
+      const id = bubbleId(entity);
+      alive.add(id);
+      let node = bubbleNodes.get(id);
+      if (!node) {
+        node = document.createElement('div');
+        node.className = 'hockey-pretty-bubble';
+        Object.assign(node.style, {
+          position: 'fixed',
+          maxWidth: 'min(220px, 38vw)',
+          padding: '.42rem .58rem',
+          border: '3px solid rgba(21,32,44,.96)',
+          borderRadius: '14px',
+          background: 'rgba(255, 247, 214, .96)',
+          color: '#15202c',
+          font: '900 clamp(12px, 1.9vw, 16px)/1.12 system-ui, sans-serif',
+          textAlign: 'center',
+          textWrap: 'balance',
+          boxShadow: '0 8px 18px rgba(0,0,0,.28)',
+          transform: 'translate(-50%, -100%)',
+          pointerEvents: 'none',
+          whiteSpace: 'normal',
+        });
+        layer.appendChild(node);
+        bubbleNodes.set(id, node);
+      }
+      node.textContent = text;
+      const sx = rect.width / 1024;
+      const sy = rect.height / 576;
+      const left = rect.left + (entity.x + entity.width / 2) * sx;
+      const top = rect.top + Math.max(18, entity.y - 12) * sy;
+      node.style.left = `${clamp(left, rect.left + 74, rect.right - 74)}px`;
+      node.style.top = `${clamp(top, rect.top + 38, rect.bottom - 24)}px`;
+      node.style.opacity = entity.x > 1024 || entity.x + entity.width < 0 ? '0' : '1';
+    });
+
+    bubbleNodes.forEach((node, id) => {
+      if (!alive.has(id)) {
+        node.remove();
+        bubbleNodes.delete(id);
+      }
+    });
+  }
+
   function spawnCastNow(type) {
     const state = getState();
     if (!state) return null;
@@ -245,8 +411,10 @@
       slowBearsAgain(state);
       runCastLogic(state);
       syncSidelineCameo(state);
+      syncPrettyBubbles(state);
     } else {
       syncSidelineCameo(null);
+      syncPrettyBubbles(null);
     }
     window.requestAnimationFrame(loop);
   }
@@ -255,11 +423,11 @@
     const badge = document.getElementById('hockey-build-badge');
     if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
     if (api()?.getVersion) api().getVersion = () => DISPLAY_VERSION;
-    document.body.dataset.hockeyButtonDebug = 'v0.14.28';
+    document.body.dataset.hockeyButtonDebug = 'v0.14.29';
     syncFinalReleaseState();
     exposeCastDebugApi();
     ensureCastDebugButton();
-    window.HOCKEY_BOOT_LOG?.log?.('release', 'v0.14.28 separates normal arena play from computer/debug visuals.');
+    window.HOCKEY_BOOT_LOG?.log?.('release', 'v0.14.29 spaces cast encounters, restores Mom, and upgrades readable speech bubbles.');
     window.requestAnimationFrame(loop);
   }
 
