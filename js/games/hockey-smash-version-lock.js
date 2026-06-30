@@ -1,9 +1,10 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.20';
-  const BUILD_LABEL = 'Hockey Smash v0.14.20 · Build 2026-06-30.76';
+  const DISPLAY_VERSION = 'Hockey Smash v0.14.21';
+  const BUILD_LABEL = 'Hockey Smash v0.14.21 · Build 2026-06-30.77';
 
   let badgeObserver = null;
   let styleNode = null;
+  let canvasDebugPatchInstalled = false;
 
   function api() {
     return window.RTA_HOCKEY_SMASH;
@@ -43,6 +44,52 @@
     document.head.appendChild(styleNode);
   }
 
+  function installCanvasDebugMarkerPatch() {
+    if (canvasDebugPatchInstalled) return;
+    canvasDebugPatchInstalled = true;
+
+    const proto = window.CanvasRenderingContext2D?.prototype;
+    if (!proto) return;
+
+    const originalFillText = proto.fillText;
+    const originalFillRect = proto.fillRect;
+    const originalStrokeRect = proto.strokeRect;
+    const originalStroke = proto.stroke;
+
+    function isDebugYellow(value) {
+      const text = String(value || '').replace(/\s+/g, '').toLowerCase();
+      return text === '#fff27a' || text === 'rgb(255,242,122)' || text === 'rgba(255,242,122,0.24)' || text === 'rgba(255,242,122,0.45)';
+    }
+
+    function isDebugPanelFill(value) {
+      const text = String(value || '').replace(/\s+/g, '').toLowerCase();
+      return text === 'rgba(5,8,13,0.76)';
+    }
+
+    proto.fillText = function patchedFillText(text, ...args) {
+      if (text === 'PLAYER HERE') return;
+      return originalFillText.call(this, text, ...args);
+    };
+
+    proto.fillRect = function patchedFillRect(x, y, width, height) {
+      const fill = this.fillStyle;
+      const isPlayerDebugBox = isDebugYellow(fill) && width > 120 && height > 120;
+      const isPlayerDebugLabelBox = isDebugPanelFill(fill) && Math.round(width) === 120 && Math.round(height) === 26;
+      if (isPlayerDebugBox || isPlayerDebugLabelBox) return;
+      return originalFillRect.call(this, x, y, width, height);
+    };
+
+    proto.strokeRect = function patchedStrokeRect(x, y, width, height) {
+      if (isDebugYellow(this.strokeStyle) && Number(this.lineWidth) === 5 && width > 120 && height > 120) return;
+      return originalStrokeRect.call(this, x, y, width, height);
+    };
+
+    proto.stroke = function patchedStroke(...args) {
+      if (isDebugYellow(this.strokeStyle) && Number(this.lineWidth) === 5) return;
+      return originalStroke.call(this, ...args);
+    };
+  }
+
   function writeBadge() {
     const badge = document.getElementById('hockey-build-badge');
     if (!badge) return;
@@ -66,6 +113,7 @@
 
   function applyVersion() {
     ensureStyles();
+    installCanvasDebugMarkerPatch();
     writeBadge();
     watchBadge();
 
