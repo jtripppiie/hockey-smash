@@ -3,11 +3,14 @@
   const DESIGN_HEIGHT = 576;
   const GROUND_Y = DESIGN_HEIGHT * 0.82;
   const SALMON_POINTS = 67;
+  const MIN_FALL_SPEED = 680;
+  const FALL_ACCELERATION = 900;
 
   let api = null;
   let status = null;
   let activeState = null;
   let collectedThisRun = new Set();
+  let lastFrame = performance.now();
 
   function onReady() {
     api = window.RTA_HOCKEY_SMASH;
@@ -46,6 +49,13 @@
     entity.safeCollectible = true;
     entity._salmonRulesOwner = 'hockey-smash-salmon-collectibles';
     entity._dodgeLayerResolved = true;
+  }
+
+  function tuneFallSpeed(entity, dt) {
+    if (!entity || entity.dead || entity.type !== 'salmon') return;
+    entity.vx = Math.max(-70, Math.min(70, Number(entity.vx) || 0));
+    entity.vy = Math.max(Number(entity.vy) || 0, MIN_FALL_SPEED);
+    entity.vy += FALL_ACCELERATION * dt;
   }
 
   function playerCatchBox(player) {
@@ -99,11 +109,12 @@
     entity._v139warn?.remove?.();
   }
 
-  function handleSalmon(s) {
+  function handleSalmon(s, dt) {
     const playerBox = playerCatchBox(s.player);
     s.entities.forEach((entity) => {
       if (!entity || entity.dead || entity.type !== 'salmon') return;
       markCollectibleSalmon(entity);
+      tuneFallSpeed(entity, dt);
 
       if (rectsOverlap(playerBox, salmonCatchBox(entity))) {
         collectSalmon(s, entity);
@@ -116,10 +127,12 @@
     });
   }
 
-  function loop() {
+  function loop(now) {
+    const dt = Math.min(0.05, Math.max(0.008, (now - lastFrame) / 1000 || 0.016));
+    lastFrame = now;
     const s = state();
     if (s && s !== activeState) resetForState(s);
-    if (s) handleSalmon(s);
+    if (s) handleSalmon(s, dt);
     else {
       activeState = null;
       document.querySelectorAll('[data-hockey-fish-warning]').forEach((node) => node.remove());
