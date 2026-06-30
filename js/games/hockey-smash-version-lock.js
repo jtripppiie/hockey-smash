@@ -2,6 +2,7 @@
   const VERSION = 'Hockey Smash v0.14.42';
   const BUILD = 'Build 2026-06-30.98';
   const LABEL = `${VERSION} · ${BUILD}`;
+  let observerStarted = false;
 
   function writeVersion() {
     window.HOCKEY_SMASH_VERSION = VERSION;
@@ -15,8 +16,19 @@
     if (badge && badge.textContent !== LABEL) badge.textContent = LABEL;
   }
 
+  function watchBadge() {
+    if (observerStarted) return;
+    const badge = document.getElementById('hockey-build-badge');
+    if (!badge || !window.MutationObserver) return;
+    observerStarted = true;
+    const observer = new MutationObserver(() => writeVersion());
+    observer.observe(badge, { childList: true, characterData: true, subtree: true });
+  }
+
   function ready() {
     writeVersion();
+    watchBadge();
+    window.setInterval(writeVersion, 500);
     window.HOCKEY_BOOT_LOG?.log?.('version', `${LABEL} loaded from the single version source.`);
   }
 
