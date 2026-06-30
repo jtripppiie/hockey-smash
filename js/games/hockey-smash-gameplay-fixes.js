@@ -1,5 +1,5 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.5 Gameplay Fixes';
+  const DISPLAY_VERSION = 'Hockey Smash v0.14.6 Gameplay Fixes';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const GROUND_Y = DESIGN_HEIGHT * 0.82;
@@ -8,11 +8,13 @@
   const MOM_HEIGHT = 104;
   const MOM_TRIGGER_DISTANCE = 60;
   const MOM_TRIGGER_TIME = 28;
+  const MOM_AUTO_DISMISS_MS = 6500;
 
   let activeState = null;
   let lastHealth = null;
   let momActive = false;
   let momAcknowledged = false;
+  let momStartedAt = 0;
   let momNode = null;
   let rightArrowNode = null;
   let fishHitNode = null;
@@ -80,7 +82,7 @@
         z-index: 35;
         width: 96px;
         height: 104px;
-        pointer-events: auto;
+        pointer-events: none;
         filter: drop-shadow(0 9px 13px rgba(0,0,0,.38));
       }
       .hockey-clean-room-mom img {
@@ -103,17 +105,6 @@
         font: 1000 15px/1.18 system-ui, sans-serif;
         text-align: center;
         box-shadow: 0 10px 24px rgba(0,0,0,.35);
-      }
-      .hockey-clean-room-bubble button {
-        display: block;
-        margin: 0.5rem auto 0;
-        padding: 0.42rem 0.68rem;
-        border: 2px solid #fff27a;
-        border-radius: 999px;
-        background: #fff27a;
-        color: #101923;
-        font: 1000 13px/1 system-ui, sans-serif;
-        cursor: pointer;
       }
       .hockey-right-arrow-cue {
         position: fixed;
@@ -178,6 +169,7 @@
     lastHealth = s?.player?.health ?? null;
     momActive = false;
     momAcknowledged = false;
+    momStartedAt = 0;
     removeMomNode();
   }
 
@@ -221,8 +213,7 @@
 
     const bubble = document.createElement('div');
     bubble.className = 'hockey-clean-room-bubble';
-    bubble.innerHTML = `<span></span><button type="button">After this level!</button>`;
-    bubble.querySelector('button')?.addEventListener('click', acknowledgeMom);
+    bubble.innerHTML = '<span></span>';
 
     momNode.appendChild(img);
     momNode.appendChild(bubble);
@@ -252,6 +243,7 @@
 
   function triggerMom(s) {
     momActive = true;
+    momStartedAt = performance.now();
     ensureMomNode();
     positionMomNode();
     s.message = `${playerName()}, clean your room`;
@@ -284,15 +276,16 @@
     });
   }
 
-  function acknowledgeMom() {
+  function dismissMom() {
     const s = state();
     if (s) {
       resumeHazardsAfterMom(s);
-      s.message = `${playerName()} promised: after this level!`;
+      s.message = `${playerName()} keeps running!`;
       setStatus(s.message);
     }
     momActive = false;
     momAcknowledged = true;
+    momStartedAt = 0;
     removeMomNode();
   }
 
@@ -302,6 +295,7 @@
     ensureMomNode();
     positionMomNode();
     pauseHazardsForMom(s);
+    if (momStartedAt && performance.now() - momStartedAt >= MOM_AUTO_DISMISS_MS) dismissMom();
   }
 
   function showFishFeedback(amount, s) {
