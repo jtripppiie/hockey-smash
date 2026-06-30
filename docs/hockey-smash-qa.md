@@ -3,29 +3,21 @@
 ## Current Preview
 
 - Public game: `Hockey Smash v0.14.4`
-- Visible build badge: `Hockey Smash v0.14.4 · Build 2026-06-29.60`
+- Visible build badge: `Hockey Smash v0.14.4 · Build 2026-06-30.60`
 - Package version: `0.14.4`
 - GitHub Pages URL: `https://jtripppiie.github.io/hockey-smash/`
-- Fresh cache-bust URL: `https://jtripppiie.github.io/hockey-smash/?fresh=0144`
+- Fresh cache-bust URL: `https://jtripppiie.github.io/hockey-smash/?fresh=0137`
 - Computer Play URL: `https://jtripppiie.github.io/hockey-smash/?computerMode=1`
 
 ## v0.14.4 Gameplay QA
 
 ### Launch / Layout
 
-1. Open `https://jtripppiie.github.io/hockey-smash/?fresh=0144`.
-2. Confirm the top-right badge says `Hockey Smash v0.14.4 · Build 2026-06-29.60`.
+1. Open `https://jtripppiie.github.io/hockey-smash/?fresh=0137`.
+2. Confirm the top-right badge says `Hockey Smash v0.14.4 · Build 2026-06-30.60`.
 3. Confirm the compact splash still fits without obvious scrolling.
 4. Click Start Game.
 5. Confirm the 10-second countdown appears before hazards begin.
-
-### Staged Flow
-
-1. Confirm Level 1 is focused on falling fish.
-2. Confirm Level 2 starts after 5 fish dodges or about 28 seconds.
-3. Confirm Level 2 introduces moose and bears as the main ground threats.
-4. Confirm teacher/dance instructor/mom/dad do not chase the player.
-5. Confirm Alaskan boy/girl cameo is visual only and does not damage, block, or collide.
 
 ### Charged Projectiles
 
@@ -55,12 +47,6 @@
 3. Skate through the power-up and confirm it is collected.
 4. Confirm collecting the power-up does not damage the player.
 5. Confirm later shots are boosted/glow while the boost is active.
-
-### Parallax Starter
-
-1. Confirm parallax is not active yet.
-2. Confirm parallax preload hooks remain commented until assets exist.
-3. Confirm `js/games/hockey-smash-v0115-parallax-starter.js` is documented but not loaded.
 
 ### Computer Play / Watch Mode
 

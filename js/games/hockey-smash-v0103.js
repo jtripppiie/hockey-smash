@@ -50,14 +50,14 @@
   function bindStickLaunchers() {
     window.addEventListener('keydown', (event) => {
       if (setPuckTypeFromKey(event)) return;
-      if (!['f', 'F', 'Enter'].includes(event.key)) return;
+      if (!['f', 'F', 'Enter', ' '].includes(event.key)) return;
       // Holding the action key starts a charge. We fire on keyup so the player can
       // choose between a tap shot and a charged slap shot.
       if (!event.repeat && !puckChargeStart) puckChargeStart = performance.now();
     }, { capture: true });
 
     window.addEventListener('keyup', (event) => {
-      if (!['f', 'F', 'Enter'].includes(event.key) || !puckChargeStart) return;
+      if (!['f', 'F', 'Enter', ' '].includes(event.key) || !puckChargeStart) return;
       firePuck(performance.now() - puckChargeStart);
       puckChargeStart = 0;
     });

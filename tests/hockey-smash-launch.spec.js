@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test('Hockey Smash v0.14.3 launches with overlays and continuous progression', async ({ page }) => {
+test('Hockey Smash v0.14.4 launches with overlays and continuous progression', async ({ page }) => {
   const consoleErrors = [];
   page.on('console', (message) => {
     if (message.type() === 'error') consoleErrors.push(message.text());
@@ -9,7 +9,7 @@ test('Hockey Smash v0.14.3 launches with overlays and continuous progression', a
 
   await page.goto('/');
   await expect(page.locator('h1')).toHaveText('Hockey Smash');
-  await expect(page.locator('#hockey-build-badge')).toContainText('Hockey Smash v0.14.3 · Build 2026-06-29.59');
+  await expect(page.locator('#hockey-build-badge')).toContainText('Hockey Smash v0.14.4 · Build 2026-06-30.60');
   await expect(page.locator('#hockey-watch')).toHaveAttribute('href', '?computerMode=1');
   await page.locator('#hockey-play').click();
   await expect(page.locator('#hockey-game')).toBeVisible({ timeout: 6000 });
@@ -18,7 +18,7 @@ test('Hockey Smash v0.14.3 launches with overlays and continuous progression', a
   await expect(page.locator('.hockey-entity-layer')).toHaveCount(1);
 
   const version = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getVersion());
-  expect(version).toBe('Hockey Smash v0.14.3');
+  expect(version).toBe('Hockey Smash v0.14.4');
 
   await page.evaluate(() => {
     const state = window.RTA_HOCKEY_SMASH.getState();
@@ -40,7 +40,7 @@ test('Hockey Smash v0.14.3 launches with overlays and continuous progression', a
 
 test('Computer Play hides duplicate DOM Daniel overlay', async ({ page }) => {
   await page.goto('/?computerMode=1');
-  await expect(page.locator('#hockey-build-badge')).toContainText('Hockey Smash v0.14.3 · Build 2026-06-29.59');
+  await expect(page.locator('#hockey-build-badge')).toContainText('Hockey Smash v0.14.4 · Build 2026-06-30.60');
   await expect(page.locator('#hockey-game')).toBeVisible({ timeout: 5000 });
   await expect(page.locator('.hockey-autoplay-panel')).toContainText('Watch mode is active');
 
@@ -49,8 +49,27 @@ test('Computer Play hides duplicate DOM Daniel overlay', async ({ page }) => {
   const overlayHidden = await page.locator('#hockey-player-overlay').evaluate((node) => node.hidden || getComputedStyle(node).display === 'none');
 
   expect(computerEnabled).toBe(true);
-  expect(version).toBe('Hockey Smash v0.14.3');
+  expect(version).toBe('Hockey Smash v0.14.4');
   expect(overlayHidden).toBe(true);
+});
+
+test('Desktop Space fires and dev shortcut spawns cast encounters', async ({ page }) => {
+  await page.goto('/?debug=1');
+  await page.locator('[data-character="sofie"]').click();
+  await page.locator('#hockey-play').click();
+  await expect(page.locator('#hockey-game')).toBeVisible({ timeout: 6000 });
+  await expect(page.locator('#hockey-spawn-cast-debug')).toBeVisible();
+
+  await page.keyboard.down('Space');
+  await page.keyboard.up('Space');
+  await expect(page.locator('[data-projectile-type]')).toHaveCount(1, { timeout: 2000 });
+
+  const spawnedType = await page.evaluate(() => {
+    window.RTA_HOCKEY_SMASH_CAST.spawnNow('alaskanBoy');
+    return window.RTA_HOCKEY_SMASH.getState().entities.find((entity) => entity.fromFinalCastPass)?.type;
+  });
+
+  expect(spawnedType).toBe('alaskanBoy');
 });
 
 test('Portrait mobile layout keeps canvas and controls separated', async ({ page }) => {
@@ -63,7 +82,7 @@ test('Portrait mobile layout keeps canvas and controls separated', async ({ page
   const controlsBox = await page.locator('.hockey-controls').boundingBox();
   const version = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getVersion());
 
-  expect(version).toBe('Hockey Smash v0.14.3');
+  expect(version).toBe('Hockey Smash v0.14.4');
   expect(canvasBox?.y).toBeLessThan(180);
   expect(canvasBox?.height).toBeLessThan(260);
   expect(controlsBox?.y).toBeGreaterThan(canvasBox.y + canvasBox.height + 40);

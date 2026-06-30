@@ -29,31 +29,34 @@ Hockey Smash is the primary public playable mode in this repo. It is a static Gi
 The top-right badge should read:
 
 ```text
-Hockey Smash v0.14.4 · Build 2026-06-29.60
+Hockey Smash v0.14.4 · Build 2026-06-30.60
 ```
 
 Current cache key:
 
 ```text
-0.14.4-20260629.60
+0.14.4-20260630.60
 ```
 
 ## What v0.14.4 Includes
 
-- Keeps the staged flow: fish-dodge level first, then the moose/bear wildlife level.
-- Keeps bears slow with final bear-speed tuning.
-- Restores Level 2 focus to wildlife by suppressing people/cast entities as hazards.
-- Converts Alaskan boy/girl into a harmless sideline cameo instead of spawning them as chasing/damaging entities.
-- Keeps the new Alaskan boy/girl sprite assets wired and verified.
-- Keeps charged shooting for Daniel's puck and Sofie's pointe shoe.
-- Keeps double jump, fish warnings, safe power-ups, score, high score, and Try Again flow.
-- Keeps the parallax starter file disabled until exact parallax background-loop assets are added.
+- Makes salmon/fish rain down from the top of the screen instead of entering sideways.
+- Adds rain, heavyRain, fastRain, and schoolRain falling-fish variants.
+- Starts normal runs with a fish-dodge level before ramping into the moose/bear wildlife level.
+- Keeps bears and moose as fightable ground threats after the opening fish stage.
+- Adds charged shooting for Daniel's puck and Sofie's pointe shoe.
+- Action key/button now charges on hold and fires on release.
+- Faster 180ms projectile cooldown for more responsive tap shooting.
+- Stronger charged shots with a longer 720ms charge window, bigger projectile visuals, stronger hit text, more damage, and arcing physics.
+- Adds safe power-ups that drop from defeated bears/moose without entering the core hazard collision system.
+- Adds double jump, slower early pacing, Sofie dance cameo support, staged fish/wildlife progression, and final bear-speed tuning.
 - Uses `js/games/hockey-smash-v0114.js` as the final visible release layer so the newest badge wins after older layers boot.
+- Adds a dev-only Spawn Cast shortcut for quickly QAing Daniel/Sofie cast encounters.
+- Makes Space fire the desktop action shot instead of jumping.
 
 ## Recent Stabilization
 
-- **v0.14.4:** cast cleanup; Alaskan boy/girl are harmless sideline cameo visuals, not chase/collision enemies.
-- **v0.14.3:** staged fish-dodge opening, slower bear tuning, and final badge/cache-key alignment.
+- **v0.14.4:** Space fires on desktop, dev cast-spawn shortcut, cast encounter QA support, cleanup of unused local layers, and final badge/cache-key alignment.
 - **v0.14.2:** fish-dodge level first, then moose/bear wildlife level.
 - **v0.14.1:** removed earthquake shake, slowed bears, and added Sofie dance cameo support.
 - **v0.14.0:** progressive pacing for wildlife and people encounters.
@@ -71,9 +74,9 @@ Keyboard:
 
 - Move left: `ArrowLeft` or `A`
 - Move right: `ArrowRight` or `D`
-- Jump: `ArrowUp`, `W`, or `Space`
+- Jump: `ArrowUp`, `W`, or `J`
 - Slide / duck: `Shift` or `S`
-- Action: hold/release `F` or `Enter`
+- Action: hold/release `Space`, `F`, or `Enter`
   - Tap quickly for a fast shot.
   - Hold briefly to charge a stronger arcing shot.
   - Daniel fires pucks.
@@ -98,11 +101,10 @@ Touch:
 8. When the countdown finishes, hazards begin.
 9. Salmon/fish should rain down from the top for the fish-dodge level.
 10. After enough dodges or roughly 28 seconds, Level 2 introduces moose and bears.
-11. The Alaskan boy/girl sideline cameo may appear visually, but it should not chase, collide, damage, or block the player.
 
 ## Main Files
 
-- `index.html`: public shell, visible build badge, splash customization controls, HUD, canvas, preload hints, and script/css loading order.
+- `index.html`: public shell, visible build badge, splash customization controls, HUD, canvas, and script/css loading order.
 - `hockey-smash.css`: single CSS manifest loaded by `index.html`; imports all CSS layers with the current cache key.
 - `style.css`: full-screen layout, compact splash layout, HUD, canvas scaling, and mobile controls.
 - `hockey-smash-custom.css`: compact player name and character selector styling.
@@ -116,22 +118,10 @@ Touch:
 - `js/games/hockey-smash-v0110.js`: double jump, fish warnings, projectile hits on family/dance encounters, and one-big-animal pressure.
 - `js/games/hockey-smash-v0111.js`: progressive encounter pacing.
 - `js/games/hockey-smash-v0112.js`: no-shake spotlight boost, slower bears, and Sofie dance cameo support.
-- `js/games/hockey-smash-v0113.js`: staged fish-dodge level followed by moose/bear wildlife level; suppresses people/cast entities as hazards.
-- `js/games/hockey-smash-v0114.js`: final v0.14.4 release layer, bear-speed tuning, and harmless sideline cameo behavior.
-- `js/games/hockey-smash-v0115-parallax-starter.js`: disabled/commented parallax starter and asset instructions.
+- `js/games/hockey-smash-v0113.js`: staged fish-dodge level followed by moose/bear wildlife level.
+- `js/games/hockey-smash-v0114.js`: final v0.14.4 release layer and bear-speed tuning.
 - `scripts/verify-hockey-smash.js`: static verification for versions, cache keys, docs, files, and key feature markers.
 - `docs/hockey-smash-kid-handoff.md`: beginner guide explaining how the code is organized and where to safely change things.
-
-## Parallax Starter Status
-
-Parallax is intentionally **not active** yet. The starter file documents the required assets:
-
-```text
-assets/hockey-smash/backgrounds/parallax-midground-loop.webp
-assets/hockey-smash/backgrounds/parallax-foreground-loop.webp
-```
-
-Both must be `2048x576`, transparent, WebP, and horizontally seamless before the commented preload/script hooks are enabled.
 
 ## How To Run Locally
 
@@ -171,7 +161,7 @@ npm run test:browser
 
 Manual smoke checks before calling this checkpoint good:
 
-- Open `/` and confirm the visible badge says `Hockey Smash v0.14.4 · Build 2026-06-29.60`.
+- Open `/` and confirm the visible badge says `Hockey Smash v0.14.4 · Build 2026-06-30.60`.
 - Confirm the compact splash still fits without obvious scrolling.
 - Confirm Start Game enters gameplay and shows the 10-second countdown.
 - Hold/release action and confirm charged shots fire.
@@ -179,6 +169,5 @@ Manual smoke checks before calling this checkpoint good:
 - Confirm rain, heavyRain, fastRain, and schoolRain fish fall from the top.
 - Confirm the first level focuses on falling-fish dodges.
 - Confirm Level 2 introduces bears and moose as fightable ground threats.
-- Confirm Alaskan boy/girl cameo is visual only and does not chase or damage the player.
 - Confirm power-ups can drop from defeated bears/moose and can be collected without damaging the player.
 - Open `?computerMode=1` and confirm autoplay still runs through movement, encounters, projectile, score, and customization systems.

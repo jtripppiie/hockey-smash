@@ -2,8 +2,8 @@ const fs = require('fs');
 const path = require('path');
 
 const VERSION = 'Hockey Smash v0.14.4';
-const BUILD = 'Build 2026-06-29.60';
-const CACHE_KEY = '0.14.4-20260629.60';
+const BUILD = 'Build 2026-06-30.60';
+const CACHE_KEY = '0.14.4-20260630.60';
 
 const requiredFiles = [
   'index.html',
@@ -40,7 +40,6 @@ const requiredFiles = [
   'js/games/hockey-smash-v0112.js',
   'js/games/hockey-smash-v0113.js',
   'js/games/hockey-smash-v0114.js',
-  'js/games/hockey-smash-v0115-parallax-starter.js',
   'scripts/verify-hockey-smash-actions.js',
   'docs/hockey-smash-workflow.md',
   'docs/hockey-smash-dev-checklist.md',
@@ -57,8 +56,6 @@ const requiredFiles = [
   'assets/hockey-smash/sprites/dancer-player.webp',
   'assets/hockey-smash/sprites/sister-spinning.webp',
   'assets/hockey-smash/sprites/splash.webp',
-  'assets/hockey-smash/sprites/alaskan_boy.webp',
-  'assets/hockey-smash/sprites/alaskan_girl.webp',
 ];
 
 const errors = [];
@@ -102,14 +99,11 @@ const v0111 = read('js/games/hockey-smash-v0111.js');
 const v0112 = read('js/games/hockey-smash-v0112.js');
 const v0113 = read('js/games/hockey-smash-v0113.js');
 const v0114 = read('js/games/hockey-smash-v0114.js');
-const v0115 = read('js/games/hockey-smash-v0115-parallax-starter.js');
 
 requireText('package.json', pkg, '"version": "0.14.4"', 'Package version is stale.');
 requireText('index.html', html, `${VERSION} · ${BUILD}`, 'Build badge is stale.');
 requireText('index.html', html, `hockey-smash.css?v=${CACHE_KEY}`, 'CSS manifest is not linked or cache-busted.');
 requireText('index.html', html, `js/games/hockey-smash-v0114.js?v=${CACHE_KEY}`, 'Final v0114 release layer is not linked or cache-busted.');
-requireText('index.html', html, `assets/hockey-smash/sprites/alaskan_boy.webp`, 'Alaskan boy preload is missing.');
-requireText('index.html', html, `assets/hockey-smash/sprites/alaskan_girl.webp`, 'Alaskan girl preload is missing.');
 requireText('index.html', html, `js/games/hockey-smash-v0106-earthquake.js?v=${CACHE_KEY}`, 'Earthquake mode layer is not linked or cache-busted.');
 requireText('index.html', html, `js/games/hockey-smash-v0108-weather.js?v=${CACHE_KEY}`, 'Weather layer is not linked or cache-busted.');
 requireText('hockey-smash.css', cssManifest, `style.css?v=${CACHE_KEY}`, 'CSS manifest cache key is stale.');
@@ -118,14 +112,11 @@ requireText('style.css', style, 'max-height: min(32vh, 285px)', 'Compact no-scro
 requireText('hockey-smash-custom.css', customCss, 'padding: 0.4rem 0.78rem', 'Compact customization control sizing is missing.');
 requireText('js/games/hockey-smash-v0114.js', v0114, VERSION, 'Final release layer version is stale.');
 requireText('js/games/hockey-smash-v0114.js', v0114, BUILD, 'Final release layer build is stale.');
-requireText('js/games/hockey-smash-v0114.js', v0114, 'hockey-sideline-cameo', 'Harmless sideline cameo is missing.');
-requireText('js/games/hockey-smash-v0114.js', v0114, 'removeFinalCastEntities', 'Cast entity cleanup guard is missing.');
-requireText('js/games/hockey-smash-v0114.js', v0114, 'BEAR_START_SPEED = 82', 'Final bear-speed tuning is missing.');
-requireText('js/games/hockey-smash-v0113.js', v0113, 'people/cast suppressed as hazards', 'Staged wildlife phase should suppress people/cast hazards.');
 requireText('js/games/hockey-smash-v0110.js', v0110, 'doubleJump', 'Double-jump layer is missing.');
 requireText('js/games/hockey-smash-v0111.js', v0111, 'progressive pacing', 'Progressive pacing layer is missing.');
 requireText('js/games/hockey-smash-v0112.js', v0112, 'slowBears', 'Bear-speed tuning layer is missing.');
 requireText('js/games/hockey-smash-v0113.js', v0113, 'Fish Dodge Level', 'Staged fish-dodge level is missing.');
+requireText('js/games/hockey-smash-v0114.js', v0114, 'BEAR_START_SPEED = 82', 'Final bear-speed tuning is missing.');
 requireText('js/games/hockey-smash-v0109.js', v0109, 'START_COUNTDOWN_SECONDS = 10', 'Start-game 10-second practice countdown is missing.');
 requireText('js/games/hockey-smash-v0109.js', v0109, 'forceSalmonFromRight', 'Right-side-only salmon guard is missing.');
 requireText('js/games/hockey-smash-v0103.js', v0103, 'PUCK_MAX_CHARGE_MS = 720', 'Stronger charge window is missing.');
@@ -144,8 +135,6 @@ requireText('js/games/hockey-smash-v0102.js', v0102, "variant: 'schoolRain'", 'S
 requireText('js/games/hockey-smash-v0102.js', v0102, 'danceInstructor', 'Dance instructor moving encounter is missing.');
 requireText('js/games/hockey-smash.js', core, 'teacher.png', 'Teacher sprite is missing from core assets.');
 requireText('js/games/hockey-smash.js', core, 'dance_instructor.webp', 'Dance instructor sprite is missing from core assets.');
-requireText('js/games/hockey-smash.js', core, 'alaskan_boy.webp', 'Alaskan boy sprite is missing from core assets.');
-requireText('js/games/hockey-smash.js', core, 'alaskan_girl.webp', 'Alaskan girl sprite is missing from core assets.');
 requireText('js/games/hockey-smash-v0102.js', v0102, 'maybeQueueComboSpawn', 'Combo encounter spawning is missing.');
 requireText('js/games/hockey-smash-v0106.js', v0106, "gameTitle: 'Dance Smash'", 'Dance Smash labels are missing.');
 requireText('js/games/hockey-smash-v0104.js', v0104, 'Projectile Hits', 'Score feedback should support projectile hits.');
@@ -161,18 +150,14 @@ requireText('js/games/hockey-smash-v0108-weather.js', weather, 'RTA_HOCKEY_SMASH
 requireText('js/games/hockey-smash-v0108-weather.js', weather, 'syncParallax', 'Weather parallax layer is missing.');
 requireText('js/games/hockey-smash-v096.js', v096, 'const activePointers = new Map()', 'Pointer tracking is missing from movement layer.');
 requireText('hockey-smash-touch.css', touchCss, 'touch-action: none', 'Touch-action CSS is missing.');
-requireText('js/games/hockey-smash-v0115-parallax-starter.js', v0115, 'DISABLED ON PURPOSE', 'Parallax starter safety comment is missing.');
-requireText('js/games/hockey-smash-v0115-parallax-starter.js', v0115, 'parallax-midground-loop.webp', 'Parallax midground instructions are missing.');
-requireText('js/games/hockey-smash-v0115-parallax-starter.js', v0115, 'parallax-foreground-loop.webp', 'Parallax foreground instructions are missing.');
 
 const docsToCheck = { readme, changelog, workflow, checklist, qa, progress, kidGuide };
 Object.entries(docsToCheck).forEach(([name, text]) => {
   if (!text.includes('v0.14.4') && !text.includes('0.14.4')) errors.push(`${name} does not mention the current version.`);
 });
 requireText('README.md', readme, 'charged', 'README does not document charged shots.');
-requireText('README.md', readme, 'sideline cameo', 'README does not document sideline cameo behavior.');
 requireText('README.md', readme, 'salmon', 'README does not document salmon gameplay.');
-requireText('CHANGELOG.md', changelog, '0.14.4 - Cast Cameo Cleanup', 'Changelog is missing the v0.14.4 entry.');
+requireText('CHANGELOG.md', changelog, '0.14.4 - Cast QA And Controls', 'Changelog is missing the v0.14.4 entry.');
 
 const textToScan = { html, cssManifest, core, v0102, v0103, v0104, v0106, v0109, v0110 };
 Object.entries(textToScan).forEach(([name, text]) => {

@@ -221,12 +221,14 @@
       ArrowUp: 'jump',
       w: 'jump',
       W: 'jump',
-      ' ': 'jump',
+      j: 'jump',
+      J: 'jump',
       Shift: 'slide',
       s: 'slide',
       S: 'slide',
       f: 'stick',
       F: 'stick',
+      ' ': 'stick',
       Enter: 'stick',
     }[key] || null;
   }

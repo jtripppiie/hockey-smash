@@ -1,23 +1,13 @@
 # Changelog
 
-## 0.14.4 - Cast Cameo Cleanup
+## 0.14.4 - Cast QA And Controls
 
-- Shipped **Hockey Smash v0.14.4** with visible build badge `Build 2026-06-29.60`.
-- Restored the staged Level 2 focus to moose/bear wildlife instead of people chasing the player.
-- Converted the Alaskan boy/girl character additions into harmless sideline cameos instead of collision/damage entities.
-- Kept the final bear-speed tuning from v0.14.3.
-- Added verification coverage for `alaskan_boy.webp`, `alaskan_girl.webp`, the sideline cameo marker, and the parallax starter file.
-- Kept the parallax starter disabled until exact background-loop assets are added.
-- Updated cache keys, package version, README, docs, and verifier checks for v0.14.4.
-
-## 0.14.3 - Staged Run Stabilization
-
-- Shipped **Hockey Smash v0.14.3** with visible build badge `Build 2026-06-29.59`.
-- Kept the current shell, package version, CSS manifest, README, docs, and verifier aligned on `0.14.3-20260629.59`.
-- Added syntax/static verification for the loaded `v0111` through `v0114` layers.
-- Documented the staged flow: fish-dodge level first, then the moose/bear wildlife level.
-- Preserved the recent double-jump, progressive pacing, Sofie cameo, and final bear-speed tuning layers.
-- Updated cache keys, package version, README, docs, and verifier checks for v0.14.3.
+- Shipped **Hockey Smash v0.14.4** with visible build badge `Build 2026-06-30.60`.
+- Kept the current shell, package version, CSS manifest, README, docs, and verifier aligned on `0.14.4-20260630.60`.
+- Added a dev-only Spawn Cast shortcut and scriptable cast QA API.
+- Changed desktop Space to fire the action shot; jump remains on ArrowUp, W, and J.
+- Added browser coverage for Space firing and cast shortcut spawning.
+- Removed unused local CSS/JS experiment layers that are not loaded by the current game.
 
 ## 0.13.7 - Falling Fish Hazards
 

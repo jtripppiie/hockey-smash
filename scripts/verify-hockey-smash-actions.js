@@ -245,9 +245,9 @@ const leftX = state.player.x;
 assert(leftX < rightX - 20, `Left movement failed: right=${rightX}, left=${leftX}.`);
 
 const groundedY = state.player.y;
-harness.dispatchKey('keydown', ' ');
+harness.dispatchKey('keydown', 'ArrowUp');
 harness.frames(5);
-harness.dispatchKey('keyup', ' ');
+harness.dispatchKey('keyup', 'ArrowUp');
 state = api.getState();
 assert(state.player.y < groundedY - 10, `Jump failed: before=${groundedY}, after=${state.player.y}.`);
 assert(state.player.y + state.player.height < groundY, 'Jump should lift the player above the ground line.');
@@ -281,6 +281,27 @@ assert(state.player.attackTimer > 0, 'Stick swing should start attack timer.');
 assert(bear?.dead === true, 'Stick swing should clear a bear obstacle in range.');
 assert(state.computer.results.clearedObstacle === true, 'Obstacle clear result should be tracked.');
 harness.dispatchKey('keyup', 'F');
+
+state.player.facing = 1;
+state.player.attackTimer = 0;
+state.entities.push({
+  type: 'bear',
+  testSpaceObstacle: true,
+  x: state.player.x + state.player.width - 4,
+  y: state.player.y + 28,
+  width: 84,
+  height: 72,
+  vx: 0,
+  hp: 1,
+  maxHp: 1,
+  damage: 0,
+});
+harness.dispatchKey('keydown', ' ');
+state = api.getState();
+const spaceBear = state.entities.find((entity) => entity.testSpaceObstacle);
+assert(state.player.attackTimer > 0, 'Space bar should start the desktop action timer.');
+assert(spaceBear?.dead === true, 'Space bar should clear a bear obstacle in range.');
+harness.dispatchKey('keyup', ' ');
 
 state = api.getState();
 assert(harness.elements['hockey-debug'].textContent.includes('x='), 'Debug panel should show player x position.');

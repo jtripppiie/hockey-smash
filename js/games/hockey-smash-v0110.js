@@ -38,7 +38,7 @@
     if (document.body.dataset.doubleJumpBound === 'v0.13.9') return;
     document.body.dataset.doubleJumpBound = 'v0.13.9';
     window.addEventListener('keydown', (ev) => {
-      if (ev.repeat || !['ArrowUp', 'w', 'W', ' ', 'Spacebar'].includes(ev.key || '')) return;
+      if (ev.repeat || !['ArrowUp', 'w', 'W', 'j', 'J'].includes(ev.key || '')) return;
       doubleJump('keyboard');
     }, { capture: true });
     window.addEventListener('pointerdown', (ev) => {
