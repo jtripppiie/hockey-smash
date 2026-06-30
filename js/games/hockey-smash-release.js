@@ -77,6 +77,10 @@
   function syncFinalReleaseState() {
     const overlay = document.getElementById('hockey-player-overlay');
     if (!overlay) return;
+    if (character() === 'sofie') {
+      document.body.classList.remove('hockey-canvas-player-only');
+      return;
+    }
     overlay.hidden = true;
     overlay.style.display = 'none';
     document.body.classList.add('hockey-canvas-player-only');

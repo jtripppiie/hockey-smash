@@ -807,6 +807,26 @@
     drawBubble(ctx, state.dad.x - 210, state.dad.y - 24, 220, 58, 'Dad joke boss!', '#fff7d6');
   }
 
+  function drawSpriteOrPlaceholder(ctx, key, x, y, width, height, label) {
+    const image = images[key];
+    if (image?.complete && image.naturalWidth) {
+      ctx.drawImage(image, x, y, width, height);
+      return;
+    }
+
+    ctx.save();
+    ctx.fillStyle = '#f2d27a';
+    ctx.fillRect(x, y, width, height);
+    ctx.strokeStyle = '#18202a';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(x, y, width, height);
+    ctx.fillStyle = '#18202a';
+    ctx.font = '700 13px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, x + width / 2, y + height / 2);
+    ctx.restore();
+  }
+
   function drawEffects(ctx) {
     state.effects.forEach((effect) => {
       ctx.save();
