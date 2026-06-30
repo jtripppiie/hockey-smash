@@ -1,6 +1,9 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.19';
-  const BUILD_LABEL = 'Hockey Smash v0.14.19 · Build 2026-06-30.75';
+  const DISPLAY_VERSION = 'Hockey Smash v0.14.20';
+  const BUILD_LABEL = 'Hockey Smash v0.14.20 · Build 2026-06-30.76';
+
+  let badgeObserver = null;
+  let styleNode = null;
 
   function api() {
     return window.RTA_HOCKEY_SMASH;
@@ -27,9 +30,44 @@
     return `Next Rank ${Math.max(0, 500 - score)}`;
   }
 
-  function applyVersion() {
+  function ensureStyles() {
+    if (styleNode?.isConnected) return;
+    styleNode = document.createElement('style');
+    styleNode.textContent = `
+      .hockey-right-arrow-cue {
+        display: none !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+    `;
+    document.head.appendChild(styleNode);
+  }
+
+  function writeBadge() {
     const badge = document.getElementById('hockey-build-badge');
-    if (badge && badge.textContent !== BUILD_LABEL) badge.textContent = BUILD_LABEL;
+    if (!badge) return;
+    if (badge.textContent !== BUILD_LABEL) badge.textContent = BUILD_LABEL;
+  }
+
+  function watchBadge() {
+    const badge = document.getElementById('hockey-build-badge');
+    if (!badge || badgeObserver) return;
+
+    badgeObserver = new MutationObserver(() => {
+      if (badge.textContent !== BUILD_LABEL) badge.textContent = BUILD_LABEL;
+    });
+
+    badgeObserver.observe(badge, {
+      childList: true,
+      characterData: true,
+      subtree: true,
+    });
+  }
+
+  function applyVersion() {
+    ensureStyles();
+    writeBadge();
+    watchBadge();
 
     const gameApi = api();
     if (gameApi?.getVersion) gameApi.getVersion = () => DISPLAY_VERSION;
