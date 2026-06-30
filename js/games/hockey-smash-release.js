@@ -1,6 +1,6 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.5';
-  const DISPLAY_BUILD = 'Build 2026-06-30.61';
+  const DISPLAY_VERSION = 'Hockey Smash v0.14.6';
+  const DISPLAY_BUILD = 'Build 2026-06-30.62';
   const BEAR_START_SPEED = 82;
   const BEAR_LATE_SPEED = 132;
   const GROUND_Y = 576 * 0.82;
@@ -139,7 +139,7 @@
 
     cameoNode = document.createElement('div');
     cameoNode.className = 'hockey-sideline-cameo';
-    cameoNode.dataset.hockeySidelineCameo = 'v0.14.5';
+    cameoNode.dataset.hockeySidelineCameo = 'v0.14.6';
     cameoNode.setAttribute('aria-hidden', 'true');
     Object.assign(cameoNode.style, {
       position: 'absolute',
@@ -263,11 +263,11 @@
     const badge = document.getElementById('hockey-build-badge');
     if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
     if (api()?.getVersion) api().getVersion = () => DISPLAY_VERSION;
-    document.body.dataset.hockeyButtonDebug = 'v0.14.5';
+    document.body.dataset.hockeyButtonDebug = 'v0.14.6';
     syncFinalReleaseState();
     exposeCastDebugApi();
     ensureCastDebugButton();
-    window.HOCKEY_BOOT_LOG?.log?.('release', 'v0.14.5 disables Earthquake, improves fish feedback, adds Mom blocker, and updates desktop controls.');
+    window.HOCKEY_BOOT_LOG?.log?.('release', 'v0.14.6 removes the Mom acknowledgement button and auto-dismisses the clean-room interruption.');
     window.requestAnimationFrame(loop);
   }
 
