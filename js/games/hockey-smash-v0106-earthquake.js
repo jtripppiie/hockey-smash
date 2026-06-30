@@ -4,7 +4,7 @@
   const DESIGN_HEIGHT = 576;
   const GROUND_Y = DESIGN_HEIGHT * 0.82;
   const DEFAULT_DURATION_MS = 9000;
-  const TARGET_TYPES = new Set(['bear', 'moose', 'mom', 'sister', 'teacher', 'danceInstructor']);
+  const TARGET_TYPES = new Set(['bear', 'moose', 'mom', 'dad', 'sister', 'alaskanBoy', 'alaskanGirl', 'teacher', 'danceInstructor']);
 
   let api = null;
   let status = null;

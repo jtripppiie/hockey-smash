@@ -35,6 +35,8 @@
     momText: 'assets/hockey-smash/sprites/mom_text.png',
     sister: 'assets/hockey-smash/sprites/sister.png',
     sisterText: 'assets/hockey-smash/sprites/sister_text.png',
+    alaskanBoy: 'assets/hockey-smash/sprites/alaskan_boy.webp',
+    alaskanGirl: 'assets/hockey-smash/sprites/alaskan_girl.webp',
     teacher: 'assets/hockey-smash/sprites/teacher.png',
     danceInstructor: 'assets/hockey-smash/sprites/dance_instructor.webp',
   };

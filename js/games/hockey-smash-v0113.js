@@ -5,7 +5,7 @@
   const FISH_MAX_SECONDS = 28;
   const FISH_TYPES = new Set(['salmon']);
   const WILDLIFE_TYPES = new Set(['bear', 'moose', 'chargingMoose', 'bird', 'icePatch']);
-  const PEOPLE_TYPES = new Set(['teacher', 'danceInstructor', 'sister', 'adultCoach', 'mom']);
+  const PEOPLE_TYPES = new Set(['teacher', 'danceInstructor', 'sister', 'adultCoach', 'mom', 'dad', 'alaskanBoy', 'alaskanGirl']);
   const BOSS_TYPES = new Set(['dadJoke']);
   const phaseByState = new WeakMap();
   let wrappedScoreHooks = false;
@@ -79,14 +79,14 @@
       return;
     }
 
-    // Wildlife stage: keep bears/moose/birds/ice/fish, but suppress people and boss bits for now.
+    // Wildlife stage: keep bears/moose/birds/ice/fish and the character cast, but suppress boss bits for now.
     s.entities = s.entities.filter((entity) => {
       if (!entity || entity.dead) return false;
-      if (PEOPLE_TYPES.has(entity.type) || BOSS_TYPES.has(entity.type)) return false;
-      return WILDLIFE_TYPES.has(entity.type) || FISH_TYPES.has(entity.type);
+      if (BOSS_TYPES.has(entity.type)) return false;
+      return WILDLIFE_TYPES.has(entity.type) || FISH_TYPES.has(entity.type) || PEOPLE_TYPES.has(entity.type);
     });
     if (s.spawn) {
-      s.spawn.family = Math.max(s.spawn.family || 0, 12);
+      s.spawn.family = Math.min(Math.max(s.spawn.family || 0, 1.4), 3.2);
       s.spawn.dadJoke = Math.max(s.spawn.dadJoke || 0, 12);
       s.spawn.wildlife = Math.min(Math.max(s.spawn.wildlife || 0.85, 0.65), 1.6);
       s.spawn.salmon = Math.max(s.spawn.salmon || 0, 1.8);
@@ -108,7 +108,7 @@
     if (s.spawn) {
       s.spawn.wildlife = 0.8;
       s.spawn.salmon = 2.2;
-      s.spawn.family = 12;
+      s.spawn.family = 1.2;
       s.spawn.dadJoke = 12;
     }
     s.message = 'Level 2: Moose and bears incoming!';
@@ -148,7 +148,7 @@
     if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
     if (api()?.getVersion) api().getVersion = () => DISPLAY_VERSION;
     document.body.dataset.hockeyButtonDebug = 'v0.14.2';
-    window.HOCKEY_BOOT_LOG?.log?.('v0113', 'v0.14.2 staged run loaded: fish dodge level first, then moose/bear level; people/chasing instructor suppressed.');
+    window.HOCKEY_BOOT_LOG?.log?.('v0113', 'v0.14.2 staged run loaded: fish dodge level first, then moose/bear level; character cast allowed.');
     window.requestAnimationFrame(loop);
   }
 

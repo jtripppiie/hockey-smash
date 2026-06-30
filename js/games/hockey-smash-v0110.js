@@ -5,7 +5,7 @@
   const H = 576;
   const GROUND_Y = H * 0.82;
   const BIG = new Set(['bear', 'moose', 'chargingMoose']);
-  const FAMILY = new Set(['teacher', 'danceInstructor', 'sister', 'adultCoach']);
+  const FAMILY = new Set(['teacher', 'danceInstructor', 'sister', 'adultCoach', 'alaskanBoy', 'alaskanGirl', 'mom', 'dad']);
   let eid = 0;
   let order = 0;
 
@@ -70,6 +70,10 @@
     }
     if (e.type === 'danceInstructor') e.bubble = e.bubble || 'Point those toes!';
     if (e.type === 'teacher') e.bubble = e.bubble || 'Eyes on the puck!';
+    if (e.type === 'alaskanBoy') e.bubble = e.bubble || 'Nice moves!';
+    if (e.type === 'alaskanGirl') e.bubble = e.bubble || 'Nice shot!';
+    if (e.type === 'mom') e.bubble = e.bubble || 'Keep going!';
+    if (e.type === 'dad') e.bubble = e.bubble || 'You got this!';
     const delta = s.player.x + s.player.width / 2 - (e.x + e.width / 2);
     const speed = e.type === 'danceInstructor' ? 170 : 145;
     e.vx = Math.abs(delta) > 28 ? clamp(delta * 1.35, -speed, speed * 0.72) : 0;
@@ -105,7 +109,7 @@
         effect(s, e.x + e.width / 2, e.y - 12, node.dataset.projectileType === 'pointe-shoe' ? 'SHOE HIT!' : 'PUCK HIT!');
         if (e.hp <= 0) {
           e.dead = true;
-          s.message = `${e.type === 'danceInstructor' ? 'Dance instructor' : e.type === 'teacher' ? 'Teacher' : 'Sister'} cleared by the shot!`;
+          s.message = `${e.type === 'danceInstructor' ? 'Dance instructor' : e.type === 'teacher' ? 'Teacher' : e.type === 'alaskanBoy' ? 'Alaskan boy' : e.type === 'alaskanGirl' ? 'Alaskan girl' : e.type === 'mom' ? 'Mom' : e.type === 'dad' ? 'Dad' : 'Sister'} cleared by the shot!`;
         } else {
           s.message = `Dance challenge HP ${e.hp}/${e.maxHp || 4}.`;
         }

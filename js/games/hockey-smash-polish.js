@@ -21,6 +21,8 @@
     moose: 'assets/hockey-smash/sprites/moose.webp',
     mom: 'assets/hockey-smash/sprites/mom.webp',
     sister: 'assets/hockey-smash/sprites/sister-spinning.webp',
+    alaskanBoy: 'assets/hockey-smash/sprites/alaskan_boy.webp',
+    alaskanGirl: 'assets/hockey-smash/sprites/alaskan_girl.webp',
     teacher: 'assets/hockey-smash/sprites/teacher.png',
     danceInstructor: 'assets/hockey-smash/sprites/dance_instructor.webp',
     dad: 'assets/hockey-smash/sprites/dad.webp',
@@ -421,6 +423,8 @@
         moose: 'MOOSE',
         mom: 'MOM',
         sister: 'SISTER',
+        alaskanBoy: 'ALASKAN BOY',
+        alaskanGirl: 'ALASKAN GIRL',
         teacher: 'TEACHER',
         danceInstructor: 'DANCE INSTRUCTOR',
         dad: 'DAD',
@@ -429,7 +433,7 @@
     }
 
     function entityIsGrounded(type) {
-      return ['bear', 'moose', 'mom', 'sister', 'teacher', 'danceInstructor', 'dad'].includes(type);
+      return ['bear', 'moose', 'mom', 'sister', 'alaskanBoy', 'alaskanGirl', 'teacher', 'danceInstructor', 'dad'].includes(type);
     }
 
     function syncEntityOverlays(state) {
