@@ -8,6 +8,7 @@
 
   let slideUntil = 0;
   let slideCooldownUntil = 0;
+  let arrowDownSlideActive = false;
 
   function api() {
     return window.RTA_HOCKEY_SMASH;
@@ -50,6 +51,7 @@
     const direction = player.facing < 0 ? -1 : 1;
     slideUntil = now + SLIDE_MS;
     slideCooldownUntil = now + SLIDE_COOLDOWN_MS;
+    arrowDownSlideActive = true;
     player.facing = direction;
     player.vx = direction * SLIDE_SPEED;
     player.y = Math.min(player.y, GROUND_Y - player.height);
@@ -61,8 +63,8 @@
   }
 
   function loop() {
-    const active = performance.now() < slideUntil;
-    if (!active) {
+    if (arrowDownSlideActive && performance.now() >= slideUntil) {
+      arrowDownSlideActive = false;
       setSlideVisual(false);
       markButton(false);
     }
