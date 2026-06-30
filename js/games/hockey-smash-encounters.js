@@ -2,9 +2,9 @@
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const GROUND_Y = DESIGN_HEIGHT * 0.82;
-  const BASE_SPAWN_MS = 4300;
-  const MIN_SPAWN_MS = 2600;
-  const SPAWN_JITTER_MS = 950;
+  const BASE_SPAWN_MS = 3600;
+  const MIN_SPAWN_MS = 2100;
+  const SPAWN_JITTER_MS = 850;
   const COMBO_SPAWN_DELAY_MS = 1350;
   const RECENT_TYPE_LIMIT = 3;
   const params = new URLSearchParams(window.location.search);
@@ -23,7 +23,6 @@
   ];
 
   const BUBBLE_LINES = {
-    mom: ['Helmet on, kiddo!', 'Keep your head up!', 'Drink some water!', 'Use the whole sidewalk!'],
     danceInstructor: ['Point those toes!', 'Big finish!', 'Spot your turn!', 'Graceful escape!'],
     sister: ['Spin move!', 'You missed me!', 'Too slow!', 'Try catching this!'],
   };
@@ -50,8 +49,8 @@
     function activeCrowdEntities(state) {
       return state.entities.filter((entity) => {
         if (!entity || entity.dead) return false;
-        if (entity.safeCollectible || entity.collectibleSalmon) return false;
-        return ['bear', 'moose', 'chargingMoose', 'bird', 'mom', 'dad', 'sister', 'teacher', 'danceInstructor', 'adultCoach'].includes(entity.type);
+        if (entity.safeCollectible || entity.collectibleSalmon || entity.stationarySupport || entity.nonContact) return false;
+        return ['bear', 'moose', 'chargingMoose', 'bird', 'dad', 'sister', 'teacher', 'danceInstructor', 'adultCoach', 'daniel'].includes(entity.type);
       });
     }
 
@@ -86,18 +85,18 @@
       if (currentCharacter() === 'sofie') {
         return { ...entity, type: 'danceInstructor', bubble: pickBubbleLine('danceInstructor') || 'Point those toes!', message: 'Dance instructor challenge moving in!' };
       }
-      return { ...entity, type: 'mom', width: 92, height: 100, y: GROUND_Y - 100, vx: -105, hp: 3, maxHp: 3, damage: 5, bubble: pickBubbleLine('mom') || 'Keep your head up!', message: 'Mom checks in from the sideline!' };
+      return null;
     }
 
     function pickWaveTemplate() {
-      if (document.body.dataset.hockeyStagePhase === 'fish') return WAVE.find((entry) => entry.type === 'salmon');
       for (let attempts = 0; attempts < WAVE.length; attempts += 1) {
         const template = WAVE[waveIndex % WAVE.length];
-        const resolvedType = template.type === 'adultCoach' ? (currentCharacter() === 'sofie' ? 'danceInstructor' : 'mom') : template.type;
+        const resolvedType = template.type === 'adultCoach' ? (currentCharacter() === 'sofie' ? 'danceInstructor' : 'skip') : template.type;
         waveIndex += 1;
+        if (resolvedType === 'skip') continue;
         if (!recentTypes.includes(resolvedType) || attempts >= WAVE.length - 1) return template;
       }
-      return WAVE[waveIndex++ % WAVE.length];
+      return WAVE.find((entry) => entry.type === 'salmon');
     }
 
     function rainFishFromTop(entity, difficulty) {
@@ -178,6 +177,7 @@
 
     function spawnMovingEncounter(state, difficulty, options = {}) {
       const template = pickWaveTemplate();
+      if (!template) return;
       const resolved = resolveModeEntity({
         ...template,
         key: `moving-${template.type}-${Date.now()}-${waveIndex}`,
