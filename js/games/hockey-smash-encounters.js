@@ -1,6 +1,4 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.29 Encounters';
-  const DISPLAY_BUILD = 'Build 2026-06-30.85';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const GROUND_Y = DESIGN_HEIGHT * 0.82;
@@ -12,85 +10,27 @@
   const params = new URLSearchParams(window.location.search);
   const computerMode = params.get('computerMode') === '1';
 
-  // This layer does not control the player.
-  // It only adds moving gameplay objects to state.entities. The core game loop
-  // already moves entities by vx * dt and checks overlap. Computer Mode uses
-  // this same encounter pass so watch mode and normal play stay close together.
   const WAVE = [
-    {
-      type: 'salmon', x: 260, y: -72, width: 54, height: 31,
-      vx: -45, vy: 440, hp: 1, damage: 0, dodgeDamage: 8, flip: -1,
-      variant: 'rain', fallingFish: true, message: 'Fish raining down — dodge the splash zone!'
-    },
-    {
-      type: 'bear', x: DESIGN_WIDTH + 120, y: GROUND_Y - 84, width: 96, height: 84,
-      vx: -170, hp: 2, maxHp: 2, damage: 12,
-      message: 'Bear moving in — use the stick and puck!'
-    },
-    {
-      type: 'bird', x: DESIGN_WIDTH + 140, y: 132, width: 68, height: 52,
-      vx: -330, vy: 0, hp: 1, maxHp: 1, damage: 6,
-      message: 'Eagle flying across!'
-    },
-    {
-      type: 'moose', x: DESIGN_WIDTH + 145, y: GROUND_Y - 92, width: 112, height: 92,
-      vx: -145, hp: 3, maxHp: 3, damage: 16,
-      message: 'Moose moving in — use the stick and puck!'
-    },
-    {
-      type: 'salmon', x: 500, y: -84, width: 58, height: 33,
-      vx: 35, vy: 510, hp: 1, damage: 0, dodgeDamage: 8, flip: -1,
-      variant: 'heavyRain', fallingFish: true, message: 'Heavy salmon drop — move out from under it!'
-    },
-    {
-      type: 'adultCoach', x: DESIGN_WIDTH + 150, y: GROUND_Y - 96, width: 90, height: 96,
-      vx: -120, hp: 2, damage: 5, bubble: 'Point those toes!',
-      message: 'Dance instructor challenge moving in!'
-    },
-    {
-      type: 'sister', x: DESIGN_WIDTH + 160, y: GROUND_Y - 94, width: 84, height: 94,
-      vx: -140, hp: 2, damage: 7, bubble: 'Spin move!',
-      message: 'Sister spinning in!'
-    },
-    {
-      type: 'salmon', x: 740, y: -64, width: 50, height: 29,
-      vx: -20, vy: 560, hp: 1, damage: 0, dodgeDamage: 8, flip: -1,
-      variant: 'fastRain', fallingFish: true, message: 'Fast fish drop — sidestep it!'
-    },
-    {
-      type: 'chargingMoose', x: DESIGN_WIDTH + 180, y: GROUND_Y - 118, width: 160, height: 118,
-      vx: -220, hp: 4, maxHp: 4, damage: 18, chargeSpeed: 420,
-      message: 'CHARGING MOOSE!'
-    }
+    { type: 'salmon', x: 260, y: -72, width: 54, height: 31, vx: -45, vy: 560, hp: 1, damage: 0, flip: -1, variant: 'rain', fallingFish: true, message: 'Fish raining down — catch the salmon!' },
+    { type: 'bear', x: DESIGN_WIDTH + 120, y: GROUND_Y - 84, width: 96, height: 84, vx: -170, hp: 2, maxHp: 2, damage: 12, message: 'Bear moving in — use the stick and puck!' },
+    { type: 'bird', x: DESIGN_WIDTH + 140, y: 132, width: 68, height: 52, vx: -330, vy: 0, hp: 1, maxHp: 1, damage: 6, message: 'Eagle flying across!' },
+    { type: 'moose', x: DESIGN_WIDTH + 145, y: GROUND_Y - 92, width: 112, height: 92, vx: -145, hp: 3, maxHp: 3, damage: 16, message: 'Moose moving in — use the stick and puck!' },
+    { type: 'salmon', x: 500, y: -84, width: 58, height: 33, vx: 35, vy: 620, hp: 1, damage: 0, flip: -1, variant: 'heavyRain', fallingFish: true, message: 'Heavy salmon drop — catch it fast!' },
+    { type: 'adultCoach', x: DESIGN_WIDTH + 150, y: GROUND_Y - 96, width: 90, height: 96, vx: -120, hp: 2, damage: 5, bubble: 'Point those toes!', message: 'Dance instructor challenge moving in!' },
+    { type: 'sister', x: DESIGN_WIDTH + 160, y: GROUND_Y - 94, width: 84, height: 94, vx: -140, hp: 2, damage: 7, bubble: 'Spin move!', message: 'Sister spinning in!' },
+    { type: 'salmon', x: 740, y: -64, width: 50, height: 29, vx: -20, vy: 680, hp: 1, damage: 0, flip: -1, variant: 'fastRain', fallingFish: true, message: 'Fast fish drop — catch it!' },
+    { type: 'chargingMoose', x: DESIGN_WIDTH + 180, y: GROUND_Y - 118, width: 160, height: 118, vx: -220, hp: 4, maxHp: 4, damage: 18, chargeSpeed: 420, message: 'CHARGING MOOSE!' }
   ];
 
   const BUBBLE_LINES = {
-    mom: [
-      'Helmet on, kiddo!',
-      'Keep your head up!',
-      'Drink some water!',
-      'Use the whole sidewalk!',
-    ],
-    danceInstructor: [
-      'Point those toes!',
-      'Big finish!',
-      'Spot your turn!',
-      'Graceful escape!',
-    ],
-    sister: [
-      'Spin move!',
-      'You missed me!',
-      'Too slow!',
-      'Try catching this!',
-    ],
+    mom: ['Helmet on, kiddo!', 'Keep your head up!', 'Drink some water!', 'Use the whole sidewalk!'],
+    danceInstructor: ['Point those toes!', 'Big finish!', 'Spot your turn!', 'Graceful escape!'],
+    sister: ['Spin move!', 'You missed me!', 'Too slow!', 'Try catching this!'],
   };
 
   function onReady() {
     const api = window.RTA_HOCKEY_SMASH;
-    const badge = document.getElementById('hockey-build-badge');
     const status = document.getElementById('hockey-status');
-    if (badge) badge.textContent = `${DISPLAY_VERSION} · ${DISPLAY_BUILD}`;
-    if (api?.getVersion) api.getVersion = () => DISPLAY_VERSION;
     if (!api) return;
 
     let nextSpawnAt = 0;
@@ -107,10 +47,6 @@
       return state;
     }
 
-    function activeMovingGameplayEntities(state) {
-      return state.entities.filter((entity) => entity && !entity.dead && entity.fromMovingGameplayPass);
-    }
-
     function activeCrowdEntities(state) {
       return state.entities.filter((entity) => {
         if (!entity || entity.dead) return false;
@@ -123,27 +59,6 @@
       const timedDifficulty = firstPlayableAt ? Math.min(1, (now - firstPlayableAt) / 135000) : 0;
       const scoreLayerDifficulty = Math.min(1, Math.max(0, Number(state.difficulty) || 0));
       return Math.max(timedDifficulty, scoreLayerDifficulty * 0.85);
-    }
-
-    function forceRightSideSalmon(entity) {
-      if (entity.type !== 'salmon' || entity.fallingFish) return entity;
-      entity.x = Math.max(entity.x || 0, DESIGN_WIDTH + 72);
-      entity.vx = -Math.abs(entity.vx || 420);
-      entity.flip = -1;
-      return entity;
-    }
-
-    function rainFishFromTop(entity, difficulty) {
-      const drift = 55 + difficulty * 70;
-      entity.fallingFish = true;
-      entity.x = Math.max(24, Math.min(DESIGN_WIDTH - entity.width - 24, (entity.x || 0) + (Math.random() - 0.5) * 180));
-      entity.y = -entity.height - Math.random() * 120;
-      entity.vx = (Math.random() - 0.5) * drift;
-      entity.vy = Math.abs(entity.vy || 420) + difficulty * 95;
-      entity.flip = entity.vx < 0 ? -1 : 1;
-      entity.damage = 0;
-      entity.dodgeDamage = entity.dodgeDamage || 8;
-      return entity;
     }
 
     function currentCharacter() {
@@ -161,35 +76,17 @@
       return line;
     }
 
-    function resolveModeEntity(entity) {
-      if (entity.type !== 'adultCoach') return entity;
-      const danceMode = currentCharacter() === 'sofie';
-      if (danceMode) {
-        return {
-          ...entity,
-          type: 'danceInstructor',
-          bubble: pickBubbleLine('danceInstructor') || 'Point those toes!',
-          message: 'Dance instructor challenge moving in!',
-        };
-      }
-      return {
-        ...entity,
-        type: 'mom',
-        width: 92,
-        height: 100,
-        y: GROUND_Y - 100,
-        vx: -105,
-        hp: 3,
-        maxHp: 3,
-        damage: 5,
-        bubble: pickBubbleLine('mom') || 'Keep your head up!',
-        message: 'Mom checks in from the sideline!',
-      };
-    }
-
     function rememberType(type) {
       recentTypes.push(type);
       while (recentTypes.length > RECENT_TYPE_LIMIT) recentTypes.shift();
+    }
+
+    function resolveModeEntity(entity) {
+      if (entity.type !== 'adultCoach') return entity;
+      if (currentCharacter() === 'sofie') {
+        return { ...entity, type: 'danceInstructor', bubble: pickBubbleLine('danceInstructor') || 'Point those toes!', message: 'Dance instructor challenge moving in!' };
+      }
+      return { ...entity, type: 'mom', width: 92, height: 100, y: GROUND_Y - 100, vx: -105, hp: 3, maxHp: 3, damage: 5, bubble: pickBubbleLine('mom') || 'Keep your head up!', message: 'Mom checks in from the sideline!' };
     }
 
     function pickWaveTemplate() {
@@ -201,6 +98,20 @@
         if (!recentTypes.includes(resolvedType) || attempts >= WAVE.length - 1) return template;
       }
       return WAVE[waveIndex++ % WAVE.length];
+    }
+
+    function rainFishFromTop(entity, difficulty) {
+      const drift = 55 + difficulty * 70;
+      entity.fallingFish = true;
+      entity.x = Math.max(24, Math.min(DESIGN_WIDTH - entity.width - 24, (entity.x || 0) + (Math.random() - 0.5) * 180));
+      entity.y = -entity.height - Math.random() * 120;
+      entity.vx = (Math.random() - 0.5) * drift;
+      entity.vy = Math.abs(entity.vy || 560) + difficulty * 150;
+      entity.flip = entity.vx < 0 ? -1 : 1;
+      entity.damage = 0;
+      entity.collectibleSalmon = true;
+      entity.safeCollectible = true;
+      return entity;
     }
 
     function applyVariant(entity, difficulty) {
@@ -215,20 +126,19 @@
           entity.variant = 'schoolRain';
           entity.width = Math.min(entity.width * 1.2, 84);
           entity.height = Math.max(entity.height || 31, 36);
-          entity.dodgeDamage = 12;
-          entity.message = 'Salmon school overhead — watch the shadow!';
+          entity.message = 'Salmon school overhead — catch one!';
           return entity;
         }
         if (roll < 0.42 + difficulty * 0.12) {
           entity.variant = 'heavyRain';
-          entity.vy += 70;
-          entity.message = 'Heavy salmon drop — move out from under it!';
+          entity.vy += 100;
+          entity.message = 'Heavy salmon drop — catch it fast!';
           return entity;
         }
         if (roll < 0.6 + difficulty * 0.08) {
           entity.variant = 'fastRain';
-          entity.vy *= 1.08 + difficulty * 0.14;
-          entity.message = 'Fast fish drop — sidestep it!';
+          entity.vy *= 1.14 + difficulty * 0.18;
+          entity.message = 'Fast fish drop — catch it!';
         }
         return entity;
       }
@@ -257,16 +167,12 @@
         return entity;
       }
 
-      if (entity.type === 'sister') {
-        entity.bubble = pickBubbleLine('sister') || entity.bubble;
-      }
-
+      if (entity.type === 'sister') entity.bubble = pickBubbleLine('sister') || entity.bubble;
       if (roll < 0.1 + difficulty * 0.16) {
         entity.variant = 'fast';
         entity.vx *= 1.08 + difficulty * 0.16;
         entity.message = entity.type === 'sister' ? 'Fast spin move incoming!' : `${entity.type[0].toUpperCase()}${entity.type.slice(1)} speeding in!`;
       }
-
       return entity;
     }
 
@@ -280,7 +186,7 @@
         comboSpawn: Boolean(options.comboSpawn)
       });
       if (!resolved) return;
-      const entity = applyVariant(forceRightSideSalmon(resolved), difficulty);
+      const entity = applyVariant(resolved, difficulty);
       rememberType(entity.type);
       state.entities.push(entity);
       state.message = entity.message || template.message;
@@ -289,8 +195,6 @@
     }
 
     function maybeQueueComboSpawn(difficulty) {
-      // A very late-run second encounter is allowed, but the old quick follow-up
-      // made the screen feel crowded and repetitive.
       if (comboSpawnQueued || difficulty <= 0.55) return;
       if (Math.random() >= 0.045 + 0.055 * difficulty) return;
       comboSpawnQueued = true;
@@ -328,9 +232,6 @@
     runMovingGameplay();
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', onReady);
-  } else {
-    onReady();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', onReady);
+  else onReady();
 })();
