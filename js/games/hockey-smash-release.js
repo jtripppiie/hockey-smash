@@ -1,6 +1,4 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.35 Release';
-  const DISPLAY_BUILD = 'Build 2026-06-30.91';
   const BEAR_START_SPEED = 78;
   const BEAR_LATE_SPEED = 124;
   const GROUND_Y = 576 * 0.82;
@@ -33,7 +31,6 @@
   let lastCastType = '';
   let lastBubbleLine = '';
   let castDebugButton = null;
-  let cameoNode = null;
   let bubbleLayer = null;
   const bubbleNodes = new Map();
 
@@ -68,16 +65,14 @@
   }
 
   function castForCurrentCharacter() {
-    if (character() === 'sofie') {
-      return [
-        { type: 'dad', width: 92, height: 96, speed: 72, hp: 4, damage: 6 },
-        { type: 'danceInstructor', width: 92, height: 100, speed: 92, hp: 4, damage: 5 },
-      ];
-    }
-    return [
+    const shared = [
       { type: 'mom', width: 92, height: 100, speed: 74, hp: 3, damage: 5 },
       { type: 'dad', width: 92, height: 96, speed: 70, hp: 4, damage: 6 },
     ];
+    if (character() === 'sofie') {
+      return shared.concat({ type: 'danceInstructor', width: 92, height: 100, speed: 92, hp: 4, damage: 7 });
+    }
+    return shared;
   }
 
   function devModeActive() {
@@ -116,8 +111,14 @@
   function nextCastTemplate(options = {}) {
     const cast = castForCurrentCharacter();
     if (options.type) return cast.find((entry) => entry.type === options.type) || cast[0];
-    const preferred = cast.find((entry) => entry.type !== lastCastType);
-    return preferred || cast[castIndex % cast.length];
+    if (!cast.length) return null;
+
+    const start = castIndex % cast.length;
+    for (let offset = 0; offset < cast.length; offset += 1) {
+      const candidate = cast[(start + offset) % cast.length];
+      if (candidate.type !== lastCastType) return candidate;
+    }
+    return cast[start];
   }
 
   function spawnCastEncounter(state, options = {}) {
@@ -128,6 +129,7 @@
 
     const difficulty = difficultyFor(state);
     const template = nextCastTemplate(options);
+    if (!template) return null;
     castIndex += 1;
     lastCastType = template.type;
     const speedBoost = 1 + difficulty * 0.18;
@@ -176,7 +178,6 @@
 
   function removeSidelineCameo() {
     document.querySelectorAll('.hockey-sideline-cameo').forEach((node) => node.remove());
-    cameoNode = null;
   }
 
   function ensureBubbleLayer() {
@@ -210,9 +211,6 @@
     if (!shouldPrettyBubble(entity)) return '';
     if (entity.type === 'dad') entity.prettyBubble = `${playerName()}, do your homework!`;
     if (!entity.prettyBubble) entity.prettyBubble = entity.bubble || pickLine(entity.type) || '';
-    // The base canvas bubble is one line only. Clear it after saving the text so
-    // the richer DOM bubble can wrap and stay readable. This prevents stacked
-    // canvas + DOM speech bubbles.
     entity.bubble = '';
     return entity.prettyBubble;
   }
@@ -337,12 +335,12 @@
   }
 
   function ready() {
-    document.body.dataset.hockeyButtonDebug = 'v0.14.35';
+    document.body.dataset.hockeyRelease = 'v0.14.38';
     syncFinalReleaseState();
     exposeCastDebugApi();
     ensureCastDebugButton();
     removeSidelineCameo();
-    window.HOCKEY_BOOT_LOG?.log?.('release', 'v0.14.35 fixes Dad text at the source and removes stacked sideline/bubble layers.');
+    window.HOCKEY_BOOT_LOG?.log?.('release', 'Cast source cleaned: Mom appears for both characters and the cast rotates cleanly.');
     window.requestAnimationFrame(loop);
   }
 
