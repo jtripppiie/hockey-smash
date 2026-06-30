@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.14.4 - Cast Cameo Cleanup
+
+- Shipped **Hockey Smash v0.14.4** with visible build badge `Build 2026-06-29.60`.
+- Restored the staged Level 2 focus to moose/bear wildlife instead of people chasing the player.
+- Converted the Alaskan boy/girl character additions into harmless sideline cameos instead of collision/damage entities.
+- Kept the final bear-speed tuning from v0.14.3.
+- Added verification coverage for `alaskan_boy.webp`, `alaskan_girl.webp`, the sideline cameo marker, and the parallax starter file.
+- Kept the parallax starter disabled until exact background-loop assets are added.
+- Updated cache keys, package version, README, docs, and verifier checks for v0.14.4.
+
 ## 0.14.3 - Staged Run Stabilization
 
 - Shipped **Hockey Smash v0.14.3** with visible build badge `Build 2026-06-29.59`.
