@@ -1,5 +1,5 @@
 (function () {
-  const DISPLAY_VERSION = 'Hockey Smash v0.14.7 Grounded Cameos';
+  const DISPLAY_VERSION = 'Hockey Smash v0.14.8 Grounded Cameos';
   const DESIGN_WIDTH = 1024;
   const DESIGN_HEIGHT = 576;
   const GROUND_Y = DESIGN_HEIGHT * 0.82;
@@ -28,10 +28,10 @@
   }
 
   function syncBuildBadge() {
-    const text = 'Hockey Smash v0.14.7 · Build 2026-06-30.63';
+    const text = 'Hockey Smash v0.14.8 · Build 2026-06-30.64';
     const badge = document.getElementById('hockey-build-badge');
     if (badge && badge.textContent !== text) badge.textContent = text;
-    if (api()?.getVersion) api().getVersion = () => 'Hockey Smash v0.14.7';
+    if (api()?.getVersion) api().getVersion = () => 'Hockey Smash v0.14.8';
   }
 
   function ensureOverrides() {
