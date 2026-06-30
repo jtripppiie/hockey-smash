@@ -23,6 +23,9 @@
   function effect(s, x, y, text, life = 0.5) {
     s.effects?.push?.({ x, y, text, life });
   }
+  function isStationaryMom(entity) {
+    return entity && !entity.dead && entity.type === 'mom' && entity.stationarySupport;
+  }
 
   function phaseInfo(s) {
     let info = phaseByState.get(s);
@@ -65,7 +68,7 @@
     if (info.phase === 'fish') {
       s.entities = s.entities.filter((entity) => {
         if (!entity || entity.dead) return false;
-        return FISH_TYPES.has(entity.type);
+        return FISH_TYPES.has(entity.type) || isStationaryMom(entity);
       });
       if (s.spawn) {
         s.spawn.wildlife = Math.max(s.spawn.wildlife || 0, 3.5);
@@ -79,7 +82,7 @@
     s.entities = s.entities.filter((entity) => {
       if (!entity || entity.dead) return false;
       if (BOSS_TYPES.has(entity.type)) return false;
-      return WILDLIFE_TYPES.has(entity.type) || FISH_TYPES.has(entity.type) || PEOPLE_TYPES.has(entity.type);
+      return WILDLIFE_TYPES.has(entity.type) || FISH_TYPES.has(entity.type) || PEOPLE_TYPES.has(entity.type) || isStationaryMom(entity);
     });
     if (s.spawn) {
       s.spawn.family = Math.min(Math.max(s.spawn.family || 2.5, 1.8), 4.5);
@@ -100,7 +103,7 @@
   function enterWildlifePhase(s, info) {
     info.phase = 'wildlife';
     info.announcedWildlife = true;
-    s.entities = s.entities.filter((entity) => entity?.type === 'salmon' && !entity.dead);
+    s.entities = s.entities.filter((entity) => (entity?.type === 'salmon' || isStationaryMom(entity)) && !entity.dead);
     if (s.spawn) {
       s.spawn.wildlife = 0.8;
       s.spawn.salmon = 2.2;
@@ -141,8 +144,8 @@
   }
 
   function ready() {
-    document.body.dataset.hockeyStageFlow = 'v0.14.43';
-    window.HOCKEY_BOOT_LOG?.log?.('stage-flow', 'Staged run loaded without owning the version badge.');
+    document.body.dataset.hockeyStageFlow = 'v0.14.44';
+    window.HOCKEY_BOOT_LOG?.log?.('stage-flow', 'Staged run preserves stationary Mom support during fish and wildlife phases.');
     window.requestAnimationFrame(loop);
   }
 
