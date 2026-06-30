@@ -54,7 +54,7 @@
   }
   function holdOldTimeline(s) {
     if (s.mode === 'bossIntro' || s.mode === 'bossFight') s.mode = 'playing';
-    s.salmonRunStarted = true;
+    s.salmonRunStarted = false;
     s.salmonRunTimer = 0;
     s.bossIntroTimer = 0;
     s.dad = null;
@@ -135,8 +135,8 @@
     window.requestAnimationFrame(loop);
   }
   function ready() {
-    document.body.dataset.hockeyStageFlow = 'v0.14.46';
-    window.HOCKEY_BOOT_LOG?.log?.('stage-flow', 'Opening salmon run requires 20 caught salmon before encounters unlock.');
+    document.body.dataset.hockeyStageFlow = 'v0.14.47';
+    window.HOCKEY_BOOT_LOG?.log?.('stage-flow', 'Opening salmon run uses its own phase and does not trigger the old boss timer.');
     window.requestAnimationFrame(loop);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready);
