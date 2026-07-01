@@ -136,15 +136,6 @@ test('v2 dry run covers both players and all cast entity types', async ({ page }
         hp: 3,
         bubble: 'Dry run dance',
       }));
-      world.entities.push(World.createEntity(world, 'brother', {
-        sprite: 'daniel',
-        x: 520,
-        y: groundY - 100,
-        width: 92,
-        height: 100,
-        nonContact: true,
-        bubble: 'Dry run brother',
-      }));
       world.entities.push(World.createEntity(world, 'bear', {
         sprite: 'bear',
         x: 630,
@@ -182,7 +173,6 @@ test('v2 dry run covers both players and all cast entity types', async ({ page }
       'alaskanBoy',
       'alaskanGirl',
       'bear',
-      'brother',
       'dad',
       'danceInstructor',
       'mom',

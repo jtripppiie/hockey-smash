@@ -53,7 +53,6 @@ Canvas/world state should own:
 - Dad
 - Mom
 - dance instructor
-- Daniel/brother helper
 - Alaska boy/girl cameo
 - projectiles
 - speech bubbles attached to people when they make gameplay/context sense
@@ -164,7 +163,6 @@ During this phase:
 - no Dad
 - no Mom
 - no dance instructor
-- no Daniel/brother helper
 - no Alaska cameo, unless we explicitly decide it is background-only flavor
 
 ### Encounters
@@ -176,7 +174,6 @@ After 20 salmon are caught:
 - Dad can enter
 - Mom can appear briefly and say `[Name], clean your room!`
 - Sofie mode can use the dance instructor
-- Daniel/brother helper can appear if desired
 - cameos can appear as world entities
 
 ## Migration Plan

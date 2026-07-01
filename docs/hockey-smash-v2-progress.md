@@ -196,7 +196,6 @@ Purpose:
 - preview Mom as a timed, non-contact world entity
 - preview Dad as a moving world entity
 - preview dance instructor in Sofie mode
-- preview a Daniel/brother helper as a non-contact support entity
 - render speech bubbles through the v2 canvas renderer
 
 Rules represented:
@@ -377,7 +376,6 @@ Before publishing another milestone, verify the v2 harness manually:
 - Mom appears as non-contact and expires
 - Dad appears as a world entity
 - dance instructor appears for Sofie
-- brother helper appears as non-contact support
 - bear and moose appear as world entities
 - projectiles can clear damageable entities
 - cameos are canvas/world entities, not DOM overlays

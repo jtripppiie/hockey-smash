@@ -391,7 +391,7 @@
         const DESIGN_WIDTH = 1024;
         const DESIGN_HEIGHT = 576;
         const GROUND_Y = DESIGN_HEIGHT * 0.82;
-        const ENCOUNTER_TYPES = ['bear', 'moose', 'dad', 'mom', 'danceInstructor', 'brother', 'cameo'];
+        const ENCOUNTER_TYPES = ['bear', 'moose', 'dad', 'mom', 'danceInstructor', 'cameo'];
         const DEFAULT_NAMES = ['Daniel', 'Sofie'];
         const PARALLAX_LAYERS = [
           {
@@ -785,10 +785,8 @@
           if (type === 'dad') return spawnPerson('dad', `${world.player.name}, do your homework!`, 4, 6);
           if (type === 'mom') return world.entities.push(World.createMom(world));
           if (type === 'danceInstructor') {
-            if (world.player.character !== 'sofie') return spawnPerson('brother', 'Brother assist!', 2, 0, true);
             return spawnPerson('danceInstructor', 'Point those toes!', 3, 7);
           }
-          if (type === 'brother') return spawnPerson('brother', 'I got your back!', 2, 0, true);
           return spawnCameo();
         }
 
@@ -808,9 +806,8 @@
         }
 
         function spawnPerson(type, bubble, hp, damage, nonContact = false) {
-          const sprite = type === 'brother' ? 'daniel' : type;
           world.entities.push(World.createEntity(world, type, {
-            sprite,
+            sprite: type,
             x: DESIGN_WIDTH + 64,
             y: GROUND_Y - 100,
             width: 92,

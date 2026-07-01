@@ -39,7 +39,7 @@ Implemented now:
 - salmon run
 - animated ground landing markers for falling salmon
 - catch 20 salmon to unlock encounters
-- Mom, Dad, dance instructor, brother helper, bear, moose, Alaska cameo previews
+- Mom, Dad, dance instructor, bear, moose, Alaska cameo previews
 - simple stick/throw projectile preview
 - responsive phone and landscape layouts
 

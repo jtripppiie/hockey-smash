@@ -172,7 +172,6 @@ Implemented:
 - Mom is non-contact
 - Dad appears as a world entity
 - dance instructor appears in Sofie mode
-- brother helper appears as non-contact support
 
 ### 8. Add v2 wildlife previews
 
