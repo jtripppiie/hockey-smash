@@ -6,7 +6,15 @@ This checklist exists so the game can be cleaned up without breaking the current
 
 The current game is still the live game. The new v2 files are foundation only.
 
-Live files still loaded by `index.html` include the existing canvas game and its support layers. The new file `js/games/hockey-smash-world-v2.js` is not loaded yet and should not affect gameplay.
+Live files still loaded by `index.html` include the existing canvas game and its support layers. The new v2 files are not loaded by the live page and should not affect gameplay.
+
+Current isolated v2 files:
+
+```text
+js/games/hockey-smash-world-v2.js
+js/games/hockey-smash-renderer-v2.js
+dev/hockey-smash-v2.html
+```
 
 ## Hard Rule
 
@@ -17,6 +25,7 @@ A safe v2 commit may add:
 - docs
 - isolated v2 modules
 - inactive test helpers
+- dev-only harness pages
 - notes/checklists
 
 A safe v2 commit should not change:
@@ -30,24 +39,27 @@ A safe v2 commit should not change:
 - current version-lock behavior
 - current loaded gameplay files
 
-## Recommended Migration Order
+## Completed Foundation Steps
 
-### 1. Document the current system
+### 1. Document the current direction
 
-Before replacing anything, document what currently exists:
+Done in:
 
-- which files are loaded by `index.html`
-- which files draw to canvas
-- which files create DOM overlays
-- which files patch player state
-- which files spawn entities
-- which files write build/version info
+```text
+docs/hockey-smash-v2-architecture.md
+docs/hockey-smash-v2-migration-checklist.md
+docs/hockey-smash-v2-progress.md
+```
 
 ### 2. Keep the v2 world isolated
 
-`hockey-smash-world-v2.js` should remain a passive module at first.
+Done in:
 
-It can define:
+```text
+js/games/hockey-smash-world-v2.js
+```
+
+The v2 world file defines:
 
 - phase names
 - tuning constants
@@ -58,7 +70,7 @@ It can define:
 - cameo shape
 - salmon-run target
 
-It should not:
+It does not:
 
 - start a game loop
 - register input listeners
@@ -69,82 +81,82 @@ It should not:
 
 ### 3. Add a v2 renderer separately
 
-Create a renderer file later, for example:
+Done in:
 
 ```text
 js/games/hockey-smash-renderer-v2.js
 ```
 
-That renderer should take a world object and a canvas context:
+The renderer takes a world object and a canvas context:
 
 ```js
 renderWorld(ctx, world, imageCache)
 ```
 
-It should not read random DOM state. It should only render the world it is given.
+It renders from explicit world state. It does not start a loop, read the current live game, or append DOM overlays.
 
-### 4. Add a v2 dev harness separately
+### 4. Add a v2 dev harness with basic input adapter
 
-Only after the v2 world and renderer exist, create a separate dev harness. Options:
+Done in:
 
-- `dev/hockey-smash-v2.html`
-- `tests/hockey-smash-v2-smoke.html`
-- a local-only script not loaded by the production page
+```text
+dev/hockey-smash-v2.html
+```
 
-Do not replace the real game page yet.
+The dev harness:
 
-### 5. Migrate the player first
+- loads only the v2 world and renderer
+- creates its own separate canvas
+- previews Daniel and Sofie as canvas-rendered player sprites
+- maps keyboard and pointer controls to a local v2 input object
+- moves the v2 player in the harness only
+- does not touch the real game page
 
-First real migration should be player rendering.
+Controls:
+
+```text
+A / Left Arrow  -> left
+D / Right Arrow -> right
+W / Up / Space  -> jump
+S / Shift       -> slide
+```
+
+## Recommended Migration Order From Here
+
+### 5. Add v2 salmon loop inside the dev harness
 
 Goal:
 
 ```text
-Daniel and Sofie are both canvas-rendered from the same player object.
+salmon spawn, fall, collection, and scoring are owned by one v2 path.
 ```
 
 Acceptance criteria:
 
-- choosing Daniel draws Daniel on canvas
-- choosing Sofie draws Sofie on canvas
-- no DOM player overlay is needed for gameplay
-- player position, collision, and sprite match the same object
-- countdown and salmon run still work
-
-### 6. Migrate salmon second
-
-Goal:
-
-```text
-salmon spawn, fall, collection, and scoring are owned by one system.
-```
-
-Acceptance criteria:
-
-- opening phase starts with salmon only
-- player must catch 20 salmon
+- salmon spawn in the v2 harness only
+- salmon fall in canvas world units
+- player overlaps salmon to collect it
 - collected count increments once per salmon
-- missed salmon does not break the run unless intentionally designed later
-- no other file writes conflicting salmon contact values
+- readout shows salmon count
+- no current live-game file is touched
 
-### 7. Migrate stage controller third
+### 6. Prove 20-salmon gate in v2
 
 Goal:
 
 ```text
-one stage controller owns countdown -> salmonRun -> encounters.
+countdown -> salmonRun -> catch 20 -> encounters unlocked
 ```
 
 Acceptance criteria:
 
 - countdown happens first
-- no game-world entities spawn during countdown
+- no v2 game-world entities spawn during countdown
 - salmon-only run starts after countdown
 - encounters unlock only after 20 salmon
-- snow/weather can run independently
-- old mower-Dad path cannot hijack the staged run
+- dev harness readout shows the phase transition
 
-### 8. Migrate family/cast entities fourth
+### 7. Add v2 family/cast entity previews
 
 Goal:
 
@@ -162,7 +174,7 @@ Rules:
 - dance instructor appears only in Sofie mode unless intentionally changed
 - Daniel/brother helper appears only when explicitly designed
 
-### 9. Migrate wildlife fifth
+### 8. Add v2 wildlife previews
 
 Goal:
 
@@ -178,7 +190,7 @@ Acceptance criteria:
 - only one big animal at a time if that remains the rule
 - no DOM collision bridge is involved
 
-### 10. Migrate cameos sixth
+### 9. Add v2 cameos as world entities
 
 Goal:
 
@@ -186,7 +198,7 @@ Goal:
 Alaska boy/girl cameos are optional world entities, not DOM overlays.
 ```
 
-Decision needed:
+Decision needed before final integration:
 
 - Are cameos allowed during salmon run?
 - Are cameos purely background flavor?
@@ -194,7 +206,7 @@ Decision needed:
 
 Until answered, keep cameos outside the salmon-run requirement or clearly mark them as non-gameplay background flavor.
 
-### 11. Migrate projectiles later
+### 10. Migrate projectiles later
 
 Projectiles are higher risk because they affect interaction rules. Do not migrate them first.
 
