@@ -118,17 +118,17 @@
           </div>
 
           <strong>Input adapter test</strong>
-          <p>Use <kbd>A</kbd>/<kbd>D</kbd> or arrows to move. Use <kbd>W</kbd>, <kbd>↑</kbd>, or <kbd>Space</kbd> to jump. Hold <kbd>S</kbd> or <kbd>Shift</kbd> to slide. Use <kbd>F</kbd> or <kbd>Enter</kbd> to shoot.</p>
+          <p>Use <kbd>A</kbd>/<kbd>D</kbd> or arrows to move. Use <kbd>W</kbd>, <kbd>↑</kbd>, or <kbd>Space</kbd> to jump. Hold <kbd>S</kbd> or <kbd>Shift</kbd> to slide. Use <kbd>F</kbd> or <kbd>Enter</kbd> for the stick/throw action.</p>
           <div class="dev-dpad" aria-label="Touch controls">
             <button type="button" data-action="left">◀</button>
             <button type="button" data-action="right">▶</button>
             <button type="button" data-action="jump">Jump</button>
             <button type="button" data-action="slide">Slide</button>
-            <button type="button" data-action="shoot">Shoot</button>
+            <button type="button" data-action="stick">Throw / Swing</button>
           </div>
 
           <strong>V2 flow</strong>
-          <p>Countdown → salmon run → catch 20 → encounters unlock. After the gate, family/cast, wildlife, cameos, and simple projectiles all run as canvas/world entities.</p>
+          <p>Countdown → salmon run → catch 20 → encounters unlock. After the gate, family/cast, wildlife, cameos, and simple stick/throw projectiles all run as canvas/world entities.</p>
 
           <strong>World readout</strong>
           <div class="dev-readout" id="v2-readout">Waiting for v2 world...</div>
@@ -152,7 +152,7 @@
         const readout = document.getElementById('v2-readout');
         const World = window.HOCKEY_SMASH_WORLD_V2;
         const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
-        const input = { left: false, right: false, jump: false, slide: false, shoot: false };
+        const input = { left: false, right: false, jump: false, slide: false, stick: false };
         const heldPointers = new Map();
         let world = null;
         let imageCache = null;
@@ -242,9 +242,9 @@
             s: 'slide',
             S: 'slide',
             Shift: 'slide',
-            f: 'shoot',
-            F: 'shoot',
-            Enter: 'shoot',
+            f: 'stick',
+            F: 'stick',
+            Enter: 'stick',
           }[key] || null;
         }
 
@@ -294,10 +294,10 @@
           }
 
           world.timers.projectile = Math.max(0, (world.timers.projectile || 0) - dt);
-          if (input.shoot && world.timers.projectile <= 0) {
+          if (input.stick && world.timers.projectile <= 0) {
             spawnProjectile();
             world.timers.projectile = 0.28;
-            input.shoot = false;
+            input.stick = false;
           }
 
           player.x = Math.max(22, Math.min(DESIGN_WIDTH - player.width - 22, player.x + player.vx * dt));
@@ -460,7 +460,7 @@
         function spawnProjectile() {
           const player = world.player;
           const direction = player.facing || 1;
-          const label = player.character === 'sofie' ? 'shoe' : 'puck';
+          const label = player.character === 'sofie' ? 'throw' : 'stick';
           world.entities.push(World.createEntity(world, 'projectile', {
             sprite: label,
             label,
