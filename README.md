@@ -31,6 +31,8 @@ Implemented now:
 - compact splash/start screen
 - player name input
 - Daniel/Sofie character selection
+- version overlay badge sourced from `package.json`
+- in-frame salmon score HUD for mobile/fullscreen play
 - fullscreen toggle
 - keyboard and touch controls
 - `?debug=1` debug mode with FPS, hitbox, and god-mode toggles

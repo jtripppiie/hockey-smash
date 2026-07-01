@@ -8,6 +8,32 @@ V2 is now the active Hockey Smash path. Keep gameplay in world state and canvas 
 
 ## Completed
 
+### 2026-07-01: Version Badge and Mobile HUD
+
+Changed:
+- `dev/hockey-smash-v2.html`
+- `scripts/verify-hockey-smash.js`
+- `README.md`
+- `docs/hockey-smash-v2-progress.md`
+
+Gameplay impact:
+- The v2 frame now shows a small version badge.
+- The badge reads `package.json` when available and falls back to the current static version.
+- Mobile/fullscreen play now has an in-frame salmon score and phase HUD.
+- Portrait fullscreen keeps the canvas proportional and brings controls into a tighter lower play area.
+- Landscape fullscreen fills the viewport so the playfield is not boxed into the left side.
+
+Verification:
+- `npm run verify`: passed
+- `npm run test:browser`: passed
+- manual browser check: not run
+
+Known issues:
+- none found
+
+Next:
+- Continue with Soldotna parallax asset inventory and final layer wiring.
+
 ### 2026-07-01: Stage 1.5 Debug Mode and Quality-of-Life
 
 Changed:

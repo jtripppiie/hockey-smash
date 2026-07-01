@@ -93,6 +93,13 @@ requireText('v2 harness', harness, 'data-character="daniel"', 'Daniel selection 
 requireText('v2 harness', harness, 'data-character="sofie"', 'Sofie selection is missing.');
 requireText('v2 harness', harness, 'data-action="stick"', 'Stick action control is missing.');
 requireText('v2 harness', harness, 'id="v2-fullscreen"', 'V2 fullscreen toggle is missing.');
+requireText('v2 harness', harness, 'id="v2-version-badge"', 'V2 version overlay badge is missing.');
+requireText('v2 harness', harness, 'loadVersionBadge', 'V2 version badge loader is missing.');
+requireText('v2 harness', harness, 'fetch(\'../package.json\'', 'V2 version badge should read package.json when available.');
+requireText('v2 harness', harness, 'id="v2-hud-score"', 'V2 mobile scoring HUD is missing.');
+requireText('v2 harness', harness, 'updateHud', 'V2 HUD update loop is missing.');
+requireText('v2 harness', harness, 'Salmon ${world.salmonCaught', 'V2 HUD should show salmon score.');
+requireText('v2 harness', harness, 'height: 100vh', 'V2 fullscreen landscape should fill the viewport.');
 requireText('v2 harness', harness, 'gameStarted', 'V2 harness should gate updates behind Start.');
 requireText('v2 harness', harness, 'bubble: \'\'', 'Bear/moose speech bubbles should remain disabled.');
 requireText('v2 harness', harness, 'spawnSalmonLandingMarker', 'V2 salmon landing marker spawn is missing.');

@@ -79,6 +79,14 @@
         width: min(100vw, 177.78vh);
         max-height: 100vh;
       }
+      .dev-game-frame:fullscreen.is-playing {
+        display: block;
+      }
+      .dev-game-frame:fullscreen.is-playing canvas {
+        width: 100vw;
+        height: 100vh;
+        aspect-ratio: auto;
+      }
       .v2-fullscreen {
         position: absolute;
         top: 0.8rem;
@@ -87,10 +95,59 @@
         background: rgba(5, 8, 13, 0.74);
         backdrop-filter: blur(8px);
       }
+      .v2-version-badge {
+        position: absolute;
+        top: 0.8rem;
+        left: 0.8rem;
+        z-index: 8;
+        padding: 0.3rem 0.52rem;
+        border: 2px solid rgba(255, 242, 122, 0.46);
+        border-radius: 8px;
+        background: rgba(5, 8, 13, 0.74);
+        color: #fff27a;
+        font-size: 0.72rem;
+        font-weight: 1000;
+        line-height: 1;
+        letter-spacing: 0;
+        backdrop-filter: blur(8px);
+        pointer-events: none;
+      }
+      .v2-hud {
+        position: absolute;
+        top: 0.8rem;
+        left: 50%;
+        z-index: 8;
+        display: flex;
+        align-items: center;
+        gap: 0.38rem;
+        max-width: min(46vw, 25rem);
+        padding: 0.34rem 0.58rem;
+        border: 2px solid rgba(255, 242, 122, 0.46);
+        border-radius: 8px;
+        background: rgba(5, 8, 13, 0.74);
+        color: #fff8df;
+        font-size: 0.74rem;
+        font-weight: 1000;
+        line-height: 1;
+        transform: translateX(-50%);
+        backdrop-filter: blur(8px);
+        pointer-events: none;
+        white-space: nowrap;
+      }
+      .v2-hud__score {
+        color: #fff27a;
+      }
+      .v2-hud__phase {
+        max-width: 12rem;
+        overflow: hidden;
+        color: rgba(255, 248, 223, 0.84);
+        text-overflow: ellipsis;
+        text-transform: uppercase;
+      }
       .v2-debug-panel {
         position: absolute;
         left: 0.75rem;
-        top: 0.75rem;
+        top: 3.25rem;
         z-index: 8;
         display: none;
         min-width: min(21rem, calc(100% - 1.5rem));
@@ -262,20 +319,40 @@
         background: rgba(255,255,255,.12);
       }
       @media (max-width: 850px) {
+        body {
+          padding: 0;
+        }
+        .dev-shell {
+          gap: 0;
+        }
+        .dev-header {
+          display: none;
+        }
         .dev-game-frame {
           width: 100%;
           min-width: 0;
-          min-height: min(520px, calc(100vh - 1rem));
+          min-height: min(520px, 100vh);
           display: grid;
           place-items: center;
+          border-radius: 0;
+          border-width: 0;
         }
         .dev-game-frame.is-playing {
           min-height: 0;
           display: block;
         }
         .dev-game-frame.is-playing canvas {
-          height: min(58vh, 420px);
-          aspect-ratio: auto;
+          height: auto;
+          aspect-ratio: 16 / 9;
+        }
+        .v2-fullscreen,
+        .v2-version-badge,
+        .v2-hud {
+          top: max(0.55rem, env(safe-area-inset-top));
+        }
+        .v2-hud {
+          max-width: 42vw;
+          font-size: 0.68rem;
         }
         .v2-splash {
           overflow: auto;
@@ -294,6 +371,30 @@
           min-height: 2.85rem;
         }
       }
+      @media (max-width: 850px) and (orientation: portrait) {
+        .dev-game-frame:fullscreen.is-playing {
+          display: flex;
+          flex-direction: column;
+          background: #101923;
+        }
+        .dev-game-frame:fullscreen.is-playing canvas {
+          flex: 0 0 auto;
+          width: 100vw;
+          height: auto;
+          aspect-ratio: 16 / 9;
+        }
+        .dev-game-frame:fullscreen.is-playing .v2-controls {
+          position: relative;
+          inset: auto;
+          flex: 1 1 auto;
+          align-items: center;
+          padding: clamp(0.75rem, 4vh, 2rem) 0.85rem max(0.95rem, env(safe-area-inset-bottom));
+        }
+        .dev-game-frame:fullscreen.is-playing .v2-control {
+          min-width: clamp(3.15rem, 14vw, 4.7rem);
+          min-height: clamp(3.15rem, 14vw, 4.7rem);
+        }
+      }
       @media (max-width: 850px) and (max-height: 500px) and (orientation: landscape) {
         body {
           place-items: start center;
@@ -302,12 +403,25 @@
           display: none;
         }
         .dev-game-frame {
-          width: min(100%, calc((100vh - 1rem) * 1.7778));
+          width: 100vw;
           min-height: 0;
         }
+        .dev-game-frame:fullscreen,
+        .dev-game-frame:fullscreen.is-playing {
+          width: 100vw;
+          height: 100vh;
+        }
+        .dev-game-frame:fullscreen.is-playing canvas,
         .dev-game-frame.is-playing canvas {
-          height: auto;
-          aspect-ratio: 16 / 9;
+          width: 100vw;
+          height: 100vh;
+          aspect-ratio: auto;
+        }
+        .v2-controls {
+          padding: 0.65rem max(0.65rem, env(safe-area-inset-right)) max(0.55rem, env(safe-area-inset-bottom)) max(0.65rem, env(safe-area-inset-left));
+        }
+        .v2-hud {
+          max-width: 34vw;
         }
         .v2-splash {
           padding: 0.6rem;
@@ -346,6 +460,11 @@
         <section id="v2-game-frame" class="dev-game-frame" aria-label="Hockey Smash v2 gameplay frame">
           <canvas id="v2-canvas" width="1024" height="576" aria-label="Hockey Smash v2 canvas preview"></canvas>
           <button id="v2-fullscreen" class="v2-fullscreen" type="button" aria-label="Toggle fullscreen">Fullscreen</button>
+          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v0.14.57</div>
+          <div id="v2-hud" class="v2-hud" aria-live="polite">
+            <span id="v2-hud-score" class="v2-hud__score">Salmon 0/20</span>
+            <span id="v2-hud-phase" class="v2-hud__phase">Countdown</span>
+          </div>
           <div id="v2-debug-panel" class="v2-debug-panel" aria-live="polite"></div>
 
           <section id="v2-splash" class="v2-splash" aria-labelledby="v2-title">
@@ -440,11 +559,15 @@
         const nameInput = document.getElementById('v2-player-name');
         const startButton = document.getElementById('v2-start');
         const fullscreenButton = document.getElementById('v2-fullscreen');
+        const versionBadge = document.getElementById('v2-version-badge');
+        const hudScore = document.getElementById('v2-hud-score');
+        const hudPhase = document.getElementById('v2-hud-phase');
         const debugPanel = document.getElementById('v2-debug-panel');
         const splashHero = document.getElementById('v2-splash-hero');
         const readout = document.getElementById('v2-readout');
         const World = window.HOCKEY_SMASH_WORLD_V2;
         const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
+        const VERSION_FALLBACK = '0.14.57';
         const debugEnabled = new URLSearchParams(window.location.search).has('debug');
         const input = {
           left: false,
@@ -547,6 +670,22 @@
             fullscreenButton.textContent = active ? 'Exit' : 'Fullscreen';
             fullscreenButton.setAttribute('aria-pressed', active ? 'true' : 'false');
           });
+        }
+
+        async function loadVersionBadge() {
+          if (!versionBadge) return;
+          let version = VERSION_FALLBACK;
+          try {
+            const response = await fetch('../package.json', { cache: 'no-store' });
+            if (response.ok) {
+              const manifest = await response.json();
+              if (manifest?.version) version = String(manifest.version);
+            }
+          } catch (error) {
+            console.warn('Version badge fallback used.', error);
+          }
+          versionBadge.textContent = `v${version}`;
+          versionBadge.setAttribute('aria-label', `Hockey Smash version ${version}`);
         }
 
         function bindKeyboardInput() {
@@ -1036,6 +1175,19 @@
           ].join('');
         }
 
+        function updateHud() {
+          if (!world) return;
+          if (hudScore) hudScore.textContent = `Salmon ${world.salmonCaught || 0}/${world.salmonTarget || 0}`;
+          if (hudPhase) hudPhase.textContent = formatPhase(world.phase);
+        }
+
+        function formatPhase(phase) {
+          if (phase === World.PHASES.SALMON_RUN) return 'Salmon Run';
+          if (phase === World.PHASES.ENCOUNTERS) return `Level ${world.difficulty?.level || 1}`;
+          if (phase === World.PHASES.GAME_OVER) return 'Game Over';
+          return 'Countdown';
+        }
+
         function updateDebugPanel() {
           if (!debugPanel || !world?.debug?.enabled) {
             if (debugPanel) debugPanel.classList.remove('is-visible');
@@ -1092,6 +1244,7 @@
             moonSrc: '../assets/hockey-smash/backgrounds/moon.webp',
           });
           updateReadout();
+          updateHud();
           updateDebugPanel();
           window.requestAnimationFrame(loop);
         }
@@ -1101,6 +1254,7 @@
         bindFullscreen();
         bindKeyboardInput();
         bindPointerInput();
+        loadVersionBadge();
         resetWorld('daniel');
         window.HOCKEY_SMASH_V2_DEV = {
           getWorld: () => world,
