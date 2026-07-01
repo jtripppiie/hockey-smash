@@ -319,7 +319,7 @@
     <main class="dev-shell">
       <header class="dev-header">
         <h1>Hockey Smash v2 Dev Harness</h1>
-        <p>This page is isolated from the live game. It loads only the v2 world scaffold and v2 renderer scaffold so we can test the proper canvas/world architecture without touching <code>index.html</code>.</p>
+        <p>This is the active v2 play path. It loads the v2 world and renderer so gameplay stays in canvas/world state while DOM handles the start screen, controls, and status UI.</p>
       </header>
 
       <section class="dev-layout" aria-label="Hockey Smash v2 isolated test area">
@@ -373,7 +373,7 @@
           <div class="dev-panel__block">
             <strong>V2 flow</strong>
             <p>Countdown → salmon run → catch 20 → encounters unlock. After the gate, family/cast, wildlife, cameos, and simple stick/throw projectiles all run as canvas/world entities.</p>
-            <p>This harness does not replace the live game.</p>
+            <p>Falling salmon now get a short-lived ground marker so players can head toward the catch point.</p>
           </div>
 
           <div class="dev-panel__block">
@@ -704,7 +704,37 @@
             vx: -75 + Math.random() * 150,
             vy: world.tuning.salmonFallVelocity + Math.random() * world.tuning.salmonFallVelocityRange,
           });
+          spawnSalmonLandingMarker(salmon);
           world.entities.push(salmon);
+        }
+
+        function spawnSalmonLandingMarker(salmon) {
+          const landing = predictSalmonLandingX(salmon);
+          const width = 74;
+          world.entities.push(World.createEntity(world, 'salmonMarker', {
+            sprite: 'salmonMarker',
+            x: landing.x - width / 2,
+            y: GROUND_Y - 10,
+            width,
+            height: 10,
+            ttl: Math.min(2.5, Math.max(0.8, landing.time + 0.25)),
+            nonContact: true,
+            landingFor: salmon.id,
+          }));
+        }
+
+        function predictSalmonLandingX(salmon) {
+          const gravity = world.tuning.salmonFallGravity || 440;
+          const targetY = GROUND_Y - salmon.height;
+          const dy = Math.max(0, targetY - salmon.y);
+          const vy = salmon.vy || 0;
+          const discriminant = Math.max(0, (vy * vy) + (2 * gravity * dy));
+          const time = gravity > 0 ? Math.max(0, (-vy + Math.sqrt(discriminant)) / gravity) : 1;
+          const centerX = salmon.x + (salmon.width / 2) + ((salmon.vx || 0) * time);
+          return {
+            x: Math.max(34, Math.min(DESIGN_WIDTH - 34, centerX)),
+            time,
+          };
         }
 
         function spawnNextEncounter() {
@@ -733,7 +763,7 @@
             vx: isMoose ? -145 : -170,
             hp: isMoose ? 3 : 2,
             damage: isMoose ? 16 : 12,
-            bubble: isMoose ? 'Moose!' : 'Bear!',
+            bubble: '',
           }));
         }
 
@@ -865,6 +895,14 @@
         bindKeyboardInput();
         bindPointerInput();
         resetWorld('daniel');
+        window.HOCKEY_SMASH_V2_DEV = {
+          getWorld: () => world,
+          spawnSalmon: () => {
+            if (!world) return 0;
+            spawnHarnessSalmon();
+            return world.entities.filter((entity) => entity && entity.type === 'salmonMarker' && !entity.dead).length;
+          },
+        };
         window.requestAnimationFrame(loop);
       })();
     </script>

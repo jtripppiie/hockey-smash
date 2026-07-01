@@ -1,5 +1,17 @@
 # Changelog
 
+## v2 Harness Promotion And Repo Cleanup
+
+- Promoted Hockey Smash v2 as the current playable direction.
+- Changed the public root page to route to `dev/hockey-smash-v2.html`.
+- Removed the previous layered v1 runtime CSS and JavaScript files.
+- Removed old dungeon-era docs, data, and legacy verification scripts.
+- Replaced static and browser checks with v2-focused verification.
+- Kept v2 gameplay in the world-state/canvas-renderer architecture.
+- Removed bear/moose speech bubbles in v2 because wildlife callouts did not make sense.
+- Added ground landing markers for falling salmon so players can start moving toward the catch point.
+- Preserved v2 mobile responsiveness, compact splash, fullscreen toggle, salmon tuning, faster player movement, and proportional Mom sizing.
+
 ## 0.14.4 - Cast QA And Controls
 
 - Shipped **Hockey Smash v0.14.4** with visible build badge `Build 2026-06-30.60`.

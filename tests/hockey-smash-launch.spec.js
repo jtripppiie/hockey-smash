@@ -1,6 +1,6 @@
 const { test, expect } = require('@playwright/test');
 
-test('Hockey Smash v0.14.28 launches as a single-screen arena', async ({ page }) => {
+test('root routes to Hockey Smash v2 harness', async ({ page }) => {
   const consoleErrors = [];
   page.on('console', (message) => {
     if (message.type() === 'error') consoleErrors.push(message.text());
@@ -8,112 +8,77 @@ test('Hockey Smash v0.14.28 launches as a single-screen arena', async ({ page })
   page.on('pageerror', (error) => consoleErrors.push(error.message));
 
   await page.goto('/');
-  await expect(page.locator('h1')).toHaveText('Hockey Smash');
-  await expect(page.locator('#hockey-build-badge')).toContainText('Hockey Smash v0.14.28 · Build 2026-06-30.84');
-  await expect(page.locator('#hockey-watch')).toHaveAttribute('href', '?computerMode=1');
-  await page.locator('#hockey-play').click();
-  await expect(page.locator('#hockey-game')).toBeVisible({ timeout: 6000 });
-  await expect(page.locator('[data-fullscreen-toggle]').first()).toBeVisible();
-  await expect(page.locator('#hockey-player-overlay')).toBeHidden();
-  await expect(page.locator('.hockey-entity-layer')).toBeHidden();
-  await expect(page.locator('.hockey-stage-background')).toHaveCount(0);
-  await page.waitForTimeout(700);
-  await expect(page.locator('.hockey-entity-overlay')).toHaveCount(0);
+  await page.waitForURL(/dev\/hockey-smash-v2\.html$/);
+  await expect(page.locator('h1')).toHaveText('Hockey Smash v2 Dev Harness');
+  await expect(page.locator('#v2-canvas')).toBeVisible();
+  await expect(page.locator('#v2-splash')).toBeVisible();
+  await expect(page.locator('#v2-fullscreen')).toBeVisible();
 
-  const version = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getVersion());
-  expect(version).toBe('Hockey Smash v0.14.28');
-
-  const normalSizing = await page.evaluate(() => {
-    const state = window.RTA_HOCKEY_SMASH.getState();
-    return {
-      player: { width: state.player.width, height: state.player.height },
-      hasIce: state.entities.some((entity) => entity?.type === 'icePatch'),
-      maxSalmonWidth: Math.max(0, ...state.entities.filter((entity) => entity?.type === 'salmon').map((entity) => entity.width || 0)),
-    };
-  });
-  expect(normalSizing.player.width).toBeLessThanOrEqual(110);
-  expect(normalSizing.player.height).toBeLessThanOrEqual(112);
-  expect(normalSizing.hasIce).toBe(false);
-  expect(normalSizing.maxSalmonWidth).toBeLessThanOrEqual(90);
-
-  await page.evaluate(() => {
-    const state = window.RTA_HOCKEY_SMASH.getState();
-    state.player.x = 822;
-  });
-  await page.waitForTimeout(700);
-  const arena = await page.evaluate(() => {
-    const state = window.RTA_HOCKEY_SMASH.getState();
-    return { x: state.player.x, travelStage: state.travelStage, time: state.time };
-  });
-  expect(arena.travelStage || 0).toBe(0);
-  expect(arena.x).toBeGreaterThan(800);
-  expect(arena.x).toBeLessThanOrEqual(900);
-  expect(arena.time).toBeGreaterThan(0);
-
-  await page.evaluate(() => {
-    const state = window.RTA_HOCKEY_SMASH.getState();
-    state.player.x = -20;
-  });
-  await page.waitForTimeout(300);
-  const leftEdge = await page.evaluate(() => {
-    const state = window.RTA_HOCKEY_SMASH.getState();
-    return { x: state.player.x, travelStage: state.travelStage };
-  });
-  expect(leftEdge.travelStage || 0).toBe(0);
-  expect(leftEdge.x).toBeGreaterThanOrEqual(22);
-  expect(leftEdge.x).toBeLessThan(80);
-
-  await expect(page.locator('#hockey-status')).toContainText('Fish Dodge Level');
-
+  const globals = await page.evaluate(() => ({
+    world: Boolean(window.HOCKEY_SMASH_WORLD_V2),
+    renderer: Boolean(window.HOCKEY_SMASH_RENDERER_V2),
+  }));
+  expect(globals).toEqual({ world: true, renderer: true });
   expect(consoleErrors).toEqual([]);
 });
 
-test('Computer Play hides duplicate DOM Daniel overlay', async ({ page }) => {
-  await page.goto('/?computerMode=1');
-  await expect(page.locator('#hockey-build-badge')).toContainText('Hockey Smash v0.14.28 · Build 2026-06-30.84');
-  await expect(page.locator('#hockey-game')).toBeVisible({ timeout: 5000 });
-  await expect(page.locator('.hockey-autoplay-panel')).toContainText('Watch mode is active');
+test('v2 start screen applies name, character, controls, and movement', async ({ page }) => {
+  await page.goto('/dev/hockey-smash-v2.html');
+  await page.fill('#v2-player-name', 'Jamie');
+  await page.click('[data-character="sofie"]');
+  await page.click('#v2-start');
 
-  const computerEnabled = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getState().computer.enabled);
-  const version = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getVersion());
-  const overlayHidden = await page.locator('#hockey-player-overlay').evaluate((node) => node.hidden || getComputedStyle(node).display === 'none');
+  await expect(page.locator('#v2-game-frame')).toHaveClass(/is-playing/);
+  await expect(page.locator('.v2-controls')).toBeVisible();
 
-  expect(computerEnabled).toBe(true);
-  expect(version).toBe('Hockey Smash v0.14.28');
-  expect(overlayHidden).toBe(true);
-});
+  const before = await page.locator('#v2-readout').textContent();
+  expect(before).toContain('character: sofie');
+  expect(before).toContain('name: Jamie');
 
-test('Desktop Space fires and dev shortcut spawns cast encounters', async ({ page }) => {
-  await page.goto('/?debug=1');
-  await page.locator('[data-character="sofie"]').click();
-  await page.locator('#hockey-play').click();
-  await expect(page.locator('#hockey-game')).toBeVisible({ timeout: 6000 });
-  await expect(page.locator('#hockey-spawn-cast-debug')).toBeVisible();
+  await page.keyboard.down('KeyD');
+  await page.waitForTimeout(250);
+  await page.keyboard.up('KeyD');
+  await page.keyboard.press('KeyF');
+  await page.waitForTimeout(250);
 
-  await page.keyboard.down('Space');
-  await page.keyboard.up('Space');
-  await expect(page.locator('[data-projectile-type]')).toHaveCount(1, { timeout: 2000 });
+  const after = await page.locator('#v2-readout').textContent();
+  expect(after).toContain('character: sofie');
+  expect(after).toContain('name: Jamie');
+  expect(await page.locator('[data-action="stick"]').count()).toBe(1);
 
-  const spawnedType = await page.evaluate(() => {
-    window.RTA_HOCKEY_SMASH_CAST.spawnNow('danceInstructor');
-    return window.RTA_HOCKEY_SMASH.getState().entities.find((entity) => entity.fromFinalCastPass)?.type;
+  const markerState = await page.evaluate(() => {
+    const markerCount = window.HOCKEY_SMASH_V2_DEV.spawnSalmon();
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    const marker = world.entities.find((entity) => entity && entity.type === 'salmonMarker');
+    return {
+      markerCount,
+      nonContact: Boolean(marker?.nonContact),
+      y: marker?.y,
+    };
   });
-
-  expect(spawnedType).toBe('danceInstructor');
+  expect(markerState.markerCount).toBeGreaterThan(0);
+  expect(markerState.nonContact).toBe(true);
+  expect(markerState.y).toBeGreaterThan(450);
 });
 
-test('Portrait mobile layout keeps canvas and controls separated', async ({ page }) => {
+test('v2 mobile splash and controls stay inside the play frame', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto('/');
-  await page.locator('#hockey-play').click();
-  await expect(page.locator('#hockey-game')).toBeVisible({ timeout: 6000 });
+  await page.goto('/dev/hockey-smash-v2.html');
 
-  const canvasBox = await page.locator('#hockey-canvas').boundingBox();
-  const controlsBox = await page.locator('.hockey-controls').boundingBox();
-  const version = await page.evaluate(() => window.RTA_HOCKEY_SMASH.getVersion());
+  const splashFits = await page.evaluate(() => {
+    const splash = document.querySelector('#v2-splash').getBoundingClientRect();
+    const content = document.querySelector('.v2-splash__content').getBoundingClientRect();
+    return content.width <= splash.width && content.height <= splash.height && document.documentElement.scrollWidth <= window.innerWidth;
+  });
+  expect(splashFits).toBe(true);
 
-  expect(version).toBe('Hockey Smash v0.14.28');
-  expect(canvasBox?.y).toBeLessThan(180);
-  expect(canvasBox?.height).toBeLessThan(260);
-  expect(controlsBox?.y).toBeGreaterThan(canvasBox.y + canvasBox.height + 40);
+  await page.click('#v2-start');
+  await page.waitForTimeout(250);
+
+  const controlsFit = await page.evaluate(() => {
+    const frame = document.querySelector('#v2-game-frame').getBoundingClientRect();
+    const controls = document.querySelector('.v2-controls').getBoundingClientRect();
+    return controls.left >= frame.left && controls.right <= frame.right && controls.bottom <= frame.bottom;
+  });
+  expect(controlsFit).toBe(true);
 });

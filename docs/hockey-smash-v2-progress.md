@@ -4,9 +4,7 @@ This file records the architectural cleanup steps so work can continue in small,
 
 ## Ground Rule
 
-The current live game remains the current live game until a specific integration step is reviewed.
-
-V2 work is currently isolated. It should not be loaded by `index.html` yet.
+V2 is now the active Hockey Smash path. Keep gameplay in world state and canvas rendering; keep DOM for app UI, controls, and accessible status.
 
 ## Completed
 
@@ -315,6 +313,7 @@ Purpose:
 - make the harness responsive for narrow portrait phones and landscape phones
 - keep the debug readout out of the splash until the game starts
 - slow salmon falling behavior and make player movement more responsive
+- add salmon landing markers on the ground so players can move toward falling fish early
 - keep Mom proportional to the tall source sprite instead of stretching her wide
 
 Current v2 tuning:
@@ -346,9 +345,9 @@ Chromium smoke checks at 320x568, 360x640, 390x844, 844x390, and 1280x900
 
 Important safety notes:
 
-- v2 remains development-only
-- `index.html` was not changed
-- no live-game movement, salmon, Mom, or control code was changed
+- v2 is now the active gameplay path
+- `index.html` routes to the v2 harness page
+- old v1 runtime files have been removed from the active repo
 
 Status:
 
@@ -356,17 +355,13 @@ Status:
 complete, development-only
 ```
 
-## Current Live Game Impact
+## Current Active Game Impact
 
-None intended.
+V2 is the current playable direction. The root page routes to `dev/hockey-smash-v2.html`, and the old layered v1 runtime has been removed from the active repo.
 
-The v2 world and renderer are passive files. They only expose future helper objects on `window` if a page explicitly loads them. The real game page does not currently load them.
+## Remaining Manual Checks
 
-The dev harness is a separate page under `dev/`. It is not loaded by the live game.
-
-## Remaining Before Live Integration
-
-Before any v2 code is loaded into the real page, verify the dev harness manually:
+Before publishing another milestone, verify the v2 harness manually:
 
 - Daniel renders and moves
 - Sofie renders and moves
@@ -385,9 +380,9 @@ Before any v2 code is loaded into the real page, verify the dev harness manually
 - projectiles can clear damageable entities
 - cameos are canvas/world entities, not DOM overlays
 
-## Do Not Do Yet
+## Do Not Reintroduce
 
-Do not migrate these into the current game yet:
+Do not rebuild these as gameplay DOM overlays:
 
 - player rendering
 - salmon-run controller

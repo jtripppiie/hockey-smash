@@ -98,7 +98,7 @@ Because chroma-keyed PNGs can retain green in hidden RGB channels, some preview 
 
 ## Generation Prompts
 
-The assets were generated with the built-in image generation tool using the art direction from `docs/hockey-smash-image-spec.md`.
+The assets were generated with the built-in image generation tool during earlier Hockey Smash art passes. This manifest is now the maintained inventory for generated asset notes.
 
 Prompt themes:
 

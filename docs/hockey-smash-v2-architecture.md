@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document describes the safer long-term direction for Hockey Smash. The current game works as a canvas game with many DOM overlay patches. That helped us move quickly, but it also made the game fragile because visual objects, gameplay objects, timers, and collision logic can live in different places.
+This document describes the safer long-term direction for Hockey Smash. The previous game worked as a canvas game with many DOM overlay patches. That helped us move quickly, but it also made the game fragile because visual objects, gameplay objects, timers, and collision logic could live in different places.
 
 The v2 direction is to move gameplay back into one game-world model:
 
@@ -10,21 +10,19 @@ The v2 direction is to move gameplay back into one game-world model:
 state -> systems -> canvas renderer
 ```
 
-The current game must keep working while this is built. Nothing in this plan should be wired into `index.html` until a later, deliberate migration step.
+V2 is now the active Hockey Smash path. The root page routes to the v2 harness while the project keeps consolidating gameplay into the world-state/canvas-renderer model.
 
 ## Current Rule
 
-Do not replace the current game yet.
+Keep v2 as the single active gameplay path.
 
-The v2 files should be treated as isolated foundation files until explicitly enabled. They should not:
+The old layered v1 runtime has been removed from the active repo. Future work should not reintroduce gameplay overlays that bypass world state. V2 should:
 
-- add script tags to `index.html`
-- change current player movement
-- change the countdown
-- change the current salmon run
-- change current collisions
-- change current DOM overlays
-- change build/version behavior
+- keep player movement, salmon, encounters, projectiles, and temporary cues in world entities
+- keep collisions and lifetimes in update systems
+- keep rendering in the canvas renderer
+- use DOM only for app UI and accessibility status
+- keep `index.html` routing to the current v2 entry point until a deliberate file move is made
 
 ## Target Split
 
@@ -58,7 +56,8 @@ Canvas/world state should own:
 - Daniel/brother helper
 - Alaska boy/girl cameo
 - projectiles
-- speech bubbles attached to game objects
+- speech bubbles attached to people when they make gameplay/context sense
+- salmon landing markers
 - weather visuals that belong inside the game world
 - lifetimes and timers for game-world objects
 - object-to-object overlap checks
@@ -211,30 +210,17 @@ Recommended order:
 
 Only remove a DOM overlay after the equivalent canvas/world entity is working.
 
-## Non-Goals For The First V2 Commit
+## Current Acceptance Criteria
 
-The first v2 commit should not fix all current gameplay bugs. It should only create a safe foundation.
+The current v2 build is acceptable if:
 
-Do not attempt to change:
-
-- current `index.html` script loading
-- current `hockey-smash.js` runtime
-- current `hockey-smash-stage-flow.js`
-- current countdown behavior
-- current salmon-run behavior
-- current Sofie overlay behavior
-
-## Acceptance Criteria For The Isolated Foundation
-
-The first safe foundation is acceptable if:
-
-- current game remains unchanged
-- no new v2 script is loaded by `index.html`
-- docs explain the migration plan
-- v2 file exposes a clear world/state shape
-- v2 file can be syntax-checked later
-- v2 file does not require the DOM to exist
-- v2 file does not patch global current-game state
+- `index.html` routes to `dev/hockey-smash-v2.html`
+- v2 files expose a clear world/state shape
+- player, salmon, encounters, projectiles, and temporary cues render through canvas/world state
+- splash, name input, character picker, fullscreen, touch controls, and HUD remain DOM UI
+- syntax and Hockey Smash verification pass
+- browser smoke tests cover root launch, start flow, and mobile layout
+- old v1 runtime and dungeon-era files stay removed
 
 ## Important Guardrail
 

@@ -1,14 +1,14 @@
 # Hockey Smash v2 Migration Checklist
 
-This checklist exists so the game can be cleaned up without breaking the current working version.
+This checklist exists so the v2 game can keep being cleaned up without reintroducing the old layered runtime.
 
 ## Current Status
 
-The current game is still the live game. The new v2 files are foundation and development-preview files only.
+V2 is now the active Hockey Smash path.
 
-Live files still loaded by `index.html` include the existing canvas game and its support layers. The new v2 files are not loaded by the live page and should not affect gameplay.
+`index.html` routes to the v2 harness page while the project continues consolidating gameplay into world state and canvas rendering.
 
-Current isolated v2 files:
+Current v2 files:
 
 ```text
 js/games/hockey-smash-world-v2.js
@@ -18,21 +18,21 @@ dev/hockey-smash-v2.html
 
 ## Hard Rule
 
-Do not wire v2 into `index.html` until a specific migration step is reviewed.
+Do not reintroduce the old v1 runtime or gameplay DOM overlays.
 
 A safe v2 commit may add:
 
 - docs
-- isolated v2 modules
-- inactive test helpers
-- dev-only harness pages
+- v2 modules
+- dev harness helpers
+- browser tests
 - notes/checklists
 
-A safe v2 commit should not change live behavior:
+A safe v2 commit should keep gameplay objects in world state:
 
-- current script order
-- current countdown
-- current salmon run
+- player movement
+- salmon and landing markers
+- countdown and salmon gate
 - current character picker
 - current controls
 - current scoring
@@ -93,7 +93,7 @@ The renderer takes a world object and a canvas context:
 renderWorld(ctx, world, imageCache)
 ```
 
-It renders from explicit world state. It does not start a loop, read the current live game, or append DOM overlays.
+It renders from explicit world state. It does not start a loop, read previous v1 runtime state, or append DOM overlays.
 
 ### 4. Add a v2 dev harness with basic input adapter
 
@@ -138,7 +138,7 @@ Implemented:
 - player overlaps salmon to collect it
 - collected count increments once per salmon
 - readout shows salmon count
-- live game salmon files are untouched
+- salmon behavior stays in v2 world/canvas flow
 
 ### 6. Prove 20-salmon gate in v2
 
@@ -225,7 +225,7 @@ dev/hockey-smash-v2.html
 Implemented:
 
 - projectiles are entities in the same coordinate system as every target
-- the input action is `stick`, matching the live game action name
+- the input action is `stick`, matching the active v2 action name
 - UI labels it as Throw / Swing so Daniel and Sofie both make sense
 - projectile position is in canvas world units
 - projectile target checks use world hitboxes
@@ -252,6 +252,7 @@ Implemented:
 - responsive portrait-phone and landscape-phone sizing
 - debug overlay hidden until the harness starts
 - slower salmon fall tuning
+- salmon landing markers on the ground before each fish lands
 - faster player walk/slide tuning
 - proportional Mom preview dimensions based on the tall Mom sprite
 
@@ -323,32 +324,32 @@ No other gameplay file should write:
 - `DISPLAY_VERSION`
 - `DISPLAY_BUILD`
 
-## First Real Integration Gate
+## Current V2 Verification Gate
 
-Before any v2 code is loaded by the real page, verify:
+Before publishing another milestone, verify:
 
-- current game still starts
+- root routes into the v2 harness
 - countdown appears
 - salmon fall after countdown
+- salmon landing markers appear on the ground
 - 20 salmon unlocks encounters
 - Sofie appears if selected
 - Daniel appears if selected
 - version badge is correct
 - no lawnmower Dad appears during salmon run
-- v2 dev harness runs separately
 - v2 Daniel/Sofie movement works
 - v2 salmon gate works
 - v2 family/wildlife/cameo/projectile previews work
 
 ## Recommended Next Step
 
-Manual test the dev harness first:
+Manual test the v2 harness:
 
 ```text
 dev/hockey-smash-v2.html
 ```
 
-Do not integrate v2 into the live game until the dev harness behavior is approved.
+Keep improving the v2 harness behavior before moving the entry file out of `dev/`.
 
 ## Success Definition
 

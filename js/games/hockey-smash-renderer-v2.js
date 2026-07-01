@@ -75,9 +75,42 @@
   function renderEntities(ctx, world, imageCache) {
     (world.entities || []).forEach((entity) => {
       if (!entity || entity.dead) return;
+      if (entity.type === 'salmonMarker') {
+        renderSalmonMarker(ctx, entity);
+        return;
+      }
       drawSpriteOrPlaceholder(ctx, imageCache, entity.sprite || entity.type, entity, entity.type || 'ENTITY');
       if (entity.bubble) renderBubble(ctx, entity, entity.bubble);
     });
+  }
+
+  function renderSalmonMarker(ctx, entity) {
+    const x = entity.x || 0;
+    const y = entity.y || 0;
+    const width = entity.width || 74;
+    const height = entity.height || 10;
+    const life = entity.ttl ? 1 - ((entity.age || 0) / entity.ttl) : 1;
+    const alpha = Math.max(0.28, Math.min(0.85, life + 0.15));
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = 'rgba(255, 242, 122, 0.24)';
+    ctx.strokeStyle = '#fff27a';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.ellipse(x + width / 2, y + height / 2, width / 2, height / 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.strokeStyle = 'rgba(21, 32, 44, 0.82)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x + width * 0.32, y + height / 2);
+    ctx.lineTo(x + width * 0.68, y + height / 2);
+    ctx.moveTo(x + width / 2, y + height * 0.12);
+    ctx.lineTo(x + width / 2, y + height * 0.88);
+    ctx.stroke();
+    ctx.restore();
   }
 
   function renderEffects(ctx, world) {
