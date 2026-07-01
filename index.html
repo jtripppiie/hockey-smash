@@ -698,8 +698,8 @@
         let encounterIndex = 0;
         let gameStarted = false;
 
-        function prefixSprites(spriteMap) {
-          return Object.fromEntries(Object.entries(spriteMap).map(([key, src]) => [key, `../${src}`]));
+        function normalizeSpritePaths(spriteMap) {
+          return Object.fromEntries(Object.entries(spriteMap).map(([key, src]) => [key, src]));
         }
 
         function mapParallaxLayers(layers) {
@@ -717,7 +717,7 @@
           encounterIndex = 0;
           gameFrame.classList.remove('is-game-over');
           imageCache = Renderer.createImageCache({
-            ...prefixSprites(World.SPRITES),
+            ...normalizeSpritePaths(World.SPRITES),
             sun: 'assets/hockey-smash/backgrounds/sun.webp',
             moon: 'assets/hockey-smash/backgrounds/moon.webp',
             ...mapParallaxLayers(PARALLAX_LAYERS),

@@ -131,6 +131,8 @@ requireText('v2 harness', harness, 'addWarning', 'V2 encounter warning effect he
 requireText('v2 harness', harness, 'maybeApplyCameoBoost', 'V2 cameo boost proximity handler is missing.');
 requireText('v2 harness', harness, 'updateEncounterBehavior', 'V2 encounter behavior updater is missing.');
 requireText('v2 harness', harness, 'DAD_JOKES', 'V2 Dad joke pool is missing.');
+requireText('v2 harness', harness, 'normalizeSpritePaths(World.SPRITES)', 'V2 root game should load sprite paths without dev-page prefixes.');
+forbidText('v2 harness', harness, '`../${src}`', 'V2 root game should not prefix sprite paths with ../.');
 forbidText('v2 harness', harness, 'entity.state = \'charging\'', 'V2 bear charge should stay out until future development.');
 forbidText('v2 harness', harness, 'CHARGE!', 'V2 bear charge callout should stay out until future development.');
 requireText('v2 harness', harness, 'entity.state = \'grazing\'', 'V2 moose graze state is missing.');
