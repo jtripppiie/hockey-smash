@@ -102,6 +102,7 @@ Purpose:
 - map pointer/touch buttons to the same input object
 - move the v2 player in the dev harness only
 - test Daniel and Sofie as canvas-rendered player sprites
+- align the action names with the live game: `jump`, `slide`, and `stick`
 
 Controls:
 
@@ -110,7 +111,7 @@ A / Left Arrow  -> left
 D / Right Arrow -> right
 W / Up / Space  -> jump
 S / Shift       -> slide
-F / Enter       -> shoot
+F / Enter       -> stick / throw
 ```
 
 Important safety notes:
@@ -227,7 +228,7 @@ Purpose:
 - preview bear as a canvas/world entity
 - preview moose as a canvas/world entity
 - give wildlife health values
-- allow v2 projectiles to clear wildlife
+- allow v2 stick/throw projectiles to clear wildlife
 - keep wildlife movement in canvas world coordinates
 
 Status:
@@ -266,7 +267,7 @@ Status:
 complete, development-only
 ```
 
-### Step 10: V2 projectile preview
+### Step 10: V2 stick/throw projectile preview
 
 Added inside:
 
@@ -277,16 +278,18 @@ dev/hockey-smash-v2.html
 Purpose:
 
 - preview a simple projectile as a world entity
-- use `F`, `Enter`, or the Shoot button to fire
+- use `F`, `Enter`, or the Throw / Swing button to fire
 - use canvas/world coordinates for projectile movement
 - collide projectiles with damageable v2 entities
 - clear targets when health reaches zero
+- keep the action name aligned with the live `stick` action
 
 Important safety notes:
 
 - live projectile files were not changed
 - no DOM projectile collision bridge was added
 - projectile preview exists only in the dev harness page
+- projectile art is still a placeholder until dedicated puck/shoe/throw sprites are added
 
 Status:
 
@@ -310,7 +313,7 @@ Before any v2 code is loaded into the real page, verify the dev harness manually
 - Sofie renders and moves
 - jump works
 - slide changes the player sprite key
-- shoot creates a projectile
+- stick/throw creates a projectile
 - countdown starts first
 - salmon spawn only after countdown
 - salmon collection increments once per salmon
