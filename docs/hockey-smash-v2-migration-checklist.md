@@ -252,7 +252,7 @@ Implemented:
 - responsive portrait-phone and landscape-phone sizing
 - debug overlay hidden until the harness starts
 - slower salmon fall tuning
-- salmon landing markers on the ground before each fish lands
+- animated salmon landing markers on the ground before each fish lands
 - parallax-ready background layer config
 - sun/moon sky rendering with a night-sky filter
 - placeholder parallax asset files with exact filenames and dimensions
@@ -262,12 +262,12 @@ Implemented:
 Current tuning values:
 
 ```text
-walkSpeed: 330
-slideSpeed: 525
+walkSpeed: 360
+slideSpeed: 575
 salmonSpawnSeconds: 1.12
-salmonFallVelocity: 330
-salmonFallVelocityRange: 70
-salmonFallGravity: 440
+salmonFallVelocity: 235
+salmonFallVelocityRange: 45
+salmonFallGravity: 275
 ```
 
 Current v2 Mom preview:

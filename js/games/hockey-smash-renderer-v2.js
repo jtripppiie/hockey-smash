@@ -178,26 +178,54 @@
     const y = entity.y || 0;
     const width = entity.width || 74;
     const height = entity.height || 10;
+    const age = entity.age || 0;
     const life = entity.ttl ? 1 - ((entity.age || 0) / entity.ttl) : 1;
     const alpha = Math.max(0.28, Math.min(0.85, life + 0.15));
+    const pulse = (Math.sin(age * 10) + 1) / 2;
+    const ripple = (age * 1.8) % 1;
+    const centerX = x + width / 2;
+    const centerY = y + height / 2;
+    const markerWidth = width + pulse * 12;
+    const markerHeight = height + pulse * 4;
 
     ctx.save();
     ctx.globalAlpha = alpha;
-    ctx.fillStyle = 'rgba(255, 242, 122, 0.24)';
+
+    ctx.fillStyle = 'rgba(255, 242, 122, 0.18)';
+    ctx.strokeStyle = `rgba(255, 242, 122, ${0.38 * (1 - ripple)})`;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.ellipse(centerX, centerY, (width / 2) + ripple * 26, (height / 2) + ripple * 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = 'rgba(255, 242, 122, 0.3)';
     ctx.strokeStyle = '#fff27a';
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.ellipse(x + width / 2, y + height / 2, width / 2, height / 2, 0, 0, Math.PI * 2);
+    ctx.ellipse(centerX, centerY, markerWidth / 2, markerHeight / 2, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
 
     ctx.strokeStyle = 'rgba(21, 32, 44, 0.82)';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(x + width * 0.32, y + height / 2);
-    ctx.lineTo(x + width * 0.68, y + height / 2);
-    ctx.moveTo(x + width / 2, y + height * 0.12);
-    ctx.lineTo(x + width / 2, y + height * 0.88);
+    ctx.moveTo(centerX - width * 0.18, centerY);
+    ctx.lineTo(centerX + width * 0.18, centerY);
+    ctx.moveTo(centerX, centerY - height * 0.38);
+    ctx.lineTo(centerX, centerY + height * 0.38);
+    ctx.stroke();
+
+    ctx.fillStyle = '#fff27a';
+    ctx.strokeStyle = 'rgba(21, 32, 44, 0.86)';
+    ctx.lineWidth = 3;
+    const arrowY = y - 20 + Math.sin(age * 12) * 4;
+    ctx.beginPath();
+    ctx.moveTo(centerX, arrowY + 16);
+    ctx.lineTo(centerX - 12, arrowY);
+    ctx.lineTo(centerX + 12, arrowY);
+    ctx.closePath();
+    ctx.fill();
     ctx.stroke();
     ctx.restore();
   }

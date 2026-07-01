@@ -313,7 +313,7 @@ Purpose:
 - make the harness responsive for narrow portrait phones and landscape phones
 - keep the debug readout out of the splash until the game starts
 - slow salmon falling behavior and make player movement more responsive
-- add salmon landing markers on the ground so players can move toward falling fish early
+- add animated salmon landing markers on the ground so players can move toward falling fish early
 - add parallax-ready background layers, sun/moon sky rendering, and a night-sky filter
 - add placeholder parallax asset files with exact dimensions and filenames embedded in the artwork
 - keep Mom proportional to the tall source sprite instead of stretching her wide
@@ -321,12 +321,12 @@ Purpose:
 Current v2 tuning:
 
 ```text
-walkSpeed: 330
-slideSpeed: 525
+walkSpeed: 360
+slideSpeed: 575
 salmonSpawnSeconds: 1.12
-salmonFallVelocity: 330
-salmonFallVelocityRange: 70
-salmonFallGravity: 440
+salmonFallVelocity: 235
+salmonFallVelocityRange: 45
+salmonFallGravity: 275
 ```
 
 Current Mom preview shape:

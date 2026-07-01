@@ -764,7 +764,7 @@
         }
 
         function predictSalmonLandingX(salmon) {
-          const gravity = world.tuning.salmonFallGravity || 440;
+          const gravity = world.tuning.salmonFallGravity || 275;
           const targetY = GROUND_Y - salmon.height;
           const dy = Math.max(0, targetY - salmon.y);
           const vy = salmon.vy || 0;

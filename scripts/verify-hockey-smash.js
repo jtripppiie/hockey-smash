@@ -94,9 +94,11 @@ requireText('v2 harness', harness, 'HOCKEY_SMASH_V2_DEV', 'V2 dev test hook is m
 requireText('v2 harness', harness, 'HOCKEY_SMASH_WORLD_V2', 'V2 world script usage is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_RENDERER_V2', 'V2 renderer script usage is missing.');
 requireText('v2 world', worldSource, 'salmonSpawnSeconds: 1.12', 'V2 salmon spawn tuning is missing.');
-requireText('v2 world', worldSource, 'walkSpeed: 330', 'V2 player walk tuning is missing.');
-requireText('v2 world', worldSource, 'slideSpeed: 525', 'V2 player slide tuning is missing.');
-requireText('v2 world', worldSource, 'salmonFallGravity: 440', 'V2 salmon fall tuning is missing.');
+requireText('v2 world', worldSource, 'walkSpeed: 360', 'V2 player walk tuning is missing.');
+requireText('v2 world', worldSource, 'slideSpeed: 575', 'V2 player slide tuning is missing.');
+requireText('v2 world', worldSource, 'salmonFallVelocity: 235', 'V2 salmon fall velocity tuning is missing.');
+requireText('v2 world', worldSource, 'salmonFallVelocityRange: 45', 'V2 salmon fall range tuning is missing.');
+requireText('v2 world', worldSource, 'salmonFallGravity: 275', 'V2 salmon fall tuning is missing.');
 requireText('v2 world', worldSource, 'createEnvironment', 'V2 environment state is missing.');
 requireText('v2 world', worldSource, 'const height = 132', 'Proportional Mom height is missing.');
 requireText('v2 world', worldSource, 'const width = 49', 'Proportional Mom width is missing.');
@@ -105,6 +107,7 @@ requireText('v2 renderer', rendererSource, 'renderParallaxBackground', 'V2 paral
 requireText('v2 renderer', rendererSource, 'renderNightFilter', 'V2 night sky filter is missing.');
 requireText('v2 renderer', rendererSource, 'renderSunMoon', 'V2 sun/moon renderer is missing.');
 requireText('v2 renderer', rendererSource, 'renderSalmonMarker', 'V2 salmon landing marker renderer is missing.');
+requireText('v2 renderer', rendererSource, 'ripple', 'V2 animated salmon marker ripple is missing.');
 requireText('v2 progress docs', progress, 'V2 harness play shell and tuning pass', 'V2 progress docs are missing latest harness update.');
 requireText('v2 progress docs', progress, 'salmon landing markers', 'V2 progress docs are missing salmon marker update.');
 requireText('v2 checklist docs', checklist, 'Add v2 harness splash, mobile layout, fullscreen, and tuning', 'V2 checklist is missing latest harness update.');

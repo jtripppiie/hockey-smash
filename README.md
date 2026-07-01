@@ -37,7 +37,7 @@ Implemented now:
 - sun/moon day-night cycle with a night-sky filter
 - countdown
 - salmon run
-- ground landing markers for falling salmon
+- animated ground landing markers for falling salmon
 - catch 20 salmon to unlock encounters
 - Mom, Dad, dance instructor, brother helper, bear, moose, Alaska cameo previews
 - simple stick/throw projectile preview
@@ -56,12 +56,12 @@ F / Enter        stick / throw
 ## Current Tuning
 
 ```text
-walkSpeed: 330
-slideSpeed: 525
+walkSpeed: 360
+slideSpeed: 575
 salmonSpawnSeconds: 1.12
-salmonFallVelocity: 330
-salmonFallVelocityRange: 70
-salmonFallGravity: 440
+salmonFallVelocity: 235
+salmonFallVelocityRange: 45
+salmonFallGravity: 275
 ```
 
 Mom is rendered proportionally to the tall sprite:
