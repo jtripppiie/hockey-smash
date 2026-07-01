@@ -8,6 +8,25 @@ V2 is now the active Hockey Smash path. Keep gameplay in world state and canvas 
 
 ## Completed
 
+### 2026-07-01: v1.3.2 GitHub Pages Sprite Path Hotfix
+
+Changed:
+- `/`
+- `package.json`
+- `package-lock.json`
+- `README.md`
+- `scripts/verify-hockey-smash.js`
+
+Gameplay/deploy impact:
+- Version bumped to `1.3.2` so the live badge can prove the hotfix deployed.
+- Removed the old dev-page `../` sprite prefix from the root game.
+- Player, salmon, Mom, Dad, wildlife, cameo, and projectile sprites now load from `assets/...` on GitHub Pages.
+- Verification now fails if the root game reintroduces the stale `../` sprite prefix.
+
+Verification:
+- `npm run verify`: passed
+- `npm run test:browser`: passed
+
 ### 2026-07-01: v1.3.1 Version and Teaching Comments
 
 Changed:

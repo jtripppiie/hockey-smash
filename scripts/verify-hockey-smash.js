@@ -114,10 +114,10 @@ requireText('v2 harness', harness, 'data-character="sofie"', 'Sofie selection is
 requireText('v2 harness', harness, 'data-action="stick"', 'Stick action control is missing.');
 requireText('v2 harness', harness, 'id="v2-fullscreen"', 'V2 fullscreen toggle is missing.');
 requireText('v2 harness', harness, 'id="v2-version-badge"', 'V2 version overlay badge is missing.');
-if (packageJson.version !== '1.3.1') errors.push('package.json version should be 1.3.1.');
+if (packageJson.version !== '1.3.2') errors.push('package.json version should be 1.3.2.');
 if (packageLock.version !== packageJson.version) errors.push('package-lock.json root version should match package.json.');
 if (packageLock.packages?.['']?.version !== packageJson.version) errors.push('package-lock package version should match package.json.');
-requireText('v2 harness', harness, "const VERSION_FALLBACK = '1.3.1'", 'V2 version fallback should match package.json.');
+requireText('v2 harness', harness, "const VERSION_FALLBACK = '1.3.2'", 'V2 version fallback should match package.json.');
 requireText('v2 harness', harness, 'loadVersionBadge', 'V2 version badge loader is missing.');
 requireText('v2 harness', harness, 'fetch(\'package.json\'', 'V2 version badge should read package.json when available.');
 requireText('v2 harness', harness, 'id="v2-hud-score"', 'V2 mobile scoring HUD is missing.');
@@ -229,6 +229,7 @@ requireText('v2 renderer', rendererSource, 'renderHitboxes', 'V2 debug hitbox re
 requireText('v2 renderer', rendererSource, 'renderShadow', 'V2 readable entity shadow renderer is missing.');
 requireText('v2 renderer', rendererSource, 'renderEntityHealth', 'V2 target health pip renderer is missing.');
 requireText('v2 progress docs', progress, 'Main v2 game play shell and tuning pass', 'V2 progress docs are missing latest main game update.');
+requireText('v2 progress docs', progress, 'v1.3.2 GitHub Pages Sprite Path Hotfix', 'V2 progress docs are missing v1.3.2 hotfix notes.');
 requireText('v2 progress docs', progress, 'v1.3.1 Version and Teaching Comments', 'V2 progress docs are missing v1.3.1 notes.');
 requireText('v2 progress docs', progress, 'salmon landing markers', 'V2 progress docs are missing salmon marker update.');
 requireText('v2 progress docs', progress, 'v1.3 Health, Cast, and Readability Polish', 'V2 progress docs are missing v1.3 polish entry.');
