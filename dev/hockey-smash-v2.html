@@ -866,12 +866,13 @@
           };
         }
 
-        function spawnNextEncounter() {
+        function spawnNextEncounter(options = {}) {
+          const ignoreCaps = Boolean(options.ignoreCaps);
           let type = null;
           for (let attempts = 0; attempts < ENCOUNTER_TYPES.length; attempts += 1) {
             const candidate = ENCOUNTER_TYPES[encounterIndex % ENCOUNTER_TYPES.length];
             encounterIndex += 1;
-            if (canSpawnEncounter(candidate)) {
+            if (ignoreCaps || canSpawnEncounter(candidate)) {
               type = candidate;
               break;
             }
@@ -1115,7 +1116,7 @@
           },
           spawnEncounter: () => {
             if (!world) return null;
-            spawnNextEncounter();
+            spawnNextEncounter({ ignoreCaps: true });
             return [...world.entities].reverse().find((entity) => entity && entity.type !== 'salmonMarker') || null;
           },
         };

@@ -28,8 +28,8 @@ Gameplay impact:
 
 Verification:
 - `npm run verify`: passed
-- `npm run test:browser`: not run
-- manual browser check: not run
+- `npm run test:browser`: passed
+- manual browser check: covered by automated browser smoke; full hands-on QA not run
 
 Known issues:
 - Browser QA still needs an available local port because `8000` was occupied during the initial audit.
@@ -60,7 +60,7 @@ Verification:
 - manual browser check: not run
 
 Known issues:
-- Manual browser QA still needs a free local port.
+- Port `8000` was occupied during the audit; Playwright used its configured local server successfully.
 
 Next:
 - Continue with Soldotna parallax asset inventory and final layer wiring.
