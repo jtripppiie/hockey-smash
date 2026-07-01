@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Hockey Smash v2 Dev Harness</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #101923;
+        color: #fff8df;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 1rem;
+        background: radial-gradient(circle at top, #284966, #101923 58%);
+      }
+      .dev-shell {
+        width: min(1120px, 100%);
+        display: grid;
+        gap: 1rem;
+      }
+      .dev-header,
+      .dev-panel {
+        border: 2px solid rgba(255, 242, 122, 0.35);
+        border-radius: 16px;
+        padding: 1rem;
+        background: rgba(5, 8, 13, 0.74);
+        box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+      }
+      .dev-header h1 {
+        margin: 0 0 0.35rem;
+        font-size: clamp(1.4rem, 4vw, 2.5rem);
+      }
+      .dev-header p {
+        margin: 0;
+        color: rgba(255, 248, 223, 0.82);
+        line-height: 1.45;
+      }
+      .dev-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+        gap: 1rem;
+        align-items: start;
+      }
+      canvas {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        display: block;
+        border: 3px solid rgba(255, 242, 122, 0.5);
+        border-radius: 18px;
+        background: #7ec9f2;
+        box-shadow: 0 20px 56px rgba(0, 0, 0, 0.42);
+      }
+      .dev-panel {
+        display: grid;
+        gap: 0.8rem;
+      }
+      .dev-actions,
+      .dev-dpad {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      button {
+        border: 2px solid rgba(255, 242, 122, 0.58);
+        border-radius: 999px;
+        padding: 0.55rem 0.85rem;
+        background: rgba(255, 242, 122, 0.12);
+        color: #fff8df;
+        font-weight: 900;
+        cursor: pointer;
+      }
+      button.is-active {
+        background: #fff27a;
+        color: #15202c;
+      }
+      .dev-readout {
+        display: grid;
+        gap: 0.35rem;
+        padding: 0.7rem;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        font-size: 0.9rem;
+      }
+      kbd {
+        padding: 0.1rem 0.35rem;
+        border: 1px solid rgba(255,255,255,.35);
+        border-radius: 4px;
+        background: rgba(255,255,255,.12);
+      }
+      @media (max-width: 850px) {
+        .dev-layout { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="dev-shell">
+      <header class="dev-header">
+        <h1>Hockey Smash v2 Dev Harness</h1>
+        <p>This page is isolated from the live game. It loads only the v2 world scaffold and v2 renderer scaffold so we can test the proper canvas/world architecture without touching <code>index.html</code>.</p>
+      </header>
+
+      <section class="dev-layout" aria-label="Hockey Smash v2 isolated test area">
+        <canvas id="v2-canvas" width="1024" height="576" aria-label="Hockey Smash v2 canvas preview"></canvas>
+
+        <aside class="dev-panel">
+          <strong>Character</strong>
+          <div class="dev-actions" aria-label="Choose v2 test character">
+            <button type="button" data-character="daniel" class="is-active">Daniel</button>
+            <button type="button" data-character="sofie">Sofie</button>
+          </div>
+
+          <strong>Input adapter test</strong>
+          <p>Use <kbd>A</kbd>/<kbd>D</kbd> or arrows to move. Use <kbd>W</kbd>, <kbd>↑</kbd>, or <kbd>Space</kbd> to jump. Hold <kbd>S</kbd> or <kbd>Shift</kbd> to slide.</p>
+          <div class="dev-dpad" aria-label="Touch controls">
+            <button type="button" data-action="left">◀</button>
+            <button type="button" data-action="right">▶</button>
+            <button type="button" data-action="jump">Jump</button>
+            <button type="button" data-action="slide">Slide</button>
+          </div>
+
+          <strong>World readout</strong>
+          <div class="dev-readout" id="v2-readout">Waiting for v2 world...</div>
+
+          <strong>Safety</strong>
+          <p>This harness does not load current-game patch layers, does not append game overlays, and does not replace the live game.</p>
+        </aside>
+      </section>
+    </main>
+
+    <script src="../js/games/hockey-smash-world-v2.js"></script>
+    <script src="../js/games/hockey-smash-renderer-v2.js"></script>
+    <script>
+      (function () {
+        const canvas = document.getElementById('v2-canvas');
+        const ctx = canvas.getContext('2d');
+        const readout = document.getElementById('v2-readout');
+        const World = window.HOCKEY_SMASH_WORLD_V2;
+        const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
+        const input = { left: false, right: false, jump: false, slide: false };
+        const heldPointers = new Map();
+        let world = null;
+        let imageCache = null;
+        let lastFrame = performance.now();
+
+        function prefixSprites(spriteMap) {
+          return Object.fromEntries(Object.entries(spriteMap).map(([key, src]) => [key, `../${src}`]));
+        }
+
+        function resetWorld(character) {
+          world = World.createWorld({ character, name: character === 'sofie' ? 'Sofie' : 'Daniel' });
+          imageCache = Renderer.createImageCache({
+            ...prefixSprites(World.SPRITES),
+            background: '../assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1280x720.webp?v=20260630.84',
+          });
+          updateCharacterButtons(character);
+        }
+
+        function updateCharacterButtons(character) {
+          document.querySelectorAll('[data-character]').forEach((button) => {
+            const active = button.dataset.character === character;
+            button.classList.toggle('is-active', active);
+            button.setAttribute('aria-pressed', active ? 'true' : 'false');
+          });
+        }
+
+        function bindCharacterButtons() {
+          document.querySelectorAll('[data-character]').forEach((button) => {
+            button.addEventListener('click', () => resetWorld(button.dataset.character));
+          });
+        }
+
+        function bindKeyboardInput() {
+          window.addEventListener('keydown', (event) => {
+            const action = keyToAction(event.key);
+            if (!action) return;
+            event.preventDefault();
+            input[action] = true;
+          });
+          window.addEventListener('keyup', (event) => {
+            const action = keyToAction(event.key);
+            if (!action) return;
+            event.preventDefault();
+            input[action] = false;
+          });
+        }
+
+        function bindPointerInput() {
+          document.querySelectorAll('[data-action]').forEach((button) => {
+            button.addEventListener('pointerdown', (event) => {
+              event.preventDefault();
+              const action = button.dataset.action;
+              heldPointers.set(event.pointerId, action);
+              input[action] = true;
+              button.setPointerCapture?.(event.pointerId);
+            }, { passive: false });
+
+            ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((type) => {
+              button.addEventListener(type, (event) => {
+                const action = heldPointers.get(event.pointerId);
+                if (action) input[action] = false;
+                heldPointers.delete(event.pointerId);
+              });
+            });
+          });
+        }
+
+        function keyToAction(key) {
+          return {
+            ArrowLeft: 'left',
+            a: 'left',
+            A: 'left',
+            ArrowRight: 'right',
+            d: 'right',
+            D: 'right',
+            ArrowUp: 'jump',
+            w: 'jump',
+            W: 'jump',
+            ' ': 'jump',
+            ArrowDown: 'slide',
+            s: 'slide',
+            S: 'slide',
+            Shift: 'slide',
+          }[key] || null;
+        }
+
+        function updateHarnessWorld(dt) {
+          if (!world?.player) return;
+          const player = world.player;
+          const move = (input.right ? 1 : 0) - (input.left ? 1 : 0);
+          const speed = input.slide ? world.tuning.slideSpeed : world.tuning.walkSpeed;
+          player.slideActive = Boolean(input.slide);
+          player.vx = move * speed;
+          if (move) player.facing = move;
+
+          if (input.jump && player.grounded) {
+            player.vy = -world.tuning.jumpVelocity;
+            player.grounded = false;
+            input.jump = false;
+          }
+
+          player.x = Math.max(22, Math.min(1024 - player.width - 22, player.x + player.vx * dt));
+          player.vy += world.tuning.gravity * dt;
+          player.y += player.vy * dt;
+          if (player.y + player.height >= 576 * 0.82) {
+            player.y = 576 * 0.82 - player.height;
+            player.vy = 0;
+            player.grounded = true;
+          }
+
+          world.elapsed += dt;
+          if (world.phase === World.PHASES.COUNTDOWN) {
+            world.countdownRemaining = Math.max(0, world.countdownRemaining - dt);
+            world.message = `Dev countdown: ${Math.ceil(world.countdownRemaining)} seconds.`;
+            if (world.countdownRemaining <= 0) World.advancePhase(world, World.PHASES.SALMON_RUN);
+          }
+        }
+
+        function updateReadout() {
+          if (!world) return;
+          readout.innerHTML = [
+            `<span>phase: <strong>${world.phase}</strong></span>`,
+            `<span>character: <strong>${world.player.character}</strong></span>`,
+            `<span>player: <strong>${Math.round(world.player.x)}, ${Math.round(world.player.y)}</strong></span>`,
+            `<span>grounded: <strong>${world.player.grounded ? 'yes' : 'no'}</strong></span>`,
+            `<span>message: <strong>${world.message}</strong></span>`,
+          ].join('');
+        }
+
+        function loop(now) {
+          const dt = Math.min(0.05, (now - lastFrame) / 1000 || 0);
+          lastFrame = now;
+          updateHarnessWorld(dt);
+          Renderer.renderWorld(ctx, world, imageCache, {
+            debug: true,
+            backgroundSrc: '../assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1280x720.webp?v=20260630.84',
+          });
+          updateReadout();
+          window.requestAnimationFrame(loop);
+        }
+
+        bindCharacterButtons();
+        bindKeyboardInput();
+        bindPointerInput();
+        resetWorld('daniel');
+        window.requestAnimationFrame(loop);
+      })();
+    </script>
+  </body>
+</html>
