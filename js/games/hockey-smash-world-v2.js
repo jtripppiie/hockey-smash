@@ -70,10 +70,23 @@
         salmon: 0,
         encounter: tuning.encounterSpawnSeconds,
       },
+      debug: createDebugState(options.debug),
       environment: createEnvironment(options.environment || {}),
       entities: [],
       effects: [],
       message: `Get ready, ${name}!`,
+    };
+  }
+
+  function createDebugState(enabled = false) {
+    return {
+      enabled: Boolean(enabled),
+      showFPS: Boolean(enabled),
+      showHitboxes: false,
+      godMode: false,
+      lastCollision: '',
+      fps: 0,
+      visible: Boolean(enabled),
     };
   }
 
@@ -206,6 +219,7 @@
     SPRITES,
     DEFAULT_TUNING,
     createWorld,
+    createDebugState,
     createEnvironment,
     createPlayer,
     createEntity,

@@ -108,6 +108,10 @@ requireText('v2 harness', harness, 'player.duckActive', 'V2 Daniel duck state is
 requireText('v2 harness', harness, 'world.environment.scrollX += (world.player.vx || 0)', 'V2 background scroll should follow player movement.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_V2_DEV', 'V2 dev test hook is missing.');
 requireText('v2 harness', harness, 'fireProjectile', 'V2 projectile dev test hook is missing.');
+requireText('v2 harness', harness, 'new URLSearchParams(window.location.search).has(\'debug\')', 'V2 debug mode should be gated by ?debug=1.');
+requireText('v2 harness', harness, 'handleDebugKey', 'V2 debug keyboard toggles are missing.');
+requireText('v2 harness', harness, 'showHitboxes', 'V2 debug hitbox toggle is missing.');
+requireText('v2 harness', harness, 'godMode', 'V2 debug god mode toggle is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_WORLD_V2', 'V2 world script usage is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_RENDERER_V2', 'V2 renderer script usage is missing.');
 requireText('v2 world', worldSource, 'salmonSpawnSeconds: 1.12', 'V2 salmon spawn tuning is missing.');
@@ -117,6 +121,8 @@ requireText('v2 world', worldSource, 'salmonFallVelocity: 235', 'V2 salmon fall 
 requireText('v2 world', worldSource, 'salmonFallVelocityRange: 45', 'V2 salmon fall range tuning is missing.');
 requireText('v2 world', worldSource, 'salmonFallGravity: 275', 'V2 salmon fall tuning is missing.');
 requireText('v2 world', worldSource, 'createEnvironment', 'V2 environment state is missing.');
+requireText('v2 world', worldSource, 'createDebugState', 'V2 world debug state factory is missing.');
+requireText('v2 world', worldSource, 'lastCollision', 'V2 debug collision readout is missing.');
 requireText('v2 world', worldSource, 'const height = 132', 'Proportional Mom height is missing.');
 requireText('v2 world', worldSource, 'const width = 49', 'Proportional Mom width is missing.');
 requireText('v2 world', worldSource, 'bear-1.webp', 'V2 bear sprite should use the numbered encounter art.');
@@ -129,6 +135,7 @@ requireText('v2 renderer', rendererSource, 'renderSunMoon', 'V2 sun/moon rendere
 requireText('v2 renderer', rendererSource, 'getEntitySpriteKey', 'V2 animated entity sprite selector is missing.');
 requireText('v2 renderer', rendererSource, 'renderSalmonMarker', 'V2 salmon landing marker renderer is missing.');
 requireText('v2 renderer', rendererSource, 'ripple', 'V2 animated salmon marker ripple is missing.');
+requireText('v2 renderer', rendererSource, 'renderHitboxes', 'V2 debug hitbox renderer is missing.');
 requireText('v2 progress docs', progress, 'V2 harness play shell and tuning pass', 'V2 progress docs are missing latest harness update.');
 requireText('v2 progress docs', progress, 'salmon landing markers', 'V2 progress docs are missing salmon marker update.');
 requireText('v2 checklist docs', checklist, 'Add v2 harness splash, mobile layout, fullscreen, and tuning', 'V2 checklist is missing latest harness update.');

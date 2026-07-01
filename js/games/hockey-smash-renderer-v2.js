@@ -29,6 +29,7 @@
     renderEntities(ctx, world, imageCache);
     renderPlayer(ctx, world, imageCache);
     renderEffects(ctx, world);
+    renderHitboxes(ctx, world, options);
     renderWorldDebug(ctx, world, options);
   }
 
@@ -244,14 +245,53 @@
 
   function renderWorldDebug(ctx, world, options) {
     if (!options.debug) return;
+    const debug = world.debug || {};
+    const difficulty = world.difficulty || {};
+    const player = world.player || {};
+    const activeThreats = (world.entities || []).filter((entity) => (
+      entity
+      && !entity.dead
+      && !entity.nonContact
+      && !['salmon', 'salmonMarker', 'projectile'].includes(entity.type)
+    )).length;
+    const activeWildlife = (world.entities || []).filter((entity) => (
+      entity
+      && !entity.dead
+      && ['bear', 'moose', 'eagle'].includes(entity.type)
+    )).length;
     ctx.save();
     ctx.fillStyle = 'rgba(5, 8, 13, 0.72)';
-    ctx.fillRect(12, 12, 360, 78);
+    ctx.fillRect(12, 12, 386, 178);
     ctx.fillStyle = '#fff8df';
     ctx.font = '700 13px system-ui, sans-serif';
-    ctx.fillText(`phase: ${world.phase}`, 24, 36);
-    ctx.fillText(`salmon: ${world.salmonCaught || 0}/${world.salmonTarget || 0}`, 24, 56);
-    ctx.fillText(`entities: ${(world.entities || []).length}`, 24, 76);
+    [
+      `fps: ${Math.round(debug.fps || 0)}`,
+      `phase: ${world.phase}`,
+      `salmon: ${world.salmonCaught || 0}/${world.salmonTarget || 0}`,
+      `entities: ${(world.entities || []).length}`,
+      `threats/wildlife: ${activeThreats}/${activeWildlife}`,
+      `difficulty: ${difficulty.level || 1}`,
+      `player: ${Math.round(player.x || 0)}, ${Math.round(player.y || 0)}`,
+      `velocity: ${Math.round(player.vx || 0)}, ${Math.round(player.vy || 0)}`,
+      `grounded: ${player.grounded ? 'yes' : 'no'}`,
+      `projectile: ${((world.timers || {}).projectile || 0).toFixed(2)}s`,
+      `last: ${debug.lastCollision || 'none'}`,
+    ].forEach((line, index) => {
+      ctx.fillText(line, 24, 36 + index * 14);
+    });
+    ctx.restore();
+  }
+
+  function renderHitboxes(ctx, world, options) {
+    if (!options.showHitboxes) return;
+    ctx.save();
+    ctx.lineWidth = 2;
+    const boxes = [world.player, ...(world.entities || [])].filter((entity) => entity && !entity.dead);
+    boxes.forEach((entity) => {
+      const contact = !entity.nonContact && entity.type !== 'salmonMarker';
+      ctx.strokeStyle = contact ? 'rgba(255, 76, 76, 0.86)' : 'rgba(90, 214, 255, 0.82)';
+      ctx.strokeRect(entity.x || 0, entity.y || 0, entity.width || 0, entity.height || 0);
+    });
     ctx.restore();
   }
 
@@ -406,6 +446,7 @@
     renderPlayer,
     renderEntities,
     renderEffects,
+    renderHitboxes,
     getPlayerSpriteKey,
     getEntitySpriteKey,
   });

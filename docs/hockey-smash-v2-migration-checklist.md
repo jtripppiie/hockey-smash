@@ -36,6 +36,7 @@ A safe v2 commit should keep gameplay objects in world state:
 - current character picker
 - current controls
 - current scoring
+- debug state and debug-only diagnostics
 - current version-lock behavior
 - current loaded gameplay files
 
@@ -258,6 +259,28 @@ Implemented:
 - placeholder parallax asset files with exact filenames and dimensions
 - faster player walk/slide tuning
 - proportional Mom preview dimensions based on the tall Mom sprite
+
+### 12. Add debug mode and diagnostic toggles
+
+Done in:
+
+```text
+dev/hockey-smash-v2.html
+js/games/hockey-smash-world-v2.js
+js/games/hockey-smash-renderer-v2.js
+scripts/verify-hockey-smash.js
+```
+
+Implemented:
+
+- debug mode is off by default
+- `?debug=1` creates an enabled world debug object
+- `~` shows and hides the debug overlay
+- `H` shows and hides hitboxes only when debug mode is enabled
+- `G` toggles god mode only when debug mode is enabled
+- the debug panel reports FPS, phase, salmon count, entities, active threats, active wildlife, difficulty, player position, player velocity, grounded state, projectile cooldown, and last collision
+- hitboxes render in canvas through the v2 renderer
+- gameplay entities remain in world/canvas state
 
 Current tuning values:
 

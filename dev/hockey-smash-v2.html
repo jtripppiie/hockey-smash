@@ -87,6 +87,26 @@
         background: rgba(5, 8, 13, 0.74);
         backdrop-filter: blur(8px);
       }
+      .v2-debug-panel {
+        position: absolute;
+        left: 0.75rem;
+        top: 0.75rem;
+        z-index: 8;
+        display: none;
+        min-width: min(21rem, calc(100% - 1.5rem));
+        max-width: calc(100% - 1.5rem);
+        padding: 0.65rem 0.75rem;
+        border: 2px solid rgba(90, 214, 255, 0.58);
+        border-radius: 8px;
+        background: rgba(5, 8, 13, 0.78);
+        color: #fff8df;
+        font: 800 0.78rem/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        pointer-events: none;
+        white-space: pre-line;
+      }
+      .v2-debug-panel.is-visible {
+        display: block;
+      }
       .v2-splash {
         position: absolute;
         inset: 0;
@@ -326,6 +346,7 @@
         <section id="v2-game-frame" class="dev-game-frame" aria-label="Hockey Smash v2 gameplay frame">
           <canvas id="v2-canvas" width="1024" height="576" aria-label="Hockey Smash v2 canvas preview"></canvas>
           <button id="v2-fullscreen" class="v2-fullscreen" type="button" aria-label="Toggle fullscreen">Fullscreen</button>
+          <div id="v2-debug-panel" class="v2-debug-panel" aria-live="polite"></div>
 
           <section id="v2-splash" class="v2-splash" aria-labelledby="v2-title">
             <div class="v2-splash__content">
@@ -419,11 +440,21 @@
         const nameInput = document.getElementById('v2-player-name');
         const startButton = document.getElementById('v2-start');
         const fullscreenButton = document.getElementById('v2-fullscreen');
+        const debugPanel = document.getElementById('v2-debug-panel');
         const splashHero = document.getElementById('v2-splash-hero');
         const readout = document.getElementById('v2-readout');
         const World = window.HOCKEY_SMASH_WORLD_V2;
         const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
-        const input = { left: false, right: false, jump: false, slide: false, stick: false };
+        const debugEnabled = new URLSearchParams(window.location.search).has('debug');
+        const input = {
+          left: false,
+          right: false,
+          jump: false,
+          jumpPressed: false,
+          slide: false,
+          stick: false,
+          stickPressed: false,
+        };
         const heldPointers = new Map();
         const selection = { character: 'daniel', name: 'Daniel' };
         let world = null;
@@ -443,7 +474,7 @@
         function resetWorld(character = selection.character, name = selection.name) {
           selection.character = character === 'sofie' ? 'sofie' : 'daniel';
           selection.name = cleanName(name, selection.character === 'sofie' ? 'Sofie' : 'Daniel');
-          world = World.createWorld({ character: selection.character, name: selection.name });
+          world = World.createWorld({ character: selection.character, name: selection.name, debug: debugEnabled });
           world.timers.salmon = 0.18;
           world.timers.encounter = 0.8;
           world.timers.projectile = 0;
@@ -520,9 +551,12 @@
 
         function bindKeyboardInput() {
           window.addEventListener('keydown', (event) => {
+            if (handleDebugKey(event)) return;
             const action = keyToAction(event.key);
             if (!action) return;
             event.preventDefault();
+            if (action === 'jump' && !input.jump) input.jumpPressed = true;
+            if (action === 'stick' && !input.stick) input.stickPressed = true;
             input[action] = true;
           });
           window.addEventListener('keyup', (event) => {
@@ -539,6 +573,8 @@
               event.preventDefault();
               const action = button.dataset.action;
               heldPointers.set(event.pointerId, action);
+              if (action === 'jump' && !input.jump) input.jumpPressed = true;
+              if (action === 'stick' && !input.stick) input.stickPressed = true;
               input[action] = true;
               button.classList.add('is-pressed');
               button.setAttribute('aria-pressed', 'true');
@@ -579,6 +615,29 @@
           }[key] || null;
         }
 
+        function handleDebugKey(event) {
+          if (!debugEnabled || !world?.debug) return false;
+          const key = event.key;
+          if (key === '`' || key === '~') {
+            event.preventDefault();
+            world.debug.visible = !world.debug.visible;
+            world.debug.showFPS = world.debug.visible;
+            return true;
+          }
+          if (key === 'h' || key === 'H') {
+            event.preventDefault();
+            world.debug.showHitboxes = !world.debug.showHitboxes;
+            return true;
+          }
+          if (key === 'g' || key === 'G') {
+            event.preventDefault();
+            world.debug.godMode = !world.debug.godMode;
+            world.debug.lastCollision = world.debug.godMode ? 'god mode on' : 'god mode off';
+            return true;
+          }
+          return false;
+        }
+
         function updateHarnessWorld(dt) {
           if (!world?.player) return;
           if (!gameStarted) return;
@@ -590,7 +649,14 @@
           updateNonSalmonEntities(dt);
           updateEffects(dt);
           updateEnvironment(dt);
+          updateDebugState(dt);
           world.elapsed += dt;
+        }
+
+        function updateDebugState(dt) {
+          if (!world.debug) return;
+          const instantFps = dt > 0 ? 1 / dt : 0;
+          world.debug.fps = world.debug.fps ? (world.debug.fps * 0.9) + (instantFps * 0.1) : instantFps;
         }
 
         function updateEnvironment(dt) {
@@ -627,18 +693,20 @@
           player.vx = move * speed;
           if (move) player.facing = move;
 
-          if (input.jump && player.grounded) {
+          if ((input.jumpPressed || input.jump) && player.grounded) {
             player.vy = -world.tuning.jumpVelocity;
             player.grounded = false;
             input.jump = false;
           }
+          if (input.jumpPressed) input.jumpPressed = false;
 
           world.timers.projectile = Math.max(0, (world.timers.projectile || 0) - dt);
-          if (input.stick && world.timers.projectile <= 0) {
+          if ((input.stickPressed || input.stick) && world.timers.projectile <= 0) {
             spawnProjectile();
             world.timers.projectile = 0.28;
             input.stick = false;
           }
+          if (input.stickPressed) input.stickPressed = false;
 
           player.x = Math.max(22, Math.min(DESIGN_WIDTH - player.width - 22, player.x + player.vx * dt));
           player.vy += world.tuning.gravity * dt;
@@ -697,11 +765,22 @@
             if (entity.x < -220 || entity.x > DESIGN_WIDTH + 260) entity.dead = true;
             if (entity.duckable && world.player.duckActive) return;
             if (!entity.nonContact && rectsOverlap(playerBox, hitbox(entity, 8))) {
+              const label = entity.type === 'eagle' ? 'DUCK!' : 'BUMP!';
+              if (world.debug) world.debug.lastCollision = `${entity.type} -> player`;
+              if (world.debug?.godMode) {
+                world.effects.push({
+                  x: world.player.x,
+                  y: world.player.y - 16,
+                  text: 'NOPE!',
+                  life: 0.45,
+                });
+                return;
+              }
               entity.dead = true;
               world.effects.push({
                 x: world.player.x,
                 y: world.player.y - 16,
-                text: entity.type === 'eagle' ? 'DUCK!' : 'BUMP!',
+                text: label,
                 life: 0.55,
               });
             }
@@ -729,6 +808,7 @@
             if (!rectsOverlap(projectileBox, hitbox(target, 8))) continue;
             projectile.dead = true;
             target.hp = Math.max(0, (target.hp || 1) - 1);
+            if (world.debug) world.debug.lastCollision = `projectile -> ${target.type}`;
             world.effects.push({ x: target.x + target.width / 2, y: target.y - 10, text: 'HIT!', life: 0.45 });
             if (target.hp <= 0) {
               target.dead = true;
@@ -876,6 +956,7 @@
             text: '+SALMON',
             life: 0.6,
           });
+          if (world.debug) world.debug.lastCollision = 'player -> salmon';
         }
 
         function updateEffects(dt) {
@@ -915,6 +996,33 @@
           ].join('');
         }
 
+        function updateDebugPanel() {
+          if (!debugPanel || !world?.debug?.enabled) {
+            if (debugPanel) debugPanel.classList.remove('is-visible');
+            return;
+          }
+          const debug = world.debug;
+          const activeThreats = world.entities.filter((entity) => entity && !entity.dead && !entity.nonContact && !['salmon', 'salmonMarker', 'projectile'].includes(entity.type)).length;
+          const activeWildlife = world.entities.filter((entity) => entity && !entity.dead && ['bear', 'moose', 'eagle'].includes(entity.type)).length;
+          debugPanel.classList.toggle('is-visible', Boolean(debug.visible));
+          debugPanel.textContent = [
+            `FPS ${Math.round(debug.fps || 0)}`,
+            `phase ${world.phase}`,
+            `salmon ${world.salmonCaught}/${world.salmonTarget}`,
+            `entities ${world.entities.length}`,
+            `threats ${activeThreats}`,
+            `wildlife ${activeWildlife}`,
+            `difficulty ${(world.difficulty?.level || 1)}`,
+            `player ${Math.round(world.player.x)},${Math.round(world.player.y)}`,
+            `velocity ${Math.round(world.player.vx)},${Math.round(world.player.vy)}`,
+            `grounded ${world.player.grounded ? 'yes' : 'no'}`,
+            `projectile ${(world.timers.projectile || 0).toFixed(2)}s`,
+            `hitboxes ${debug.showHitboxes ? 'on' : 'off'}`,
+            `god ${debug.godMode ? 'on' : 'off'}`,
+            `last ${debug.lastCollision || 'none'}`,
+          ].join('\n');
+        }
+
         function cleanName(value, fallback) {
           const cleaned = String(value || '')
             .replace(/[<>]/g, '')
@@ -937,12 +1045,14 @@
           lastFrame = now;
           updateHarnessWorld(dt);
           Renderer.renderWorld(ctx, world, imageCache, {
-            debug: gameStarted,
+            debug: Boolean(world?.debug?.enabled && world.debug.visible),
+            showHitboxes: Boolean(world?.debug?.enabled && world.debug.showHitboxes),
             parallaxLayers: PARALLAX_LAYERS,
             sunSrc: '../assets/hockey-smash/backgrounds/sun.webp',
             moonSrc: '../assets/hockey-smash/backgrounds/moon.webp',
           });
           updateReadout();
+          updateDebugPanel();
           window.requestAnimationFrame(loop);
         }
 

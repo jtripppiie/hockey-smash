@@ -33,6 +33,7 @@ Implemented now:
 - Daniel/Sofie character selection
 - fullscreen toggle
 - keyboard and touch controls
+- `?debug=1` debug mode with FPS, hitbox, and god-mode toggles
 - parallax-ready background layers
 - sun/moon day-night cycle with a night-sky filter
 - countdown
@@ -54,6 +55,14 @@ F / Enter        stick / throw
 ```
 
 Stick/throw projectiles always fire to the right.
+
+Debug mode is off by default. Add `?debug=1` to the v2 URL, then use:
+
+```text
+~  show/hide debug overlay
+H  show/hide hitboxes
+G  toggle god mode
+```
 
 ## Current Tuning
 

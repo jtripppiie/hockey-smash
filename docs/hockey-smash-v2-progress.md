@@ -8,6 +8,35 @@ V2 is now the active Hockey Smash path. Keep gameplay in world state and canvas 
 
 ## Completed
 
+### 2026-07-01: Stage 1.5 Debug Mode and Quality-of-Life
+
+Changed:
+- `dev/hockey-smash-v2.html`
+- `js/games/hockey-smash-world-v2.js`
+- `js/games/hockey-smash-renderer-v2.js`
+- `scripts/verify-hockey-smash.js`
+- `README.md`
+- `docs/hockey-smash-next-polish-plan.md`
+- `docs/hockey-smash-v2-progress.md`
+- `docs/hockey-smash-v2-migration-checklist.md`
+
+Gameplay impact:
+- Debug mode is now opt-in with `?debug=1`.
+- The debug overlay can show FPS, phase, salmon count, entity counts, threat/wildlife counts, player position/velocity, grounded state, projectile cooldown, and last collision.
+- `~`, `H`, and `G` toggle the debug overlay, hitboxes, and god mode only when debug mode is enabled.
+- Keyboard and touch action input now has edge-triggered `jumpPressed` and `stickPressed` flags for cleaner follow-up tuning.
+
+Verification:
+- `npm run verify`: passed
+- `npm run test:browser`: not run
+- manual browser check: not run
+
+Known issues:
+- Browser QA still needs an available local port because `8000` was occupied during the initial audit.
+
+Next:
+- Add centralized difficulty state and use it for encounter pacing.
+
 ### Step 1: Isolated v2 world scaffold
 
 Added:
