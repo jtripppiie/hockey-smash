@@ -11,6 +11,7 @@
 - Removed bear/moose speech bubbles in v2 because wildlife callouts did not make sense.
 - Added ground landing markers for falling salmon so players can start moving toward the catch point.
 - Added parallax-ready background rendering, placeholder layer assets, sun/moon sky objects, and a night-sky filter.
+- Added generated Soldotna parallax background layers with mountains, storefronts, sidewalk/street foreground, and a deterministic `Nelson Engineering` sign overlay.
 - Preserved v2 mobile responsiveness, compact splash, fullscreen toggle, salmon tuning, faster player movement, and proportional Mom sizing.
 
 ## 0.14.4 - Cast QA And Controls

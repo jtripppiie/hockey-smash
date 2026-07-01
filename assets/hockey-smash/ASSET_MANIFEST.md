@@ -23,6 +23,10 @@ The game is currently in **playable preview plus starter asset** state:
 |---|---|---:|---|
 | `backgrounds/sun.webp` | Daytime sky orb | art source dimensions | Loaded by v2 renderer. |
 | `backgrounds/moon.webp` | Nighttime sky orb | art source dimensions | Loaded by v2 renderer. |
+| `backgrounds/parallax/hockey-smash-parallax-mountains-bg-1536x576.png` | Generated background mountains/sky layer | 1536x576 | Pixel-art Soldotna/Kenai-style distant landscape. |
+| `backgrounds/parallax/hockey-smash-parallax-soldotna-storefronts-mid-1536x320.png` | Generated midground storefront/town-sign layer | 1536x320 | Includes readable `Soldotna, Alaska` and `Population 4,342` sign. |
+| `backgrounds/parallax/hockey-smash-parallax-nelson-engineering-sign-1536x320.svg` | Deterministic storefront sign overlay | 1536x320 | Adds readable `Nelson Engineering` text. |
+| `backgrounds/parallax/hockey-smash-parallax-sidewalk-front-1536x170.png` | Generated foreground sidewalk/street layer | 1536x170 | Sidewalk, snowbank, curb, and street strip. |
 | `backgrounds/parallax/hockey-smash-parallax-skyline-far-1536x576.svg` | Far parallax skyline placeholder | 1536x576 | Filename and dimensions are visible in the SVG. |
 | `backgrounds/parallax/hockey-smash-parallax-trees-mid-1536x320.svg` | Mid parallax trees placeholder | 1536x320 | Filename and dimensions are visible in the SVG. |
 | `backgrounds/parallax/hockey-smash-parallax-snowbank-front-1536x170.svg` | Front parallax snowbank placeholder | 1536x170 | Filename and dimensions are visible in the SVG. |

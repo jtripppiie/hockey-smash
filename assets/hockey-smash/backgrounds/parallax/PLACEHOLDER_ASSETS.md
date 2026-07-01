@@ -1,11 +1,15 @@
 # Hockey Smash V2 Parallax Placeholder Assets
 
-These files are intentional temporary art targets. Each SVG includes its own
-filename and exact dimensions in visible text so final artwork can replace it
-without changing the renderer contract.
+These files describe the parallax art contract for v2. The generated PNG
+layers are the current in-game art. The SVG files remain useful deterministic
+placeholder/overlay assets when exact text is needed.
 
 | File | Exact dimensions | Intended layer | Renderer speed |
 |---|---:|---|---:|
+| `hockey-smash-parallax-mountains-bg-1536x576.png` | 1536x576 | generated snow-capped mountains / sky | 0.08 |
+| `hockey-smash-parallax-soldotna-storefronts-mid-1536x320.png` | 1536x320 | generated storefronts / town sign | 0.24 |
+| `hockey-smash-parallax-nelson-engineering-sign-1536x320.svg` | 1536x320 | deterministic Nelson Engineering sign overlay | 0.24 |
+| `hockey-smash-parallax-sidewalk-front-1536x170.png` | 1536x170 | generated sidewalk / street foreground | 0.55 |
 | `hockey-smash-parallax-skyline-far-1536x576.svg` | 1536x576 | far mountains / skyline | 0.08 |
 | `hockey-smash-parallax-trees-mid-1536x320.svg` | 1536x320 | mid trees / neighborhood | 0.24 |
 | `hockey-smash-parallax-snowbank-front-1536x170.svg` | 1536x170 | front snowbank / ground edge | 0.55 |

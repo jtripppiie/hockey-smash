@@ -396,7 +396,7 @@
         const PARALLAX_LAYERS = [
           {
             key: 'parallaxFar',
-            src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-skyline-far-1536x576.svg',
+            src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-mountains-bg-1536x576.png',
             width: 1536,
             height: 576,
             y: 0,
@@ -405,16 +405,25 @@
           },
           {
             key: 'parallaxMid',
-            src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-trees-mid-1536x320.svg',
+            src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-soldotna-storefronts-mid-1536x320.png',
             width: 1536,
             height: 320,
-            y: 190,
+            y: 196,
             speed: 0.24,
             fallback: 'rgba(31, 91, 83, 0.62)',
           },
           {
+            key: 'parallaxNelsonEngineering',
+            src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-nelson-engineering-sign-1536x320.svg',
+            width: 1536,
+            height: 320,
+            y: 196,
+            speed: 0.24,
+            fallback: 'rgba(0, 0, 0, 0)',
+          },
+          {
             key: 'parallaxFront',
-            src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-snowbank-front-1536x170.svg',
+            src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-sidewalk-front-1536x170.png',
             width: 1536,
             height: 170,
             y: 384,
@@ -445,6 +454,10 @@
           return Object.fromEntries(Object.entries(spriteMap).map(([key, src]) => [key, `../${src}`]));
         }
 
+        function mapParallaxLayers(layers) {
+          return Object.fromEntries(layers.map((layer) => [layer.key, layer.src]));
+        }
+
         function resetWorld(character = selection.character, name = selection.name) {
           selection.character = character === 'sofie' ? 'sofie' : 'daniel';
           selection.name = cleanName(name, selection.character === 'sofie' ? 'Sofie' : 'Daniel');
@@ -458,9 +471,7 @@
             ...prefixSprites(World.SPRITES),
             sun: '../assets/hockey-smash/backgrounds/sun.webp',
             moon: '../assets/hockey-smash/backgrounds/moon.webp',
-            parallaxFar: PARALLAX_LAYERS[0].src,
-            parallaxMid: PARALLAX_LAYERS[1].src,
-            parallaxFront: PARALLAX_LAYERS[2].src,
+            ...mapParallaxLayers(PARALLAX_LAYERS),
           });
           updateCharacterButtons(selection.character);
           updateSplashHero();

@@ -13,6 +13,10 @@ const requiredFiles = [
   'assets/hockey-smash/backgrounds/sun.webp',
   'assets/hockey-smash/backgrounds/moon.webp',
   'assets/hockey-smash/backgrounds/parallax/PLACEHOLDER_ASSETS.md',
+  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-mountains-bg-1536x576.png',
+  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-soldotna-storefronts-mid-1536x320.png',
+  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-nelson-engineering-sign-1536x320.svg',
+  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-sidewalk-front-1536x170.png',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-skyline-far-1536x576.svg',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-trees-mid-1536x320.svg',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-snowbank-front-1536x170.svg',
@@ -89,6 +93,11 @@ requireText('v2 harness', harness, 'bubble: \'\'', 'Bear/moose speech bubbles sh
 requireText('v2 harness', harness, 'spawnSalmonLandingMarker', 'V2 salmon landing marker spawn is missing.');
 requireText('v2 harness', harness, 'predictSalmonLandingX', 'V2 salmon landing prediction is missing.');
 requireText('v2 harness', harness, 'PARALLAX_LAYERS', 'V2 parallax layer config is missing.');
+requireText('v2 harness', harness, 'hockey-smash-parallax-mountains-bg-1536x576.png', 'Generated mountain parallax layer is not wired.');
+requireText('v2 harness', harness, 'hockey-smash-parallax-soldotna-storefronts-mid-1536x320.png', 'Generated storefront parallax layer is not wired.');
+requireText('v2 harness', harness, 'hockey-smash-parallax-nelson-engineering-sign-1536x320.svg', 'Nelson Engineering sign layer is not wired.');
+requireText('v2 harness', harness, 'hockey-smash-parallax-sidewalk-front-1536x170.png', 'Generated sidewalk parallax layer is not wired.');
+requireText('v2 harness', harness, 'mapParallaxLayers', 'V2 parallax preloading should be key-based.');
 requireText('v2 harness', harness, 'updateEnvironment', 'V2 environment update loop is missing.');
 requireText('v2 harness', harness, 'const direction = 1', 'V2 projectiles should fire right only.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_V2_DEV', 'V2 dev test hook is missing.');
@@ -119,6 +128,7 @@ requireText('v2 architecture docs', architecture, 'V2 is now the active Hockey S
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-skyline-far-1536x576.svg', 'Far parallax placeholder spec is missing.');
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-trees-mid-1536x320.svg', 'Mid parallax placeholder spec is missing.');
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-snowbank-front-1536x170.svg', 'Front parallax placeholder spec is missing.');
+requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-nelson-engineering-sign-1536x320.svg', 'Nelson Engineering parallax sign spec is missing.');
 
 const context = { window: {} };
 vm.createContext(context);

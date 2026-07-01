@@ -86,6 +86,10 @@ assets/hockey-smash/backgrounds/parallax/
 Current target files:
 
 ```text
+hockey-smash-parallax-mountains-bg-1536x576.png
+hockey-smash-parallax-soldotna-storefronts-mid-1536x320.png
+hockey-smash-parallax-nelson-engineering-sign-1536x320.svg
+hockey-smash-parallax-sidewalk-front-1536x170.png
 hockey-smash-parallax-skyline-far-1536x576.svg
 hockey-smash-parallax-trees-mid-1536x320.svg
 hockey-smash-parallax-snowbank-front-1536x170.svg
