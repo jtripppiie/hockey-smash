@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="320" viewBox="0 0 1536 320" role="img" aria-labelledby="title desc">
+  <title id="title">Nelson Engineering storefront sign</title>
+  <desc id="desc">Transparent overlay for the midground storefront layer. Exact dimensions 1536 by 320.</desc>
+  <rect width="1536" height="320" fill="none"/>
+  <g transform="translate(196 96)">
+    <rect x="-8" y="-8" width="250" height="48" rx="4" fill="#162b3a" stroke="#e8d49c" stroke-width="4"/>
+    <rect x="0" y="0" width="234" height="32" rx="2" fill="#244c63"/>
+    <text x="117" y="23" text-anchor="middle" font-family="monospace" font-size="22" font-weight="900" fill="#fff8df">Nelson Engineering</text>
+  </g>
+</svg>

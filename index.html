@@ -1,0 +1,1644 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Hockey Smash</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #101923;
+        color: #fff8df;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: clamp(0.5rem, 1.6vw, 1rem);
+        background: radial-gradient(circle at top, #284966, #101923 58%);
+      }
+      .dev-shell {
+        width: min(1500px, 100%);
+        display: grid;
+        gap: 0.75rem;
+      }
+      .dev-header,
+      .dev-panel {
+        border: 2px solid rgba(255, 242, 122, 0.35);
+        border-radius: 16px;
+        padding: 1rem;
+        background: rgba(5, 8, 13, 0.74);
+        box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+      }
+      .dev-header h1 {
+        margin: 0 0 0.35rem;
+        font-size: clamp(1.25rem, 3vw, 2rem);
+      }
+      .dev-header p,
+      .dev-panel p {
+        margin: 0;
+        color: rgba(255, 248, 223, 0.82);
+        line-height: 1.45;
+      }
+      .dev-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 1rem;
+        align-items: start;
+      }
+      .dev-game-frame {
+        position: relative;
+        width: min(100%, calc((100vh - 15rem) * 1.7778));
+        min-width: min(100%, 980px);
+        justify-self: center;
+        overflow: hidden;
+        border: 3px solid rgba(255, 242, 122, 0.5);
+        border-radius: 18px;
+        background: #7ec9f2;
+        box-shadow: 0 20px 56px rgba(0, 0, 0, 0.42);
+      }
+      .dev-game-frame:fullscreen {
+        width: 100vw;
+        height: 100vh;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: 0;
+        background: #101923;
+      }
+      canvas {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        display: block;
+        background: #7ec9f2;
+        image-rendering: pixelated;
+      }
+      .dev-game-frame:fullscreen canvas {
+        width: min(100vw, 177.78vh);
+        max-height: 100vh;
+      }
+      .dev-game-frame:fullscreen.is-playing {
+        display: block;
+      }
+      .dev-game-frame:fullscreen.is-playing canvas {
+        width: 100vw;
+        height: 100vh;
+        aspect-ratio: auto;
+      }
+      .v2-fullscreen {
+        position: absolute;
+        top: 0.8rem;
+        right: 0.8rem;
+        z-index: 8;
+        background: rgba(5, 8, 13, 0.74);
+        backdrop-filter: blur(8px);
+      }
+      .v2-version-badge {
+        position: absolute;
+        top: 0.8rem;
+        left: 0.8rem;
+        z-index: 8;
+        padding: 0.3rem 0.52rem;
+        border: 2px solid rgba(255, 242, 122, 0.46);
+        border-radius: 8px;
+        background: rgba(5, 8, 13, 0.74);
+        color: #fff27a;
+        font-size: 0.72rem;
+        font-weight: 1000;
+        line-height: 1;
+        letter-spacing: 0;
+        backdrop-filter: blur(8px);
+        pointer-events: none;
+      }
+      .v2-hud {
+        position: absolute;
+        top: 0.8rem;
+        left: 50%;
+        z-index: 8;
+        display: flex;
+        align-items: center;
+        gap: 0.38rem;
+        max-width: min(46vw, 25rem);
+        padding: 0.34rem 0.58rem;
+        border: 2px solid rgba(255, 242, 122, 0.46);
+        border-radius: 8px;
+        background: rgba(5, 8, 13, 0.74);
+        color: #fff8df;
+        font-size: 0.74rem;
+        font-weight: 1000;
+        line-height: 1;
+        transform: translateX(-50%);
+        backdrop-filter: blur(8px);
+        pointer-events: none;
+        white-space: nowrap;
+      }
+      .v2-hud__stack {
+        display: grid;
+        gap: 0.34rem;
+        min-width: min(19rem, 44vw);
+      }
+      .v2-hud__row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 0.42rem;
+      }
+      .v2-hud__score {
+        color: #fff27a;
+      }
+      .v2-hud__phase {
+        max-width: 12rem;
+        overflow: hidden;
+        color: rgba(255, 248, 223, 0.84);
+        text-overflow: ellipsis;
+        text-transform: uppercase;
+      }
+      .v2-health {
+        display: grid;
+        grid-template-columns: auto minmax(8rem, 1fr);
+        align-items: center;
+        gap: 0.38rem;
+        color: rgba(255, 248, 223, 0.9);
+        font-size: 0.7rem;
+      }
+      .v2-health__track {
+        height: 0.56rem;
+        overflow: hidden;
+        border: 1px solid rgba(255, 248, 223, 0.58);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.32);
+        box-shadow: inset 0 0 0 1px rgba(5, 8, 13, 0.58);
+      }
+      .v2-health__fill {
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #62df88, #fff27a);
+        transform-origin: left center;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .v2-health__fill.is-low {
+        background: linear-gradient(90deg, #ff5d5d, #ffb347);
+      }
+      .v2-game-over {
+        position: absolute;
+        inset: 0;
+        z-index: 9;
+        display: none;
+        place-items: center;
+        padding: 1rem;
+        background: rgba(5, 8, 13, 0.68);
+      }
+      .dev-game-frame.is-game-over .v2-game-over {
+        display: grid;
+      }
+      .v2-game-over__panel {
+        width: min(23rem, 92vw);
+        display: grid;
+        justify-items: center;
+        gap: 0.7rem;
+        padding: 1rem;
+        border: 2px solid rgba(255, 242, 122, 0.58);
+        border-radius: 8px;
+        background: rgba(5, 8, 13, 0.86);
+        text-align: center;
+      }
+      .v2-game-over__panel h2 {
+        margin: 0;
+        color: #fff27a;
+        font-size: 1.45rem;
+      }
+      .v2-game-over__panel p {
+        margin: 0;
+        color: rgba(255, 248, 223, 0.86);
+      }
+      .v2-debug-panel {
+        position: absolute;
+        left: 0.75rem;
+        top: 3.25rem;
+        z-index: 8;
+        display: none;
+        min-width: min(21rem, calc(100% - 1.5rem));
+        max-width: calc(100% - 1.5rem);
+        padding: 0.65rem 0.75rem;
+        border: 2px solid rgba(90, 214, 255, 0.58);
+        border-radius: 8px;
+        background: rgba(5, 8, 13, 0.78);
+        color: #fff8df;
+        font: 800 0.78rem/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        pointer-events: none;
+        white-space: pre-line;
+      }
+      .v2-debug-panel.is-visible {
+        display: block;
+      }
+      .v2-splash {
+        position: absolute;
+        inset: 0;
+        z-index: 7;
+        display: grid;
+        place-items: center;
+        padding: clamp(0.65rem, 2.4vw, 1.25rem);
+        background: linear-gradient(180deg, rgba(9, 18, 30, 0.78), rgba(9, 18, 30, 0.9));
+      }
+      .dev-game-frame.is-playing .v2-splash {
+        display: none;
+      }
+      .v2-splash__content {
+        width: min(430px, 100%);
+        display: grid;
+        justify-items: center;
+        gap: clamp(0.38rem, 1.15vh, 0.7rem);
+        text-align: center;
+      }
+      .v2-eyebrow {
+        margin: 0;
+        color: #fff27a;
+        font-size: 0.68rem;
+        font-weight: 1000;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .v2-splash h2 {
+        margin: 0;
+        font-size: clamp(1.55rem, 4vw, 2.55rem);
+        line-height: 0.98;
+      }
+      .v2-splash p {
+        margin: 0;
+        color: rgba(255, 248, 223, 0.86);
+        font-size: 0.94rem;
+        line-height: 1.35;
+      }
+      .v2-splash__hero {
+        width: min(145px, 28vw, 18vh);
+        aspect-ratio: 1;
+        object-fit: contain;
+        filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.36));
+      }
+      .v2-field {
+        width: min(290px, 100%);
+        display: grid;
+        gap: 0.25rem;
+        text-align: left;
+      }
+      .v2-field label,
+      .v2-character-select__label {
+        color: #fff27a;
+        font-size: 0.68rem;
+        font-weight: 1000;
+        text-transform: uppercase;
+      }
+      .v2-field input {
+        width: 100%;
+        border: 2px solid rgba(255, 242, 122, 0.5);
+        border-radius: 12px;
+        padding: 0.52rem 0.72rem;
+        background: rgba(5, 8, 13, 0.72);
+        color: #fff8df;
+        font: inherit;
+        font-weight: 900;
+      }
+      .v2-character-select {
+        display: grid;
+        gap: 0.32rem;
+      }
+      .v2-controls {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 6;
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 1rem;
+        padding: 1rem;
+        pointer-events: none;
+      }
+      .dev-game-frame:not(.is-playing) .v2-controls {
+        display: none;
+      }
+      .v2-control-group {
+        display: flex;
+        gap: 0.55rem;
+        pointer-events: auto;
+      }
+      .v2-control {
+        min-width: 3.35rem;
+        min-height: 3.35rem;
+        display: grid;
+        place-items: center;
+        padding: 0.55rem;
+        background: rgba(5, 8, 13, 0.74);
+        backdrop-filter: blur(8px);
+        touch-action: none;
+        user-select: none;
+      }
+      .v2-control--stick {
+        min-width: 4.35rem;
+      }
+      .v2-control.is-pressed {
+        transform: translateY(2px) scale(0.98);
+        background: #fff27a;
+        color: #15202c;
+      }
+      .dev-panel {
+        display: none;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+      }
+      .dev-actions,
+      .dev-dpad {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      button {
+        border: 2px solid rgba(255, 242, 122, 0.58);
+        border-radius: 999px;
+        padding: 0.46rem 0.76rem;
+        background: rgba(255, 242, 122, 0.12);
+        color: #fff8df;
+        font-weight: 900;
+        cursor: pointer;
+      }
+      button.is-active {
+        background: #fff27a;
+        color: #15202c;
+      }
+      .dev-readout {
+        display: grid;
+        gap: 0.35rem;
+        padding: 0.7rem;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.08);
+        font-size: 0.9rem;
+      }
+      .dev-panel__block {
+        display: grid;
+        align-content: start;
+        gap: 0.4rem;
+      }
+      kbd {
+        padding: 0.1rem 0.35rem;
+        border: 1px solid rgba(255,255,255,.35);
+        border-radius: 4px;
+        background: rgba(255,255,255,.12);
+      }
+      @media (max-width: 850px) {
+        body {
+          padding: 0;
+        }
+        .dev-shell {
+          gap: 0;
+        }
+        .dev-header {
+          display: none;
+        }
+        .dev-game-frame {
+          width: 100%;
+          min-width: 0;
+          min-height: min(520px, 100vh);
+          display: grid;
+          place-items: center;
+          border-radius: 0;
+          border-width: 0;
+        }
+        .dev-game-frame.is-playing {
+          min-height: 0;
+          display: block;
+        }
+        .dev-game-frame.is-playing canvas {
+          height: auto;
+          aspect-ratio: 16 / 9;
+        }
+        .v2-fullscreen,
+        .v2-version-badge,
+        .v2-hud {
+          top: max(0.55rem, env(safe-area-inset-top));
+        }
+        .v2-hud {
+          max-width: 52vw;
+          font-size: 0.68rem;
+        }
+        .v2-hud__stack {
+          min-width: min(14.5rem, 50vw);
+        }
+        .v2-health {
+          grid-template-columns: auto minmax(5.5rem, 1fr);
+        }
+        .v2-splash {
+          overflow: auto;
+        }
+        .v2-splash__hero {
+          width: min(118px, 24vh);
+        }
+        .dev-panel {
+          grid-template-columns: 1fr;
+        }
+        .v2-controls {
+          padding: 0.65rem;
+        }
+        .v2-control {
+          min-width: 2.85rem;
+          min-height: 2.85rem;
+        }
+      }
+      @media (max-width: 850px) and (orientation: portrait) {
+        .dev-game-frame:fullscreen.is-playing {
+          display: flex;
+          flex-direction: column;
+          background: #101923;
+        }
+        .dev-game-frame:fullscreen.is-playing canvas {
+          flex: 0 0 auto;
+          width: 100vw;
+          height: auto;
+          aspect-ratio: 16 / 9;
+        }
+        .dev-game-frame:fullscreen.is-playing .v2-controls {
+          position: relative;
+          inset: auto;
+          flex: 1 1 auto;
+          align-items: center;
+          padding: clamp(0.75rem, 4vh, 2rem) 0.85rem max(0.95rem, env(safe-area-inset-bottom));
+        }
+        .dev-game-frame:fullscreen.is-playing .v2-control {
+          min-width: clamp(3.15rem, 14vw, 4.7rem);
+          min-height: clamp(3.15rem, 14vw, 4.7rem);
+        }
+      }
+      @media (max-width: 850px) and (max-height: 500px) and (orientation: landscape) {
+        body {
+          place-items: start center;
+        }
+        .dev-header {
+          display: none;
+        }
+        .dev-game-frame {
+          width: 100vw;
+          min-height: 0;
+        }
+        .dev-game-frame:fullscreen,
+        .dev-game-frame:fullscreen.is-playing {
+          width: 100vw;
+          height: 100vh;
+        }
+        .dev-game-frame:fullscreen.is-playing canvas,
+        .dev-game-frame.is-playing canvas {
+          width: 100vw;
+          height: 100vh;
+          aspect-ratio: auto;
+        }
+        .v2-controls {
+          padding: 0.65rem max(0.65rem, env(safe-area-inset-right)) max(0.55rem, env(safe-area-inset-bottom)) max(0.65rem, env(safe-area-inset-left));
+        }
+        .v2-hud {
+          max-width: 34vw;
+        }
+        .v2-splash {
+          padding: 0.6rem;
+        }
+        .v2-splash__content {
+          width: min(440px, 100%);
+          gap: 0.42rem;
+        }
+        .v2-splash__hero {
+          width: min(92px, 22vh);
+        }
+        .v2-splash h2 {
+          font-size: 1.7rem;
+        }
+        .v2-splash p {
+          font-size: 0.88rem;
+        }
+        .v2-field input,
+        button {
+          padding: 0.42rem 0.68rem;
+        }
+        .dev-panel {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="dev-shell">
+      <header class="dev-header">
+        <h1>Hockey Smash</h1>
+        <p>Catch salmon, dodge Alaska chaos, and keep the game world inside one canvas.</p>
+      </header>
+
+      <section class="dev-layout" aria-label="Hockey Smash game area">
+        <section id="v2-game-frame" class="dev-game-frame" aria-label="Hockey Smash gameplay frame">
+          <canvas id="v2-canvas" width="1024" height="576" aria-label="Hockey Smash game canvas"></canvas>
+          <button id="v2-fullscreen" class="v2-fullscreen" type="button" aria-label="Toggle fullscreen">Fullscreen</button>
+          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v1.3.1</div>
+          <div id="v2-hud" class="v2-hud" aria-live="polite">
+            <div class="v2-hud__stack">
+              <div class="v2-hud__row">
+                <span id="v2-hud-score" class="v2-hud__score">Salmon 0/20</span>
+                <span id="v2-hud-phase" class="v2-hud__phase">Countdown</span>
+              </div>
+              <div class="v2-health" aria-label="Player health">
+                <span id="v2-health-label">HP 100</span>
+                <span class="v2-health__track" aria-hidden="true"><span id="v2-health-fill" class="v2-health__fill"></span></span>
+              </div>
+            </div>
+          </div>
+          <div id="v2-debug-panel" class="v2-debug-panel" aria-live="polite"></div>
+          <section id="v2-game-over" class="v2-game-over" aria-labelledby="v2-game-over-title">
+            <div class="v2-game-over__panel">
+              <h2 id="v2-game-over-title">Sidewalk Survived?</h2>
+              <p id="v2-game-over-copy">Take a breath, then run it back.</p>
+              <button id="v2-retry" type="button">Retry</button>
+            </div>
+          </section>
+
+          <section id="v2-splash" class="v2-splash" aria-labelledby="v2-title">
+            <div class="v2-splash__content">
+              <p class="v2-eyebrow">Sidewalk survival</p>
+              <img id="v2-splash-hero" class="v2-splash__hero" src="assets/hockey-smash/sprites/daniel-splash.webp" alt="Daniel returns for Hockey Smash">
+              <h2 id="v2-title">Hockey Smash</h2>
+              <p>Pick your runner, catch salmon, and survive the Soldotna sidewalk.</p>
+
+              <div class="v2-character-select" aria-label="Choose a character">
+                <span class="v2-character-select__label">Choose character</span>
+                <div class="dev-actions">
+                  <button type="button" data-character="daniel" class="is-active" aria-pressed="true">Daniel</button>
+                  <button type="button" data-character="sofie" aria-pressed="false">Sofie</button>
+                </div>
+              </div>
+
+              <div class="v2-field">
+                <label for="v2-player-name">Player name</label>
+                <input id="v2-player-name" name="v2-player-name" type="text" maxlength="12" value="Daniel" placeholder="Daniel" autocomplete="off" spellcheck="false">
+              </div>
+
+              <button id="v2-start" type="button">Start</button>
+            </div>
+          </section>
+
+          <div class="v2-controls" aria-label="Hockey Smash arena controls">
+            <div class="v2-control-group" aria-label="Movement controls">
+              <button class="v2-control" type="button" data-action="left" aria-label="Move left">◀</button>
+              <button class="v2-control" type="button" data-action="right" aria-label="Move right">▶</button>
+            </div>
+            <div class="v2-control-group" aria-label="Action controls">
+              <button class="v2-control" type="button" data-action="jump" aria-label="Jump">J</button>
+              <button class="v2-control" type="button" data-action="slide" aria-label="Slide">S</button>
+              <button class="v2-control v2-control--stick" type="button" data-action="stick" aria-label="Stick or throw">Stick</button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="dev-panel">
+          <div class="dev-panel__block">
+            <strong>Input adapter test</strong>
+            <p>Use <kbd>A</kbd>/<kbd>D</kbd> or arrows to move. Use <kbd>W</kbd>, <kbd>↑</kbd>, or <kbd>Space</kbd> to jump. Hold <kbd>S</kbd> or <kbd>Shift</kbd> to slide. Use <kbd>F</kbd> or <kbd>Enter</kbd> for the stick/throw action.</p>
+          </div>
+
+          <div class="dev-panel__block">
+            <strong>V2 flow</strong>
+            <p>Countdown → salmon run → catch 20 → encounters unlock. After the gate, family/cast, wildlife, cameos, and simple stick/throw projectiles all run as canvas/world entities.</p>
+            <p>Falling salmon now get a short-lived ground marker so players can head toward the catch point.</p>
+          </div>
+
+          <div class="dev-panel__block">
+            <strong>World readout</strong>
+            <div class="dev-readout" id="v2-readout">Waiting for game world...</div>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script src="js/games/hockey-smash-world-v2.js"></script>
+    <script src="js/games/hockey-smash-renderer-v2.js"></script>
+    <script>
+      (function () {
+        const DESIGN_WIDTH = 1024;
+        const DESIGN_HEIGHT = 576;
+        const GROUND_Y = 518;
+        const ENCOUNTER_TYPES = ['dad', 'castSupport', 'bear', 'mom', 'eagle', 'moose', 'cameo'];
+        const DEFAULT_NAMES = ['Daniel', 'Sofie'];
+        const DAD_JOKES = [
+          'I have a seafood diet. I see food and eat it.',
+          'This mower is cutting edge.',
+          'I hated facial hair, but it grew on me.',
+          'Nice catch. You are really reeling them in.',
+          'Ice to see you out here.',
+        ];
+        const PARALLAX_LAYERS = [
+          {
+            key: 'parallaxFar',
+            src: 'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-kenai-mountains-bg-1536x576.svg',
+            width: 1536,
+            height: 576,
+            y: 0,
+            speed: 0.08,
+            fallback: 'rgba(49, 73, 90, 0.62)',
+          },
+          {
+            key: 'parallaxCity',
+            src: 'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-soldotna-city-nelson-engineering-mid-1536x320.webp',
+            width: 1536,
+            height: 320,
+            y: 152,
+            speed: 0.18,
+            fallback: 'rgba(48, 77, 91, 0.7)',
+          },
+          {
+            key: 'parallaxSidewalk',
+            src: 'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-sidewalk-soldotna-front-1536x170.png',
+            width: 1536,
+            height: 170,
+            y: 406,
+            speed: 0.42,
+            fallback: 'rgba(86, 103, 118, 0.78)',
+          },
+        ];
+        const canvas = document.getElementById('v2-canvas');
+        const ctx = canvas.getContext('2d');
+        const gameFrame = document.getElementById('v2-game-frame');
+        const nameInput = document.getElementById('v2-player-name');
+        const startButton = document.getElementById('v2-start');
+        const fullscreenButton = document.getElementById('v2-fullscreen');
+        const versionBadge = document.getElementById('v2-version-badge');
+        const hudScore = document.getElementById('v2-hud-score');
+        const hudPhase = document.getElementById('v2-hud-phase');
+        const healthLabel = document.getElementById('v2-health-label');
+        const healthFill = document.getElementById('v2-health-fill');
+        const retryButton = document.getElementById('v2-retry');
+        const debugPanel = document.getElementById('v2-debug-panel');
+        const splashHero = document.getElementById('v2-splash-hero');
+        const readout = document.getElementById('v2-readout');
+        const World = window.HOCKEY_SMASH_WORLD_V2;
+        const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
+        const VERSION_FALLBACK = '1.3.1';
+        const debugEnabled = new URLSearchParams(window.location.search).has('debug');
+        const input = {
+          left: false,
+          right: false,
+          jump: false,
+          jumpPressed: false,
+          slide: false,
+          stick: false,
+          stickPressed: false,
+        };
+        const heldPointers = new Map();
+        const selection = { character: 'daniel', name: 'Daniel' };
+        let world = null;
+        let imageCache = null;
+        let lastFrame = performance.now();
+        let encounterIndex = 0;
+        let gameStarted = false;
+
+        function prefixSprites(spriteMap) {
+          return Object.fromEntries(Object.entries(spriteMap).map(([key, src]) => [key, `../${src}`]));
+        }
+
+        function mapParallaxLayers(layers) {
+          return Object.fromEntries(layers.map((layer) => [layer.key, layer.src]));
+        }
+
+        function resetWorld(character = selection.character, name = selection.name) {
+          selection.character = character === 'sofie' ? 'sofie' : 'daniel';
+          selection.name = cleanName(name, selection.character === 'sofie' ? 'Sofie' : 'Daniel');
+          world = World.createWorld({ character: selection.character, name: selection.name, debug: debugEnabled });
+          world.timers.salmon = 0.18;
+          world.timers.encounter = 0.8;
+          world.timers.projectile = 0;
+          world.timers.postGateSalmon = 1.15;
+          encounterIndex = 0;
+          gameFrame.classList.remove('is-game-over');
+          imageCache = Renderer.createImageCache({
+            ...prefixSprites(World.SPRITES),
+            sun: 'assets/hockey-smash/backgrounds/sun.webp',
+            moon: 'assets/hockey-smash/backgrounds/moon.webp',
+            ...mapParallaxLayers(PARALLAX_LAYERS),
+          });
+          updateCharacterButtons(selection.character);
+          updateSplashHero();
+        }
+
+        function updateCharacterButtons(character) {
+          document.querySelectorAll('[data-character]').forEach((button) => {
+            const active = button.dataset.character === character;
+            button.classList.toggle('is-active', active);
+            button.setAttribute('aria-pressed', active ? 'true' : 'false');
+          });
+        }
+
+        function bindCharacterButtons() {
+          document.querySelectorAll('[data-character]').forEach((button) => {
+            button.addEventListener('click', () => {
+              const nextCharacter = button.dataset.character === 'sofie' ? 'sofie' : 'daniel';
+              const currentName = nameInput?.value || selection.name;
+              const shouldUseDefault = DEFAULT_NAMES.includes(selection.name) || !currentName.trim();
+              selection.character = nextCharacter;
+              selection.name = shouldUseDefault ? (nextCharacter === 'sofie' ? 'Sofie' : 'Daniel') : currentName;
+              if (nameInput) {
+                nameInput.value = selection.name;
+                nameInput.placeholder = nextCharacter === 'sofie' ? 'Sofie' : 'Daniel';
+              }
+              resetWorld(selection.character, selection.name);
+            });
+          });
+        }
+
+        function bindSplashControls() {
+          nameInput?.addEventListener('input', () => {
+            selection.name = cleanName(nameInput.value, selection.character === 'sofie' ? 'Sofie' : 'Daniel');
+            if (world?.player) world.player.name = selection.name;
+          });
+
+          startButton?.addEventListener('click', () => {
+            resetWorld(selection.character, nameInput?.value || selection.name);
+            gameStarted = true;
+            gameFrame.classList.add('is-playing');
+            canvas.focus?.();
+          });
+
+          retryButton?.addEventListener('click', () => {
+            resetWorld(selection.character, selection.name);
+            gameStarted = true;
+            gameFrame.classList.add('is-playing');
+            canvas.focus?.();
+          });
+        }
+
+        function bindFullscreen() {
+          fullscreenButton?.addEventListener('click', async () => {
+            try {
+              if (!document.fullscreenElement) {
+                await gameFrame.requestFullscreen?.();
+              } else {
+                await document.exitFullscreen?.();
+              }
+            } catch (error) {
+              console.warn('Fullscreen unavailable for Hockey Smash.', error);
+            }
+          });
+
+          document.addEventListener('fullscreenchange', () => {
+            const active = document.fullscreenElement === gameFrame;
+            fullscreenButton.textContent = active ? 'Exit' : 'Fullscreen';
+            fullscreenButton.setAttribute('aria-pressed', active ? 'true' : 'false');
+          });
+        }
+
+        async function loadVersionBadge() {
+          if (!versionBadge) return;
+          let version = VERSION_FALLBACK;
+          try {
+            const response = await fetch('package.json', { cache: 'no-store' });
+            if (response.ok) {
+              const manifest = await response.json();
+              if (manifest?.version) version = String(manifest.version);
+            }
+          } catch (error) {
+            console.warn('Version badge fallback used.', error);
+          }
+          versionBadge.textContent = `v${version}`;
+          versionBadge.setAttribute('aria-label', `Hockey Smash version ${version}`);
+        }
+
+        function bindKeyboardInput() {
+          window.addEventListener('keydown', (event) => {
+            if (handleDebugKey(event)) return;
+            const action = keyToAction(event.key);
+            if (!action) return;
+            event.preventDefault();
+            if (action === 'jump' && !input.jump) input.jumpPressed = true;
+            if (action === 'stick' && !input.stick) input.stickPressed = true;
+            input[action] = true;
+          });
+          window.addEventListener('keyup', (event) => {
+            const action = keyToAction(event.key);
+            if (!action) return;
+            event.preventDefault();
+            input[action] = false;
+          });
+        }
+
+        function bindPointerInput() {
+          document.querySelectorAll('[data-action]').forEach((button) => {
+            button.addEventListener('pointerdown', (event) => {
+              event.preventDefault();
+              const action = button.dataset.action;
+              heldPointers.set(event.pointerId, action);
+              if (action === 'jump' && !input.jump) input.jumpPressed = true;
+              if (action === 'stick' && !input.stick) input.stickPressed = true;
+              input[action] = true;
+              button.classList.add('is-pressed');
+              button.setAttribute('aria-pressed', 'true');
+              button.setPointerCapture?.(event.pointerId);
+            }, { passive: false });
+
+            ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((type) => {
+              button.addEventListener(type, (event) => {
+                const action = heldPointers.get(event.pointerId);
+                if (action) input[action] = false;
+                heldPointers.delete(event.pointerId);
+                button.classList.remove('is-pressed');
+                button.setAttribute('aria-pressed', 'false');
+              });
+            });
+          });
+        }
+
+        function keyToAction(key) {
+          return {
+            ArrowLeft: 'left',
+            a: 'left',
+            A: 'left',
+            ArrowRight: 'right',
+            d: 'right',
+            D: 'right',
+            ArrowUp: 'jump',
+            w: 'jump',
+            W: 'jump',
+            ' ': 'jump',
+            ArrowDown: 'slide',
+            s: 'slide',
+            S: 'slide',
+            Shift: 'slide',
+            f: 'stick',
+            F: 'stick',
+            Enter: 'stick',
+          }[key] || null;
+        }
+
+        function handleDebugKey(event) {
+          if (!debugEnabled || !world?.debug) return false;
+          const key = event.key;
+          if (key === '`' || key === '~') {
+            event.preventDefault();
+            world.debug.visible = !world.debug.visible;
+            world.debug.showFPS = world.debug.visible;
+            return true;
+          }
+          if (key === 'h' || key === 'H') {
+            event.preventDefault();
+            world.debug.showHitboxes = !world.debug.showHitboxes;
+            return true;
+          }
+          if (key === 'g' || key === 'G') {
+            event.preventDefault();
+            world.debug.godMode = !world.debug.godMode;
+            world.debug.lastCollision = world.debug.godMode ? 'god mode on' : 'god mode off';
+            return true;
+          }
+          return false;
+        }
+
+        function updateHarnessWorld(dt) {
+          if (!world?.player) return;
+          if (!gameStarted) return;
+          // The game loop is like a recipe: update the player, update the game phase,
+          // update objects, then draw the final result in renderWorld().
+          if (world.phase === World.PHASES.GAME_OVER) {
+            updateEffects(dt);
+            updateEnvironment(dt);
+            updateDebugState(dt);
+            world.elapsed += dt;
+            return;
+          }
+          updatePlayer(dt);
+          updatePhase(dt);
+          World.updateDifficulty(world, dt);
+          updateSalmonLoop(dt);
+          updateEncounterLoop(dt);
+          updateProjectiles(dt);
+          updateNonSalmonEntities(dt);
+          updateEffects(dt);
+          updateEnvironment(dt);
+          updateDebugState(dt);
+          world.elapsed += dt;
+        }
+
+        function updateDebugState(dt) {
+          if (!world.debug) return;
+          const instantFps = dt > 0 ? 1 / dt : 0;
+          world.debug.fps = world.debug.fps ? (world.debug.fps * 0.9) + (instantFps * 0.1) : instantFps;
+        }
+
+        function updateEnvironment(dt) {
+          if (!world.environment) return;
+          // This clock is only for the sky. It is intentionally slower than a real clock
+          // so the midnight sun drifts gently instead of racing across the screen.
+          world.environment.clock = (world.environment.clock + dt) % world.environment.cycleSeconds;
+          world.environment.scrollX += (world.player.vx || 0) * 0.18 * dt * (world.environment.wind || 1);
+        }
+
+        function updatePhase(dt) {
+          if ((world.player.health || 0) <= 0 && world.phase !== World.PHASES.GAME_OVER) {
+            World.advancePhase(world, World.PHASES.GAME_OVER);
+            world.message = `${world.player.name} needs cocoa and a rematch.`;
+            gameFrame.classList.add('is-game-over');
+            world.effects.push({ x: world.player.x, y: world.player.y - 18, text: 'OOF!', life: 1.0 });
+            return;
+          }
+
+          if (world.phase === World.PHASES.COUNTDOWN) {
+            world.countdownRemaining = Math.max(0, world.countdownRemaining - dt);
+            world.message = `Countdown: ${Math.ceil(world.countdownRemaining)} seconds.`;
+            if (world.countdownRemaining <= 0) {
+              World.advancePhase(world, World.PHASES.SALMON_RUN);
+              world.timers.salmon = 0.1;
+            }
+            return;
+          }
+
+          if (world.phase === World.PHASES.SALMON_RUN && world.salmonCaught >= world.salmonTarget) {
+            World.advancePhase(world, World.PHASES.ENCOUNTERS);
+            world.difficulty = World.createDifficulty();
+            world.timers.encounter = 0.45;
+            world.timers.postGateSalmon = 1.0;
+            world.effects.push({ x: world.player.x + world.player.width / 2, y: world.player.y - 30, text: '20 SALMON!', life: 1.0 });
+          }
+        }
+
+        function updatePlayer(dt) {
+          const player = world.player;
+          player.invulnerable = Math.max(0, (player.invulnerable || 0) - dt);
+          player.speedBoost = Math.max(0, (player.speedBoost || 0) - dt);
+          player.comboTimer = Math.max(0, (player.comboTimer || 0) - dt);
+          if (player.comboTimer <= 0) player.combo = 0;
+
+          // Jump buffering means a button press a tiny bit early still counts.
+          // Coyote time means a jump a tiny bit after leaving the ground still works.
+          if (input.jumpPressed) {
+            player.jumpBufferTimer = world.tuning.jumpBufferSeconds || 0.11;
+          } else {
+            player.jumpBufferTimer = Math.max(0, (player.jumpBufferTimer || 0) - dt);
+          }
+          player.coyoteTimer = player.grounded
+            ? (world.tuning.coyoteTimeSeconds || 0.09)
+            : Math.max(0, (player.coyoteTimer || 0) - dt);
+
+          const move = (input.right ? 1 : 0) - (input.left ? 1 : 0);
+          const boost = player.speedBoost > 0 ? (world.tuning.playerBoostMultiplier || 1.18) : 1;
+          const speed = (input.slide ? world.tuning.slideSpeed : world.tuning.walkSpeed) * boost;
+          player.duckActive = Boolean(input.slide && player.character === 'daniel' && player.grounded);
+          player.slideActive = Boolean(input.slide && !player.duckActive);
+          const targetVx = move * speed;
+          const accel = player.grounded ? world.tuning.groundAcceleration : world.tuning.airAcceleration;
+          const friction = player.grounded ? world.tuning.groundFriction : world.tuning.airFriction;
+          // approach() moves the player toward the target speed a little each frame.
+          // That makes movement feel smooth instead of instantly snapping to full speed.
+          player.vx = approach(player.vx || 0, targetVx, (move ? accel : friction) * dt);
+          if (move) player.facing = move;
+
+          if ((player.jumpBufferTimer || 0) > 0 && (player.grounded || (player.coyoteTimer || 0) > 0)) {
+            player.vy = -world.tuning.jumpVelocity;
+            player.grounded = false;
+            player.coyoteTimer = 0;
+            player.jumpBufferTimer = 0;
+            input.jump = false;
+          }
+          if (!input.jump && player.vy < 0) {
+            player.vy = Math.max(player.vy, -world.tuning.jumpVelocity * (world.tuning.jumpCutMultiplier || 0.52));
+          }
+          if (input.jumpPressed) input.jumpPressed = false;
+
+          world.timers.projectile = Math.max(0, (world.timers.projectile || 0) - dt);
+          if ((input.stickPressed || input.stick) && world.timers.projectile <= 0) {
+            spawnProjectile();
+            world.timers.projectile = 0.28;
+            input.stick = false;
+          }
+          if (input.stickPressed) input.stickPressed = false;
+
+          player.x = Math.max(22, Math.min(DESIGN_WIDTH - player.width - 22, player.x + player.vx * dt));
+          player.vy += world.tuning.gravity * dt;
+          player.y += player.vy * dt;
+          if (player.y + player.height >= GROUND_Y) {
+            player.y = GROUND_Y - player.height;
+            player.vy = 0;
+            player.grounded = true;
+            player.coyoteTimer = world.tuning.coyoteTimeSeconds || 0.09;
+          }
+          if (!player.grounded) player.duckActive = false;
+        }
+
+        function updateSalmonLoop(dt) {
+          if (world.phase === World.PHASES.COUNTDOWN) return;
+          // Salmon keep falling after the 20-salmon gate, but they slow down a bit
+          // so encounters can share the screen without becoming impossible.
+          const salmonTimerName = world.phase === World.PHASES.SALMON_RUN ? 'salmon' : 'postGateSalmon';
+          world.timers[salmonTimerName] -= dt;
+          if (world.timers[salmonTimerName] <= 0) {
+            spawnHarnessSalmon();
+            const difficulty = world.difficulty || {};
+            const postMin = difficulty.salmonPostGateSpawnMin || 1.3;
+            const postMax = difficulty.salmonPostGateSpawnMax || 2.0;
+            world.timers[salmonTimerName] = world.phase === World.PHASES.SALMON_RUN
+              ? Math.max(0.25, world.tuning.salmonSpawnSeconds + Math.random() * 0.22 - 0.08)
+              : postMin + Math.random() * Math.max(0, postMax - postMin);
+          }
+
+          const playerBox = hitbox(world.player, 10);
+          world.entities.forEach((entity) => {
+            if (!entity || entity.dead || entity.type !== 'salmon') return;
+            entity.age += dt;
+            entity.x += entity.vx * dt;
+            entity.y += entity.vy * dt;
+            entity.vy += world.tuning.salmonFallGravity * dt;
+            if (entity.y >= GROUND_Y - entity.height && !entity.hasLanded) {
+              entity.hasLanded = true;
+              entity.y = GROUND_Y - entity.height;
+              entity.vx *= 0.45;
+              entity.vy = Math.min(entity.vy, 34);
+            }
+
+            if (rectsOverlap(playerBox, hitbox(entity, 4))) collectSalmon(entity);
+            if (entity.y > DESIGN_HEIGHT + 70) entity.dead = true;
+          });
+
+          world.entities = world.entities.filter((entity) => entity && !entity.dead);
+          if (world.phase === World.PHASES.SALMON_RUN) world.message = `Salmon Run: catch ${world.salmonCaught}/${world.salmonTarget}.`;
+        }
+
+        function updateEncounterLoop(dt) {
+          if (world.phase !== World.PHASES.ENCOUNTERS) return;
+          world.timers.encounter -= dt;
+          if (world.timers.encounter > 0) return;
+          spawnNextEncounter();
+          const difficulty = world.difficulty || {};
+          const min = difficulty.currentSpawnMin || 1.8;
+          const max = difficulty.currentSpawnMax || 3.2;
+          world.timers.encounter = min + Math.random() * Math.max(0, max - min);
+        }
+
+        function updateNonSalmonEntities(dt) {
+          const playerBox = hitbox(world.player, 10);
+          world.entities.forEach((entity) => {
+            if (!entity || entity.dead || entity.type === 'salmon' || entity.type === 'projectile') return;
+            entity.age += dt;
+            updateEncounterBehavior(entity, dt);
+            entity.x += (entity.vx || 0) * dt;
+            entity.y += (entity.vy || 0) * dt;
+            if (entity.ttl && entity.age >= entity.ttl) entity.dead = true;
+            if (entity.x < -220 || entity.x > DESIGN_WIDTH + 260) entity.dead = true;
+            maybeApplyCameoBoost(entity);
+            // Non-contact entities can talk or help, but they do not hurt the player.
+            if (entity.duckable && world.player.duckActive) return;
+            if (!entity.nonContact && rectsOverlap(playerBox, hitbox(entity, 8))) {
+              const label = entity.type === 'eagle' ? 'DUCK!' : 'BUMP!';
+              if (world.debug) world.debug.lastCollision = `${entity.type} -> player`;
+              if (world.debug?.godMode) {
+                world.effects.push({
+                  x: world.player.x,
+                  y: world.player.y - 16,
+                  text: 'NOPE!',
+                  life: 0.45,
+                });
+                return;
+              }
+              entity.dead = true;
+              damagePlayer(entity.damage || 10, label, entity.type);
+            }
+          });
+          world.entities = world.entities.filter((entity) => entity && !entity.dead);
+        }
+
+        function updateEncounterBehavior(entity, dt) {
+          if (entity.type === 'moose') {
+            entity.grazeTimer = Math.max(0, (entity.grazeTimer || 0) - dt);
+            if (entity.grazeTimer <= 0 && entity.state !== 'grazing') {
+              entity.state = 'grazing';
+              entity.pauseLeft = 0.5;
+              entity.walkVx = entity.vx || entity.walkVx || -96;
+              entity.vx = 0;
+            }
+            if (entity.state === 'grazing') {
+              entity.pauseLeft = Math.max(0, (entity.pauseLeft || 0) - dt);
+              if (entity.pauseLeft <= 0) {
+                entity.state = 'walking';
+                entity.vx = entity.walkVx || (-96 * (world.difficulty?.speedMultiplier || 1));
+                entity.grazeTimer = 2.3 + Math.random() * 1.7;
+              }
+            }
+          }
+          if (entity.type === 'dad') {
+            entity.mowerOffset = Math.sin(world.elapsed * 8) * 3;
+          }
+        }
+
+        function maybeApplyCameoBoost(entity) {
+          if (!['alaskanBoy', 'alaskanGirl'].includes(entity.type) || entity.boostGiven) return;
+          const player = world.player;
+          const entityCenter = { x: entity.x + entity.width / 2, y: entity.y + entity.height / 2 };
+          const playerCenter = { x: player.x + player.width / 2, y: player.y + player.height / 2 };
+          const dx = entityCenter.x - playerCenter.x;
+          const dy = entityCenter.y - playerCenter.y;
+          const radius = entity.boostRadius || 92;
+          if ((dx * dx) + (dy * dy) > radius * radius) return;
+          entity.boostGiven = true;
+          player.speedBoost = Math.max(player.speedBoost || 0, world.tuning.cameoBoostSeconds || 4.5);
+          world.effects.push({ x: player.x + player.width / 2, y: player.y - 22, text: 'BOOST!', life: 0.8 });
+          if (world.debug) world.debug.lastCollision = `${entity.type} boost`;
+        }
+
+        function addWarning(text, x = DESIGN_WIDTH - 140, y = GROUND_Y - 120) {
+          world.effects.push({ x, y, text, life: 0.75 });
+        }
+
+        function damagePlayer(amount, label, source) {
+          const player = world.player;
+          if (!player || player.invulnerable > 0) return;
+          player.health = Math.max(0, (player.health ?? player.maxHealth ?? 100) - amount);
+          player.invulnerable = 1.05;
+          world.effects.push({
+            x: player.x,
+            y: player.y - 16,
+            text: `${label} -${amount}`,
+            life: 0.7,
+          });
+          if (world.debug) world.debug.lastCollision = `${source || 'hit'} damage ${amount}`;
+        }
+
+        function updateProjectiles(dt) {
+          world.entities.forEach((entity) => {
+            if (!entity || entity.dead || entity.type !== 'projectile') return;
+            entity.age += dt;
+            entity.x += entity.vx * dt;
+            entity.y += entity.vy * dt;
+            if (entity.ttl && entity.age >= entity.ttl) entity.dead = true;
+            if (entity.x < -80 || entity.x > DESIGN_WIDTH + 80) entity.dead = true;
+            collideProjectile(entity);
+          });
+          world.entities = world.entities.filter((entity) => entity && !entity.dead);
+        }
+
+        function collideProjectile(projectile) {
+          const projectileBox = hitbox(projectile, 2);
+          for (const target of world.entities) {
+            if (!target || target.dead || target.type === 'projectile' || target.type === 'salmon') continue;
+            if (!rectsOverlap(projectileBox, hitbox(target, 8))) continue;
+            // Some friendly/funny visitors are dismissed in one shot instead of taking HP damage.
+            if (target.dismissOnProjectile) {
+              projectile.dead = true;
+              target.dead = true;
+              if (world.debug) world.debug.lastCollision = `projectile dismissed ${target.type}`;
+              world.effects.push({ x: target.x + target.width / 2, y: target.y - 10, text: 'BYE!', life: 0.55 });
+              break;
+            }
+            if (target.nonContact) continue;
+            projectile.dead = true;
+            target.hp = Math.max(0, (target.hp || 1) - 1);
+            if (world.debug) world.debug.lastCollision = `projectile -> ${target.type}`;
+            world.effects.push({ x: target.x + target.width / 2, y: target.y - 10, text: 'HIT!', life: 0.45 });
+            if (target.hp <= 0) {
+              target.dead = true;
+              world.effects.push({ x: target.x + target.width / 2, y: target.y - 24, text: 'CLEAR!', life: 0.65 });
+            }
+            break;
+          }
+        }
+
+        function spawnHarnessSalmon() {
+          const salmon = World.createSalmon(world, {
+            x: 36 + Math.random() * (DESIGN_WIDTH - 108),
+            y: -70 - Math.random() * 90,
+            vx: -75 + Math.random() * 150,
+            vy: world.tuning.salmonFallVelocity + Math.random() * world.tuning.salmonFallVelocityRange,
+          });
+          spawnSalmonLandingMarker(salmon);
+          world.entities.push(salmon);
+        }
+
+        function spawnSalmonLandingMarker(salmon) {
+          const landing = predictSalmonLandingX(salmon);
+          const width = 74;
+          world.entities.push(World.createEntity(world, 'salmonMarker', {
+            sprite: 'salmonMarker',
+            x: landing.x - width / 2,
+            y: GROUND_Y - 10,
+            width,
+            height: 10,
+            ttl: Math.min(2.5, Math.max(0.8, landing.time + 0.25)),
+            nonContact: true,
+            landingFor: salmon.id,
+          }));
+        }
+
+        function predictSalmonLandingX(salmon) {
+          // This predicts where a salmon will touch the ground using the same gravity
+          // that moves it. The yellow marker shows the player where to run.
+          const gravity = world.tuning.salmonFallGravity || 275;
+          const targetY = GROUND_Y - salmon.height;
+          const dy = Math.max(0, targetY - salmon.y);
+          const vy = salmon.vy || 0;
+          const discriminant = Math.max(0, (vy * vy) + (2 * gravity * dy));
+          const time = gravity > 0 ? Math.max(0, (-vy + Math.sqrt(discriminant)) / gravity) : 1;
+          const centerX = salmon.x + (salmon.width / 2) + ((salmon.vx || 0) * time);
+          return {
+            x: Math.max(34, Math.min(DESIGN_WIDTH - 34, centerX)),
+            time,
+          };
+        }
+
+        function spawnNextEncounter(options = {}) {
+          const ignoreCaps = Boolean(options.ignoreCaps);
+          let type = null;
+          // We rotate through the encounter list so the game feels varied instead of
+          // rolling pure random encounters that might repeat too much.
+          for (let attempts = 0; attempts < ENCOUNTER_TYPES.length; attempts += 1) {
+            const candidate = ENCOUNTER_TYPES[encounterIndex % ENCOUNTER_TYPES.length];
+            encounterIndex += 1;
+            if (ignoreCaps || canSpawnEncounter(candidate)) {
+              type = candidate;
+              break;
+            }
+          }
+          if (!type) return null;
+          if (type === 'bear') return spawnWildlife('bear');
+          if (type === 'eagle') return spawnEagle();
+          if (type === 'moose') return spawnWildlife('moose');
+          if (type === 'dad') {
+            world.cast.dadSpawned = true;
+            return spawnDad();
+          }
+          if (type === 'mom') {
+            world.cast.momSpawned = true;
+            const mom = World.createMom(world, {
+              x: DESIGN_WIDTH - 128,
+              vx: 0,
+              ttl: 4.2,
+            });
+            world.entities.push(mom);
+            return mom;
+          }
+          if (type === 'castSupport') return spawnCastSupport();
+          return spawnCameo();
+        }
+
+        function canSpawnEncounter(type) {
+          const difficulty = world.difficulty || {};
+          // Spawn caps keep the screen fair: one Mom, one Dad, and a small number
+          // of danger objects at a time.
+          if (type === 'cameo' && world.cast?.cameoSpawned) return false;
+          if (type === 'mom' && world.cast?.momSpawned) return false;
+          if (type === 'mom' && countActiveType('mom') >= 1) return false;
+          if (type === 'dad' && countActiveType('dad') >= 1) return false;
+          if (type === 'castSupport' && world.player.character === 'daniel' && world.cast?.sisterSpawned) return false;
+          if (type === 'castSupport' && world.player.character === 'sofie' && world.cast?.teacherSpawned) return false;
+          if (type === 'castSupport' && world.player.character === 'sofie' && countActiveThreats() >= (difficulty.maxActiveThreats || 1)) return false;
+          if (['bear', 'moose', 'eagle'].includes(type) && countActiveWildlife() >= (difficulty.maxActiveWildlife || 1)) return false;
+          if (['bear', 'moose', 'eagle', 'dad', 'danceInstructor'].includes(type) && countActiveThreats() >= (difficulty.maxActiveThreats || 1)) return false;
+          return true;
+        }
+
+        function countActiveWildlife() {
+          return world.entities.filter((entity) => entity && !entity.dead && ['bear', 'moose', 'eagle'].includes(entity.type)).length;
+        }
+
+        function countActiveThreats() {
+          return world.entities.filter((entity) => (
+            entity
+            && !entity.dead
+            && !entity.nonContact
+            && !['salmon', 'salmonMarker', 'projectile'].includes(entity.type)
+          )).length;
+        }
+
+        function countActiveType(type) {
+          return world.entities.filter((entity) => entity && !entity.dead && entity.type === type).length;
+        }
+
+        function spawnEagle() {
+          const speed = (world.difficulty?.speedMultiplier || 1);
+          const eagle = World.createEntity(world, 'eagle', {
+            sprite: 'eagle',
+            x: DESIGN_WIDTH + 80,
+            y: GROUND_Y - 126,
+            width: 92,
+            height: 58,
+            vx: -245 * speed,
+            hp: 1,
+            maxHp: 1,
+            damage: 10,
+            duckable: true,
+            bubble: '',
+          });
+          world.entities.push(eagle);
+          addWarning('DUCK!', DESIGN_WIDTH - 140, eagle.y - 12);
+          return eagle;
+        }
+
+        function spawnWildlife(type) {
+          const isMoose = type === 'moose';
+          const speed = (world.difficulty?.speedMultiplier || 1);
+          const wildlife = World.createEntity(world, type, {
+            sprite: type,
+            x: DESIGN_WIDTH + 52,
+            y: GROUND_Y - (isMoose ? 92 : 84),
+            width: isMoose ? 112 : 96,
+            height: isMoose ? 92 : 84,
+            vx: (isMoose ? -108 : -150) * speed,
+            hp: isMoose ? 3 : 2,
+            maxHp: isMoose ? 3 : 2,
+            damage: isMoose ? 16 : 12,
+            state: 'walking',
+            grazeTimer: isMoose ? 2.2 + Math.random() * 1.8 : 0,
+            bubble: '',
+          });
+          world.entities.push(wildlife);
+          addWarning(isMoose ? 'MOOSE!' : 'BEAR!', DESIGN_WIDTH - 140, wildlife.y - 12);
+          return wildlife;
+        }
+
+        function spawnDad() {
+          const speed = world.difficulty?.speedMultiplier || 1;
+          const dad = spawnPerson('dad', DAD_JOKES[Math.floor(Math.random() * DAD_JOKES.length)], 2, 10, false);
+          dad.width = 110;
+          dad.height = 98;
+          dad.y = GROUND_Y - dad.height;
+          dad.vx = -78 * speed;
+          dad.ttl = 8;
+          dad.dismissOnProjectile = true;
+          dad.mowerOffset = 0;
+          addWarning('DAD JOKE!', DESIGN_WIDTH - 160, dad.y - 12);
+          return dad;
+        }
+
+        function spawnPerson(type, bubble, hp, damage, nonContact = false) {
+          const speed = (world.difficulty?.speedMultiplier || 1);
+          const person = World.createEntity(world, type, {
+            sprite: type,
+            x: DESIGN_WIDTH + 64,
+            y: GROUND_Y - 100,
+            width: 92,
+            height: 100,
+            vx: (nonContact ? -55 : -92) * speed,
+            hp,
+            maxHp: hp,
+            damage,
+            bubble,
+            nonContact,
+            ttl: nonContact ? 5.2 : null,
+          });
+          world.entities.push(person);
+          return person;
+        }
+
+        function spawnCastSupport() {
+          if (world.player.character === 'sofie') {
+            world.cast.teacherSpawned = true;
+            return spawnPerson('danceInstructor', 'Point those toes!', 3, 7);
+          }
+          world.cast.sisterSpawned = true;
+          const sister = World.createEntity(world, 'sister', {
+            sprite: 'sofie',
+            x: DESIGN_WIDTH + 44,
+            y: GROUND_Y - 108,
+            width: 86,
+            height: 108,
+            vx: -50,
+            ttl: 12,
+            nonContact: true,
+            dismissOnProjectile: true,
+            bubble: 'Go Daniel!',
+          });
+          world.entities.push(sister);
+          return sister;
+        }
+
+        function spawnCameo() {
+          if (world.cast?.cameoSpawned) return null;
+          world.cast.cameoSpawned = true;
+          const cameoType = world.player.character === 'sofie' ? 'alaskanBoy' : 'alaskanGirl';
+          const cameo = World.createCameo(world, cameoType, {
+            x: DESIGN_WIDTH - 156,
+            vx: 0,
+            ttl: 5,
+          });
+          world.entities.push(cameo);
+          return cameo;
+        }
+
+        function spawnProjectile() {
+          const player = world.player;
+          const direction = 1;
+          const isSofie = player.character === 'sofie';
+          const label = isSofie ? 'shoe' : 'puck';
+          const width = isSofie ? 40 : 32;
+          const height = isSofie ? 28 : 24;
+          world.entities.push(World.createEntity(world, 'projectile', {
+            sprite: isSofie ? 'projectileShoe' : 'projectilePuck',
+            label,
+            x: player.x + player.width - 8,
+            y: player.y + (isSofie ? 38 : 42),
+            width,
+            height,
+            vx: 520 * direction,
+            vy: 0,
+            ttl: 0.9,
+            nonContact: true,
+            bubble: '',
+          }));
+        }
+
+        function collectSalmon(entity) {
+          entity.dead = true;
+          world.salmonCaught += 1;
+          const landingY = GROUND_Y - entity.height;
+          const isPerfect = !entity.hasLanded && Math.abs(entity.y - landingY) <= 34;
+          world.player.combo = Math.min(9, (world.player.combo || 0) + 1);
+          world.player.comboTimer = 2.1;
+          const comboBonus = Math.max(0, (world.player.combo - 1) * 3);
+          const points = (isPerfect ? 25 : 10) + comboBonus;
+          world.player.score = (world.player.score || 0) + points;
+          world.effects.push({
+            x: entity.x + entity.width / 2,
+            y: Math.max(40, entity.y - 10),
+            text: isPerfect ? `PERFECT +${points}` : `+${points}`,
+            life: 0.6,
+          });
+          if (world.player.combo >= 3) {
+            world.effects.push({
+              x: entity.x + entity.width / 2,
+              y: Math.max(32, entity.y - 34),
+              text: `COMBO x${world.player.combo}`,
+              life: 0.7,
+            });
+          }
+          if (world.debug) world.debug.lastCollision = 'player -> salmon';
+        }
+
+        function updateEffects(dt) {
+          world.effects.forEach((effect) => {
+            effect.life -= dt;
+            effect.y -= 24 * dt;
+          });
+          world.effects = world.effects.filter((effect) => effect.life > 0);
+        }
+
+        function hitbox(entity, inset) {
+          return {
+            x: entity.x + inset,
+            y: entity.y + inset,
+            width: Math.max(1, entity.width - inset * 2),
+            height: Math.max(1, entity.height - inset * 2),
+          };
+        }
+
+        function rectsOverlap(a, b) {
+          return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
+        }
+
+        function approach(current, target, amount) {
+          if (current < target) return Math.min(target, current + amount);
+          if (current > target) return Math.max(target, current - amount);
+          return target;
+        }
+
+        function updateReadout() {
+          if (!world) return;
+          const threats = world.entities.filter((entity) => entity && !entity.dead && !entity.nonContact && entity.type !== 'salmon' && entity.type !== 'projectile').length;
+          readout.innerHTML = [
+            `<span>phase: <strong>${world.phase}</strong></span>`,
+            `<span>character: <strong>${world.player.character}</strong></span>`,
+            `<span>name: <strong>${world.player.name}</strong></span>`,
+            `<span>player: <strong>${Math.round(world.player.x)}, ${Math.round(world.player.y)}</strong></span>`,
+            `<span>grounded: <strong>${world.player.grounded ? 'yes' : 'no'}</strong></span>`,
+            `<span>health: <strong>${Math.round(world.player.health ?? 0)}/${Math.round(world.player.maxHealth ?? 100)}</strong></span>`,
+            `<span>salmon: <strong>${world.salmonCaught}/${world.salmonTarget}</strong></span>`,
+            `<span>score: <strong>${world.player.score || 0}</strong></span>`,
+            `<span>combo: <strong>x${world.player.combo || 0}</strong></span>`,
+            `<span>entities: <strong>${world.entities.length}</strong></span>`,
+            `<span>active threats: <strong>${threats}</strong></span>`,
+            `<span>message: <strong>${world.message}</strong></span>`,
+          ].join('');
+        }
+
+        function updateHud() {
+          if (!world) return;
+          const combo = world.player.combo > 1 ? ` · x${world.player.combo}` : '';
+          if (hudScore) hudScore.textContent = `Salmon ${world.salmonCaught || 0}/${world.salmonTarget || 0} · ${world.player.score || 0}${combo}`;
+          if (hudPhase) hudPhase.textContent = formatPhase(world.phase);
+          const maxHealth = Math.max(1, world.player.maxHealth || 100);
+          const health = Math.max(0, Math.min(maxHealth, world.player.health ?? maxHealth));
+          const healthPct = health / maxHealth;
+          if (healthLabel) healthLabel.textContent = `HP ${Math.round(health)}`;
+          if (healthFill) {
+            healthFill.style.transform = `scaleX(${healthPct})`;
+            healthFill.classList.toggle('is-low', healthPct <= 0.35);
+          }
+        }
+
+        function formatPhase(phase) {
+          if (phase === World.PHASES.SALMON_RUN) return 'Salmon Run';
+          if (phase === World.PHASES.ENCOUNTERS) return `Level ${world.difficulty?.level || 1}`;
+          if (phase === World.PHASES.GAME_OVER) return 'Game Over';
+          return 'Countdown';
+        }
+
+        function updateDebugPanel() {
+          if (!debugPanel || !world?.debug?.enabled) {
+            if (debugPanel) debugPanel.classList.remove('is-visible');
+            return;
+          }
+          const debug = world.debug;
+          const activeThreats = world.entities.filter((entity) => entity && !entity.dead && !entity.nonContact && !['salmon', 'salmonMarker', 'projectile'].includes(entity.type)).length;
+          const activeWildlife = world.entities.filter((entity) => entity && !entity.dead && ['bear', 'moose', 'eagle'].includes(entity.type)).length;
+          debugPanel.classList.toggle('is-visible', Boolean(debug.visible));
+          debugPanel.textContent = [
+            `FPS ${Math.round(debug.fps || 0)}`,
+            `phase ${world.phase}`,
+            `salmon ${world.salmonCaught}/${world.salmonTarget}`,
+            `entities ${world.entities.length}`,
+            `threats ${activeThreats}`,
+            `wildlife ${activeWildlife}`,
+            `difficulty ${(world.difficulty?.level || 1)}`,
+            `player ${Math.round(world.player.x)},${Math.round(world.player.y)}`,
+            `velocity ${Math.round(world.player.vx)},${Math.round(world.player.vy)}`,
+            `grounded ${world.player.grounded ? 'yes' : 'no'}`,
+            `health ${Math.round(world.player.health ?? 0)}/${Math.round(world.player.maxHealth ?? 100)}`,
+            `projectile ${(world.timers.projectile || 0).toFixed(2)}s`,
+            `hitboxes ${debug.showHitboxes ? 'on' : 'off'}`,
+            `god ${debug.godMode ? 'on' : 'off'}`,
+            `last ${debug.lastCollision || 'none'}`,
+          ].join('\n');
+        }
+
+        function cleanName(value, fallback) {
+          const cleaned = String(value || '')
+            .replace(/[<>]/g, '')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .slice(0, 12);
+          return cleaned || fallback || 'Daniel';
+        }
+
+        function updateSplashHero() {
+          if (!splashHero) return;
+          splashHero.src = selection.character === 'sofie'
+            ? 'assets/hockey-smash/sprites/sofie-dancer-idle.webp'
+            : 'assets/hockey-smash/sprites/daniel-splash.webp';
+          splashHero.alt = `${selection.name} character preview`;
+        }
+
+        function loop(now) {
+          const dt = Math.min(0.05, (now - lastFrame) / 1000 || 0);
+          lastFrame = now;
+          updateHarnessWorld(dt);
+          Renderer.renderWorld(ctx, world, imageCache, {
+            designWidth: DESIGN_WIDTH,
+            designHeight: DESIGN_HEIGHT,
+            debug: Boolean(world?.debug?.enabled && world.debug.visible),
+            showHitboxes: Boolean(world?.debug?.enabled && world.debug.showHitboxes),
+            parallaxLayers: PARALLAX_LAYERS,
+            sunSrc: 'assets/hockey-smash/backgrounds/sun.webp',
+            moonSrc: 'assets/hockey-smash/backgrounds/moon.webp',
+          });
+          updateReadout();
+          updateHud();
+          updateDebugPanel();
+          window.requestAnimationFrame(loop);
+        }
+
+        bindCharacterButtons();
+        bindSplashControls();
+        bindFullscreen();
+        bindKeyboardInput();
+        bindPointerInput();
+        loadVersionBadge();
+        resetWorld('daniel');
+        window.HOCKEY_SMASH_V2_DEV = {
+          getWorld: () => world,
+          spawnSalmon: () => {
+            if (!world) return 0;
+            spawnHarnessSalmon();
+            return world.entities.filter((entity) => entity && entity.type === 'salmonMarker' && !entity.dead).length;
+          },
+          fireProjectile: () => {
+            if (!world) return null;
+            spawnProjectile();
+            return [...world.entities].reverse().find((entity) => entity && entity.type === 'projectile') || null;
+          },
+          spawnEncounter: () => {
+            if (!world) return null;
+            return spawnNextEncounter({ ignoreCaps: true });
+          },
+          spawnPacedEncounter: () => {
+            if (!world) return null;
+            return spawnNextEncounter({ ignoreCaps: false });
+          },
+          spawnCameo: () => {
+            if (!world) return null;
+            return spawnCameo();
+          },
+        };
+        window.requestAnimationFrame(loop);
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="320" viewBox="0 0 1536 320" role="img" aria-labelledby="title desc">
+  <title id="title">hockey-smash-parallax-soldotna-city-nelson-engineering-mid-1536x320.svg</title>
+  <desc id="desc">Pixel-art style Soldotna, Alaska storefront midground layer with a Nelson Engineering business sign. Exact dimensions: 1536 by 320 pixels.</desc>
+  <defs>
+    <linearGradient id="window-blue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7bb3cf"/>
+      <stop offset="1" stop-color="#315d7a"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6d4b39"/>
+      <stop offset="1" stop-color="#3f2d2a"/>
+    </linearGradient>
+    <linearGradient id="roof-snow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eef8ff"/>
+      <stop offset="1" stop-color="#9fbfd7"/>
+    </linearGradient>
+    <pattern id="brick" width="32" height="20" patternUnits="userSpaceOnUse">
+      <rect width="32" height="20" fill="#6f4a40"/>
+      <path d="M0 19 H32 M16 0 V10 M0 10 H32 M0 0 V10 M32 10 V20" stroke="#4a332f" stroke-width="2" opacity="0.42"/>
+    </pattern>
+    <pattern id="siding" width="28" height="18" patternUnits="userSpaceOnUse">
+      <rect width="28" height="18" fill="#57717f"/>
+      <path d="M0 17 H28" stroke="#354d5c" stroke-width="2" opacity="0.45"/>
+    </pattern>
+  </defs>
+
+  <rect width="1536" height="320" fill="none"/>
+
+  <g id="far-trees" opacity="0.82">
+    <path d="M54 206 l24 -70 l24 70 Z" fill="#244b47"/>
+    <path d="M82 208 l18 -55 l21 55 Z" fill="#2f6659"/>
+    <path d="M128 204 l27 -83 l30 83 Z" fill="#27534c"/>
+    <path d="M1315 202 l25 -76 l27 76 Z" fill="#27534c"/>
+    <path d="M1367 205 l22 -63 l24 63 Z" fill="#2f6659"/>
+    <path d="M1443 206 l30 -88 l31 88 Z" fill="#244b47"/>
+  </g>
+
+  <g id="street-posts">
+    <rect x="88" y="109" width="10" height="168" fill="#203946"/>
+    <rect x="84" y="109" width="18" height="8" fill="#365565"/>
+    <rect x="67" y="75" width="54" height="72" fill="#2c5873"/>
+    <rect x="72" y="80" width="44" height="62" fill="#1c3950"/>
+    <path d="M94 88 V135 M78 111 H110 M82 94 L106 128 M106 94 L82 128" stroke="#aac7d9" stroke-width="5" opacity="0.78"/>
+
+    <rect x="861" y="94" width="10" height="183" fill="#203946"/>
+    <rect x="857" y="94" width="18" height="8" fill="#365565"/>
+    <rect x="840" y="60" width="54" height="72" fill="#2c5873"/>
+    <rect x="845" y="65" width="44" height="62" fill="#1c3950"/>
+    <path d="M867 73 V120 M851 96 H883 M855 79 L879 113 M879 79 L855 113" stroke="#aac7d9" stroke-width="5" opacity="0.78"/>
+  </g>
+
+  <g id="storefronts">
+    <g id="kenai-coffee">
+      <rect x="146" y="106" width="230" height="171" fill="url(#brick)"/>
+      <rect x="132" y="91" width="258" height="31" fill="#35475a"/>
+      <path d="M139 87 H384 L372 68 H153 Z" fill="url(#roof-snow)"/>
+      <rect x="169" y="142" width="58" height="62" fill="url(#window-blue)" stroke="#182633" stroke-width="6"/>
+      <rect x="248" y="142" width="58" height="62" fill="url(#window-blue)" stroke="#182633" stroke-width="6"/>
+      <rect x="315" y="211" width="38" height="66" fill="#243646" stroke="#182633" stroke-width="5"/>
+      <rect x="166" y="100" width="190" height="34" rx="2" fill="#172739" stroke="#8ba7b8" stroke-width="4"/>
+      <text x="261" y="123" text-anchor="middle" font-family="monospace" font-size="21" font-weight="800" fill="#eaf6ff">KENAI COFFEE</text>
+      <rect x="156" y="205" width="145" height="12" fill="#b7ccdc"/>
+    </g>
+
+    <g id="nelson-engineering">
+      <rect x="420" y="86" width="344" height="191" fill="#425f6d"/>
+      <rect x="420" y="86" width="344" height="191" fill="url(#siding)" opacity="0.7"/>
+      <rect x="403" y="67" width="378" height="36" fill="#293f51"/>
+      <path d="M411 65 H774 L752 37 H434 Z" fill="url(#roof-snow)"/>
+      <rect x="449" y="130" width="88" height="65" fill="url(#window-blue)" stroke="#172637" stroke-width="7"/>
+      <rect x="558" y="130" width="88" height="65" fill="url(#window-blue)" stroke="#172637" stroke-width="7"/>
+      <rect x="674" y="203" width="54" height="74" fill="#243646" stroke="#172637" stroke-width="6"/>
+      <rect x="436" y="93" width="309" height="50" rx="4" fill="#25394d" stroke="#b6c7d5" stroke-width="6"/>
+      <rect x="446" y="103" width="289" height="30" fill="#385d78"/>
+      <text x="590" y="125" text-anchor="middle" font-family="monospace" font-size="28" font-weight="900" fill="#f4fbff">Nelson Engineering</text>
+      <g stroke="#d7e6ef" stroke-width="4" fill="none" opacity="0.9">
+        <path d="M461 215 H637"/>
+        <path d="M468 229 H611"/>
+        <path d="M481 243 H626"/>
+      </g>
+      <rect x="432" y="197" width="218" height="11" fill="#d8e8f2"/>
+      <rect x="676" y="226" width="10" height="7" fill="#f6d15b"/>
+    </g>
+
+    <g id="hardware">
+      <rect x="802" y="126" width="216" height="151" fill="#6d4b39"/>
+      <rect x="788" y="111" width="244" height="30" fill="#2d4456"/>
+      <path d="M796 109 H1024 L1009 88 H812 Z" fill="url(#roof-snow)"/>
+      <rect x="827" y="160" width="54" height="54" fill="url(#window-blue)" stroke="#172637" stroke-width="6"/>
+      <rect x="903" y="160" width="54" height="54" fill="url(#window-blue)" stroke="#172637" stroke-width="6"/>
+      <rect x="964" y="219" width="34" height="58" fill="#243646" stroke="#172637" stroke-width="5"/>
+      <rect x="821" y="120" width="178" height="32" rx="2" fill="#173049" stroke="#8ba7b8" stroke-width="4"/>
+      <text x="910" y="142" text-anchor="middle" font-family="monospace" font-size="20" font-weight="800" fill="#eaf6ff">RIVER HARDWARE</text>
+    </g>
+
+    <g id="town-sign">
+      <rect x="1083" y="142" width="18" height="135" fill="#6d4a33"/>
+      <rect x="1316" y="142" width="18" height="135" fill="#6d4a33"/>
+      <path d="M1062 133 C1098 93 1158 75 1211 87 C1275 73 1334 97 1360 133 V235 H1062 Z" fill="#204661" stroke="#9db8c8" stroke-width="7"/>
+      <path d="M1115 133 l43 -31 l31 24 l22 -16 l42 31 l25 -18 l42 36" fill="none" stroke="#d7e7f0" stroke-width="6"/>
+      <text x="1211" y="188" text-anchor="middle" font-family="Georgia, serif" font-size="34" font-weight="800" fill="#f2f8ff" textLength="252" lengthAdjust="spacingAndGlyphs">Soldotna, Alaska</text>
+      <text x="1211" y="221" text-anchor="middle" font-family="monospace" font-size="19" font-weight="800" fill="#c7d8e4" textLength="122" lengthAdjust="spacingAndGlyphs">POP. 4,342</text>
+      <path d="M1081 235 H1341" stroke="#86a2b4" stroke-width="5"/>
+    </g>
+  </g>
+
+  <g id="snow-lips">
+    <path d="M126 91 C178 84 233 88 286 91 C330 84 365 86 395 92" fill="none" stroke="#eaf7ff" stroke-width="9" stroke-linecap="round"/>
+    <path d="M414 67 C492 57 579 64 657 66 C706 58 755 60 784 68" fill="none" stroke="#eaf7ff" stroke-width="10" stroke-linecap="round"/>
+    <path d="M790 111 C856 103 927 108 991 110 C1013 105 1029 106 1036 112" fill="none" stroke="#eaf7ff" stroke-width="9" stroke-linecap="round"/>
+  </g>
+
+  <g id="street-details" opacity="0.86">
+    <rect x="56" y="263" width="144" height="14" fill="#6d7d89"/>
+    <rect x="386" y="263" width="392" height="14" fill="#6d7d89"/>
+    <rect x="790" y="263" width="260" height="14" fill="#6d7d89"/>
+    <rect x="1070" y="263" width="280" height="14" fill="#6d7d89"/>
+    <path d="M36 278 H1486" stroke="#465969" stroke-width="5" opacity="0.6"/>
+    <g fill="#9db7c7">
+      <rect x="254" y="249" width="18" height="9"/>
+      <rect x="533" y="252" width="28" height="8"/>
+      <rect x="743" y="248" width="16" height="8"/>
+      <rect x="1390" y="251" width="23" height="8"/>
+    </g>
+  </g>
+
+</svg>

@@ -1,0 +1,16 @@
+{
+  "name": "hockey-smash",
+  "version": "1.3.1",
+  "private": true,
+  "description": "Static Hockey Smash browser game verification helpers.",
+  "scripts": {
+    "verify": "npm run verify:syntax && npm run verify:hockey",
+    "verify:syntax": "sh -c 'set -e; for f in js/games/*.js; do node --check \"$f\"; done; if [ -d scripts ]; then for f in scripts/*.js; do [ -e \"$f\" ] && node --check \"$f\"; done; fi'",
+    "verify:hockey": "node scripts/verify-hockey-smash.js",
+    "test:browser": "playwright test",
+    "test:browser:install": "npx playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0"
+  }
+}

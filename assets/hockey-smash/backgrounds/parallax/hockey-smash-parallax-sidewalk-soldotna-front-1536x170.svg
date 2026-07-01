@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="170" viewBox="0 0 1536 170" role="img" aria-labelledby="title desc">
+  <title id="title">hockey-smash-parallax-sidewalk-soldotna-front-1536x170.svg</title>
+  <desc id="desc">Tileable pixel-art sidewalk and street foreground layer for Hockey Smash. Exact dimensions: 1536 by 170 pixels.</desc>
+  <defs>
+    <linearGradient id="street" x1="0" y1="95" x2="0" y2="170" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4b5967"/>
+      <stop offset="0.45" stop-color="#364555"/>
+      <stop offset="1" stop-color="#253544"/>
+    </linearGradient>
+    <linearGradient id="sidewalk" x1="0" y1="28" x2="0" y2="116" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a7b4c2"/>
+      <stop offset="0.48" stop-color="#8f9daa"/>
+      <stop offset="1" stop-color="#6f7c8b"/>
+    </linearGradient>
+    <pattern id="street-specks" width="96" height="42" patternUnits="userSpaceOnUse">
+      <rect width="96" height="42" fill="none"/>
+      <rect x="12" y="8" width="10" height="3" fill="#5e6e7d" opacity="0.55"/>
+      <rect x="52" y="27" width="18" height="4" fill="#1c2b38" opacity="0.32"/>
+      <rect x="82" y="15" width="5" height="3" fill="#708090" opacity="0.5"/>
+    </pattern>
+    <pattern id="salt" width="48" height="24" patternUnits="userSpaceOnUse">
+      <rect width="48" height="24" fill="none"/>
+      <rect x="7" y="7" width="3" height="3" fill="#d8e6ef" opacity="0.68"/>
+      <rect x="29" y="12" width="5" height="2" fill="#c5d4df" opacity="0.58"/>
+      <rect x="40" y="3" width="2" height="2" fill="#f2fbff" opacity="0.75"/>
+    </pattern>
+  </defs>
+
+  <rect width="1536" height="170" fill="none"/>
+
+  <g id="road">
+    <rect x="0" y="103" width="1536" height="67" fill="url(#street)"/>
+    <rect x="0" y="103" width="1536" height="67" fill="url(#street-specks)" opacity="0.75"/>
+    <rect x="0" y="103" width="1536" height="5" fill="#1a2835" opacity="0.55"/>
+    <path d="M0 143 H1536" stroke="#647686" stroke-width="2" stroke-dasharray="70 86" opacity="0.35"/>
+  </g>
+
+  <g id="curb">
+    <rect x="0" y="91" width="1536" height="16" fill="#5f6d79"/>
+    <rect x="0" y="91" width="1536" height="4" fill="#c1cfdb"/>
+    <rect x="0" y="104" width="1536" height="3" fill="#243544" opacity="0.58"/>
+    <g fill="#465563" opacity="0.78">
+      <rect x="116" y="92" width="3" height="15"/>
+      <rect x="258" y="92" width="3" height="15"/>
+      <rect x="404" y="92" width="3" height="15"/>
+      <rect x="550" y="92" width="3" height="15"/>
+      <rect x="696" y="92" width="3" height="15"/>
+      <rect x="842" y="92" width="3" height="15"/>
+      <rect x="988" y="92" width="3" height="15"/>
+      <rect x="1134" y="92" width="3" height="15"/>
+      <rect x="1280" y="92" width="3" height="15"/>
+      <rect x="1426" y="92" width="3" height="15"/>
+    </g>
+  </g>
+
+  <g id="sidewalk">
+    <rect x="0" y="24" width="1536" height="70" fill="url(#sidewalk)"/>
+    <rect x="0" y="24" width="1536" height="70" fill="url(#salt)" opacity="0.45"/>
+    <rect x="0" y="24" width="1536" height="4" fill="#cbd9e4"/>
+    <rect x="0" y="90" width="1536" height="4" fill="#536270"/>
+    <g stroke="#586776" stroke-width="3" opacity="0.58">
+      <path d="M122 26 V92"/>
+      <path d="M274 26 V92"/>
+      <path d="M426 26 V92"/>
+      <path d="M578 26 V92"/>
+      <path d="M730 26 V92"/>
+      <path d="M882 26 V92"/>
+      <path d="M1034 26 V92"/>
+      <path d="M1186 26 V92"/>
+      <path d="M1338 26 V92"/>
+      <path d="M1490 26 V92"/>
+      <path d="M0 58 H1536"/>
+    </g>
+    <g stroke="#3c4c59" stroke-width="2" fill="none" opacity="0.48">
+      <path d="M53 70 l18 -6 l15 5 l23 -9"/>
+      <path d="M333 44 l14 7 l16 -4 l25 10"/>
+      <path d="M650 73 l23 -8 l18 6 l20 -11"/>
+      <path d="M1009 48 l21 6 l17 -5 l22 8"/>
+      <path d="M1308 72 l19 -7 l25 5 l14 -8"/>
+    </g>
+  </g>
+
+  <g id="snowbank">
+    <path d="M0 25 C34 18 58 19 86 27 C118 11 157 14 193 29 C232 18 274 18 307 30 C349 13 398 13 435 29 C474 17 525 18 566 29 C604 15 652 13 691 29 C728 18 779 17 817 30 C854 13 899 13 942 29 C979 18 1029 18 1068 30 C1108 15 1159 16 1196 29 C1238 18 1286 19 1322 29 C1364 13 1414 14 1451 29 C1484 20 1512 20 1536 25 V42 H0 Z" fill="#d9e9f4"/>
+    <path d="M0 34 C49 29 97 38 139 31 C204 43 257 31 320 36 C393 27 464 42 530 33 C597 43 671 29 736 37 C804 29 877 42 941 34 C1004 42 1077 29 1144 36 C1208 29 1277 41 1340 34 C1406 42 1479 31 1536 36 V51 H0 Z" fill="#b9d0e2"/>
+    <path d="M0 45 C92 42 155 51 234 45 C315 39 380 53 459 45 C542 39 611 53 690 45 C773 39 842 53 921 45 C1004 39 1073 53 1152 45 C1235 39 1304 53 1383 45 C1437 41 1489 43 1536 47 V60 H0 Z" fill="#8eaec6"/>
+    <g fill="#eaf5fb" opacity="0.86">
+      <rect x="79" y="28" width="28" height="4"/>
+      <rect x="361" y="25" width="43" height="5"/>
+      <rect x="688" y="29" width="35" height="4"/>
+      <rect x="1008" y="26" width="48" height="5"/>
+      <rect x="1324" y="29" width="38" height="4"/>
+    </g>
+  </g>
+
+  <g id="grass-peeks" opacity="0.55">
+    <path d="M39 166 l8 -15 l9 15" fill="#244f47"/>
+    <path d="M112 170 l5 -19 l7 19" fill="#2b6658"/>
+    <path d="M716 168 l8 -18 l8 18" fill="#2b6658"/>
+    <path d="M1201 170 l7 -21 l8 21" fill="#244f47"/>
+    <path d="M1468 169 l9 -18 l8 18" fill="#2b6658"/>
+  </g>
+
+</svg>

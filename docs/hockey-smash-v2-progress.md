@@ -1,0 +1,571 @@
+# Hockey Smash v2 Progress Log
+
+This file records the architectural cleanup steps so work can continue in small, reversible chunks.
+
+## Ground Rule
+
+V2 is now the active Hockey Smash path. Keep gameplay in world state and canvas rendering; keep DOM for app UI, controls, and accessible status.
+
+## Completed
+
+### 2026-07-01: v1.3.1 Version and Teaching Comments
+
+Changed:
+- `package.json`
+- `package-lock.json`
+- `/`
+- `README.md`
+- `js/games/hockey-smash-world-v2.js`
+- `js/games/hockey-smash-renderer-v2.js`
+- `scripts/verify-hockey-smash.js`
+- `docs/hockey-smash-v2-progress.md`
+
+Gameplay/documentation impact:
+- Version bumped to `1.3.1`.
+- The in-game badge fallback now matches the package version.
+- README now explains the game loop, world entities, and the main functions in kid-friendly language.
+- Code comments now explain world state, tuning, update order, jump forgiveness, spawn caps, projectile rules, parallax, and the midnight sun.
+
+Verification:
+- `npm run verify`: passed
+
+### 2026-07-01: Encounter Polish Review Pass
+
+Changed:
+- `/`
+- `js/games/hockey-smash-world-v2.js`
+- `js/games/hockey-smash-renderer-v2.js`
+- `assets/hockey-smash/ASSET_MANIFEST.md`
+- `docs/hockey-smash-v2-encounter-polish-plan.md`
+
+Gameplay impact:
+- Active v2 sprite assets now use descriptive kebab-case names for player states, cameos, collectibles, and animation frames.
+- Daniel now fires a generated hockey puck projectile sprite.
+- Sofie now throws a generated dancer shoe projectile sprite.
+- Unused PNG source/sheet assets were removed; PNGs are retained only for active parallax layers.
+- Salmon catches now award points, with a near-ground airborne perfect catch bonus.
+- Consecutive quick salmon catches now build a short combo streak for bonus points and HUD feedback.
+- Alaska kid cameos now grant a short player speed boost when approached.
+- Alaska kid cameos now say `Hi, you're cute` and leave quickly instead of lingering.
+- Dad is now a mower joke encounter with contact damage, a full one-line joke, and a subtle mower-style bob.
+- Dad and Mom are capped to one active entity each, so repeated encounter rolls cannot stack family cameos.
+- Bear now stays in a simple grounded walking state; rise/charge behavior is reserved for future development.
+- Moose now moves slower and occasionally pauses to graze.
+- Bear and moose use available walk-frame sprites in the renderer.
+- Incoming Dad, bear, moose, and eagle encounters now throw short warning callouts before they cross the playfield.
+- Player movement now eases with acceleration/friction, jump buffering, coyote time, and short-hop jump release.
+
+Verification:
+- `npm run verify`: passed
+- `npm run test:browser`: passed
+- manual browser check: covered by automated browser smoke; full hands-on QA not run
+
+Known issues:
+- Dad still needs a dedicated lawn mower asset.
+- Teacher still needs a dedicated asset separate from the dance instructor.
+
+Next:
+- Extract the approved encounter behaviors from the harness into reusable world/system helpers.
+
+### 2026-07-01: v1.3 Health, Cast, and Readability Polish
+
+Changed:
+- `/`
+- `js/games/hockey-smash-world-v2.js`
+- `js/games/hockey-smash-renderer-v2.js`
+- `scripts/verify-hockey-smash.js`
+- `tests/hockey-smash-launch.spec.js`
+- `README.md`
+- `docs/hockey-smash-v1.3-polish-notes.md`
+- `docs/hockey-smash-v2-progress.md`
+
+Gameplay impact:
+- Player health now starts at 100/100 and is shown in the in-frame HUD.
+- Damageable encounters subtract health and trigger a short invulnerability flash.
+- Zero health advances to `gameOver` and shows a retry overlay.
+- Alaska kid cameos are non-contact, spawn once per run, say `Hi, you're cute`, last about 4-5 seconds, and can be dismissed by projectile.
+- Daniel gets a non-contact sister support cameo using the Sofie sprite.
+- Sofie gets a clearer early dance instructor/teacher encounter.
+- Dad appears earlier in the encounter rotation.
+- Canvas rendering now adds subtle entity shadows and hit-point pips for damaged multi-HP targets.
+
+Verification:
+- `npm run verify`: passed
+- `npm run test:browser`: passed
+- manual browser check: not run
+
+Known issues:
+- The sister support cameo reuses Sofie player art until dedicated support art exists.
+
+Next:
+- Add warning markers for wildlife and dedicated audio feedback.
+
+### 2026-07-01: Version Badge and Mobile HUD
+
+Changed:
+- `/`
+- `scripts/verify-hockey-smash.js`
+- `README.md`
+- `docs/hockey-smash-v2-progress.md`
+
+Gameplay impact:
+- The v2 frame now shows a small version badge.
+- The badge reads `package.json` when available and falls back to the current static version.
+- Mobile/fullscreen play now has an in-frame salmon score and phase HUD.
+- Portrait fullscreen keeps the canvas proportional and brings controls into a tighter lower play area.
+- Landscape fullscreen fills the viewport so the playfield is not boxed into the left side.
+
+Verification:
+- `npm run verify`: passed
+- `npm run test:browser`: passed
+- manual browser check: not run
+
+Known issues:
+- none found
+
+Next:
+- Continue with Soldotna parallax asset inventory and final layer wiring.
+
+### 2026-07-01: Stage 1.5 Debug Mode and Quality-of-Life
+
+Changed:
+- `/`
+- `js/games/hockey-smash-world-v2.js`
+- `js/games/hockey-smash-renderer-v2.js`
+- `scripts/verify-hockey-smash.js`
+- `README.md`
+- `docs/hockey-smash-next-polish-plan.md`
+- `docs/hockey-smash-v2-progress.md`
+- `docs/hockey-smash-v2-migration-checklist.md`
+
+Gameplay impact:
+- Debug mode is now opt-in with `?debug=1`.
+- The debug overlay can show FPS, phase, salmon count, entity counts, threat/wildlife counts, player position/velocity, grounded state, projectile cooldown, and last collision.
+- `~`, `H`, and `G` toggle the debug overlay, hitboxes, and god mode only when debug mode is enabled.
+- Keyboard and touch action input now has edge-triggered `jumpPressed` and `stickPressed` flags for cleaner follow-up tuning.
+
+Verification:
+- `npm run verify`: passed
+- `npm run test:browser`: passed
+- manual browser check: covered by automated browser smoke; full hands-on QA not run
+
+Known issues:
+- Browser QA still needs an available local port because `8000` was occupied during the initial audit.
+
+Next:
+- Add centralized difficulty state and use it for encounter pacing.
+
+### 2026-07-01: Stage 2 Centralized Difficulty Controller
+
+Changed:
+- `/`
+- `js/games/hockey-smash-world-v2.js`
+- `scripts/verify-hockey-smash.js`
+- `README.md`
+- `docs/hockey-smash-v2-progress.md`
+- `docs/hockey-smash-v2-migration-checklist.md`
+
+Gameplay impact:
+- Encounter pacing now reads from `world.difficulty` instead of hard-coded harness-only timers.
+- Encounters start with one active threat and one active wildlife limit.
+- Bear, moose, eagle, Dad, and dance instructor speeds use the centralized speed multiplier.
+- Post-gate salmon timing now uses difficulty fields.
+- Difficulty ramps gently only during the encounters phase.
+
+Verification:
+- `npm run verify`: passed
+- `npm run test:browser`: not run
+- manual browser check: not run
+
+Known issues:
+- Port `8000` was occupied during the audit; Playwright used its configured local server successfully.
+
+Next:
+- Continue with Soldotna parallax asset inventory and final layer wiring.
+
+### Step 1: Isolated v2 world scaffold
+
+Added:
+
+```text
+js/games/hockey-smash-world-v2.js
+```
+
+Purpose:
+
+- define the future world shape
+- define phase names
+- define sprite keys
+- define player/entity factories
+- document Mom, salmon, and cameo shapes in code
+
+Status:
+
+```text
+complete, not loaded by index.html
+```
+
+### Step 2: Isolated v2 renderer scaffold
+
+Added:
+
+```text
+js/games/hockey-smash-renderer-v2.js
+```
+
+Purpose:
+
+- render a v2 world object to a canvas context
+- draw background, entities, player, effects, and simple bubbles
+- keep rendering based on explicit world state instead of DOM overlays
+
+Important safety notes:
+
+- does not start its own animation loop
+- does not register input listeners
+- does not append DOM nodes
+- does not patch `window.RTA_HOCKEY_SMASH`
+- is not loaded by `index.html`
+
+Status:
+
+```text
+complete, not loaded by index.html
+```
+
+### Step 3: Isolated v2 dev harness
+
+Added:
+
+```text
+/
+```
+
+Purpose:
+
+- load only the v2 world scaffold and v2 renderer scaffold
+- create a separate canvas that is not the live game canvas
+- preview Daniel/Sofie from v2 state
+- prove v2 can render without current-game patch layers
+
+Important safety notes:
+
+- does not modify `index.html`
+- does not replace the live game
+- does not load current-game patch layers
+- does not use the live `#hockey-canvas`
+
+Status:
+
+```text
+complete, development-only
+```
+
+### Step 4: Basic v2 input adapter in the dev harness
+
+Added inside:
+
+```text
+/
+```
+
+Purpose:
+
+- map keyboard input to a small v2 input object
+- map pointer/touch buttons to the same input object
+- move the v2 player in the dev harness only
+- test Daniel and Sofie as canvas-rendered player sprites
+- align the action names with the live game: `jump`, `slide`, and `stick`
+
+Controls:
+
+```text
+A / Left Arrow  -> left
+D / Right Arrow -> right
+W / Up / Space  -> jump
+S / Shift       -> slide
+F / Enter       -> stick / throw
+```
+
+Important safety notes:
+
+- input listeners are local to the dev harness page
+- no input listener was added to the live game
+- no current-game state is read or patched
+
+Status:
+
+```text
+complete, development-only
+```
+
+### Step 5: V2 salmon update loop inside the isolated harness
+
+Added inside:
+
+```text
+/
+```
+
+Purpose:
+
+- spawn salmon only after the v2 dev countdown reaches `salmonRun`
+- move salmon in canvas world coordinates
+- apply falling acceleration to salmon
+- collect salmon when the v2 player overlaps the salmon hitbox
+- increment `world.salmonCaught` once per collected salmon
+- show salmon count and active entity count in the readout
+- show a `+SALMON` canvas effect on collection
+
+Important safety notes:
+
+- no live game file was touched for salmon behavior
+- no live salmon-run logic was changed
+- no current-game state is read or patched
+- salmon loop exists only in the dev harness page
+
+Status:
+
+```text
+complete, development-only
+```
+
+### Step 6: Prove 20-salmon gate in v2
+
+Added inside:
+
+```text
+/
+```
+
+Purpose:
+
+- keep v2 in `countdown` first
+- enter `salmonRun` after countdown
+- keep encounter spawning locked during the salmon run
+- switch to `encounters` only after `world.salmonCaught >= world.salmonTarget`
+- show a `20 SALMON!` canvas effect when the gate opens
+
+Important safety notes:
+
+- the live stage-flow file was not changed
+- the live salmon-run gate was not changed
+- the v2 gate is development-only
+
+Status:
+
+```text
+complete, development-only
+```
+
+### Step 7: V2 family/cast entity previews
+
+Added inside:
+
+```text
+/
+```
+
+Purpose:
+
+- preview Mom as a timed, non-contact world entity
+- preview Dad as a moving world entity
+- preview dance instructor in Sofie mode
+- render speech bubbles through the v2 canvas renderer
+
+Rules represented:
+
+- Mom is stationary
+- Mom expires by timer
+- Mom is non-contact
+- Mom says `[Name], clean your room!`
+- dance instructor is Sofie-specific in the harness
+
+Status:
+
+```text
+complete, development-only
+```
+
+### Step 8: V2 wildlife previews
+
+Added inside:
+
+```text
+/
+```
+
+Purpose:
+
+- preview bear as a canvas/world entity
+- preview moose as a canvas/world entity
+- give wildlife health values
+- allow v2 stick/throw projectiles to clear wildlife
+- keep wildlife movement in canvas world coordinates
+
+Status:
+
+```text
+complete, development-only
+```
+
+### Step 9: V2 Alaska cameo previews
+
+Added inside:
+
+```text
+/
+```
+
+Purpose:
+
+- preview Alaska boy/girl cameos as canvas/world entities
+- keep cameos non-contact
+- keep cameos timed with a lifetime
+- avoid DOM overlay cameos in v2
+
+Current mapping:
+
+```text
+Daniel mode -> Alaskan girl cameo
+Sofie mode  -> Alaskan boy cameo
+```
+
+This mapping can still be changed before any live integration.
+
+Status:
+
+```text
+complete, development-only
+```
+
+### Step 10: V2 stick/throw projectile preview
+
+Added inside:
+
+```text
+/
+```
+
+Purpose:
+
+- preview a simple projectile as a world entity
+- use `F`, `Enter`, or the Throw / Swing button to fire
+- use canvas/world coordinates for projectile movement
+- fire stick/throw projectiles to the right only
+- collide projectiles with damageable v2 entities
+- clear targets when health reaches zero
+- keep the action name aligned with the live `stick` action
+
+Important safety notes:
+
+- live projectile files were not changed
+- no DOM projectile collision bridge was added
+- projectile preview exists only in the dev harness page
+- projectile art is still a placeholder until dedicated puck/shoe/throw sprites are added
+
+Status:
+
+```text
+complete, development-only
+```
+
+### Step 11: Main v2 game play shell and tuning pass
+
+Updated:
+
+```text
+/
+js/games/hockey-smash-world-v2.js
+```
+
+Purpose:
+
+- add a compact v2 splash/start screen inside the isolated harness play area
+- add v2-only player name input and Daniel/Sofie selection before the world starts
+- move v2 touch controls into the gameplay frame instead of the side panel
+- add a fullscreen toggle for the main v2 game frame
+- make the harness responsive for narrow portrait phones and landscape phones
+- keep the debug readout out of the splash until the game starts
+- slow salmon falling behavior and make player movement more responsive
+- add animated salmon landing markers on the ground so players can move toward falling fish early
+- add parallax-ready background layers, sun/moon sky rendering, and a night-sky filter
+- add placeholder parallax asset files with exact dimensions and filenames embedded in the artwork
+- keep Mom proportional to the tall source sprite instead of stretching her wide
+
+Current v2 tuning:
+
+```text
+walkSpeed: 360
+slideSpeed: 575
+salmonSpawnSeconds: 1.12
+salmonFallVelocity: 235
+salmonFallVelocityRange: 45
+salmonFallGravity: 275
+```
+
+Current Mom preview shape:
+
+```text
+width: 49
+height: 132
+nonContact: true
+stationary/timed: yes
+```
+
+Manual checks performed:
+
+```text
+npm run verify:syntax
+Chromium smoke checks at 320x568, 360x640, 390x844, 844x390, and 1280x900
+```
+
+Important safety notes:
+
+- v2 is now the active gameplay path
+- `index.html` serves the main v2 game page
+- old v1 runtime files have been removed from the active repo
+
+Status:
+
+```text
+complete, development-only
+```
+
+## Current Active Game Impact
+
+V2 is the current playable direction. The root page serves the main game directly, and the old layered v1 runtime has been removed from the active repo.
+
+## Remaining Manual Checks
+
+Before publishing another milestone, verify the main v2 game manually:
+
+- Daniel renders and moves
+- Sofie renders and moves
+- jump works
+- slide changes the player sprite key
+- stick/throw creates a projectile
+- countdown starts first
+- salmon spawn only after countdown
+- salmon collection increments once per salmon
+- 20 salmon opens the encounter phase
+- Mom appears as non-contact and expires
+- Dad appears as a world entity
+- dance instructor appears for Sofie
+- bear and moose appear as world entities
+- projectiles can clear damageable entities
+- cameos are canvas/world entities, not DOM overlays
+
+## Do Not Reintroduce
+
+Do not rebuild these as gameplay DOM overlays:
+
+- player rendering
+- salmon-run controller
+- current countdown
+- current Sofie overlay
+- current Alaska cameo overlay
+- current projectile system
+- current stage-flow file
+
+Those changes should wait until the main v2 game is manually tested and approved.
