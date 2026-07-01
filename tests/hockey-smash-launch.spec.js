@@ -52,12 +52,33 @@ test('v2 start screen applies name, character, controls, and movement', async ({
       walkSpeed: world.tuning.walkSpeed,
       coyoteTimeSeconds: world.tuning.coyoteTimeSeconds,
       jumpBufferSeconds: world.tuning.jumpBufferSeconds,
+      airJumps: world.tuning.airJumps,
     };
   });
   expect(rampState.vx).toBeGreaterThan(0);
   expect(rampState.vx).toBeLessThan(rampState.walkSpeed);
   expect(rampState.coyoteTimeSeconds).toBeGreaterThan(0);
   expect(rampState.jumpBufferSeconds).toBeGreaterThan(0);
+  expect(rampState.airJumps).toBe(1);
+
+  const doubleJumpState = await page.evaluate(() => {
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    world.player.grounded = false;
+    world.player.coyoteTimer = 0;
+    world.player.airJumpsRemaining = 1;
+    world.player.vy = 120;
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    return new Promise((resolve) => {
+      window.requestAnimationFrame(() => {
+        resolve({
+          vy: world.player.vy,
+          airJumpsRemaining: world.player.airJumpsRemaining,
+        });
+      });
+    });
+  });
+  expect(doubleJumpState.vy).toBeLessThan(0);
+  expect(doubleJumpState.airJumpsRemaining).toBe(0);
   await page.waitForTimeout(250);
   await page.keyboard.up('KeyD');
   await page.keyboard.press('KeyF');

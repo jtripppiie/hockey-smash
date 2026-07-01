@@ -72,12 +72,12 @@
     // That makes a flat canvas feel like it has depth.
     renderSkyGradient(ctx, width, height, nightAmount);
     renderStars(ctx, width, height, nightAmount);
-    renderSunMoon(ctx, imageCache, width, height, environment, nightAmount, options);
 
     options.parallaxLayers.forEach((layer) => {
       renderParallaxLayer(ctx, imageCache, layer, width, height, environment);
     });
 
+    renderSunMoon(ctx, imageCache, width, height, environment, nightAmount, options);
     renderNightFilter(ctx, width, height, nightAmount);
   }
 
@@ -117,9 +117,9 @@
     if (environment.midnightSun) {
       // Soldotna has very long summer days, so this mode keeps the sun up
       // and moves it gently across the top of the sky.
-      const sunX = -90 + (width + 180) * progress;
-      const sunY = (height * 0.24) - (Math.sin(progress * Math.PI) * height * 0.12);
-      drawOrb(ctx, sun, sunX, sunY, 84, 0.92, '#ffd75a');
+      const sunX = width * (0.12 + 0.76 * progress);
+      const sunY = (height * 0.16) - (Math.sin(progress * Math.PI) * height * 0.05);
+      drawOrb(ctx, sun, sunX, sunY, 96, 0.96, '#ffd75a');
       return;
     }
     const sunX = width * (0.12 + 0.76 * progress);

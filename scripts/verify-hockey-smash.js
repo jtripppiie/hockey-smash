@@ -114,10 +114,10 @@ requireText('v2 harness', harness, 'data-character="sofie"', 'Sofie selection is
 requireText('v2 harness', harness, 'data-action="stick"', 'Stick action control is missing.');
 requireText('v2 harness', harness, 'id="v2-fullscreen"', 'V2 fullscreen toggle is missing.');
 requireText('v2 harness', harness, 'id="v2-version-badge"', 'V2 version overlay badge is missing.');
-if (packageJson.version !== '1.3.2') errors.push('package.json version should be 1.3.2.');
+if (packageJson.version !== '1.3.3') errors.push('package.json version should be 1.3.3.');
 if (packageLock.version !== packageJson.version) errors.push('package-lock.json root version should match package.json.');
 if (packageLock.packages?.['']?.version !== packageJson.version) errors.push('package-lock package version should match package.json.');
-requireText('v2 harness', harness, "const VERSION_FALLBACK = '1.3.2'", 'V2 version fallback should match package.json.');
+requireText('v2 harness', harness, "const VERSION_FALLBACK = '1.3.3'", 'V2 version fallback should match package.json.');
 requireText('v2 harness', harness, 'loadVersionBadge', 'V2 version badge loader is missing.');
 requireText('v2 harness', harness, 'fetch(\'package.json\'', 'V2 version badge should read package.json when available.');
 requireText('v2 harness', harness, 'id="v2-hud-score"', 'V2 mobile scoring HUD is missing.');
@@ -144,10 +144,11 @@ requireText('v2 harness', harness, 'spawnSalmonLandingMarker', 'V2 salmon landin
 requireText('v2 harness', harness, 'predictSalmonLandingX', 'V2 salmon landing prediction is missing.');
 requireText('v2 harness', harness, 'approach(player.vx', 'V2 player movement should ease toward target velocity.');
 requireText('v2 harness', harness, 'jumpBufferTimer', 'V2 player jump buffer is missing.');
+requireText('v2 harness', harness, 'airJumpsRemaining', 'V2 player double jump state is missing.');
 requireText('v2 harness', harness, 'PARALLAX_LAYERS', 'V2 parallax layer config is missing.');
 requireText('v2 harness', harness, 'hockey-smash-parallax-kenai-mountains-bg-1536x576.svg', 'Editable mountain parallax layer is not wired.');
 requireText('v2 harness', harness, 'hockey-smash-parallax-soldotna-city-nelson-engineering-mid-1536x320.webp', 'Runtime Soldotna city parallax layer is not wired.');
-requireText('v2 harness', harness, 'hockey-smash-parallax-sidewalk-soldotna-front-1536x170.png', 'Editable sidewalk parallax layer is not wired.');
+requireText('v2 harness', harness, 'hockey-smash-parallax-sidewalk-soldotna-front-1536x170.svg', 'Editable sidewalk parallax layer is not wired.');
 requireText('v2 harness', harness, 'mapParallaxLayers', 'V2 parallax preloading should be key-based.');
 requireText('v2 harness', harness, 'updateEnvironment', 'V2 environment update loop is missing.');
 requireText('v2 harness', harness, 'const direction = 1', 'V2 projectiles should fire right only.');
@@ -196,6 +197,7 @@ requireText('v2 world', worldSource, 'salmonPostGateSpawnMin: 1.3', 'V2 post-gat
 requireText('v2 world', worldSource, 'groundAcceleration: 4200', 'V2 player movement acceleration tuning is missing.');
 requireText('v2 world', worldSource, 'jumpBufferSeconds: 0.11', 'V2 jump buffer tuning is missing.');
 requireText('v2 world', worldSource, 'coyoteTimeSeconds: 0.09', 'V2 coyote-time tuning is missing.');
+requireText('v2 world', worldSource, 'airJumps: 1', 'V2 double-jump tuning is missing.');
 requireText('v2 world', worldSource, 'const height = 132', 'Proportional Mom height is missing.');
 requireText('v2 world', worldSource, 'const width = 49', 'Proportional Mom width is missing.');
 requireText('v2 world', worldSource, 'daniel-hockey-idle.webp', 'V2 Daniel sprite name is not descriptive.');
@@ -218,6 +220,7 @@ requireText('v2 renderer', rendererSource, 'renderWorld', 'V2 renderer API is mi
 requireText('v2 renderer', rendererSource, 'renderParallaxBackground', 'V2 parallax renderer is missing.');
 requireText('v2 renderer', rendererSource, 'renderNightFilter', 'V2 night sky filter is missing.');
 requireText('v2 renderer', rendererSource, 'renderSunMoon', 'V2 sun/moon renderer is missing.');
+requireText('v2 renderer', rendererSource, 'drawOrb(ctx, sun, sunX, sunY, 96', 'V2 midnight sun should be visible during early gameplay.');
 requireText('v2 renderer', rendererSource, 'environment.midnightSun', 'V2 renderer should support midnight sun mode.');
 requireText('v2 renderer', rendererSource, 'getEntitySpriteKey', 'V2 animated entity sprite selector is missing.');
 forbidText('v2 renderer', rendererSource, 'eagleTop', 'V2 eagle should render one static image instead of flapping frames.');
@@ -229,6 +232,7 @@ requireText('v2 renderer', rendererSource, 'renderHitboxes', 'V2 debug hitbox re
 requireText('v2 renderer', rendererSource, 'renderShadow', 'V2 readable entity shadow renderer is missing.');
 requireText('v2 renderer', rendererSource, 'renderEntityHealth', 'V2 target health pip renderer is missing.');
 requireText('v2 progress docs', progress, 'Main v2 game play shell and tuning pass', 'V2 progress docs are missing latest main game update.');
+requireText('v2 progress docs', progress, 'v1.3.3 Visible Sun, Street Edge, and Double Jump Polish', 'V2 progress docs are missing v1.3.3 visual/movement polish notes.');
 requireText('v2 progress docs', progress, 'v1.3.2 GitHub Pages Sprite Path Hotfix', 'V2 progress docs are missing v1.3.2 hotfix notes.');
 requireText('v2 progress docs', progress, 'v1.3.1 Version and Teaching Comments', 'V2 progress docs are missing v1.3.1 notes.');
 requireText('v2 progress docs', progress, 'salmon landing markers', 'V2 progress docs are missing salmon marker update.');
@@ -249,7 +253,8 @@ requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-paralla
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-kenai-mountains-bg-1536x576.svg', 'Editable mountain parallax spec is missing.');
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-soldotna-city-nelson-engineering-mid-1536x320.svg', 'Editable Soldotna city parallax spec is missing.');
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-soldotna-city-nelson-engineering-mid-1536x320.webp', 'Runtime Soldotna city parallax spec is missing.');
-requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-sidewalk-soldotna-front-1536x170.png', 'Editable sidewalk parallax spec is missing.');
+requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-sidewalk-soldotna-front-1536x170.svg', 'Editable sidewalk parallax spec is missing.');
+requireText('parallax placeholders', parallaxPlaceholders, 'asphalt edge detail', 'Editable sidewalk parallax spec should mention the street edge detail.');
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-trees-mid-1536x320.svg', 'Mid parallax placeholder spec is missing.');
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-snowbank-front-1536x170.svg', 'Front parallax placeholder spec is missing.');
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-nelson-engineering-sign-1536x320.svg', 'Nelson Engineering parallax sign spec is missing.');

@@ -7,7 +7,7 @@ You pick Daniel or Sofie, type a player name, catch falling salmon, then survive
 Current version:
 
 ```text
-1.3.2
+1.3.3
 ```
 
 ## Quick Start
@@ -56,7 +56,7 @@ On phones and tablets, use the buttons inside the game frame. Projectiles always
 - Fullscreen button.
 - Keyboard and touch controls.
 - Salmon run with animated landing markers.
-- Smoother player movement with acceleration, friction, jump buffering, coyote time, and short-hop jumps.
+- Smoother player movement with acceleration, friction, jump buffering, coyote time, double jump, and short-hop jumps.
 - Catch counter and health bar.
 - Day/night sky with sun and moon.
 - Parallax-style Soldotna background.
@@ -250,6 +250,7 @@ walkSpeed: 360
 slideSpeed: 575
 groundAcceleration: 4200
 airAcceleration: 2500
+airJumps: 1
 salmonSpawnSeconds: 1.12
 salmonFallVelocity: 235
 salmonFallVelocityRange: 45

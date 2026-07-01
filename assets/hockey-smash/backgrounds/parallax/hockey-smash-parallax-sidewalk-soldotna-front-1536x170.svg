@@ -93,12 +93,13 @@
     </g>
   </g>
 
-  <g id="grass-peeks" opacity="0.55">
-    <path d="M39 166 l8 -15 l9 15" fill="#244f47"/>
-    <path d="M112 170 l5 -19 l7 19" fill="#2b6658"/>
-    <path d="M716 168 l8 -18 l8 18" fill="#2b6658"/>
-    <path d="M1201 170 l7 -21 l8 21" fill="#244f47"/>
-    <path d="M1468 169 l9 -18 l8 18" fill="#2b6658"/>
+  <g id="street-edge-detail" opacity="0.55">
+    <rect x="0" y="164" width="1536" height="6" fill="#182936"/>
+    <path d="M42 166 H98" stroke="#314553" stroke-width="3"/>
+    <path d="M318 167 H374" stroke="#314553" stroke-width="3"/>
+    <path d="M690 166 H746" stroke="#314553" stroke-width="3"/>
+    <path d="M1182 167 H1238" stroke="#314553" stroke-width="3"/>
+    <path d="M1454 166 H1510" stroke="#314553" stroke-width="3"/>
   </g>
 
 </svg>

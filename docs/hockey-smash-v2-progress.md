@@ -8,6 +8,34 @@ V2 is now the active Hockey Smash path. Keep gameplay in world state and canvas 
 
 ## Completed
 
+### 2026-07-01: v1.3.3 Visible Sun, Street Edge, and Double Jump Polish
+
+Changed:
+- `/`
+- `js/games/hockey-smash-world-v2.js`
+- `js/games/hockey-smash-renderer-v2.js`
+- `assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-sidewalk-soldotna-front-1536x170.svg`
+- `assets/hockey-smash/ASSET_MANIFEST.md`
+- `assets/hockey-smash/backgrounds/parallax/PLACEHOLDER_ASSETS.md`
+- `package.json`
+- `package-lock.json`
+- `README.md`
+- `scripts/verify-hockey-smash.js`
+- `tests/hockey-smash-launch.spec.js`
+- `docs/hockey-smash-v2-progress.md`
+
+Gameplay/visual impact:
+- Version bumped to `1.3.3`.
+- The midnight sun now renders after the parallax layers so the opaque sky art cannot cover it.
+- The sun starts visible and stays high in the sky during early gameplay.
+- The sidewalk foreground now loads the cleaned SVG layer directly.
+- The green grass-looking strip at the bottom was replaced with darker asphalt/street-edge detail.
+- Player movement now has one air jump so players can double jump over obstacles.
+
+Verification:
+- `npm run verify`: passed
+- `npm run test:browser`: passed
+
 ### 2026-07-01: v1.3.2 GitHub Pages Sprite Path Hotfix
 
 Changed:
