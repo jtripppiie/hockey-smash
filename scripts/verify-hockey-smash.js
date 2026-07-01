@@ -17,16 +17,21 @@ const requiredFiles = [
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-soldotna-storefronts-mid-1536x320.png',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-nelson-engineering-sign-1536x320.svg',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-sidewalk-front-1536x170.png',
+  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-town-foreground-1536x526.png',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-skyline-far-1536x576.svg',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-trees-mid-1536x320.svg',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-snowbank-front-1536x170.svg',
   'assets/hockey-smash/sprites/hockey-player.webp',
   'assets/hockey-smash/sprites/hockey-player-sliding.webp',
+  'assets/hockey-smash/sprites/hockey-player-ducking.webp',
   'assets/hockey-smash/sprites/dancer-player.webp',
   'assets/hockey-smash/sprites/sister-spinning.webp',
   'assets/hockey-smash/sprites/salmon.webp',
-  'assets/hockey-smash/sprites/bear.webp',
-  'assets/hockey-smash/sprites/moose.webp',
+  'assets/hockey-smash/sprites/bear-1.webp',
+  'assets/hockey-smash/sprites/moose-1.webp',
+  'assets/hockey-smash/sprites/eagle_top_flap.webp',
+  'assets/hockey-smash/sprites/eagle_mid_flap.webp',
+  'assets/hockey-smash/sprites/eagle_bottom_flap.webp',
   'assets/hockey-smash/sprites/mom.webp',
   'assets/hockey-smash/sprites/dad.webp',
   'assets/hockey-smash/sprites/dance_instructor.webp',
@@ -94,12 +99,13 @@ requireText('v2 harness', harness, 'spawnSalmonLandingMarker', 'V2 salmon landin
 requireText('v2 harness', harness, 'predictSalmonLandingX', 'V2 salmon landing prediction is missing.');
 requireText('v2 harness', harness, 'PARALLAX_LAYERS', 'V2 parallax layer config is missing.');
 requireText('v2 harness', harness, 'hockey-smash-parallax-mountains-bg-1536x576.png', 'Generated mountain parallax layer is not wired.');
-requireText('v2 harness', harness, 'hockey-smash-parallax-soldotna-storefronts-mid-1536x320.png', 'Generated storefront parallax layer is not wired.');
-requireText('v2 harness', harness, 'hockey-smash-parallax-nelson-engineering-sign-1536x320.svg', 'Nelson Engineering sign layer is not wired.');
-requireText('v2 harness', harness, 'hockey-smash-parallax-sidewalk-front-1536x170.png', 'Generated sidewalk parallax layer is not wired.');
+requireText('v2 harness', harness, 'hockey-smash-parallax-town-foreground-1536x526.png', 'Combined town foreground parallax layer is not wired.');
 requireText('v2 harness', harness, 'mapParallaxLayers', 'V2 parallax preloading should be key-based.');
 requireText('v2 harness', harness, 'updateEnvironment', 'V2 environment update loop is missing.');
 requireText('v2 harness', harness, 'const direction = 1', 'V2 projectiles should fire right only.');
+requireText('v2 harness', harness, 'spawnEagle', 'V2 eagle encounter spawn is missing.');
+requireText('v2 harness', harness, 'player.duckActive', 'V2 Daniel duck state is missing.');
+requireText('v2 harness', harness, 'world.environment.scrollX += (world.player.vx || 0)', 'V2 background scroll should follow player movement.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_V2_DEV', 'V2 dev test hook is missing.');
 requireText('v2 harness', harness, 'fireProjectile', 'V2 projectile dev test hook is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_WORLD_V2', 'V2 world script usage is missing.');
@@ -113,10 +119,14 @@ requireText('v2 world', worldSource, 'salmonFallGravity: 275', 'V2 salmon fall t
 requireText('v2 world', worldSource, 'createEnvironment', 'V2 environment state is missing.');
 requireText('v2 world', worldSource, 'const height = 132', 'Proportional Mom height is missing.');
 requireText('v2 world', worldSource, 'const width = 49', 'Proportional Mom width is missing.');
+requireText('v2 world', worldSource, 'bear-1.webp', 'V2 bear sprite should use the numbered encounter art.');
+requireText('v2 world', worldSource, 'moose-1.webp', 'V2 moose sprite should use the numbered encounter art.');
+requireText('v2 world', worldSource, 'Hi, you\\\'re cute', 'V2 Alaska kid cameo line is stale.');
 requireText('v2 renderer', rendererSource, 'renderWorld', 'V2 renderer API is missing.');
 requireText('v2 renderer', rendererSource, 'renderParallaxBackground', 'V2 parallax renderer is missing.');
 requireText('v2 renderer', rendererSource, 'renderNightFilter', 'V2 night sky filter is missing.');
 requireText('v2 renderer', rendererSource, 'renderSunMoon', 'V2 sun/moon renderer is missing.');
+requireText('v2 renderer', rendererSource, 'getEntitySpriteKey', 'V2 animated entity sprite selector is missing.');
 requireText('v2 renderer', rendererSource, 'renderSalmonMarker', 'V2 salmon landing marker renderer is missing.');
 requireText('v2 renderer', rendererSource, 'ripple', 'V2 animated salmon marker ripple is missing.');
 requireText('v2 progress docs', progress, 'V2 harness play shell and tuning pass', 'V2 progress docs are missing latest harness update.');

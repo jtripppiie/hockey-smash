@@ -19,16 +19,21 @@
   const SPRITES = Object.freeze({
     daniel: 'assets/hockey-smash/sprites/hockey-player.webp',
     danielSlide: 'assets/hockey-smash/sprites/hockey-player-sliding.webp',
+    danielDuck: 'assets/hockey-smash/sprites/hockey-player-ducking.webp',
     sofie: 'assets/hockey-smash/sprites/dancer-player.webp',
     sofieSlide: 'assets/hockey-smash/sprites/sister-spinning.webp',
     salmon: 'assets/hockey-smash/sprites/salmon.webp',
-    bear: 'assets/hockey-smash/sprites/bear.webp',
-    moose: 'assets/hockey-smash/sprites/moose.webp',
+    bear: 'assets/hockey-smash/sprites/bear-1.webp',
+    moose: 'assets/hockey-smash/sprites/moose-1.webp',
     dad: 'assets/hockey-smash/sprites/dad.webp',
     mom: 'assets/hockey-smash/sprites/mom.webp',
     danceInstructor: 'assets/hockey-smash/sprites/dance_instructor.webp',
     alaskanBoy: 'assets/hockey-smash/sprites/alaskan_boy.webp',
     alaskanGirl: 'assets/hockey-smash/sprites/alaskan_girl.webp',
+    eagle: 'assets/hockey-smash/sprites/eagle_mid_flap.webp',
+    eagleTop: 'assets/hockey-smash/sprites/eagle_top_flap.webp',
+    eagleMid: 'assets/hockey-smash/sprites/eagle_mid_flap.webp',
+    eagleBottom: 'assets/hockey-smash/sprites/eagle_bottom_flap.webp',
   });
 
   const DEFAULT_TUNING = Object.freeze({
@@ -98,6 +103,7 @@
       facing: 1,
       grounded: true,
       slideActive: false,
+      duckActive: false,
       safeWindow: 0,
       score: 0,
     };
@@ -162,7 +168,7 @@
       y: GROUND_Y - 92,
       ttl: 6,
       nonContact: true,
-      bubble: safeType === 'alaskanBoy' ? 'Alaska strong!' : 'You got this!',
+      bubble: 'Hi, you\'re cute',
       ...values,
     });
   }
@@ -177,6 +183,7 @@
 
   function getSpriteForEntity(entity) {
     if (!entity) return '';
+    if (entity.type === 'player' && entity.duckActive) return SPRITES.danielDuck || SPRITES.daniel;
     if (entity.type === 'player' && entity.slideActive) return SPRITES[`${entity.character}Slide`] || SPRITES[entity.character];
     return SPRITES[entity.sprite] || SPRITES[entity.type] || '';
   }

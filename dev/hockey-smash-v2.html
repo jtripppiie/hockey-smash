@@ -391,44 +391,26 @@
         const DESIGN_WIDTH = 1024;
         const DESIGN_HEIGHT = 576;
         const GROUND_Y = DESIGN_HEIGHT * 0.82;
-        const ENCOUNTER_TYPES = ['bear', 'moose', 'dad', 'mom', 'danceInstructor', 'cameo'];
+        const ENCOUNTER_TYPES = ['bear', 'eagle', 'moose', 'dad', 'mom', 'danceInstructor', 'cameo'];
         const DEFAULT_NAMES = ['Daniel', 'Sofie'];
         const PARALLAX_LAYERS = [
           {
             key: 'parallaxFar',
             src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-mountains-bg-1536x576.png',
-            width: 1536,
-            height: 576,
+            width: 1024,
+            height: 384,
             y: 0,
             speed: 0.08,
             fallback: 'rgba(49, 73, 90, 0.62)',
           },
           {
-            key: 'parallaxMid',
-            src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-soldotna-storefronts-mid-1536x320.png',
-            width: 1536,
-            height: 320,
-            y: 196,
-            speed: 0.24,
+            key: 'parallaxTown',
+            src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-town-foreground-1536x526.png',
+            width: 1024,
+            height: 351,
+            y: 225,
+            speed: 0.16,
             fallback: 'rgba(31, 91, 83, 0.62)',
-          },
-          {
-            key: 'parallaxNelsonEngineering',
-            src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-nelson-engineering-sign-1536x320.svg',
-            width: 1536,
-            height: 320,
-            y: 196,
-            speed: 0.24,
-            fallback: 'rgba(0, 0, 0, 0)',
-          },
-          {
-            key: 'parallaxFront',
-            src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-sidewalk-front-1536x170.png',
-            width: 1536,
-            height: 170,
-            y: 384,
-            speed: 0.55,
-            fallback: 'rgba(232, 246, 255, 0.82)',
           },
         ];
         const canvas = document.getElementById('v2-canvas');
@@ -614,7 +596,7 @@
         function updateEnvironment(dt) {
           if (!world.environment) return;
           world.environment.clock = (world.environment.clock + dt) % world.environment.cycleSeconds;
-          world.environment.scrollX += world.tuning.walkSpeed * 0.18 * dt * (world.environment.wind || 1);
+          world.environment.scrollX += (world.player.vx || 0) * 0.18 * dt * (world.environment.wind || 1);
         }
 
         function updatePhase(dt) {
@@ -640,7 +622,8 @@
           const player = world.player;
           const move = (input.right ? 1 : 0) - (input.left ? 1 : 0);
           const speed = input.slide ? world.tuning.slideSpeed : world.tuning.walkSpeed;
-          player.slideActive = Boolean(input.slide);
+          player.duckActive = Boolean(input.slide && player.character === 'daniel' && player.grounded);
+          player.slideActive = Boolean(input.slide && !player.duckActive);
           player.vx = move * speed;
           if (move) player.facing = move;
 
@@ -665,6 +648,7 @@
             player.vy = 0;
             player.grounded = true;
           }
+          if (!player.grounded) player.duckActive = false;
         }
 
         function updateSalmonLoop(dt) {
@@ -711,9 +695,15 @@
             entity.y += (entity.vy || 0) * dt;
             if (entity.ttl && entity.age >= entity.ttl) entity.dead = true;
             if (entity.x < -220 || entity.x > DESIGN_WIDTH + 260) entity.dead = true;
+            if (entity.duckable && world.player.duckActive) return;
             if (!entity.nonContact && rectsOverlap(playerBox, hitbox(entity, 8))) {
               entity.dead = true;
-              world.effects.push({ x: world.player.x, y: world.player.y - 16, text: 'BUMP!', life: 0.55 });
+              world.effects.push({
+                x: world.player.x,
+                y: world.player.y - 16,
+                text: entity.type === 'eagle' ? 'DUCK!' : 'BUMP!',
+                life: 0.55,
+              });
             }
           });
           world.entities = world.entities.filter((entity) => entity && !entity.dead);
@@ -792,13 +782,30 @@
           const type = ENCOUNTER_TYPES[encounterIndex % ENCOUNTER_TYPES.length];
           encounterIndex += 1;
           if (type === 'bear') return spawnWildlife('bear');
+          if (type === 'eagle') return spawnEagle();
           if (type === 'moose') return spawnWildlife('moose');
           if (type === 'dad') return spawnPerson('dad', `${world.player.name}, do your homework!`, 4, 6);
           if (type === 'mom') return world.entities.push(World.createMom(world));
           if (type === 'danceInstructor') {
+            if (world.player.character !== 'sofie') return spawnCameo();
             return spawnPerson('danceInstructor', 'Point those toes!', 3, 7);
           }
           return spawnCameo();
+        }
+
+        function spawnEagle() {
+          world.entities.push(World.createEntity(world, 'eagle', {
+            sprite: 'eagle',
+            x: DESIGN_WIDTH + 80,
+            y: GROUND_Y - 126,
+            width: 92,
+            height: 58,
+            vx: -245,
+            hp: 1,
+            damage: 10,
+            duckable: true,
+            bubble: '',
+          }));
         }
 
         function spawnWildlife(type) {
@@ -956,6 +963,11 @@
             if (!world) return null;
             spawnProjectile();
             return [...world.entities].reverse().find((entity) => entity && entity.type === 'projectile') || null;
+          },
+          spawnEncounter: () => {
+            if (!world) return null;
+            spawnNextEncounter();
+            return [...world.entities].reverse().find((entity) => entity && entity.type !== 'salmonMarker') || null;
           },
         };
         window.requestAnimationFrame(loop);

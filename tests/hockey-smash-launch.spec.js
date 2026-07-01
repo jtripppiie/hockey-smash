@@ -142,15 +142,17 @@ test('v2 dry run covers both players and all cast entity types', async ({ page }
         hp: 4,
         bubble: 'Dry run dad',
       }));
-      world.entities.push(World.createEntity(world, 'danceInstructor', {
-        sprite: 'danceInstructor',
-        x: 430,
-        y: groundY - 100,
-        width: 92,
-        height: 100,
-        hp: 3,
-        bubble: 'Dry run dance',
-      }));
+      if (world.player.character === 'sofie') {
+        world.entities.push(World.createEntity(world, 'danceInstructor', {
+          sprite: 'danceInstructor',
+          x: 430,
+          y: groundY - 100,
+          width: 92,
+          height: 100,
+          hp: 3,
+          bubble: 'Dry run dance',
+        }));
+      }
       world.entities.push(World.createEntity(world, 'bear', {
         sprite: 'bear',
         x: 630,
@@ -167,6 +169,15 @@ test('v2 dry run covers both players and all cast entity types', async ({ page }
         height: 92,
         hp: 3,
       }));
+      world.entities.push(World.createEntity(world, 'eagle', {
+        sprite: 'eagle',
+        x: 850,
+        y: groundY - 126,
+        width: 92,
+        height: 58,
+        hp: 1,
+        duckable: true,
+      }));
       world.entities.push(World.createEntity(world, 'projectile', {
         sprite: 'stick',
         x: world.player.x + world.player.width,
@@ -179,6 +190,9 @@ test('v2 dry run covers both players and all cast entity types', async ({ page }
 
       return {
         player: world.player.character,
+        cameoBubbles: world.entities
+          .filter((entity) => entity.type === 'alaskanBoy' || entity.type === 'alaskanGirl')
+          .map((entity) => entity.bubble),
         types: world.entities.map((entity) => entity.type).sort(),
       };
     });
@@ -189,13 +203,19 @@ test('v2 dry run covers both players and all cast entity types', async ({ page }
       'alaskanGirl',
       'bear',
       'dad',
-      'danceInstructor',
+      'eagle',
       'mom',
       'moose',
       'projectile',
       'salmon',
       'salmonMarker',
     ]));
+    if (run.character === 'sofie') {
+      expect(dryRunState.types).toContain('danceInstructor');
+    } else {
+      expect(dryRunState.types).not.toContain('danceInstructor');
+    }
+    expect(dryRunState.cameoBubbles).toEqual(['Hi, you\'re cute', 'Hi, you\'re cute']);
 
     await page.waitForTimeout(250);
     const canvasState = await page.evaluate(() => {
@@ -214,4 +234,51 @@ test('v2 dry run covers both players and all cast entity types', async ({ page }
     expect(canvasState.litPixels).toBeGreaterThan(1000);
     expect(canvasState.readout).toContain(`character: ${run.character}`);
   }
+});
+
+test('v2 encounters gate dance instructor to Sofie and Daniel can duck eagles', async ({ page }) => {
+  await page.goto('/dev/hockey-smash-v2.html');
+  await page.click('#v2-start');
+
+  const danielState = await page.evaluate(() => {
+    const World = window.HOCKEY_SMASH_WORLD_V2;
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    World.advancePhase(world, World.PHASES.ENCOUNTERS);
+    const spawned = [];
+    for (let i = 0; i < 7; i += 1) {
+      const entity = window.HOCKEY_SMASH_V2_DEV.spawnEncounter();
+      if (entity) spawned.push({
+        type: entity.type,
+        bubble: entity.bubble,
+        duckable: Boolean(entity.duckable),
+      });
+    }
+    world.player.grounded = true;
+    world.player.duckActive = true;
+    return {
+      spawned,
+      duckSprite: window.HOCKEY_SMASH_RENDERER_V2.getPlayerSpriteKey(world.player),
+    };
+  });
+  expect(danielState.spawned.map((entity) => entity.type)).toContain('eagle');
+  expect(danielState.spawned.map((entity) => entity.type)).not.toContain('danceInstructor');
+  expect(danielState.spawned.some((entity) => entity.type === 'eagle' && entity.duckable)).toBe(true);
+  expect(danielState.spawned.some((entity) => entity.bubble === 'Hi, you\'re cute')).toBe(true);
+  expect(danielState.duckSprite).toBe('danielDuck');
+
+  await page.goto('/dev/hockey-smash-v2.html');
+  await page.click('[data-character="sofie"]');
+  await page.click('#v2-start');
+  const sofieTypes = await page.evaluate(() => {
+    const World = window.HOCKEY_SMASH_WORLD_V2;
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    World.advancePhase(world, World.PHASES.ENCOUNTERS);
+    const spawned = [];
+    for (let i = 0; i < 7; i += 1) {
+      const entity = window.HOCKEY_SMASH_V2_DEV.spawnEncounter();
+      if (entity) spawned.push(entity.type);
+    }
+    return spawned;
+  });
+  expect(sofieTypes).toContain('danceInstructor');
 });

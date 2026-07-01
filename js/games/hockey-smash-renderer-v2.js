@@ -168,7 +168,7 @@
         renderSalmonMarker(ctx, entity);
         return;
       }
-      drawSpriteOrPlaceholder(ctx, imageCache, entity.sprite || entity.type, entity, entity.type || 'ENTITY');
+      drawSpriteOrPlaceholder(ctx, imageCache, getEntitySpriteKey(entity), entity, entity.type || 'ENTITY');
       if (entity.bubble) renderBubble(ctx, entity, entity.bubble);
     });
   }
@@ -256,8 +256,17 @@
   }
 
   function getPlayerSpriteKey(player) {
+    if (player.duckActive) return 'danielDuck';
     if (player.slideActive) return `${player.character}Slide`;
     return player.sprite || player.character || 'daniel';
+  }
+
+  function getEntitySpriteKey(entity) {
+    if (entity?.type === 'eagle') {
+      const frames = ['eagleTop', 'eagleMid', 'eagleBottom', 'eagleMid'];
+      return frames[Math.floor((entity.age || 0) * 12) % frames.length];
+    }
+    return entity?.sprite || entity?.type;
   }
 
   function drawSpriteOrPlaceholder(ctx, imageCache, spriteKey, box, label) {
@@ -398,5 +407,6 @@
     renderEntities,
     renderEffects,
     getPlayerSpriteKey,
+    getEntitySpriteKey,
   });
 })();
