@@ -72,6 +72,21 @@ test('v2 start screen applies name, character, controls, and movement', async ({
   expect(environmentState.clock).toBeGreaterThan(0);
   expect(environmentState.scrollX).toBeGreaterThan(0);
   expect(environmentState.cycleSeconds).toBe(96);
+
+  const projectileState = await page.evaluate(() => {
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    world.player.facing = -1;
+    const projectile = window.HOCKEY_SMASH_V2_DEV.fireProjectile();
+    return {
+      facing: world.player.facing,
+      vx: projectile?.vx || 0,
+      x: projectile?.x || 0,
+      playerRight: world.player.x + world.player.width,
+    };
+  });
+  expect(projectileState.facing).toBe(-1);
+  expect(projectileState.vx).toBeGreaterThan(0);
+  expect(projectileState.x).toBeGreaterThanOrEqual(projectileState.playerRight - 20);
 });
 
 test('v2 mobile splash and controls stay inside the play frame', async ({ page }) => {

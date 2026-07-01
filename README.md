@@ -53,6 +53,8 @@ S / Shift        slide
 F / Enter        stick / throw
 ```
 
+Stick/throw projectiles always fire to the right.
+
 ## Current Tuning
 
 ```text

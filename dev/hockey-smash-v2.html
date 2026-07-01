@@ -832,12 +832,12 @@
 
         function spawnProjectile() {
           const player = world.player;
-          const direction = player.facing || 1;
+          const direction = 1;
           const label = player.character === 'sofie' ? 'throw' : 'stick';
           world.entities.push(World.createEntity(world, 'projectile', {
             sprite: label,
             label,
-            x: direction > 0 ? player.x + player.width - 8 : player.x - 28,
+            x: player.x + player.width - 8,
             y: player.y + 42,
             width: 28,
             height: 18,
@@ -940,6 +940,11 @@
             if (!world) return 0;
             spawnHarnessSalmon();
             return world.entities.filter((entity) => entity && entity.type === 'salmonMarker' && !entity.dead).length;
+          },
+          fireProjectile: () => {
+            if (!world) return null;
+            spawnProjectile();
+            return [...world.entities].reverse().find((entity) => entity && entity.type === 'projectile') || null;
           },
         };
         window.requestAnimationFrame(loop);

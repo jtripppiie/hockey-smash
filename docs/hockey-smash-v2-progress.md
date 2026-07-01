@@ -277,6 +277,7 @@ Purpose:
 - preview a simple projectile as a world entity
 - use `F`, `Enter`, or the Throw / Swing button to fire
 - use canvas/world coordinates for projectile movement
+- fire stick/throw projectiles to the right only
 - collide projectiles with damageable v2 entities
 - clear targets when health reaches zero
 - keep the action name aligned with the live `stick` action

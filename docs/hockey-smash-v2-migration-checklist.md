@@ -227,6 +227,7 @@ Implemented:
 - the input action is `stick`, matching the active v2 action name
 - UI labels it as Throw / Swing so Daniel and Sofie both make sense
 - projectile position is in canvas world units
+- projectiles fire to the right only
 - projectile target checks use world hitboxes
 - collision results are deterministic inside the dev harness
 - live projectile files are untouched

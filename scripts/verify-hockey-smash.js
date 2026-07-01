@@ -90,7 +90,9 @@ requireText('v2 harness', harness, 'spawnSalmonLandingMarker', 'V2 salmon landin
 requireText('v2 harness', harness, 'predictSalmonLandingX', 'V2 salmon landing prediction is missing.');
 requireText('v2 harness', harness, 'PARALLAX_LAYERS', 'V2 parallax layer config is missing.');
 requireText('v2 harness', harness, 'updateEnvironment', 'V2 environment update loop is missing.');
+requireText('v2 harness', harness, 'const direction = 1', 'V2 projectiles should fire right only.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_V2_DEV', 'V2 dev test hook is missing.');
+requireText('v2 harness', harness, 'fireProjectile', 'V2 projectile dev test hook is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_WORLD_V2', 'V2 world script usage is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_RENDERER_V2', 'V2 renderer script usage is missing.');
 requireText('v2 world', worldSource, 'salmonSpawnSeconds: 1.12', 'V2 salmon spawn tuning is missing.');
