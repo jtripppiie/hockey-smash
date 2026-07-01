@@ -233,6 +233,55 @@ Implemented:
 - live projectile files are untouched
 - projectile art is still placeholder until dedicated puck/shoe/throw sprites are added
 
+### 11. Add v2 harness splash, mobile layout, fullscreen, and tuning
+
+Done in:
+
+```text
+dev/hockey-smash-v2.html
+js/games/hockey-smash-world-v2.js
+```
+
+Implemented:
+
+- compact v2 splash/start screen inside the isolated harness frame
+- v2-only player name input
+- v2-only Daniel/Sofie selection before Start
+- fullscreen toggle for the v2 harness frame
+- touch controls inside the gameplay frame after Start
+- responsive portrait-phone and landscape-phone sizing
+- debug overlay hidden until the harness starts
+- slower salmon fall tuning
+- faster player walk/slide tuning
+- proportional Mom preview dimensions based on the tall Mom sprite
+
+Current tuning values:
+
+```text
+walkSpeed: 330
+slideSpeed: 525
+salmonSpawnSeconds: 1.12
+salmonFallVelocity: 330
+salmonFallVelocityRange: 70
+salmonFallGravity: 440
+```
+
+Current v2 Mom preview:
+
+```text
+width: 49
+height: 132
+nonContact: true
+ttl: 4.8
+```
+
+Validation performed:
+
+```text
+npm run verify:syntax
+Chromium viewport checks: 320x568, 360x640, 390x844, 844x390, 1280x900
+```
+
 ## DOM Overlay Audit Categories
 
 Use this classification when deciding what to keep or move.

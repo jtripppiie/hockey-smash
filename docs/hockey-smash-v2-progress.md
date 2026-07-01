@@ -297,6 +297,65 @@ Status:
 complete, development-only
 ```
 
+### Step 11: V2 harness play shell and tuning pass
+
+Updated:
+
+```text
+dev/hockey-smash-v2.html
+js/games/hockey-smash-world-v2.js
+```
+
+Purpose:
+
+- add a compact v2 splash/start screen inside the isolated harness play area
+- add v2-only player name input and Daniel/Sofie selection before the world starts
+- move v2 touch controls into the gameplay frame instead of the side panel
+- add a fullscreen toggle for the v2 harness frame
+- make the harness responsive for narrow portrait phones and landscape phones
+- keep the debug readout out of the splash until the game starts
+- slow salmon falling behavior and make player movement more responsive
+- keep Mom proportional to the tall source sprite instead of stretching her wide
+
+Current v2 tuning:
+
+```text
+walkSpeed: 330
+slideSpeed: 525
+salmonSpawnSeconds: 1.12
+salmonFallVelocity: 330
+salmonFallVelocityRange: 70
+salmonFallGravity: 440
+```
+
+Current Mom preview shape:
+
+```text
+width: 49
+height: 132
+nonContact: true
+stationary/timed: yes
+```
+
+Manual checks performed:
+
+```text
+npm run verify:syntax
+Chromium smoke checks at 320x568, 360x640, 390x844, 844x390, and 1280x900
+```
+
+Important safety notes:
+
+- v2 remains development-only
+- `index.html` was not changed
+- no live-game movement, salmon, Mom, or control code was changed
+
+Status:
+
+```text
+complete, development-only
+```
+
 ## Current Live Game Impact
 
 None intended.

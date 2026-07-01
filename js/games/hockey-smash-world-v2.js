@@ -35,11 +35,14 @@
   const DEFAULT_TUNING = Object.freeze({
     countdownSeconds: 10,
     gravity: 2250,
-    walkSpeed: 285,
-    slideSpeed: 455,
+    walkSpeed: 330,
+    slideSpeed: 525,
     jumpVelocity: 810,
     safeWindowSeconds: 0.76,
-    salmonSpawnSeconds: 0.72,
+    salmonSpawnSeconds: 1.12,
+    salmonFallVelocity: 330,
+    salmonFallVelocityRange: 70,
+    salmonFallGravity: 440,
     encounterSpawnSeconds: 2.2,
   });
 
@@ -125,12 +128,14 @@
   }
 
   function createMom(world, values = {}) {
+    const height = 132;
+    const width = 49;
     return createEntity(world, 'mom', {
       sprite: 'mom',
       x: 112,
-      y: GROUND_Y - 100,
-      width: 92,
-      height: 100,
+      y: GROUND_Y - height,
+      width,
+      height,
       ttl: 4.8,
       nonContact: true,
       bubble: `${world.player.name}, clean your room!`,
