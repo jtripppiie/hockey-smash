@@ -4,7 +4,7 @@ This checklist exists so the game can be cleaned up without breaking the current
 
 ## Current Status
 
-The current game is still the live game. The new v2 files are foundation only.
+The current game is still the live game. The new v2 files are foundation and development-preview files only.
 
 Live files still loaded by `index.html` include the existing canvas game and its support layers. The new v2 files are not loaded by the live page and should not affect gameplay.
 
@@ -28,7 +28,7 @@ A safe v2 commit may add:
 - dev-only harness pages
 - notes/checklists
 
-A safe v2 commit should not change:
+A safe v2 commit should not change live behavior:
 
 - current script order
 - current countdown
@@ -119,109 +119,115 @@ A / Left Arrow  -> left
 D / Right Arrow -> right
 W / Up / Space  -> jump
 S / Shift       -> slide
+F / Enter       -> shoot
 ```
-
-## Recommended Migration Order From Here
 
 ### 5. Add v2 salmon loop inside the dev harness
 
-Goal:
+Done in:
 
 ```text
-salmon spawn, fall, collection, and scoring are owned by one v2 path.
+dev/hockey-smash-v2.html
 ```
 
-Acceptance criteria:
+Implemented:
 
 - salmon spawn in the v2 harness only
 - salmon fall in canvas world units
 - player overlaps salmon to collect it
 - collected count increments once per salmon
 - readout shows salmon count
-- no current live-game file is touched
+- live game salmon files are untouched
 
 ### 6. Prove 20-salmon gate in v2
 
-Goal:
+Done in:
 
 ```text
-countdown -> salmonRun -> catch 20 -> encounters unlocked
+dev/hockey-smash-v2.html
 ```
 
-Acceptance criteria:
+Implemented:
 
 - countdown happens first
-- no v2 game-world entities spawn during countdown
+- no v2 encounter entities spawn during countdown
 - salmon-only run starts after countdown
 - encounters unlock only after 20 salmon
 - dev harness readout shows the phase transition
 
 ### 7. Add v2 family/cast entity previews
 
-Goal:
+Done in:
 
 ```text
-Mom, Dad, Daniel/brother, and dance instructor are entities, not overlays.
+dev/hockey-smash-v2.html
 ```
 
-Rules:
+Implemented:
 
 - Mom is stationary
 - Mom appears briefly
 - Mom only says `[Name], clean your room!`
 - Mom is non-contact
-- Dad can have his own rule later
-- dance instructor appears only in Sofie mode unless intentionally changed
-- Daniel/brother helper appears only when explicitly designed
+- Dad appears as a world entity
+- dance instructor appears in Sofie mode
+- brother helper appears as non-contact support
 
 ### 8. Add v2 wildlife previews
 
-Goal:
+Done in:
 
 ```text
-bear and moose movement, rendering, and contact all come from entities.
+dev/hockey-smash-v2.html
 ```
 
-Acceptance criteria:
+Implemented:
 
-- bear enters screen visibly
-- moose enters screen visibly
-- speeds are tuned in one place
-- only one big animal at a time if that remains the rule
+- bear enters screen visibly as a world entity
+- moose enters screen visibly as a world entity
+- speeds are tuned in the harness
+- projectiles can clear damageable wildlife
 - no DOM collision bridge is involved
 
 ### 9. Add v2 cameos as world entities
 
-Goal:
+Done in:
 
 ```text
-Alaska boy/girl cameos are optional world entities, not DOM overlays.
+dev/hockey-smash-v2.html
 ```
 
-Decision needed before final integration:
+Implemented:
 
-- Are cameos allowed during salmon run?
-- Are cameos purely background flavor?
-- Should Daniel mode show Alaskan girl and Sofie mode show Alaskan boy, or should that mapping be reversed?
+- Alaska boy/girl cameos are optional world entities
+- cameos are non-contact
+- cameos expire by lifetime
+- no DOM overlay cameos are used in v2
 
-Until answered, keep cameos outside the salmon-run requirement or clearly mark them as non-gameplay background flavor.
-
-### 10. Migrate projectiles later
-
-Projectiles are higher risk because they affect interaction rules. Do not migrate them first.
-
-Goal:
+Current mapping:
 
 ```text
-projectiles are entities in the same coordinate system as every target.
+Daniel mode -> Alaskan girl cameo
+Sofie mode  -> Alaskan boy cameo
 ```
 
-Acceptance criteria:
+This mapping can still be changed before live integration.
 
-- no `getBoundingClientRect()` collision bridge for gameplay projectiles
+### 10. Add v2 projectile preview
+
+Done in:
+
+```text
+dev/hockey-smash-v2.html
+```
+
+Implemented:
+
+- projectiles are entities in the same coordinate system as every target
 - projectile position is in canvas world units
 - projectile target checks use world hitboxes
-- collision results are deterministic
+- collision results are deterministic inside the dev harness
+- live projectile files are untouched
 
 ## DOM Overlay Audit Categories
 
@@ -264,27 +270,6 @@ No other gameplay file should write:
 - `DISPLAY_VERSION`
 - `DISPLAY_BUILD`
 
-## Branch/Commit Guidance
-
-The user currently prefers direct work on `main`, but this v2 refactor is architectural. Keep commits very small and reversible.
-
-Recommended commit style:
-
-```text
-Add isolated v2 world scaffold
-Document v2 migration checklist
-Add inactive v2 renderer scaffold
-Add v2 smoke harness, not loaded by game
-```
-
-Avoid commits like:
-
-```text
-Rewrite game
-Replace all gameplay
-Fix everything
-```
-
 ## First Real Integration Gate
 
 Before any v2 code is loaded by the real page, verify:
@@ -297,6 +282,20 @@ Before any v2 code is loaded by the real page, verify:
 - Daniel appears if selected
 - version badge is correct
 - no lawnmower Dad appears during salmon run
+- v2 dev harness runs separately
+- v2 Daniel/Sofie movement works
+- v2 salmon gate works
+- v2 family/wildlife/cameo/projectile previews work
+
+## Recommended Next Step
+
+Manual test the dev harness first:
+
+```text
+dev/hockey-smash-v2.html
+```
+
+Do not integrate v2 into the live game until the dev harness behavior is approved.
 
 ## Success Definition
 
