@@ -17,6 +17,16 @@ The game is currently in **playable preview plus starter asset** state:
 
 ## Generated Assets
 
+### V2 Backgrounds
+
+| File | Purpose | Dimensions | Notes |
+|---|---|---:|---|
+| `backgrounds/sun.webp` | Daytime sky orb | art source dimensions | Loaded by v2 renderer. |
+| `backgrounds/moon.webp` | Nighttime sky orb | art source dimensions | Loaded by v2 renderer. |
+| `backgrounds/parallax/hockey-smash-parallax-skyline-far-1536x576.svg` | Far parallax skyline placeholder | 1536x576 | Filename and dimensions are visible in the SVG. |
+| `backgrounds/parallax/hockey-smash-parallax-trees-mid-1536x320.svg` | Mid parallax trees placeholder | 1536x320 | Filename and dimensions are visible in the SVG. |
+| `backgrounds/parallax/hockey-smash-parallax-snowbank-front-1536x170.svg` | Front parallax snowbank placeholder | 1536x170 | Filename and dimensions are visible in the SVG. |
+
 ### Sprites
 
 | File | Purpose | Dimensions | Notes |

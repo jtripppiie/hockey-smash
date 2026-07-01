@@ -59,6 +59,19 @@ test('v2 start screen applies name, character, controls, and movement', async ({
   expect(markerState.markerCount).toBeGreaterThan(0);
   expect(markerState.nonContact).toBe(true);
   expect(markerState.y).toBeGreaterThan(450);
+
+  await page.waitForTimeout(300);
+  const environmentState = await page.evaluate(() => {
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    return {
+      clock: world.environment.clock,
+      scrollX: world.environment.scrollX,
+      cycleSeconds: world.environment.cycleSeconds,
+    };
+  });
+  expect(environmentState.clock).toBeGreaterThan(0);
+  expect(environmentState.scrollX).toBeGreaterThan(0);
+  expect(environmentState.cycleSeconds).toBe(96);
 });
 
 test('v2 mobile splash and controls stay inside the play frame', async ({ page }) => {

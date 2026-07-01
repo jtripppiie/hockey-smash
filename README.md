@@ -33,6 +33,8 @@ Implemented now:
 - Daniel/Sofie character selection
 - fullscreen toggle
 - keyboard and touch controls
+- parallax-ready background layers
+- sun/moon day-night cycle with a night-sky filter
 - countdown
 - salmon run
 - ground landing markers for falling salmon
@@ -70,6 +72,24 @@ height: 132
 ```
 
 Bear and moose do not show speech bubbles.
+
+## Background Asset Targets
+
+Placeholder parallax assets live in:
+
+```text
+assets/hockey-smash/backgrounds/parallax/
+```
+
+Current target files:
+
+```text
+hockey-smash-parallax-skyline-far-1536x576.svg
+hockey-smash-parallax-trees-mid-1536x320.svg
+hockey-smash-parallax-snowbank-front-1536x170.svg
+```
+
+Each placeholder includes its exact filename and dimensions inside the SVG.
 
 ## Local Run
 

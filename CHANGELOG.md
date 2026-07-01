@@ -10,6 +10,7 @@
 - Kept v2 gameplay in the world-state/canvas-renderer architecture.
 - Removed bear/moose speech bubbles in v2 because wildlife callouts did not make sense.
 - Added ground landing markers for falling salmon so players can start moving toward the catch point.
+- Added parallax-ready background rendering, placeholder layer assets, sun/moon sky objects, and a night-sky filter.
 - Preserved v2 mobile responsiveness, compact splash, fullscreen toggle, salmon tuning, faster player movement, and proportional Mom sizing.
 
 ## 0.14.4 - Cast QA And Controls

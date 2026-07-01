@@ -253,6 +253,9 @@ Implemented:
 - debug overlay hidden until the harness starts
 - slower salmon fall tuning
 - salmon landing markers on the ground before each fish lands
+- parallax-ready background layer config
+- sun/moon sky rendering with a night-sky filter
+- placeholder parallax asset files with exact filenames and dimensions
 - faster player walk/slide tuning
 - proportional Mom preview dimensions based on the tall Mom sprite
 
@@ -332,6 +335,7 @@ Before publishing another milestone, verify:
 - countdown appears
 - salmon fall after countdown
 - salmon landing markers appear on the ground
+- sun/moon and parallax background render behind gameplay
 - 20 salmon unlocks encounters
 - Sofie appears if selected
 - Daniel appears if selected

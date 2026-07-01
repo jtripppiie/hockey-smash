@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="576" viewBox="0 0 1536 576" role="img" aria-labelledby="title desc">
+  <title id="title">hockey-smash-parallax-skyline-far-1536x576.svg</title>
+  <desc id="desc">Placeholder parallax far skyline layer, exact dimensions 1536 by 576.</desc>
+  <rect width="1536" height="576" fill="none"/>
+  <path d="M0 360 L88 318 L170 352 L245 286 L334 344 L420 304 L516 356 L620 296 L724 342 L816 318 L920 352 L1024 292 L1126 350 L1234 312 L1335 350 L1430 306 L1536 346 L1536 576 L0 576 Z" fill="#31495a" opacity="0.82"/>
+  <path d="M0 404 C150 382 260 398 392 374 C540 347 640 392 790 365 C950 336 1076 390 1220 366 C1340 346 1440 372 1536 356 L1536 576 L0 576 Z" fill="#263947" opacity="0.92"/>
+  <text x="768" y="72" text-anchor="middle" font-family="system-ui, sans-serif" font-size="34" font-weight="800" fill="#fff8df">hockey-smash-parallax-skyline-far-1536x576.svg</text>
+  <text x="768" y="116" text-anchor="middle" font-family="system-ui, sans-serif" font-size="22" font-weight="700" fill="#fff27a">1536 x 576 | far skyline | speed 0.08</text>
+</svg>

@@ -314,6 +314,8 @@ Purpose:
 - keep the debug readout out of the splash until the game starts
 - slow salmon falling behavior and make player movement more responsive
 - add salmon landing markers on the ground so players can move toward falling fish early
+- add parallax-ready background layers, sun/moon sky rendering, and a night-sky filter
+- add placeholder parallax asset files with exact dimensions and filenames embedded in the artwork
 - keep Mom proportional to the tall source sprite instead of stretching her wide
 
 Current v2 tuning:

@@ -10,6 +10,12 @@ const requiredFiles = [
   'docs/hockey-smash-v2-migration-checklist.md',
   'docs/hockey-smash-v2-progress.md',
   'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1280x720.webp',
+  'assets/hockey-smash/backgrounds/sun.webp',
+  'assets/hockey-smash/backgrounds/moon.webp',
+  'assets/hockey-smash/backgrounds/parallax/PLACEHOLDER_ASSETS.md',
+  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-skyline-far-1536x576.svg',
+  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-trees-mid-1536x320.svg',
+  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-snowbank-front-1536x170.svg',
   'assets/hockey-smash/sprites/hockey-player.webp',
   'assets/hockey-smash/sprites/hockey-player-sliding.webp',
   'assets/hockey-smash/sprites/dancer-player.webp',
@@ -69,6 +75,7 @@ const rendererSource = read('js/games/hockey-smash-renderer-v2.js');
 const progress = read('docs/hockey-smash-v2-progress.md');
 const checklist = read('docs/hockey-smash-v2-migration-checklist.md');
 const architecture = read('docs/hockey-smash-v2-architecture.md');
+const parallaxPlaceholders = read('assets/hockey-smash/backgrounds/parallax/PLACEHOLDER_ASSETS.md');
 
 requireText('index.html', html, 'dev/hockey-smash-v2.html', 'Root page should route to v2.');
 requireText('v2 harness', harness, 'id="v2-canvas"', 'V2 harness canvas is missing.');
@@ -81,6 +88,8 @@ requireText('v2 harness', harness, 'gameStarted', 'V2 harness should gate update
 requireText('v2 harness', harness, 'bubble: \'\'', 'Bear/moose speech bubbles should remain disabled.');
 requireText('v2 harness', harness, 'spawnSalmonLandingMarker', 'V2 salmon landing marker spawn is missing.');
 requireText('v2 harness', harness, 'predictSalmonLandingX', 'V2 salmon landing prediction is missing.');
+requireText('v2 harness', harness, 'PARALLAX_LAYERS', 'V2 parallax layer config is missing.');
+requireText('v2 harness', harness, 'updateEnvironment', 'V2 environment update loop is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_V2_DEV', 'V2 dev test hook is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_WORLD_V2', 'V2 world script usage is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_RENDERER_V2', 'V2 renderer script usage is missing.');
@@ -88,9 +97,13 @@ requireText('v2 world', worldSource, 'salmonSpawnSeconds: 1.12', 'V2 salmon spaw
 requireText('v2 world', worldSource, 'walkSpeed: 330', 'V2 player walk tuning is missing.');
 requireText('v2 world', worldSource, 'slideSpeed: 525', 'V2 player slide tuning is missing.');
 requireText('v2 world', worldSource, 'salmonFallGravity: 440', 'V2 salmon fall tuning is missing.');
+requireText('v2 world', worldSource, 'createEnvironment', 'V2 environment state is missing.');
 requireText('v2 world', worldSource, 'const height = 132', 'Proportional Mom height is missing.');
 requireText('v2 world', worldSource, 'const width = 49', 'Proportional Mom width is missing.');
 requireText('v2 renderer', rendererSource, 'renderWorld', 'V2 renderer API is missing.');
+requireText('v2 renderer', rendererSource, 'renderParallaxBackground', 'V2 parallax renderer is missing.');
+requireText('v2 renderer', rendererSource, 'renderNightFilter', 'V2 night sky filter is missing.');
+requireText('v2 renderer', rendererSource, 'renderSunMoon', 'V2 sun/moon renderer is missing.');
 requireText('v2 renderer', rendererSource, 'renderSalmonMarker', 'V2 salmon landing marker renderer is missing.');
 requireText('v2 progress docs', progress, 'V2 harness play shell and tuning pass', 'V2 progress docs are missing latest harness update.');
 requireText('v2 progress docs', progress, 'salmon landing markers', 'V2 progress docs are missing salmon marker update.');
@@ -98,6 +111,9 @@ requireText('v2 checklist docs', checklist, 'Add v2 harness splash, mobile layou
 requireText('v2 checklist docs', checklist, 'salmon landing markers', 'V2 checklist is missing salmon marker update.');
 requireText('v2 architecture docs', architecture, 'width: 49', 'V2 architecture Mom dimensions are stale.');
 requireText('v2 architecture docs', architecture, 'V2 is now the active Hockey Smash path', 'V2 architecture docs still describe the old isolated-only plan.');
+requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-skyline-far-1536x576.svg', 'Far parallax placeholder spec is missing.');
+requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-trees-mid-1536x320.svg', 'Mid parallax placeholder spec is missing.');
+requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-snowbank-front-1536x170.svg', 'Front parallax placeholder spec is missing.');
 
 const context = { window: {} };
 vm.createContext(context);
@@ -113,6 +129,7 @@ if (!World) {
   if (world.player.name !== 'Jamie') errors.push('V2 world should preserve player name.');
   if (world.player.character !== 'sofie') errors.push('V2 world should preserve selected character.');
   if (world.salmonTarget !== 20) errors.push('V2 salmon target should be 20.');
+  if (!world.environment || world.environment.cycleSeconds !== 96) errors.push('V2 environment cycle state is missing.');
   if (mom.width !== 49 || mom.height !== 132) errors.push('V2 Mom dimensions are not proportional.');
   if (!mom.nonContact) errors.push('V2 Mom should be non-contact.');
   if (salmon.width !== 54 || salmon.height !== 31) errors.push('V2 salmon dimensions changed unexpectedly.');

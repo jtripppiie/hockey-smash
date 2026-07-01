@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="170" viewBox="0 0 1536 170" role="img" aria-labelledby="title desc">
+  <title id="title">hockey-smash-parallax-snowbank-front-1536x170.svg</title>
+  <desc id="desc">Placeholder parallax front snowbank layer, exact dimensions 1536 by 170.</desc>
+  <rect width="1536" height="170" fill="none"/>
+  <path d="M0 80 C160 38 252 98 402 62 C560 24 688 100 842 58 C996 18 1106 96 1260 62 C1380 36 1468 54 1536 38 L1536 170 L0 170 Z" fill="#e8f6ff"/>
+  <path d="M0 120 C126 96 242 130 386 104 C526 78 650 128 790 102 C946 74 1082 132 1228 106 C1346 86 1440 102 1536 82 L1536 170 L0 170 Z" fill="#c7e4ef"/>
+  <text x="768" y="42" text-anchor="middle" font-family="system-ui, sans-serif" font-size="28" font-weight="800" fill="#15202c">hockey-smash-parallax-snowbank-front-1536x170.svg</text>
+  <text x="768" y="74" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="700" fill="#34515d">1536 x 170 | front snowbank | speed 0.55</text>
+</svg>

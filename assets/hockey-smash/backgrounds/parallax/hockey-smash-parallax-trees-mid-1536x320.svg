@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="320" viewBox="0 0 1536 320" role="img" aria-labelledby="title desc">
+  <title id="title">hockey-smash-parallax-trees-mid-1536x320.svg</title>
+  <desc id="desc">Placeholder parallax mid trees layer, exact dimensions 1536 by 320.</desc>
+  <rect width="1536" height="320" fill="none"/>
+  <g fill="#1f5b53">
+    <path d="M0 320 L36 170 L72 320 Z"/>
+    <path d="M54 320 L108 112 L162 320 Z"/>
+    <path d="M142 320 L190 154 L238 320 Z"/>
+    <path d="M226 320 L285 98 L344 320 Z"/>
+    <path d="M336 320 L386 142 L436 320 Z"/>
+    <path d="M424 320 L486 88 L548 320 Z"/>
+    <path d="M540 320 L590 152 L640 320 Z"/>
+    <path d="M632 320 L690 104 L748 320 Z"/>
+    <path d="M736 320 L788 150 L840 320 Z"/>
+    <path d="M830 320 L894 92 L958 320 Z"/>
+    <path d="M948 320 L1002 146 L1056 320 Z"/>
+    <path d="M1048 320 L1112 106 L1176 320 Z"/>
+    <path d="M1168 320 L1222 158 L1276 320 Z"/>
+    <path d="M1264 320 L1328 96 L1392 320 Z"/>
+    <path d="M1384 320 L1442 142 L1500 320 Z"/>
+    <path d="M1480 320 L1532 166 L1584 320 Z"/>
+  </g>
+  <rect y="286" width="1536" height="34" fill="#1b413e"/>
+  <text x="768" y="54" text-anchor="middle" font-family="system-ui, sans-serif" font-size="30" font-weight="800" fill="#fff8df">hockey-smash-parallax-trees-mid-1536x320.svg</text>
+  <text x="768" y="92" text-anchor="middle" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#fff27a">1536 x 320 | mid trees | speed 0.24</text>
+</svg>

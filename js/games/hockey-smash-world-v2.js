@@ -1,8 +1,7 @@
 /*
- * Hockey Smash World v2 scaffold.
+ * Hockey Smash World v2.
  *
- * This file is intentionally not loaded by index.html.
- * It defines the future game-world shape without changing current gameplay.
+ * Defines the active game-world shape without owning DOM, rendering, or input.
  */
 (function () {
   const DESIGN_WIDTH = 1024;
@@ -66,9 +65,20 @@
         salmon: 0,
         encounter: tuning.encounterSpawnSeconds,
       },
+      environment: createEnvironment(options.environment || {}),
       entities: [],
       effects: [],
       message: `Get ready, ${name}!`,
+    };
+  }
+
+  function createEnvironment(options = {}) {
+    return {
+      clock: Number(options.clock || 0),
+      cycleSeconds: Number(options.cycleSeconds || 96),
+      scrollX: Number(options.scrollX || 0),
+      wind: Number(options.wind || 1),
+      nightAmount: typeof options.nightAmount === 'number' ? Number(options.nightAmount) : null,
     };
   }
 
@@ -189,6 +199,7 @@
     SPRITES,
     DEFAULT_TUNING,
     createWorld,
+    createEnvironment,
     createPlayer,
     createEntity,
     createSalmon,

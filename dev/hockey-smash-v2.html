@@ -393,6 +393,35 @@
         const GROUND_Y = DESIGN_HEIGHT * 0.82;
         const ENCOUNTER_TYPES = ['bear', 'moose', 'dad', 'mom', 'danceInstructor', 'brother', 'cameo'];
         const DEFAULT_NAMES = ['Daniel', 'Sofie'];
+        const PARALLAX_LAYERS = [
+          {
+            key: 'parallaxFar',
+            src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-skyline-far-1536x576.svg',
+            width: 1536,
+            height: 576,
+            y: 0,
+            speed: 0.08,
+            fallback: 'rgba(49, 73, 90, 0.62)',
+          },
+          {
+            key: 'parallaxMid',
+            src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-trees-mid-1536x320.svg',
+            width: 1536,
+            height: 320,
+            y: 190,
+            speed: 0.24,
+            fallback: 'rgba(31, 91, 83, 0.62)',
+          },
+          {
+            key: 'parallaxFront',
+            src: '../assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-snowbank-front-1536x170.svg',
+            width: 1536,
+            height: 170,
+            y: 384,
+            speed: 0.55,
+            fallback: 'rgba(232, 246, 255, 0.82)',
+          },
+        ];
         const canvas = document.getElementById('v2-canvas');
         const ctx = canvas.getContext('2d');
         const gameFrame = document.getElementById('v2-game-frame');
@@ -427,7 +456,11 @@
           encounterIndex = 0;
           imageCache = Renderer.createImageCache({
             ...prefixSprites(World.SPRITES),
-            background: '../assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1280x720.webp?v=20260630.84',
+            sun: '../assets/hockey-smash/backgrounds/sun.webp',
+            moon: '../assets/hockey-smash/backgrounds/moon.webp',
+            parallaxFar: PARALLAX_LAYERS[0].src,
+            parallaxMid: PARALLAX_LAYERS[1].src,
+            parallaxFront: PARALLAX_LAYERS[2].src,
           });
           updateCharacterButtons(selection.character);
           updateSplashHero();
@@ -563,7 +596,14 @@
           updateProjectiles(dt);
           updateNonSalmonEntities(dt);
           updateEffects(dt);
+          updateEnvironment(dt);
           world.elapsed += dt;
+        }
+
+        function updateEnvironment(dt) {
+          if (!world.environment) return;
+          world.environment.clock = (world.environment.clock + dt) % world.environment.cycleSeconds;
+          world.environment.scrollX += world.tuning.walkSpeed * 0.18 * dt * (world.environment.wind || 1);
         }
 
         function updatePhase(dt) {
@@ -883,7 +923,9 @@
           updateHarnessWorld(dt);
           Renderer.renderWorld(ctx, world, imageCache, {
             debug: gameStarted,
-            backgroundSrc: '../assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1280x720.webp?v=20260630.84',
+            parallaxLayers: PARALLAX_LAYERS,
+            sunSrc: '../assets/hockey-smash/backgrounds/sun.webp',
+            moonSrc: '../assets/hockey-smash/backgrounds/moon.webp',
           });
           updateReadout();
           window.requestAnimationFrame(loop);

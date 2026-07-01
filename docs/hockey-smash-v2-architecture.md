@@ -59,6 +59,8 @@ Canvas/world state should own:
 - speech bubbles attached to people when they make gameplay/context sense
 - salmon landing markers
 - weather visuals that belong inside the game world
+- parallax background layers
+- sun/moon sky objects and night-sky filter state
 - lifetimes and timers for game-world objects
 - object-to-object overlap checks
 
@@ -217,6 +219,7 @@ The current v2 build is acceptable if:
 - `index.html` routes to `dev/hockey-smash-v2.html`
 - v2 files expose a clear world/state shape
 - player, salmon, encounters, projectiles, and temporary cues render through canvas/world state
+- background depth is rendered with parallax-ready layers and day-night state
 - splash, name input, character picker, fullscreen, touch controls, and HUD remain DOM UI
 - syntax and Hockey Smash verification pass
 - browser smoke tests cover root launch, start flow, and mobile layout
