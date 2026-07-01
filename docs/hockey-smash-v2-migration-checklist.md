@@ -110,6 +110,7 @@ The dev harness:
 - previews Daniel and Sofie as canvas-rendered player sprites
 - maps keyboard and pointer controls to a local v2 input object
 - moves the v2 player in the harness only
+- uses the same gameplay action names as the live controls: `jump`, `slide`, and `stick`
 - does not touch the real game page
 
 Controls:
@@ -119,7 +120,7 @@ A / Left Arrow  -> left
 D / Right Arrow -> right
 W / Up / Space  -> jump
 S / Shift       -> slide
-F / Enter       -> shoot
+F / Enter       -> stick / throw
 ```
 
 ### 5. Add v2 salmon loop inside the dev harness
@@ -186,7 +187,7 @@ Implemented:
 - bear enters screen visibly as a world entity
 - moose enters screen visibly as a world entity
 - speeds are tuned in the harness
-- projectiles can clear damageable wildlife
+- stick/throw projectiles can clear damageable wildlife
 - no DOM collision bridge is involved
 
 ### 9. Add v2 cameos as world entities
@@ -213,7 +214,7 @@ Sofie mode  -> Alaskan boy cameo
 
 This mapping can still be changed before live integration.
 
-### 10. Add v2 projectile preview
+### 10. Add v2 stick/throw projectile preview
 
 Done in:
 
@@ -224,10 +225,13 @@ dev/hockey-smash-v2.html
 Implemented:
 
 - projectiles are entities in the same coordinate system as every target
+- the input action is `stick`, matching the live game action name
+- UI labels it as Throw / Swing so Daniel and Sofie both make sense
 - projectile position is in canvas world units
 - projectile target checks use world hitboxes
 - collision results are deterministic inside the dev harness
 - live projectile files are untouched
+- projectile art is still placeholder until dedicated puck/shoe/throw sprites are added
 
 ## DOM Overlay Audit Categories
 
