@@ -329,18 +329,28 @@
         pointer-events: auto;
       }
       .v2-control {
-        min-width: 3.35rem;
-        min-height: 3.35rem;
+        min-width: 3.6rem;
+        min-height: 3.6rem;
+        width: 3.6rem;
+        height: 3.6rem;
         display: grid;
         place-items: center;
-        padding: 0.55rem;
+        padding: 0;
+        /* Equal-size circles are easy for a thumb to find without looking. */
+        border-radius: 50%;
+        color: #eaf2ff;
         background: rgba(5, 8, 13, 0.74);
         backdrop-filter: blur(8px);
         touch-action: none;
         user-select: none;
       }
+      .v2-control svg {
+        pointer-events: none;
+      }
       .v2-control--stick {
-        min-width: 4.35rem;
+        /* Same circle size as the others so the action cluster reads as a set. */
+        min-width: 3.6rem;
+        width: 3.6rem;
       }
       .v2-control.is-pressed {
         transform: translateY(2px) scale(0.98);
@@ -447,6 +457,8 @@
         .v2-control {
           min-width: 2.85rem;
           min-height: 2.85rem;
+          width: 2.85rem;
+          height: 2.85rem;
         }
       }
       @media (max-width: 850px) and (orientation: portrait) {
@@ -471,6 +483,8 @@
         .dev-game-frame:fullscreen.is-playing .v2-control {
           min-width: clamp(3.15rem, 14vw, 4.7rem);
           min-height: clamp(3.15rem, 14vw, 4.7rem);
+          width: clamp(3.15rem, 14vw, 4.7rem);
+          height: clamp(3.15rem, 14vw, 4.7rem);
         }
       }
       @media (max-width: 850px) and (max-height: 500px) and (orientation: landscape) {
@@ -590,9 +604,26 @@
               <button class="v2-control" type="button" data-action="right" aria-label="Move right">▶</button>
             </div>
             <div class="v2-control-group" aria-label="Action controls">
-              <button class="v2-control" type="button" data-action="jump" aria-label="Jump">J</button>
-              <button class="v2-control" type="button" data-action="slide" aria-label="Slide">S</button>
-              <button class="v2-control v2-control--stick" type="button" data-action="stick" aria-label="Stick or throw">Stick</button>
+              <!-- Icons instead of letters so a player can aim with a thumb and
+                   never has to read. The words stay in aria-label for screen readers. -->
+              <button class="v2-control" type="button" data-action="jump" aria-label="Jump">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <path d="M12 19V5" />
+                  <path d="M5 12l7-7 7 7" />
+                </svg>
+              </button>
+              <button class="v2-control" type="button" data-action="slide" aria-label="Slide">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <path d="M12 5v14" />
+                  <path d="M19 12l-7 7-7-7" />
+                </svg>
+              </button>
+              <button class="v2-control v2-control--stick" type="button" data-action="stick" aria-label="Stick or throw">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                  <path d="M7 3l9 13" />
+                  <ellipse cx="8.5" cy="18.5" rx="4.5" ry="2.2" fill="currentColor" stroke="none" />
+                </svg>
+              </button>
             </div>
           </div>
         </section>
