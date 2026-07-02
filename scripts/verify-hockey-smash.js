@@ -6,6 +6,7 @@ const requiredFiles = [
   'dev/hockey-smash-v2.html',
   'js/games/hockey-smash-world-v2.js',
   'js/games/hockey-smash-renderer-v2.js',
+  'js/games/hockey-smash-systems-v2.js',
   'docs/hockey-smash-v2-architecture.md',
   'docs/hockey-smash-v2-encounter-polish-plan.md',
   'docs/hockey-smash-v2-migration-checklist.md',
@@ -95,6 +96,7 @@ const packageLock = JSON.parse(read('package-lock.json'));
 const harness = html;
 const worldSource = read('js/games/hockey-smash-world-v2.js');
 const rendererSource = read('js/games/hockey-smash-renderer-v2.js');
+const systemsSource = read('js/games/hockey-smash-systems-v2.js');
 const progress = read('docs/hockey-smash-v2-progress.md');
 const checklist = read('docs/hockey-smash-v2-migration-checklist.md');
 const architecture = read('docs/hockey-smash-v2-architecture.md');
@@ -123,9 +125,9 @@ requireText('v2 harness', harness, 'id="v2-health-fill"', 'V2 player health bar 
 requireText('v2 harness', harness, 'id="v2-retry"', 'V2 retry button is missing.');
 requireText('v2 harness', harness, 'updateHud', 'V2 HUD update loop is missing.');
 requireText('v2 harness', harness, 'Salmon ${world.salmonCaught', 'V2 HUD should show salmon score.');
-requireText('v2 harness', harness, 'PERFECT +${points}', 'V2 perfect catch feedback is missing.');
-requireText('v2 harness', harness, 'COMBO x', 'V2 salmon combo feedback is missing.');
-requireText('v2 harness', harness, 'addWarning', 'V2 encounter warning effect helper is missing.');
+requireText('v2 systems', systemsSource, 'PERFECT +${points}', 'V2 perfect catch feedback is missing.');
+requireText('v2 systems', systemsSource, 'COMBO x', 'V2 salmon combo feedback is missing.');
+requireText('v2 systems', systemsSource, 'addWarning', 'V2 encounter warning effect helper is missing.');
 requireText('v2 harness', harness, 'maybeApplyCameoBoost', 'V2 cameo boost proximity handler is missing.');
 requireText('v2 harness', harness, 'updateEncounterBehavior', 'V2 encounter behavior updater is missing.');
 requireText('v2 harness', harness, 'DAD_JOKES', 'V2 Dad joke pool is missing.');
@@ -137,22 +139,22 @@ requireText('v2 harness', harness, 'entity.state = \'grazing\'', 'V2 moose graze
 requireText('v2 harness', harness, 'HP ${Math.round(health)}', 'V2 HUD should show player health.');
 requireText('v2 harness', harness, 'height: 100vh', 'V2 fullscreen landscape should fill the viewport.');
 requireText('v2 harness', harness, 'gameStarted', 'V2 harness should gate updates behind Start.');
-requireText('v2 harness', harness, 'bubble: \'\'', 'Bear/moose speech bubbles should remain disabled.');
-requireText('v2 harness', harness, 'spawnSalmonLandingMarker', 'V2 salmon landing marker spawn is missing.');
-requireText('v2 harness', harness, 'predictSalmonLandingX', 'V2 salmon landing prediction is missing.');
-requireText('v2 harness', harness, 'approach(player.vx', 'V2 player movement should ease toward target velocity.');
-requireText('v2 harness', harness, 'jumpBufferTimer', 'V2 player jump buffer is missing.');
-requireText('v2 harness', harness, 'airJumpsRemaining', 'V2 player double jump state is missing.');
+requireText('v2 systems', systemsSource, 'bubble: \'\'', 'Bear/moose speech bubbles should remain disabled.');
+requireText('v2 systems', systemsSource, 'spawnSalmonLandingMarker', 'V2 salmon landing marker spawn is missing.');
+requireText('v2 systems', systemsSource, 'predictSalmonLandingX', 'V2 salmon landing prediction is missing.');
+requireText('v2 systems', systemsSource, 'approach(player.vx', 'V2 player movement should ease toward target velocity.');
+requireText('v2 systems', systemsSource, 'jumpBufferTimer', 'V2 player jump buffer is missing.');
+requireText('v2 systems', systemsSource, 'airJumpsRemaining', 'V2 player double jump state is missing.');
 requireText('v2 harness', harness, 'PARALLAX_LAYERS', 'V2 parallax layer config is missing.');
 requireText('v2 harness', harness, 'hockey-smash-parallax-kenai-mountains-bg-1536x576.svg', 'Editable mountain parallax layer is not wired.');
 requireText('v2 harness', harness, 'hockey-smash-parallax-soldotna-city-nelson-engineering-mid-1536x320.webp', 'Runtime Soldotna city parallax layer is not wired.');
 requireText('v2 harness', harness, 'hockey-smash-parallax-sidewalk-soldotna-front-1536x170.svg', 'Editable sidewalk parallax layer is not wired.');
 requireText('v2 harness', harness, 'mapParallaxLayers', 'V2 parallax preloading should be key-based.');
 requireText('v2 harness', harness, 'updateEnvironment', 'V2 environment update loop is missing.');
-requireText('v2 harness', harness, 'const direction = 1', 'V2 projectiles should fire right only.');
-requireText('v2 harness', harness, 'projectilePuck', 'V2 Daniel projectile puck sprite is missing.');
-requireText('v2 harness', harness, 'projectileShoe', 'V2 Sofie projectile shoe sprite is missing.');
-requireText('v2 harness', harness, 'spawnEagle', 'V2 eagle encounter spawn is missing.');
+requireText('v2 systems', systemsSource, 'const direction = 1', 'V2 projectiles should fire right only.');
+requireText('v2 systems', systemsSource, 'projectilePuck', 'V2 Daniel projectile puck sprite is missing.');
+requireText('v2 systems', systemsSource, 'projectileShoe', 'V2 Sofie projectile shoe sprite is missing.');
+requireText('v2 systems', systemsSource, 'spawnEagle', 'V2 eagle encounter spawn is missing.');
 requireText('v2 harness', harness, 'player.duckActive', 'V2 Daniel duck state is missing.');
 requireText('v2 harness', harness, 'world.environment.scrollX += (world.player.vx || 0)', 'V2 background scroll should follow player movement.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_V2_DEV', 'V2 dev test hook is missing.');
@@ -163,15 +165,19 @@ requireText('v2 harness', harness, 'showHitboxes', 'V2 debug hitbox toggle is mi
 requireText('v2 harness', harness, 'godMode', 'V2 debug god mode toggle is missing.');
 requireText('v2 harness', harness, 'World.updateDifficulty(world, dt)', 'V2 harness should use centralized difficulty updates.');
 requireText('v2 harness', harness, 'damagePlayer', 'V2 player damage handler is missing.');
-requireText('v2 harness', harness, 'spawnCastSupport', 'V2 cast support spawn helper is missing.');
-requireText('v2 harness', harness, 'Go Daniel!', 'V2 Daniel sister support cameo is missing.');
-requireText('v2 harness', harness, 'Point those toes!', 'V2 Sofie dance teacher encounter is missing.');
-requireText('v2 harness', harness, 'dismissOnProjectile', 'V2 dismissible non-contact entities are missing.');
-requireText('v2 harness', harness, 'canSpawnEncounter', 'V2 encounter pacing should consult spawn caps.');
-requireText('v2 harness', harness, 'countActiveWildlife', 'V2 wildlife cap helper is missing.');
-requireText('v2 harness', harness, 'countActiveThreats', 'V2 active threat cap helper is missing.');
+requireText('v2 systems', systemsSource, 'spawnCastSupport', 'V2 cast support spawn helper is missing.');
+requireText('v2 systems', systemsSource, 'Go Daniel!', 'V2 Daniel sister support cameo is missing.');
+requireText('v2 systems', systemsSource, 'Point those toes!', 'V2 Sofie dance teacher encounter is missing.');
+requireText('v2 systems', systemsSource, 'dismissOnProjectile', 'V2 dismissible non-contact entities are missing.');
+requireText('v2 systems', systemsSource, 'canSpawnEncounter', 'V2 encounter pacing should consult spawn caps.');
+requireText('v2 systems', systemsSource, 'countActiveWildlife', 'V2 wildlife cap helper is missing.');
+requireText('v2 systems', systemsSource, 'countActiveThreats', 'V2 active threat cap helper is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_WORLD_V2', 'V2 world script usage is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_RENDERER_V2', 'V2 renderer script usage is missing.');
+requireText('v2 harness', harness, 'HOCKEY_SMASH_SYSTEMS_V2', 'V2 gameplay systems script usage is missing.');
+requireText('v2 harness', harness, 'hockey-smash-systems-v2.js', 'V2 gameplay systems script include is missing.');
+requireText('v2 harness', harness, 'Systems.updatePlayer(game', 'V2 harness should call the extracted player system.');
+requireText('v2 harness', harness, 'Systems.spawnNextEncounter(game', 'V2 harness should call the extracted encounter spawner.');
 requireText('v2 world', worldSource, 'salmonSpawnSeconds: 1.12', 'V2 salmon spawn tuning is missing.');
 requireText('v2 world', worldSource, 'walkSpeed: 360', 'V2 player walk tuning is missing.');
 requireText('v2 world', worldSource, 'slideSpeed: 575', 'V2 player slide tuning is missing.');
@@ -209,10 +215,10 @@ requireText('v2 world', worldSource, 'Hi, you\\\'re cute', 'V2 Alaska kid cameo 
 requireText('v2 world', worldSource, 'boostGiven: false', 'V2 Alaska kid boost state is missing.');
 requireText('v2 world', worldSource, 'ttl: 5', 'V2 Alaska kid cameos should be five-second pop-in moments.');
 requireText('v2 harness', harness, 'This mower is cutting edge.', 'V2 Dad jokes should be complete jokes.');
-requireText('v2 harness', harness, "spawnPerson('dad', DAD_JOKES[Math.floor(Math.random() * DAD_JOKES.length)], 2, 10, false)", 'V2 Dad mower should have contact damage.');
-requireText('v2 harness', harness, "countActiveType('mom')", 'V2 Mom spawns should be capped to one active Mom.');
-requireText('v2 harness', harness, 'world.cast?.momSpawned', 'V2 paced Mom cameo should not repeat in a run.');
-requireText('v2 harness', harness, "countActiveType('dad')", 'V2 Dad spawns should be capped to one active Dad.');
+requireText('v2 systems', systemsSource, "spawnPerson(game, 'dad', DAD_JOKES[Math.floor(Math.random() * DAD_JOKES.length)], 2, 10, false)", 'V2 Dad mower should have contact damage.');
+requireText('v2 systems', systemsSource, "countActiveType(game, 'mom')", 'V2 Mom spawns should be capped to one active Mom.');
+requireText('v2 systems', systemsSource, 'world.cast?.momSpawned', 'V2 paced Mom cameo should not repeat in a run.');
+requireText('v2 systems', systemsSource, "countActiveType(game, 'dad')", 'V2 Dad spawns should be capped to one active Dad.');
 requireText('v2 harness', harness, 'spawnPacedEncounter', 'V2 paced encounter test hook is missing.');
 requireText('v2 renderer', rendererSource, 'renderWorld', 'V2 renderer API is missing.');
 requireText('v2 renderer', rendererSource, 'renderParallaxBackground', 'V2 parallax renderer is missing.');
