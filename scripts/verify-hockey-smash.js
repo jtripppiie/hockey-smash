@@ -155,7 +155,8 @@ requireText('v2 harness', harness, 'hockey-smash-parallax-soldotna-city-nelson-e
 requireText('v2 harness', harness, 'hockey-smash-parallax-sidewalk-soldotna-front-1536x170.svg', 'Editable sidewalk parallax layer is not wired.');
 requireText('v2 harness', harness, 'mapParallaxLayers', 'V2 parallax preloading should be key-based.');
 requireText('v2 harness', harness, 'updateEnvironment', 'V2 environment update loop is missing.');
-requireText('v2 systems', systemsSource, 'const direction = 1', 'V2 projectiles should fire right only.');
+requireText('v2 systems', systemsSource, 'const direction = 1', 'V2 projectiles should fire right only (deliberate rule: threats come from the right).');
+requireText('v2 renderer', rendererSource, 'renderAimIndicator', 'V2 should show a right-side aim indicator so the always-right throw reads as a rule.');
 requireText('v2 systems', systemsSource, 'projectilePuck', 'V2 Daniel projectile puck sprite is missing.');
 requireText('v2 systems', systemsSource, 'projectileShoe', 'V2 Sofie projectile shoe sprite is missing.');
 requireText('v2 systems', systemsSource, 'spawnEagle', 'V2 eagle encounter spawn is missing.');

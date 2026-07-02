@@ -180,6 +180,32 @@
     if (player.invulnerable > 0 && Math.floor(player.invulnerable * 16) % 2 === 0) ctx.globalAlpha = 0.56;
     drawSpriteOrPlaceholder(ctx, imageCache, spriteKey, player, player.name || player.character || 'PLAYER');
     ctx.restore();
+    renderAimIndicator(ctx, world);
+  }
+
+  function renderAimIndicator(ctx, world) {
+    // Throws always fly to the RIGHT on purpose: threats march in from the right
+    // edge, so you aim at what is coming. This little chevron on the player's
+    // right side makes that rule obvious instead of feeling like a bug.
+    const player = world.player;
+    if (!player) return;
+    if (world.phase !== 'salmonRun' && world.phase !== 'encounters') return;
+    const x = player.x + player.width + 6;
+    const y = player.y + player.height * 0.42;
+    // A gentle pulse so it reads as "ready to throw" without being distracting.
+    const pulse = (Math.sin((world.elapsed || 0) * 6) + 1) / 2;
+    ctx.save();
+    ctx.globalAlpha = 0.45 + pulse * 0.35;
+    ctx.strokeStyle = '#fff27a';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(x, y - 7);
+    ctx.lineTo(x + 8, y);
+    ctx.lineTo(x, y + 7);
+    ctx.stroke();
+    ctx.restore();
   }
 
   function renderEntities(ctx, world, imageCache) {

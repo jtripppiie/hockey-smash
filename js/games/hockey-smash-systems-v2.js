@@ -480,8 +480,14 @@
 
   // ---- Projectiles (Daniel's puck / Sofie's shoe) -------------------------
 
-  // spawnProjectile() throws a puck or shoe from the player. See docs/notes for
-  // why it currently always flies to the right.
+  // spawnProjectile() throws a puck or shoe from the player.
+  //
+  // DESIGN RULE: projectiles always fly to the RIGHT (direction = 1), on purpose.
+  // Every threat marches in from the right edge of the screen, so "throw right"
+  // means "throw at the things that can hurt you". That is why we ignore
+  // player.facing here - facing only flips the character art, not the aim.
+  // The renderer draws a small chevron on the player's right so this reads as a
+  // deliberate rule to the player. (See renderAimIndicator in the renderer.)
   function spawnProjectile(game) {
     const { world, World } = game;
     const player = world.player;
