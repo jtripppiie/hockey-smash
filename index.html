@@ -625,6 +625,13 @@
         const DESIGN_WIDTH = 1024;
         const DESIGN_HEIGHT = 576;
         const GROUND_Y = 518;
+        // Two kinds of encounters:
+        //   repeatable threats keep coming back to keep the player on their toes,
+        //   one-shot visitors are special guests that appear at most once per run.
+        const REPEATABLE_ENCOUNTERS = ['dad', 'bear', 'eagle', 'moose'];
+        const ONESHOT_ENCOUNTERS = ['castSupport', 'mom', 'cameo'];
+        // ENCOUNTER_TYPES is the order the game actually rotates through. It mixes
+        // both pools so the early game feels varied instead of predictable.
         const ENCOUNTER_TYPES = ['dad', 'castSupport', 'bear', 'mom', 'eagle', 'moose', 'cameo'];
         const DEFAULT_NAMES = ['Daniel', 'Sofie'];
         const DAD_JOKES = [
@@ -709,7 +716,7 @@
           input,
           world: null,
           encounterIndex: 0,
-          constants: { DESIGN_WIDTH, DESIGN_HEIGHT, GROUND_Y, ENCOUNTER_TYPES, DAD_JOKES },
+          constants: { DESIGN_WIDTH, DESIGN_HEIGHT, GROUND_Y, ENCOUNTER_TYPES, REPEATABLE_ENCOUNTERS, ONESHOT_ENCOUNTERS, DAD_JOKES },
         };
 
         function normalizeSpritePaths(spriteMap) {
@@ -993,7 +1000,15 @@
           if (world.phase !== World.PHASES.ENCOUNTERS) return;
           world.timers.encounter -= dt;
           if (world.timers.encounter > 0) return;
-          Systems.spawnNextEncounter(game);
+          const spawned = Systems.spawnNextEncounter(game);
+          if (!spawned) {
+            // Nothing fit right now (the screen is at its threat cap, or the
+            // one-shot visitors are all used up). Try again very soon instead of
+            // waiting a whole interval, so the player is rarely left with an empty
+            // screen for more than a moment.
+            world.timers.encounter = 0.25;
+            return;
+          }
           const difficulty = world.difficulty || {};
           const min = difficulty.currentSpawnMin || 1.8;
           const max = difficulty.currentSpawnMax || 3.2;

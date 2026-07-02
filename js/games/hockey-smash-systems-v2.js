@@ -263,7 +263,7 @@
   // varied and fair. It returns the spawned entity, or null if nothing fit.
   function spawnNextEncounter(game, options = {}) {
     const { world, World } = game;
-    const { DESIGN_WIDTH, ENCOUNTER_TYPES } = game.constants;
+    const { DESIGN_WIDTH, ENCOUNTER_TYPES, REPEATABLE_ENCOUNTERS } = game.constants;
     const ignoreCaps = Boolean(options.ignoreCaps);
     let type = null;
     // We rotate through the encounter list so the game feels varied instead of
@@ -274,6 +274,18 @@
       if (ignoreCaps || canSpawnEncounter(game, candidate)) {
         type = candidate;
         break;
+      }
+    }
+    // Fallback: if the varied rotation could not place anything (usually because
+    // the one-shot visitors are all used up), reach for a repeatable threat so
+    // the action keeps coming. We only give up (return null) when even those are
+    // capped out - and when that happens the game loop retries again very soon.
+    if (!type && !ignoreCaps && Array.isArray(REPEATABLE_ENCOUNTERS)) {
+      for (const candidate of REPEATABLE_ENCOUNTERS) {
+        if (canSpawnEncounter(game, candidate)) {
+          type = candidate;
+          break;
+        }
       }
     }
     if (!type) return null;

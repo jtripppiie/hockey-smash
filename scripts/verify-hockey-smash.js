@@ -131,6 +131,10 @@ requireText('v2 systems', systemsSource, 'addWarning', 'V2 encounter warning eff
 requireText('v2 harness', harness, 'maybeApplyCameoBoost', 'V2 cameo boost proximity handler is missing.');
 requireText('v2 harness', harness, 'updateEncounterBehavior', 'V2 encounter behavior updater is missing.');
 requireText('v2 harness', harness, 'DAD_JOKES', 'V2 Dad joke pool is missing.');
+requireText('v2 harness', harness, 'REPEATABLE_ENCOUNTERS', 'V2 repeatable encounter pool is missing.');
+requireText('v2 harness', harness, 'ONESHOT_ENCOUNTERS', 'V2 one-shot encounter pool is missing.');
+requireText('v2 harness', harness, 'world.timers.encounter = 0.25', 'V2 encounter loop should retry quickly when nothing spawns.');
+requireText('v2 systems', systemsSource, 'REPEATABLE_ENCOUNTERS', 'V2 encounter fallback should use the repeatable pool.');
 requireText('v2 harness', harness, 'normalizeSpritePaths(World.SPRITES)', 'V2 root game should load sprite paths without dev-page prefixes.');
 forbidText('v2 harness', harness, '`../${src}`', 'V2 root game should not prefix sprite paths with ../.');
 forbidText('v2 harness', harness, 'entity.state = \'charging\'', 'V2 bear charge should stay out until future development.');
