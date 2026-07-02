@@ -34,8 +34,6 @@ The game is currently in **playable preview plus starter asset** state:
 | `backgrounds/parallax/hockey-smash-parallax-sidewalk-soldotna-front-1536x170.png` | Raster foreground sidewalk/street layer | 1536x170 | Older PNG export kept as a fallback/reference. |
 | `backgrounds/parallax/hockey-smash-parallax-town-foreground-1536x526.png` | Combined rendered town foreground layer | 1536x526 | Composites storefronts, Nelson Engineering overlay, snowbank, sidewalk, curb, and extended street so they move as one layer. |
 | `backgrounds/parallax/hockey-smash-parallax-skyline-far-1536x576.svg` | Far parallax skyline placeholder | 1536x576 | Filename and dimensions are visible in the SVG. |
-| `backgrounds/parallax/hockey-smash-parallax-trees-mid-1536x320.svg` | Mid parallax trees placeholder | 1536x320 | Filename and dimensions are visible in the SVG. |
-| `backgrounds/parallax/hockey-smash-parallax-snowbank-front-1536x170.svg` | Front parallax snowbank placeholder | 1536x170 | Filename and dimensions are visible in the SVG. |
 
 ### Sprites
 

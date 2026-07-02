@@ -26,8 +26,6 @@ const requiredFiles = [
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-sidewalk-soldotna-front-1536x170.png',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-town-foreground-1536x526.png',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-skyline-far-1536x576.svg',
-  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-trees-mid-1536x320.svg',
-  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-snowbank-front-1536x170.svg',
   'assets/hockey-smash/sprites/daniel-hockey-idle.webp',
   'assets/hockey-smash/sprites/daniel-hockey-slide.webp',
   'assets/hockey-smash/sprites/daniel-hockey-duck.webp',
@@ -255,8 +253,6 @@ requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-paralla
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-soldotna-city-nelson-engineering-mid-1536x320.webp', 'Runtime Soldotna city parallax spec is missing.');
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-sidewalk-soldotna-front-1536x170.svg', 'Editable sidewalk parallax spec is missing.');
 requireText('parallax placeholders', parallaxPlaceholders, 'asphalt edge detail', 'Editable sidewalk parallax spec should mention the street edge detail.');
-requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-trees-mid-1536x320.svg', 'Mid parallax placeholder spec is missing.');
-requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-snowbank-front-1536x170.svg', 'Front parallax placeholder spec is missing.');
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-nelson-engineering-sign-1536x320.svg', 'Nelson Engineering parallax sign spec is missing.');
 
 const context = { window: {} };

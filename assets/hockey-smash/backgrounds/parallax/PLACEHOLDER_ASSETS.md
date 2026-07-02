@@ -16,8 +16,6 @@ placeholder/overlay assets when exact text is needed.
 | `hockey-smash-parallax-sidewalk-soldotna-front-1536x170.svg` | 1536x170 | runtime/editable tileable Soldotna sidewalk / snowbank / street foreground with asphalt edge detail | 0.55 |
 | `hockey-smash-parallax-sidewalk-soldotna-front-1536x170.png` | 1536x170 | older raster export of the editable sidewalk foreground | 0.55 |
 | `hockey-smash-parallax-skyline-far-1536x576.svg` | 1536x576 | far mountains / skyline | 0.08 |
-| `hockey-smash-parallax-trees-mid-1536x320.svg` | 1536x320 | mid trees / neighborhood | 0.24 |
-| `hockey-smash-parallax-snowbank-front-1536x170.svg` | 1536x170 | front snowbank / ground edge | 0.55 |
 
 The v2 renderer also uses:
 
