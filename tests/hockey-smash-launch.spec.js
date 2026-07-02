@@ -50,13 +50,20 @@ test('v2 start screen applies name, character, controls, and movement', async ({
     return {
       vx: world.player.vx,
       walkSpeed: world.tuning.walkSpeed,
+      groundAcceleration: world.tuning.groundAcceleration,
+      maxFrameSeconds: 0.05, // the game loop caps dt at this many seconds per frame
       coyoteTimeSeconds: world.tuning.coyoteTimeSeconds,
       jumpBufferSeconds: world.tuning.jumpBufferSeconds,
       airJumps: world.tuning.airJumps,
     };
   });
   expect(rampState.vx).toBeGreaterThan(0);
-  expect(rampState.vx).toBeLessThan(rampState.walkSpeed);
+  // Movement eases in instead of snapping to full speed. We check this in a
+  // frame-count-independent way: reaching walkSpeed must take MORE than one
+  // capped frame of acceleration. (Measuring vx after a fixed wall-clock delay
+  // is flaky because slow machines fit fewer, larger frames into that window.)
+  expect(rampState.walkSpeed / rampState.groundAcceleration).toBeGreaterThan(rampState.maxFrameSeconds);
+  expect(rampState.vx).toBeLessThanOrEqual(rampState.walkSpeed);
   expect(rampState.coyoteTimeSeconds).toBeGreaterThan(0);
   expect(rampState.jumpBufferSeconds).toBeGreaterThan(0);
   expect(rampState.airJumps).toBe(1);
