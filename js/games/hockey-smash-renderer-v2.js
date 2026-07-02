@@ -31,6 +31,7 @@
     renderEntities(ctx, world, imageCache);
     renderPlayer(ctx, world, imageCache);
     renderEffects(ctx, world);
+    renderCountdown(ctx, world, width, height);
     renderHitboxes(ctx, world, options);
     renderWorldDebug(ctx, world, options);
   }
@@ -295,6 +296,47 @@
       ctx.fillText(String(effect.text || ''), effect.x || 0, effect.y || 0);
       ctx.restore();
     });
+  }
+
+  function renderCountdown(ctx, world, width, height) {
+    // Draw the big "get ready" numbers (3, 2, 1) and then a "Catch!" flash right
+    // on the canvas. Doing this here (instead of plain HUD text) makes the start
+    // feel alive: each number pops in large and fades away, like a real game.
+    const inCountdown = world.phase === 'countdown' && (world.countdownRemaining || 0) > 0;
+    const catchFlash = world.catchFlashRemaining || 0;
+    if (!inCountdown && catchFlash <= 0) return;
+
+    let label;
+    let age; // 0 = just appeared (big), 1 = about to disappear (faded)
+    if (inCountdown) {
+      const remaining = world.countdownRemaining;
+      label = String(Math.ceil(remaining));
+      // The fraction of the current second counts down from 1 to 0. When a new
+      // number appears the fraction is near 1, so age (1 - fraction) starts near 0.
+      const frac = remaining - Math.floor(remaining);
+      age = frac === 0 ? 0 : 1 - frac;
+    } else {
+      label = 'Catch!';
+      age = 1 - catchFlash / 0.9;
+    }
+
+    // Pop scale: start big and settle quickly. Alpha fades the text out near the end.
+    const scale = 1 + 0.8 * Math.exp(-age * 6);
+    const alpha = Math.max(0, Math.min(1, (1 - age) * 3));
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(width / 2, height / 2);
+    ctx.scale(scale, scale);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = '900 132px system-ui, sans-serif';
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = 'rgba(9, 14, 22, 0.85)';
+    ctx.fillStyle = '#fff27a';
+    ctx.strokeText(label, 0, 0);
+    ctx.fillText(label, 0, 0);
+    ctx.restore();
   }
 
   function renderWorldDebug(ctx, world, options) {

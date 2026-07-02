@@ -49,7 +49,9 @@
   const DEFAULT_TUNING = Object.freeze({
     // Tuning numbers are the knobs for game feel. Change these first before
     // rewriting systems: speed, gravity, spawn timing, and scoring windows live here.
-    countdownSeconds: 10,
+    // countdownSeconds is a short "get ready" beat before salmon start falling.
+    // Keep it small (about 3) so the game starts feeling alive right away.
+    countdownSeconds: 3,
     gravity: 2250,
     walkSpeed: 360,
     slideSpeed: 575,
@@ -85,6 +87,9 @@
       phase: PHASES.COUNTDOWN,
       elapsed: 0,
       countdownRemaining: tuning.countdownSeconds,
+      // When the countdown ends we briefly show a big "Catch!" pop on the canvas.
+      // This number counts down to 0 while that flash is on screen.
+      catchFlashRemaining: 0,
       salmonCaught: 0,
       salmonTarget: SALMON_TARGET,
       nextEntityId: 1,

@@ -945,12 +945,20 @@
             return;
           }
 
+          // The "Catch!" flash pops on the canvas right after the countdown ends.
+          // We count its timer down here so it fades away on its own.
+          if (world.catchFlashRemaining > 0) {
+            world.catchFlashRemaining = Math.max(0, world.catchFlashRemaining - dt);
+          }
+
           if (world.phase === World.PHASES.COUNTDOWN) {
             world.countdownRemaining = Math.max(0, world.countdownRemaining - dt);
-            world.message = `Countdown: ${Math.ceil(world.countdownRemaining)} seconds.`;
+            world.message = `Get ready... ${Math.ceil(world.countdownRemaining)}`;
             if (world.countdownRemaining <= 0) {
               World.advancePhase(world, World.PHASES.SALMON_RUN);
               world.timers.salmon = 0.1;
+              // Trigger the big "Catch!" pop that the renderer draws on the canvas.
+              world.catchFlashRemaining = 0.9;
             }
             return;
           }
