@@ -501,6 +501,33 @@
           background: linear-gradient(180deg, rgba(5, 8, 13, 0.9), rgba(10, 18, 27, 0.98));
         }
       }
+      @media (max-width: 360px) {
+        .v2-hud {
+          width: min(10.7rem, calc(100vw - 12rem));
+          max-width: calc(100vw - 12rem);
+          padding-inline: 0.34rem;
+          font-size: 0.58rem;
+        }
+        .v2-hud__row {
+          display: block;
+          overflow: hidden;
+          text-align: center;
+          text-overflow: ellipsis;
+        }
+        .v2-hud__phase {
+          display: none;
+        }
+        .v2-health {
+          grid-template-columns: auto minmax(3rem, 1fr);
+          font-size: 0.58rem;
+        }
+        .v2-fullscreen {
+          padding-inline: 0.44rem;
+        }
+        .v2-version-badge {
+          padding-inline: 0.44rem;
+        }
+      }
       @media (max-width: 850px) and (orientation: portrait) {
         .dev-game-frame:fullscreen.is-playing {
           display: flex;
