@@ -482,7 +482,9 @@
         .dev-game-frame.is-playing {
           display: flex;
           flex-direction: column;
-          justify-content: center;
+          justify-content: flex-start;
+          min-height: 100dvh;
+          padding-top: clamp(0.75rem, calc((100dvh - 36rem) * 0.28), 5.5rem);
           background: #101923;
         }
         .dev-game-frame.is-playing canvas {
