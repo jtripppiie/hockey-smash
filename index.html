@@ -250,6 +250,34 @@
       .v2-debug-panel.is-visible {
         display: block;
       }
+      .v2-safe-areas {
+        position: absolute;
+        inset: 0;
+        z-index: 7;
+        display: none;
+        pointer-events: none;
+      }
+      .v2-safe-areas.is-visible {
+        display: block;
+      }
+      .v2-safe-area {
+        position: absolute;
+        left: 0;
+        right: 0;
+        border-block: 1px solid rgba(90, 214, 255, 0.62);
+        background: rgba(90, 214, 255, 0.16);
+        box-shadow: inset 0 0 0 1px rgba(5, 8, 13, 0.24);
+      }
+      .v2-safe-area--hud {
+        top: var(--v2-safe-hud-y, 0);
+        height: var(--v2-safe-hud-height, 0);
+      }
+      .v2-safe-area--controls {
+        top: var(--v2-safe-controls-y, auto);
+        height: var(--v2-safe-controls-height, 0);
+        background: rgba(255, 242, 122, 0.14);
+        border-block-color: rgba(255, 242, 122, 0.58);
+      }
       .v2-splash {
         position: absolute;
         inset: 0;
@@ -694,6 +722,10 @@
             </div>
           </div>
           <div id="v2-debug-panel" class="v2-debug-panel" aria-live="polite"></div>
+          <div id="v2-safe-areas" class="v2-safe-areas" aria-hidden="true">
+            <span class="v2-safe-area v2-safe-area--hud"></span>
+            <span class="v2-safe-area v2-safe-area--controls"></span>
+          </div>
           <section id="v2-game-over" class="v2-game-over" aria-labelledby="v2-game-over-title">
             <div class="v2-game-over__panel">
               <h2 id="v2-game-over-title">Sidewalk Survived?</h2>
@@ -843,6 +875,7 @@
         const healthFill = document.getElementById('v2-health-fill');
         const retryButton = document.getElementById('v2-retry');
         const debugPanel = document.getElementById('v2-debug-panel');
+        const safeAreaOverlay = document.getElementById('v2-safe-areas');
         const splashHero = document.getElementById('v2-splash-hero');
         const readout = document.getElementById('v2-readout');
         const World = window.HOCKEY_SMASH_WORLD_V2;
@@ -1355,6 +1388,28 @@
           ].join('\n');
         }
 
+        function updateSafeAreaOverlay() {
+          if (!safeAreaOverlay || !world?.debug?.enabled || !world.debug.visible) {
+            safeAreaOverlay?.classList.remove('is-visible');
+            return;
+          }
+          const frame = gameFrame.getBoundingClientRect();
+          const topChrome = [versionBadge, document.getElementById('v2-hud'), fullscreenButton]
+            .filter(Boolean)
+            .map((element) => element.getBoundingClientRect());
+          const controls = document.querySelector('.v2-controls')?.getBoundingClientRect();
+          const hudTop = Math.max(0, Math.min(...topChrome.map((box) => box.top)) - frame.top);
+          const hudBottom = Math.min(frame.height, Math.max(...topChrome.map((box) => box.bottom)) - frame.top);
+          const controlsTop = controls && controls.height > 0 ? Math.max(0, controls.top - frame.top) : frame.height;
+          const controlsHeight = controls && controls.height > 0 ? Math.min(frame.height - controlsTop, controls.height) : 0;
+
+          safeAreaOverlay.style.setProperty('--v2-safe-hud-y', `${hudTop}px`);
+          safeAreaOverlay.style.setProperty('--v2-safe-hud-height', `${Math.max(0, hudBottom - hudTop)}px`);
+          safeAreaOverlay.style.setProperty('--v2-safe-controls-y', `${controlsTop}px`);
+          safeAreaOverlay.style.setProperty('--v2-safe-controls-height', `${Math.max(0, controlsHeight)}px`);
+          safeAreaOverlay.classList.add('is-visible');
+        }
+
         function cleanName(value, fallback) {
           const cleaned = String(value || '')
             .replace(/[<>]/g, '')
@@ -1388,6 +1443,7 @@
           updateReadout();
           updateHud();
           updateDebugPanel();
+          updateSafeAreaOverlay();
           window.requestAnimationFrame(loop);
         }
 

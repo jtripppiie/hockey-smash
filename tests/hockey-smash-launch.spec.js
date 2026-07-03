@@ -301,6 +301,38 @@ test('v2 mobile splash and controls stay inside the play frame', async ({ page }
   });
 });
 
+test('v2 debug mode shows HUD and control safe-area bands', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/?debug=1');
+  await page.click('#v2-start');
+  await page.evaluate(() => {
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    world.debug.visible = true;
+    world.debug.showFPS = true;
+  });
+  await page.waitForTimeout(80);
+
+  const safeAreas = await page.evaluate(() => {
+    const overlay = document.querySelector('#v2-safe-areas');
+    const style = getComputedStyle(overlay);
+    const hud = document.querySelector('.v2-safe-area--hud').getBoundingClientRect();
+    const controls = document.querySelector('.v2-safe-area--controls').getBoundingClientRect();
+    const frame = document.querySelector('#v2-game-frame').getBoundingClientRect();
+    return {
+      visible: overlay.classList.contains('is-visible') && style.display !== 'none',
+      hudInsideFrame: hud.top >= frame.top && hud.bottom <= frame.bottom && hud.height > 0,
+      controlsInsideFrame: controls.top >= frame.top && controls.bottom <= frame.bottom && controls.height > 0,
+      controlsBelowHud: controls.top > hud.bottom,
+    };
+  });
+  expect(safeAreas).toEqual({
+    visible: true,
+    hudInsideFrame: true,
+    controlsInsideFrame: true,
+    controlsBelowHud: true,
+  });
+});
+
 test('v2 dry run covers both players and all cast entity types', async ({ page }) => {
   const characterRuns = [
     { character: 'daniel', name: 'Daniel' },
