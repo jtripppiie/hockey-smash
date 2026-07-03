@@ -253,10 +253,52 @@ test('v2 mobile splash and controls stay inside the play frame', async ({ page }
 
   const controlsFit = await page.evaluate(() => {
     const frame = document.querySelector('#v2-game-frame').getBoundingClientRect();
+    const canvas = document.querySelector('#v2-canvas').getBoundingClientRect();
     const controls = document.querySelector('.v2-controls').getBoundingClientRect();
-    return controls.left >= frame.left && controls.right <= frame.right && controls.bottom <= frame.bottom;
+    return controls.left >= frame.left && controls.right <= frame.right && controls.top >= canvas.bottom && controls.bottom <= frame.bottom;
   });
   expect(controlsFit).toBe(true);
+
+  const overlayGeometry = await page.evaluate(() => {
+    const overlaps = (a, b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+    const rect = (selector) => {
+      const box = document.querySelector(selector).getBoundingClientRect();
+      return { left: box.left, top: box.top, right: box.right, bottom: box.bottom };
+    };
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    const canvasElement = document.querySelector('#v2-canvas');
+    const canvas = canvasElement.getBoundingClientRect();
+    const scaleX = canvas.width / canvasElement.width;
+    const scaleY = canvas.height / canvasElement.height;
+    const player = {
+      left: canvas.left + world.player.x * scaleX,
+      top: canvas.top + world.player.y * scaleY,
+      right: canvas.left + (world.player.x + world.player.width) * scaleX,
+      bottom: canvas.top + (world.player.y + world.player.height) * scaleY,
+    };
+    const buttons = Array.from(document.querySelectorAll('.v2-control')).map((button) => {
+      const box = button.getBoundingClientRect();
+      return { left: box.left, top: box.top, right: box.right, bottom: box.bottom };
+    });
+    const hud = rect('#v2-hud');
+    const fullscreen = rect('#v2-fullscreen');
+    const version = rect('#v2-version-badge');
+
+    return {
+      controlsBelowPlayer: rect('.v2-controls').top >= player.bottom,
+      controlsBelowCanvas: rect('.v2-controls').top >= canvas.bottom,
+      buttonsClearPlayer: buttons.every((button) => !overlaps(button, player)),
+      hudClearFullscreen: !overlaps(hud, fullscreen),
+      hudClearVersion: !overlaps(hud, version),
+    };
+  });
+  expect(overlayGeometry).toEqual({
+    controlsBelowPlayer: true,
+    controlsBelowCanvas: true,
+    buttonsClearPlayer: true,
+    hudClearFullscreen: true,
+    hudClearVersion: true,
+  });
 });
 
 test('v2 dry run covers both players and all cast entity types', async ({ page }) => {
