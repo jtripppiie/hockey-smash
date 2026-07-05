@@ -33,9 +33,6 @@ const requiredFiles = [
   'assets/hockey-smash/sprites/daniel-hockey-duck.webp',
   'assets/hockey-smash/sprites/sofie-dancer-idle.webp',
   'assets/hockey-smash/sprites/sofie-dance-spin.webp',
-  'assets/hockey-smash/sprites/player-run-headless-sheet.webp',
-  'assets/hockey-smash/sprites/dad-run-sheet.webp',
-  'assets/hockey-smash/sprites/mom-run-sheet.webp',
   'assets/hockey-smash/sprites/bear-walk-sheet.webp',
   'assets/hockey-smash/sprites/moose-walk-sheet.webp',
   'assets/hockey-smash/sprites/eagle-fly-sheet.webp',
@@ -217,11 +214,11 @@ requireText('v2 world', worldSource, 'jumpBufferSeconds: 0.11', 'V2 jump buffer 
 requireText('v2 world', worldSource, 'coyoteTimeSeconds: 0.09', 'V2 coyote-time tuning is missing.');
 requireText('v2 world', worldSource, 'airJumps: 1', 'V2 double-jump tuning is missing.');
 requireText('v2 world', worldSource, 'const height = 132', 'Proportional Mom height is missing.');
-requireText('v2 world', worldSource, 'const width = 82', 'Proportional Mom width is missing.');
+requireText('v2 world', worldSource, 'const width = 49', 'Proportional Mom width is missing.');
 requireText('v2 world', worldSource, 'daniel-hockey-idle.webp', 'V2 Daniel sprite name is not descriptive.');
-requireText('v2 world', worldSource, 'player-run-headless-sheet.webp', 'V2 player run sheet asset is missing.');
-requireText('v2 world', worldSource, 'dad-run-sheet.webp', 'V2 Dad run sheet asset is missing.');
-requireText('v2 world', worldSource, 'mom-run-sheet.webp', 'V2 Mom run sheet asset is missing.');
+forbidText('v2 world', worldSource, 'player-run-headless-sheet.webp', 'Hockey Smash player should stay a hockey/dance sprite, not the Alaska runner sheet.');
+forbidText('v2 world', worldSource, 'dad-run-sheet.webp', 'Hockey Smash Dad should not use the Alaska runner sheet port.');
+forbidText('v2 world', worldSource, 'mom-run-sheet.webp', 'Hockey Smash Mom should not use the Alaska runner sheet port.');
 requireText('v2 world', worldSource, 'bear-walk-sheet.webp', 'V2 bear walk sheet asset is missing.');
 requireText('v2 world', worldSource, 'moose-walk-sheet.webp', 'V2 moose walk sheet asset is missing.');
 requireText('v2 world', worldSource, 'eagle-fly-sheet.webp', 'V2 eagle fly sheet asset is missing.');
@@ -249,9 +246,12 @@ requireText('v2 renderer', rendererSource, 'drawOrb(ctx, sun, sunX, sunY, 96', '
 requireText('v2 renderer', rendererSource, 'environment.midnightSun', 'V2 renderer should support midnight sun mode.');
 requireText('v2 renderer', rendererSource, 'getEntitySpriteKey', 'V2 animated entity sprite selector is missing.');
 forbidText('v2 renderer', rendererSource, 'eagleTop', 'V2 should not reintroduce the old eagle top overlay path.');
+forbidText('v2 renderer', rendererSource, 'playerRunSheet', 'Hockey Smash player should not render from the Alaska runner body sheet.');
+forbidText('v2 renderer', rendererSource, 'dadRunSheet', 'Hockey Smash Dad should not render from the Alaska runner sheet port.');
+forbidText('v2 renderer', rendererSource, 'momRunSheet', 'Hockey Smash Mom should not render from the Alaska runner sheet port.');
 requireText('v2 renderer', rendererSource, 'SPRITE_SHEETS', 'V2 sprite sheet metadata is missing.');
 requireText('v2 renderer', rendererSource, 'drawAnimatedSheetSprite', 'V2 sprite sheet renderer is missing.');
-requireText('v2 renderer', rendererSource, 'renderPlayerHead', 'V2 player head overlay is missing.');
+forbidText('v2 renderer', rendererSource, 'renderPlayerHead', 'Hockey Smash should not compose the Alaska runner body with a Hockey Smash head.');
 requireText('v2 renderer', rendererSource, 'getEntitySheetOptions', 'V2 entity sprite sheet motion options are missing.');
 requireText('v2 renderer', rendererSource, 'eagleFlySheet', 'V2 eagle flight sheet renderer is missing.');
 requireText('v2 renderer', rendererSource, 'salmonSwimSheet', 'V2 salmon swim sheet renderer is missing.');
@@ -273,7 +273,7 @@ requireText('v2 checklist docs', checklist, 'Add main v2 game splash, mobile lay
 requireText('v2 checklist docs', checklist, 'Add v1.3 health, cast, and readability polish', 'V2 checklist is missing v1.3 polish entry.');
 requireText('v2 checklist docs', checklist, 'salmon landing markers', 'V2 checklist is missing salmon marker update.');
 requireText('v2 checklist docs', checklist, 'cameo speed boosts', 'V2 checklist is missing encounter polish items.');
-requireText('v2 architecture docs', architecture, 'width: 82', 'V2 architecture Mom dimensions are stale.');
+requireText('v2 architecture docs', architecture, 'width: 49', 'V2 architecture Mom dimensions are stale.');
 requireText('v2 architecture docs', architecture, 'player.health', 'V2 architecture docs are missing player health ownership.');
 requireText('v2 architecture docs', architecture, 'V2 is now the active Hockey Smash path', 'V2 architecture docs still describe the old isolated-only plan.');
 requireText('v1.3 polish notes', polishNotes, 'Alaska kid cameo', 'V1.3 polish notes are missing cameo detail.');
@@ -316,7 +316,7 @@ if (!World) {
   if (world.difficulty.level < 2) errors.push('V2 difficulty level should ramp during encounters.');
   if (!world.environment || world.environment.cycleSeconds !== 240) errors.push('V2 environment cycle state is missing.');
   if (!world.environment || world.environment.midnightSun !== true) errors.push('V2 midnight sun environment state is missing.');
-  if (mom.width !== 82 || mom.height !== 132) errors.push('V2 Mom dimensions are not proportional.');
+  if (mom.width !== 49 || mom.height !== 132) errors.push('V2 Mom dimensions are not proportional.');
   if (!mom.nonContact) errors.push('V2 Mom should be non-contact.');
   if (!cameo.nonContact || !cameo.dismissOnProjectile) errors.push('V2 Alaska kid cameos should be non-contact and dismissible.');
   if (cameo.boostGiven !== false || cameo.boostRadius < 80) errors.push('V2 Alaska kid cameos should start boost-ready.');

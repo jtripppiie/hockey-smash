@@ -4,14 +4,11 @@ Date: 2026-07-05
 
 ## What Changed
 
-Hockey Smash v1.4.0 ports the generated Alaska sprite-sheet work into the v2 canvas renderer.
+Hockey Smash v1.4.0 ports the generated wildlife sprite-sheet work into the v2 canvas renderer.
 
 New runtime sheets live in `assets/hockey-smash/sprites/`:
 
 ```text
-player-run-headless-sheet.webp
-dad-run-sheet.webp
-mom-run-sheet.webp
 bear-walk-sheet.webp
 moose-walk-sheet.webp
 eagle-fly-sheet.webp
@@ -25,9 +22,6 @@ The older one-frame and per-frame WebP files remain as fallbacks.
 The source sheets came from the Android project:
 
 ```text
-app/src/main/res/drawable-nodpi/sheet_player_run_headless.png
-app/src/main/res/drawable-nodpi/sheet_dad_run.png
-app/src/main/res/drawable-nodpi/sheet_mom_run.png
 app/src/main/res/drawable-nodpi/sheet_bear_walk.png
 app/src/main/res/drawable-nodpi/sheet_moose_walk.png
 app/src/main/res/drawable-nodpi/sheet_eagle_fly.png
@@ -65,15 +59,15 @@ ffmpeg -y -f lavfi -i color=c=lightblue:s=WIDTHxHEIGHT \
 SPRITE_SHEETS
 drawAnimatedSheetSprite()
 getEntitySheetOptions()
-renderPlayerHead()
 ```
 
-`SPRITE_SHEETS` stores frame count, frame rate, display scale, and per-frame alpha trim bounds. The trim bounds keep the animal/person from rendering tiny inside a large transparent frame.
+`SPRITE_SHEETS` stores frame count, frame rate, display scale, and per-frame alpha trim bounds. The trim bounds keep the animal from rendering tiny inside a large transparent frame.
 
 ## Behavior Notes
 
-- Player run uses the headless body sheet and a canvas-drawn Daniel/Sofie head overlay.
+- Daniel and Sofie remain Hockey Smash-specific player sprites.
+- Dad and Mom remain Hockey Smash cameo sprites.
 - Salmon uses the swim sheet plus wiggle and tilt.
 - Eagle uses the fly sheet plus bob and tilt.
 - Moose pauses on its grazing frame when the existing grazing state is active.
-- Dad and Mom now animate from run sheets instead of static cameo art.
+- Bear uses the walk sheet while staying grounded.

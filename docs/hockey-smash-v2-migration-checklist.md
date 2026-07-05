@@ -352,7 +352,7 @@ salmonFallGravity: 275
 Current v2 Mom preview:
 
 ```text
-width: 82
+width: 49
 height: 132
 nonContact: true
 ttl: 4.8

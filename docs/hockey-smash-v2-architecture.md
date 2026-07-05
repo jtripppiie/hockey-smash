@@ -127,7 +127,7 @@ Example Mom entity:
   sprite: 'mom',
   x: 1080,
   y: 340.32,
-  width: 82,
+  width: 49,
   height: 132,
   vx: -82,
   vy: 0,

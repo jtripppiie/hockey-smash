@@ -65,7 +65,7 @@ On phones and tablets, use the buttons inside the game frame. Projectiles always
 - Mom cameo: one at a time, stays still, says the room-cleaning line, then disappears.
 - Dad mower encounter: one at a time, tells a complete joke, damages the player on contact, and can be cleared with a projectile.
 - Alaska boy/girl cameo: appears once per run, says `Hi, you're cute`, gives a speed boost when close, and disappears after 5 seconds.
-- Six-frame WebP sheet animation for Daniel/Sofie running, salmon swimming, Dad, Mom, bear, moose, and eagle.
+- Six-frame WebP sheet animation for salmon swimming, bear walking, moose walking/grazing, and eagle flying.
 - Bear, moose, eagle, and dance instructor encounters.
 - Bear currently only walks on the ground. Bear rise/charge behavior is saved for future development.
 - Eagle flies with a flapping sheet, bob, and slight tilt.

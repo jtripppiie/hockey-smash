@@ -52,9 +52,6 @@ character-or-entity-action-or-state-frame.webp
 | `sprites/sofie-dancer-idle.webp` | Sofie player idle/run pose | source dimensions | Active v2 player sprite. |
 | `sprites/sofie-dance-spin.webp` | Sofie spin/slide pose | source dimensions | Also reused for Daniel sister support until dedicated art exists. |
 | `sprites/sofie-dance-instructor.webp` | Sofie dance instructor encounter | source dimensions | Active v2 instructor/teacher encounter. |
-| `sprites/player-run-headless-sheet.webp` | Six-frame headless runner body sheet | 1972x798 | Active v1.4.0 player run body; renderer draws Daniel/Sofie head overlay. |
-| `sprites/dad-run-sheet.webp` | Six-frame Dad run sheet | 2027x776 | Active v1.4.0 Dad encounter animation. |
-| `sprites/mom-run-sheet.webp` | Six-frame Mom run sheet | 1983x793 | Active v1.4.0 Mom cameo animation. |
 | `sprites/bear-walk-sheet.webp` | Six-frame bear walk sheet | 2172x724 | Active v1.4.0 bear encounter animation. |
 | `sprites/moose-walk-sheet.webp` | Six-frame moose walk sheet | 2172x724 | Active v1.4.0 moose encounter animation. |
 | `sprites/eagle-fly-sheet.webp` | Six-frame eagle flight sheet | 2172x724 | Active v1.4.0 eagle encounter animation. |
@@ -72,7 +69,7 @@ character-or-entity-action-or-state-frame.webp
 
 ## Transparency Notes
 
-The current runtime sprite assets are WebP files. Projectile sprites were produced from green-screen sources using `ffmpeg` and the `colorkey` filter. The v1.4.0 sprite sheets were ported from the Alaska runner work with a stricter dual matte expression that removes magenta/purple and green source backgrounds before exporting lossless transparent WebP.
+The current runtime sprite assets are WebP files. Projectile sprites were produced from green-screen sources using `ffmpeg` and the `colorkey` filter. The v1.4.0 wildlife and salmon sprite sheets were ported from the Alaska runner work with a stricter dual matte expression that removes magenta/purple and green source backgrounds before exporting lossless transparent WebP.
 
 PNG files are retained only where they are still used by the parallax background pipeline. Source-only sprite copies and unused alternate background variants are intentionally removed so the asset folder stays easy to understand.
 

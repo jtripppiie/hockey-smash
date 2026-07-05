@@ -14,9 +14,6 @@ Changed:
 - `/`
 - `js/games/hockey-smash-world-v2.js`
 - `js/games/hockey-smash-renderer-v2.js`
-- `assets/hockey-smash/sprites/player-run-headless-sheet.webp`
-- `assets/hockey-smash/sprites/dad-run-sheet.webp`
-- `assets/hockey-smash/sprites/mom-run-sheet.webp`
 - `assets/hockey-smash/sprites/bear-walk-sheet.webp`
 - `assets/hockey-smash/sprites/moose-walk-sheet.webp`
 - `assets/hockey-smash/sprites/eagle-fly-sheet.webp`
@@ -31,8 +28,8 @@ Changed:
 
 Gameplay/visual impact:
 - Version bumped to `1.4.0`.
-- The player now renders from a six-frame headless run sheet with a canvas-drawn Daniel/Sofie head overlay.
-- Salmon swim, eagle flight, bear walk, moose walk/graze, Dad, and Mom now use six-frame transparent WebP sprite sheets.
+- Daniel and Sofie remain Hockey Smash-specific player sprites.
+- Salmon swim, eagle flight, bear walk, and moose walk/graze now use six-frame transparent WebP sprite sheets.
 - Eagle flaps, bobs, and tilts instead of using one static image.
 - Salmon wiggles and tilts while falling.
 - The renderer trims each sheet frame by measured alpha bounds so sprites fill their entity boxes instead of shrinking inside transparent padding.
@@ -588,7 +585,7 @@ salmonFallGravity: 275
 Current Mom preview shape:
 
 ```text
-width: 82
+width: 49
 height: 132
 nonContact: true
 stationary/timed: yes

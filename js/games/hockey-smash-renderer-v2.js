@@ -7,51 +7,6 @@
 (function () {
   const DEFAULT_BACKGROUND = 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1280x720.webp?v=20260630.84';
   const SPRITE_SHEETS = Object.freeze({
-    playerRunSheet: {
-      frames: 6,
-      fps: 12,
-      heightScale: 1.18,
-      minWidthScale: 0.78,
-      maxWidthScale: 1.04,
-      trim: [
-        { x: 24, y: 198, w: 304, h: 444 },
-        { x: 0, y: 207, w: 328, h: 431 },
-        { x: 0, y: 221, w: 324, h: 417 },
-        { x: 18, y: 174, w: 270, h: 449 },
-        { x: 3, y: 222, w: 325, h: 420 },
-        { x: 0, y: 218, w: 306, h: 421 },
-      ],
-    },
-    dadRunSheet: {
-      frames: 6,
-      fps: 8,
-      heightScale: 1.22,
-      minWidthScale: 0.78,
-      maxWidthScale: 1.12,
-      trim: [
-        { x: 14, y: 175, w: 323, h: 499 },
-        { x: 0, y: 162, w: 297, h: 506 },
-        { x: 27, y: 163, w: 310, h: 501 },
-        { x: 0, y: 120, w: 337, h: 527 },
-        { x: 0, y: 175, w: 337, h: 493 },
-        { x: 0, y: 183, w: 333, h: 488 },
-      ],
-    },
-    momRunSheet: {
-      frames: 6,
-      fps: 7,
-      heightScale: 1.03,
-      minWidthScale: 0.88,
-      maxWidthScale: 1.18,
-      trim: [
-        { x: 21, y: 191, w: 309, h: 467 },
-        { x: 0, y: 182, w: 330, h: 472 },
-        { x: 0, y: 179, w: 330, h: 476 },
-        { x: 0, y: 144, w: 330, h: 488 },
-        { x: 0, y: 180, w: 330, h: 475 },
-        { x: 0, y: 185, w: 310, h: 469 },
-      ],
-    },
     bearWalkSheet: {
       frames: 6,
       fps: 8,
@@ -285,20 +240,6 @@
     renderShadow(ctx, player, 'rgba(5, 8, 13, 0.26)');
     ctx.save();
     if (player.invulnerable > 0 && Math.floor(player.invulnerable * 16) % 2 === 0) ctx.globalAlpha = 0.56;
-    if (!player.duckActive && !player.slideActive) {
-      const moving = Math.abs(player.vx || 0) > 8 || !player.grounded;
-      const bodyRect = drawAnimatedSheetSprite(ctx, imageCache, 'playerRunSheet', player, {
-        phase: moving ? (world.elapsed || 0) : 0,
-        frameIndex: moving ? null : 1,
-        facing: player.facing || 1,
-      });
-      if (bodyRect) {
-        renderPlayerHead(ctx, player, bodyRect, world.elapsed || 0);
-        ctx.restore();
-        renderAimIndicator(ctx, world);
-        return;
-      }
-    }
     drawSpriteOrPlaceholder(ctx, imageCache, spriteKey, player, player.name || player.character || 'PLAYER');
     ctx.restore();
     renderAimIndicator(ctx, world);
@@ -550,8 +491,6 @@
     if (entity?.type === 'bear') return 'bearWalkSheet';
     if (entity?.type === 'moose') return 'mooseWalkSheet';
     if (entity?.type === 'eagle') return 'eagleFlySheet';
-    if (entity?.type === 'dad') return 'dadRunSheet';
-    if (entity?.type === 'mom') return 'momRunSheet';
     return entity?.sprite || entity?.type;
   }
 
@@ -576,18 +515,6 @@
         phase: age * 0.35,
         frameIndex: 1,
         yOffset: 1,
-      };
-    }
-    if (entity?.type === 'dad') {
-      return {
-        phase: age,
-        yOffset: Math.sin(age * 8) * 2,
-      };
-    }
-    if (entity?.type === 'mom') {
-      return {
-        phase: age * 0.8,
-        yOffset: Math.sin(age * 4) * 1.2,
       };
     }
     return { phase: age };
@@ -663,45 +590,6 @@
     return positiveModulo(Math.floor(phase * fps), frames);
   }
 
-  function renderPlayerHead(ctx, player, bodyRect, elapsed) {
-    const radius = Math.max(12, Math.min(20, (player.height || 108) * 0.17));
-    const bob = Math.sin(elapsed * 12) * 1.2;
-    const x = bodyRect.x + (bodyRect.width * 0.52);
-    const y = bodyRect.y - (radius * 0.18) + bob;
-    const isSofie = player.character === 'sofie';
-
-    ctx.save();
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = '#15202c';
-    ctx.fillStyle = isSofie ? '#f0aa79' : '#d7905c';
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = isSofie ? '#6d2d65' : '#102033';
-    ctx.beginPath();
-    ctx.arc(x, y - radius * 0.18, radius * 1.04, Math.PI, Math.PI * 2);
-    ctx.lineTo(x + radius * 0.92, y + radius * 0.05);
-    ctx.lineTo(x - radius * 0.92, y + radius * 0.05);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = '#fff27a';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(x - radius * 0.58, y - radius * 0.36);
-    ctx.lineTo(x + radius * 0.58, y - radius * 0.36);
-    ctx.stroke();
-
-    ctx.fillStyle = '#15202c';
-    ctx.beginPath();
-    ctx.arc(x - radius * 0.28, y + radius * 0.08, 1.7, 0, Math.PI * 2);
-    ctx.arc(x + radius * 0.28, y + radius * 0.08, 1.7, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-
   function getLegacySheetFallback(spriteKey, entity) {
     if (spriteKey === 'bearWalkSheet') {
       const frames = ['bear1', 'bear2', 'bear3', 'bear4', 'bear5', 'bear6'];
@@ -714,8 +602,6 @@
     }
     if (spriteKey === 'eagleFlySheet') return 'eagle';
     if (spriteKey === 'salmonSwimSheet') return 'salmon';
-    if (spriteKey === 'dadRunSheet') return 'dad';
-    if (spriteKey === 'momRunSheet') return 'mom';
     return null;
   }
 
