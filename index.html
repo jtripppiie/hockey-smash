@@ -708,7 +708,7 @@
             </span>
             <span class="v2-fullscreen__label">Fullscreen</span>
           </button>
-          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v1.4.0</div>
+          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v1.4.1</div>
           <div id="v2-hud" class="v2-hud" aria-live="polite">
             <div class="v2-hud__stack">
               <div class="v2-hud__row">
@@ -729,7 +729,7 @@
           <section id="v2-game-over" class="v2-game-over" aria-labelledby="v2-game-over-title">
             <div class="v2-game-over__panel">
               <h2 id="v2-game-over-title">Sidewalk Survived?</h2>
-              <p id="v2-game-over-copy">Take a breath, then run it back.</p>
+              <p id="v2-game-over-copy">Take a breath, then try again.</p>
               <button id="v2-retry" type="button">Retry</button>
             </div>
           </section>
@@ -739,7 +739,7 @@
               <p class="v2-eyebrow">Sidewalk survival</p>
               <img id="v2-splash-hero" class="v2-splash__hero" src="assets/hockey-smash/sprites/daniel-splash.webp" alt="Daniel returns for Hockey Smash">
               <h2 id="v2-title">Hockey Smash</h2>
-              <p>Pick your runner, catch salmon, and survive the Soldotna sidewalk.</p>
+              <p>Pick your hockey player, catch salmon, and survive the Soldotna sidewalk.</p>
 
               <div class="v2-character-select" aria-label="Choose a character">
                 <span class="v2-character-select__label">Choose character</span>
@@ -808,9 +808,9 @@
       </section>
     </main>
 
-    <script src="js/games/hockey-smash-world-v2.js"></script>
-    <script src="js/games/hockey-smash-renderer-v2.js"></script>
-    <script src="js/games/hockey-smash-systems-v2.js"></script>
+    <script src="js/games/hockey-smash-world-v2.js?v=1.4.1"></script>
+    <script src="js/games/hockey-smash-renderer-v2.js?v=1.4.1"></script>
+    <script src="js/games/hockey-smash-systems-v2.js?v=1.4.1"></script>
     <script>
       (function () {
         const DESIGN_WIDTH = 1024;
@@ -881,7 +881,7 @@
         const World = window.HOCKEY_SMASH_WORLD_V2;
         const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
         const Systems = window.HOCKEY_SMASH_SYSTEMS_V2;
-        const VERSION_FALLBACK = '1.4.0';
+        const VERSION_FALLBACK = '1.4.1';
         const debugEnabled = new URLSearchParams(window.location.search).has('debug');
         const input = {
           left: false,

@@ -4,7 +4,7 @@ Date: 2026-07-01
 
 ## Goal
 
-This pass makes the v2 runner feel more like a real playable release instead of a loose dev harness. The focus is not adding a new architecture; the focus is making the existing world-state/canvas architecture clearer, more survivable, and more charming.
+This pass makes the v2 game feel more like a real playable release instead of a loose dev harness. The focus is not adding a new architecture; the focus is making the existing world-state/canvas architecture clearer, more survivable, and more charming.
 
 ## Version Target
 

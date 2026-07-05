@@ -8,6 +8,31 @@ V2 is now the active Hockey Smash path. Keep gameplay in world state and canvas 
 
 ## Completed
 
+### 2026-07-05: v1.4.1 Hockey Player Cleanup
+
+Changed:
+- `/`
+- `index.html`
+- `package.json`
+- `package-lock.json`
+- `README.md`
+- `scripts/verify-hockey-smash.js`
+- `tests/hockey-smash-launch.spec.js`
+- `assets/hockey-smash/ASSET_MANIFEST.md`
+- `docs/hockey-smash-v1.3-polish-notes.md`
+- `docs/hockey-smash-v2-progress.md`
+
+Gameplay/visual impact:
+- Version bumped to `1.4.1`.
+- Splash copy now says `Pick your hockey player`.
+- The game-over copy no longer uses running language.
+- The v2 world, renderer, and systems scripts now include a `?v=1.4.1` cache-busting query so browsers load the corrected Hockey Smash player path.
+- Verification now requires cache-busted v1.4.1 script includes.
+
+Verification:
+- `npm run verify`: passed
+- `npm run test:browser`: passed
+
 ### 2026-07-05: v1.4.0 Sprite Sheet Art Port
 
 Changed:

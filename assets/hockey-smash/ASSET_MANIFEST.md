@@ -69,7 +69,7 @@ character-or-entity-action-or-state-frame.webp
 
 ## Transparency Notes
 
-The current runtime sprite assets are WebP files. Projectile sprites were produced from green-screen sources using `ffmpeg` and the `colorkey` filter. The v1.4.0 wildlife and salmon sprite sheets were ported from the Alaska runner work with a stricter dual matte expression that removes magenta/purple and green source backgrounds before exporting lossless transparent WebP.
+The current runtime sprite assets are WebP files. Projectile sprites were produced from green-screen sources using `ffmpeg` and the `colorkey` filter. The v1.4.0 wildlife and salmon sprite sheets were ported from the shared Alaska graphics work with a stricter dual matte expression that removes magenta/purple and green source backgrounds before exporting lossless transparent WebP.
 
 PNG files are retained only where they are still used by the parallax background pipeline. Source-only sprite copies and unused alternate background variants are intentionally removed so the asset folder stays easy to understand.
 

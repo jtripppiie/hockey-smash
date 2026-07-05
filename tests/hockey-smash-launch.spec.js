@@ -2,15 +2,19 @@ const { test, expect } = require('@playwright/test');
 
 test('root serves Hockey Smash game', async ({ page }) => {
   const consoleErrors = [];
+  const requestedUrls = [];
   page.on('console', (message) => {
     if (message.type() === 'error') consoleErrors.push(message.text());
   });
   page.on('pageerror', (error) => consoleErrors.push(error.message));
+  page.on('request', (request) => requestedUrls.push(request.url()));
 
   await page.goto('/');
   await expect(page.locator('h1')).toHaveText('Hockey Smash');
   await expect(page.locator('#v2-canvas')).toBeVisible();
   await expect(page.locator('#v2-splash')).toBeVisible();
+  await expect(page.locator('#v2-splash')).toContainText('Pick your hockey player');
+  await expect(page.locator('#v2-splash')).not.toContainText('runner');
   await expect(page.locator('#v2-fullscreen')).toBeVisible();
 
   const globals = await page.evaluate(() => ({
@@ -25,6 +29,12 @@ test('root serves Hockey Smash game', async ({ page }) => {
     canvasWidth: 1024,
     canvasHeight: 576,
   });
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=1.4.1'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=1.4.1'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=1.4.1'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('player-run-headless-sheet.webp'))).toBe(false);
+  expect(requestedUrls.some((url) => url.includes('dad-run-sheet.webp'))).toBe(false);
+  expect(requestedUrls.some((url) => url.includes('mom-run-sheet.webp'))).toBe(false);
   expect(consoleErrors).toEqual([]);
 });
 
