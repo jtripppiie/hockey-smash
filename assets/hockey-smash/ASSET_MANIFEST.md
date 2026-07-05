@@ -13,7 +13,7 @@ The game is currently in **playable preview plus starter asset** state:
 - Optional image spec: complete.
 - Starter image assets: generated and placed in project folders.
 - Playable implementation: underway on `main`.
-- Some production assets are now loaded by the canvas renderer with runtime chroma-key cleanup.
+- Production sprite sheets are pre-keyed to transparent WebP and loaded by the canvas renderer.
 
 ## Generated Assets
 
@@ -52,12 +52,19 @@ character-or-entity-action-or-state-frame.webp
 | `sprites/sofie-dancer-idle.webp` | Sofie player idle/run pose | source dimensions | Active v2 player sprite. |
 | `sprites/sofie-dance-spin.webp` | Sofie spin/slide pose | source dimensions | Also reused for Daniel sister support until dedicated art exists. |
 | `sprites/sofie-dance-instructor.webp` | Sofie dance instructor encounter | source dimensions | Active v2 instructor/teacher encounter. |
+| `sprites/player-run-headless-sheet.webp` | Six-frame headless runner body sheet | 1972x798 | Active v1.4.0 player run body; renderer draws Daniel/Sofie head overlay. |
+| `sprites/dad-run-sheet.webp` | Six-frame Dad run sheet | 2027x776 | Active v1.4.0 Dad encounter animation. |
+| `sprites/mom-run-sheet.webp` | Six-frame Mom run sheet | 1983x793 | Active v1.4.0 Mom cameo animation. |
+| `sprites/bear-walk-sheet.webp` | Six-frame bear walk sheet | 2172x724 | Active v1.4.0 bear encounter animation. |
+| `sprites/moose-walk-sheet.webp` | Six-frame moose walk sheet | 2172x724 | Active v1.4.0 moose encounter animation. |
+| `sprites/eagle-fly-sheet.webp` | Six-frame eagle flight sheet | 2172x724 | Active v1.4.0 eagle encounter animation. |
+| `sprites/salmon-swim-sheet.webp` | Six-frame salmon swim sheet | 2172x724 | Active v1.4.0 salmon collectible animation. |
 | `sprites/salmon-falling.webp` | Falling salmon collectible | source dimensions | Active v2 salmon sprite. |
-| `sprites/bear-walk-01.webp` through `sprites/bear-walk-06.webp` | Bear walk animation frames | source dimensions | Active v2 bear encounter frames. |
-| `sprites/moose-walk-01.webp` through `sprites/moose-walk-03.webp` | Moose walk animation frames | source dimensions | Active v2 moose encounter frames. |
-| `sprites/eagle-flap-mid.webp` | Eagle encounter sprite | source dimensions | Active v2 duckable eagle encounter; rendered as one image, not a flap animation. |
-| `sprites/dad-cameo.webp` | Dad mower encounter | source dimensions | Active v2 joke encounter with contact damage. |
-| `sprites/mom-cameo.webp` | Mom cameo | source dimensions | Active v2 non-contact passing cameo. |
+| `sprites/bear-walk-01.webp` through `sprites/bear-walk-06.webp` | Bear walk animation frames | source dimensions | Legacy fallback if sheet loading fails. |
+| `sprites/moose-walk-01.webp` through `sprites/moose-walk-03.webp` | Moose walk animation frames | source dimensions | Legacy fallback if sheet loading fails. |
+| `sprites/eagle-flap-mid.webp` | Eagle encounter sprite | source dimensions | Legacy fallback if sheet loading fails. |
+| `sprites/dad-cameo.webp` | Dad mower encounter | source dimensions | Legacy fallback if sheet loading fails. |
+| `sprites/mom-cameo.webp` | Mom cameo | source dimensions | Legacy fallback if sheet loading fails. |
 | `sprites/alaska-boy-cameo.webp` | Alaska boy cameo | source dimensions | Active v2 boost cameo. |
 | `sprites/alaska-girl-cameo.webp` | Alaska girl cameo | source dimensions | Active v2 boost cameo. |
 | `sprites/projectile-hockey-puck.webp` | Daniel projectile | 32x24 | Generated transparent WebP. |
@@ -65,7 +72,7 @@ character-or-entity-action-or-state-frame.webp
 
 ## Transparency Notes
 
-The current runtime sprite assets are WebP files. New generated projectile sprites were produced from green-screen sources using `ffmpeg` and the `colorkey` filter, then exported as transparent WebP files.
+The current runtime sprite assets are WebP files. Projectile sprites were produced from green-screen sources using `ffmpeg` and the `colorkey` filter. The v1.4.0 sprite sheets were ported from the Alaska runner work with a stricter dual matte expression that removes magenta/purple and green source backgrounds before exporting lossless transparent WebP.
 
 PNG files are retained only where they are still used by the parallax background pipeline. Source-only sprite copies and unused alternate background variants are intentionally removed so the asset folder stays easy to understand.
 
@@ -82,6 +89,7 @@ Prompt themes:
 - no watermark
 - no real brands
 - chroma-key green only for generated source sprites/icons
+- for AI-generated sprite sheets, use high-contrast removable matte colors and document the matte thresholds
 
 ## Next Recommended Asset Work
 

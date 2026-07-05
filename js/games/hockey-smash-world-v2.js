@@ -24,6 +24,13 @@
     danielDuck: 'assets/hockey-smash/sprites/daniel-hockey-duck.webp',
     sofie: 'assets/hockey-smash/sprites/sofie-dancer-idle.webp',
     sofieSlide: 'assets/hockey-smash/sprites/sofie-dance-spin.webp',
+    playerRunSheet: 'assets/hockey-smash/sprites/player-run-headless-sheet.webp',
+    dadRunSheet: 'assets/hockey-smash/sprites/dad-run-sheet.webp',
+    momRunSheet: 'assets/hockey-smash/sprites/mom-run-sheet.webp',
+    bearWalkSheet: 'assets/hockey-smash/sprites/bear-walk-sheet.webp',
+    mooseWalkSheet: 'assets/hockey-smash/sprites/moose-walk-sheet.webp',
+    eagleFlySheet: 'assets/hockey-smash/sprites/eagle-fly-sheet.webp',
+    salmonSwimSheet: 'assets/hockey-smash/sprites/salmon-swim-sheet.webp',
     salmon: 'assets/hockey-smash/sprites/salmon-falling.webp',
     bear: 'assets/hockey-smash/sprites/bear-walk-01.webp',
     bear1: 'assets/hockey-smash/sprites/bear-walk-01.webp',
@@ -252,7 +259,7 @@
 
   function createMom(world, values = {}) {
     const height = 132;
-    const width = 49;
+    const width = 82;
     return createEntity(world, 'mom', {
       sprite: 'mom',
       x: 112,

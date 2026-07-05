@@ -11,6 +11,7 @@ const requiredFiles = [
   'docs/hockey-smash-v2-encounter-polish-plan.md',
   'docs/hockey-smash-v2-migration-checklist.md',
   'docs/hockey-smash-v2-progress.md',
+  'docs/hockey-smash-sprite-sheet-port.md',
   'docs/hockey-smash-v1.3-polish-notes.md',
   'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1280x720.webp',
   'assets/hockey-smash/backgrounds/sun.webp',
@@ -32,6 +33,13 @@ const requiredFiles = [
   'assets/hockey-smash/sprites/daniel-hockey-duck.webp',
   'assets/hockey-smash/sprites/sofie-dancer-idle.webp',
   'assets/hockey-smash/sprites/sofie-dance-spin.webp',
+  'assets/hockey-smash/sprites/player-run-headless-sheet.webp',
+  'assets/hockey-smash/sprites/dad-run-sheet.webp',
+  'assets/hockey-smash/sprites/mom-run-sheet.webp',
+  'assets/hockey-smash/sprites/bear-walk-sheet.webp',
+  'assets/hockey-smash/sprites/moose-walk-sheet.webp',
+  'assets/hockey-smash/sprites/eagle-fly-sheet.webp',
+  'assets/hockey-smash/sprites/salmon-swim-sheet.webp',
   'assets/hockey-smash/sprites/salmon-falling.webp',
   'assets/hockey-smash/sprites/bear-walk-01.webp',
   'assets/hockey-smash/sprites/bear-walk-06.webp',
@@ -102,6 +110,7 @@ const checklist = read('docs/hockey-smash-v2-migration-checklist.md');
 const architecture = read('docs/hockey-smash-v2-architecture.md');
 const polishNotes = read('docs/hockey-smash-v1.3-polish-notes.md');
 const encounterPolishPlan = read('docs/hockey-smash-v2-encounter-polish-plan.md');
+const spriteSheetPort = read('docs/hockey-smash-sprite-sheet-port.md');
 const parallaxPlaceholders = read('assets/hockey-smash/backgrounds/parallax/PLACEHOLDER_ASSETS.md');
 
 requireText('index.html', html, 'id="v2-canvas"', 'Root page should serve the Hockey Smash game.');
@@ -114,10 +123,10 @@ requireText('v2 harness', harness, 'data-character="sofie"', 'Sofie selection is
 requireText('v2 harness', harness, 'data-action="stick"', 'Stick action control is missing.');
 requireText('v2 harness', harness, 'id="v2-fullscreen"', 'V2 fullscreen toggle is missing.');
 requireText('v2 harness', harness, 'id="v2-version-badge"', 'V2 version overlay badge is missing.');
-if (packageJson.version !== '1.3.3') errors.push('package.json version should be 1.3.3.');
+if (packageJson.version !== '1.4.0') errors.push('package.json version should be 1.4.0.');
 if (packageLock.version !== packageJson.version) errors.push('package-lock.json root version should match package.json.');
 if (packageLock.packages?.['']?.version !== packageJson.version) errors.push('package-lock package version should match package.json.');
-requireText('v2 harness', harness, "const VERSION_FALLBACK = '1.3.3'", 'V2 version fallback should match package.json.');
+requireText('v2 harness', harness, "const VERSION_FALLBACK = '1.4.0'", 'V2 version fallback should match package.json.');
 requireText('v2 harness', harness, 'loadVersionBadge', 'V2 version badge loader is missing.');
 requireText('v2 harness', harness, 'fetch(\'package.json\'', 'V2 version badge should read package.json when available.');
 requireText('v2 harness', harness, 'id="v2-hud-score"', 'V2 mobile scoring HUD is missing.');
@@ -208,8 +217,15 @@ requireText('v2 world', worldSource, 'jumpBufferSeconds: 0.11', 'V2 jump buffer 
 requireText('v2 world', worldSource, 'coyoteTimeSeconds: 0.09', 'V2 coyote-time tuning is missing.');
 requireText('v2 world', worldSource, 'airJumps: 1', 'V2 double-jump tuning is missing.');
 requireText('v2 world', worldSource, 'const height = 132', 'Proportional Mom height is missing.');
-requireText('v2 world', worldSource, 'const width = 49', 'Proportional Mom width is missing.');
+requireText('v2 world', worldSource, 'const width = 82', 'Proportional Mom width is missing.');
 requireText('v2 world', worldSource, 'daniel-hockey-idle.webp', 'V2 Daniel sprite name is not descriptive.');
+requireText('v2 world', worldSource, 'player-run-headless-sheet.webp', 'V2 player run sheet asset is missing.');
+requireText('v2 world', worldSource, 'dad-run-sheet.webp', 'V2 Dad run sheet asset is missing.');
+requireText('v2 world', worldSource, 'mom-run-sheet.webp', 'V2 Mom run sheet asset is missing.');
+requireText('v2 world', worldSource, 'bear-walk-sheet.webp', 'V2 bear walk sheet asset is missing.');
+requireText('v2 world', worldSource, 'moose-walk-sheet.webp', 'V2 moose walk sheet asset is missing.');
+requireText('v2 world', worldSource, 'eagle-fly-sheet.webp', 'V2 eagle fly sheet asset is missing.');
+requireText('v2 world', worldSource, 'salmon-swim-sheet.webp', 'V2 salmon swim sheet asset is missing.');
 requireText('v2 world', worldSource, 'projectile-hockey-puck.webp', 'V2 hockey puck projectile asset is missing.');
 requireText('v2 world', worldSource, 'projectile-dancer-shoe.webp', 'V2 dancer shoe projectile asset is missing.');
 requireText('v2 world', worldSource, 'bear-walk-01.webp', 'V2 bear sprite should use descriptive walk-frame art.');
@@ -232,7 +248,13 @@ requireText('v2 renderer', rendererSource, 'renderSunMoon', 'V2 sun/moon rendere
 requireText('v2 renderer', rendererSource, 'drawOrb(ctx, sun, sunX, sunY, 96', 'V2 midnight sun should be visible during early gameplay.');
 requireText('v2 renderer', rendererSource, 'environment.midnightSun', 'V2 renderer should support midnight sun mode.');
 requireText('v2 renderer', rendererSource, 'getEntitySpriteKey', 'V2 animated entity sprite selector is missing.');
-forbidText('v2 renderer', rendererSource, 'eagleTop', 'V2 eagle should render one static image instead of flapping frames.');
+forbidText('v2 renderer', rendererSource, 'eagleTop', 'V2 should not reintroduce the old eagle top overlay path.');
+requireText('v2 renderer', rendererSource, 'SPRITE_SHEETS', 'V2 sprite sheet metadata is missing.');
+requireText('v2 renderer', rendererSource, 'drawAnimatedSheetSprite', 'V2 sprite sheet renderer is missing.');
+requireText('v2 renderer', rendererSource, 'renderPlayerHead', 'V2 player head overlay is missing.');
+requireText('v2 renderer', rendererSource, 'getEntitySheetOptions', 'V2 entity sprite sheet motion options are missing.');
+requireText('v2 renderer', rendererSource, 'eagleFlySheet', 'V2 eagle flight sheet renderer is missing.');
+requireText('v2 renderer', rendererSource, 'salmonSwimSheet', 'V2 salmon swim sheet renderer is missing.');
 requireText('v2 renderer', rendererSource, 'bear6', 'V2 bear walk-frame renderer is missing.');
 requireText('v2 renderer', rendererSource, 'moose3', 'V2 moose walk-frame renderer is missing.');
 requireText('v2 renderer', rendererSource, 'renderSalmonMarker', 'V2 salmon landing marker renderer is missing.');
@@ -241,6 +263,7 @@ requireText('v2 renderer', rendererSource, 'renderHitboxes', 'V2 debug hitbox re
 requireText('v2 renderer', rendererSource, 'renderShadow', 'V2 readable entity shadow renderer is missing.');
 requireText('v2 renderer', rendererSource, 'renderEntityHealth', 'V2 target health pip renderer is missing.');
 requireText('v2 progress docs', progress, 'Main v2 game play shell and tuning pass', 'V2 progress docs are missing latest main game update.');
+requireText('v2 progress docs', progress, 'v1.4.0 Sprite Sheet Art Port', 'V2 progress docs are missing v1.4.0 sprite sheet notes.');
 requireText('v2 progress docs', progress, 'v1.3.3 Visible Sun, Street Edge, and Double Jump Polish', 'V2 progress docs are missing v1.3.3 visual/movement polish notes.');
 requireText('v2 progress docs', progress, 'v1.3.2 GitHub Pages Sprite Path Hotfix', 'V2 progress docs are missing v1.3.2 hotfix notes.');
 requireText('v2 progress docs', progress, 'v1.3.1 Version and Teaching Comments', 'V2 progress docs are missing v1.3.1 notes.');
@@ -250,7 +273,7 @@ requireText('v2 checklist docs', checklist, 'Add main v2 game splash, mobile lay
 requireText('v2 checklist docs', checklist, 'Add v1.3 health, cast, and readability polish', 'V2 checklist is missing v1.3 polish entry.');
 requireText('v2 checklist docs', checklist, 'salmon landing markers', 'V2 checklist is missing salmon marker update.');
 requireText('v2 checklist docs', checklist, 'cameo speed boosts', 'V2 checklist is missing encounter polish items.');
-requireText('v2 architecture docs', architecture, 'width: 49', 'V2 architecture Mom dimensions are stale.');
+requireText('v2 architecture docs', architecture, 'width: 82', 'V2 architecture Mom dimensions are stale.');
 requireText('v2 architecture docs', architecture, 'player.health', 'V2 architecture docs are missing player health ownership.');
 requireText('v2 architecture docs', architecture, 'V2 is now the active Hockey Smash path', 'V2 architecture docs still describe the old isolated-only plan.');
 requireText('v1.3 polish notes', polishNotes, 'Alaska kid cameo', 'V1.3 polish notes are missing cameo detail.');
@@ -258,6 +281,8 @@ requireText('v1.3 polish notes', polishNotes, 'Daniel Sister Support', 'V1.3 pol
 requireText('encounter polish plan', encounterPolishPlan, 'Reviewer Take', 'V2 encounter polish plan is missing reviewer notes.');
 requireText('encounter polish plan', encounterPolishPlan, 'perfect catch bonus', 'V2 encounter polish plan is missing salmon scoring notes.');
 requireText('encounter polish plan', encounterPolishPlan, 'Dad lawn mower asset', 'V2 encounter polish plan is missing Dad asset follow-up.');
+requireText('sprite sheet port docs', spriteSheetPort, 'dual matte expression', 'Sprite sheet port docs should document matte cleanup.');
+requireText('sprite sheet port docs', spriteSheetPort, 'SPRITE_SHEETS', 'Sprite sheet port docs should document renderer metadata.');
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-skyline-far-1536x576.svg', 'Far parallax placeholder spec is missing.');
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-kenai-mountains-bg-1536x576.svg', 'Editable mountain parallax spec is missing.');
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-soldotna-city-nelson-engineering-mid-1536x320.svg', 'Editable Soldotna city parallax spec is missing.');
@@ -291,7 +316,7 @@ if (!World) {
   if (world.difficulty.level < 2) errors.push('V2 difficulty level should ramp during encounters.');
   if (!world.environment || world.environment.cycleSeconds !== 240) errors.push('V2 environment cycle state is missing.');
   if (!world.environment || world.environment.midnightSun !== true) errors.push('V2 midnight sun environment state is missing.');
-  if (mom.width !== 49 || mom.height !== 132) errors.push('V2 Mom dimensions are not proportional.');
+  if (mom.width !== 82 || mom.height !== 132) errors.push('V2 Mom dimensions are not proportional.');
   if (!mom.nonContact) errors.push('V2 Mom should be non-contact.');
   if (!cameo.nonContact || !cameo.dismissOnProjectile) errors.push('V2 Alaska kid cameos should be non-contact and dismissible.');
   if (cameo.boostGiven !== false || cameo.boostRadius < 80) errors.push('V2 Alaska kid cameos should start boost-ready.');

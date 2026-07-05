@@ -7,7 +7,7 @@ You pick Daniel or Sofie, type a player name, catch falling salmon, then survive
 Current version:
 
 ```text
-1.3.3
+1.4.0
 ```
 
 ## Quick Start
@@ -65,9 +65,10 @@ On phones and tablets, use the buttons inside the game frame. Projectiles always
 - Mom cameo: one at a time, stays still, says the room-cleaning line, then disappears.
 - Dad mower encounter: one at a time, tells a complete joke, damages the player on contact, and can be cleared with a projectile.
 - Alaska boy/girl cameo: appears once per run, says `Hi, you're cute`, gives a speed boost when close, and disappears after 5 seconds.
+- Six-frame WebP sheet animation for Daniel/Sofie running, salmon swimming, Dad, Mom, bear, moose, and eagle.
 - Bear, moose, eagle, and dance instructor encounters.
 - Bear currently only walks on the ground. Bear rise/charge behavior is saved for future development.
-- Eagle uses one steady image instead of a flap animation.
+- Eagle flies with a flapping sheet, bob, and slight tilt.
 
 ## Main Files
 
@@ -188,9 +189,10 @@ assets/hockey-smash/backgrounds/parallax/
 1. Put the image in `assets/hockey-smash/sprites/`.
 2. Give it a clear name, like `dad-lawn-mower.webp`.
 3. Add it to `SPRITES` in `js/games/hockey-smash-world-v2.js`.
-4. Use that sprite key in an entity.
-5. Add the file to `assets/hockey-smash/ASSET_MANIFEST.md`.
-6. Run the verify command.
+4. For sprite sheets, add frame trim metadata to `SPRITE_SHEETS` in `js/games/hockey-smash-renderer-v2.js`.
+5. Use that sprite key in an entity.
+6. Add the file to `assets/hockey-smash/ASSET_MANIFEST.md`.
+7. Run the verify command.
 
 ## Testing
 

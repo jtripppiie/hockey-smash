@@ -6,6 +6,113 @@
  */
 (function () {
   const DEFAULT_BACKGROUND = 'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1280x720.webp?v=20260630.84';
+  const SPRITE_SHEETS = Object.freeze({
+    playerRunSheet: {
+      frames: 6,
+      fps: 12,
+      heightScale: 1.18,
+      minWidthScale: 0.78,
+      maxWidthScale: 1.04,
+      trim: [
+        { x: 24, y: 198, w: 304, h: 444 },
+        { x: 0, y: 207, w: 328, h: 431 },
+        { x: 0, y: 221, w: 324, h: 417 },
+        { x: 18, y: 174, w: 270, h: 449 },
+        { x: 3, y: 222, w: 325, h: 420 },
+        { x: 0, y: 218, w: 306, h: 421 },
+      ],
+    },
+    dadRunSheet: {
+      frames: 6,
+      fps: 8,
+      heightScale: 1.22,
+      minWidthScale: 0.78,
+      maxWidthScale: 1.12,
+      trim: [
+        { x: 14, y: 175, w: 323, h: 499 },
+        { x: 0, y: 162, w: 297, h: 506 },
+        { x: 27, y: 163, w: 310, h: 501 },
+        { x: 0, y: 120, w: 337, h: 527 },
+        { x: 0, y: 175, w: 337, h: 493 },
+        { x: 0, y: 183, w: 333, h: 488 },
+      ],
+    },
+    momRunSheet: {
+      frames: 6,
+      fps: 7,
+      heightScale: 1.03,
+      minWidthScale: 0.88,
+      maxWidthScale: 1.18,
+      trim: [
+        { x: 21, y: 191, w: 309, h: 467 },
+        { x: 0, y: 182, w: 330, h: 472 },
+        { x: 0, y: 179, w: 330, h: 476 },
+        { x: 0, y: 144, w: 330, h: 488 },
+        { x: 0, y: 180, w: 330, h: 475 },
+        { x: 0, y: 185, w: 310, h: 469 },
+      ],
+    },
+    bearWalkSheet: {
+      frames: 6,
+      fps: 8,
+      heightScale: 1.16,
+      minWidthScale: 1.12,
+      maxWidthScale: 1.54,
+      trim: [
+        { x: 22, y: 263, w: 340, h: 235 },
+        { x: 0, y: 293, w: 358, h: 208 },
+        { x: 7, y: 293, w: 347, h: 207 },
+        { x: 0, y: 288, w: 362, h: 213 },
+        { x: 0, y: 292, w: 362, h: 212 },
+        { x: 0, y: 283, w: 339, h: 221 },
+      ],
+    },
+    mooseWalkSheet: {
+      frames: 6,
+      fps: 6,
+      heightScale: 1.2,
+      minWidthScale: 1.0,
+      maxWidthScale: 1.44,
+      trim: [
+        { x: 15, y: 226, w: 347, h: 301 },
+        { x: 0, y: 224, w: 362, h: 303 },
+        { x: 0, y: 223, w: 362, h: 304 },
+        { x: 0, y: 217, w: 362, h: 310 },
+        { x: 0, y: 234, w: 362, h: 293 },
+        { x: 0, y: 229, w: 336, h: 298 },
+      ],
+    },
+    eagleFlySheet: {
+      frames: 6,
+      fps: 10,
+      heightScale: 1.35,
+      minWidthScale: 1.12,
+      maxWidthScale: 1.7,
+      trim: [
+        { x: 17, y: 146, w: 345, h: 343 },
+        { x: 0, y: 259, w: 307, h: 235 },
+        { x: 0, y: 397, w: 334, h: 199 },
+        { x: 8, y: 221, w: 354, h: 280 },
+        { x: 0, y: 151, w: 362, h: 353 },
+        { x: 0, y: 376, w: 345, h: 133 },
+      ],
+    },
+    salmonSwimSheet: {
+      frames: 6,
+      fps: 12,
+      heightScale: 1.18,
+      minWidthScale: 1.28,
+      maxWidthScale: 1.9,
+      trim: [
+        { x: 22, y: 296, w: 338, h: 140 },
+        { x: 34, y: 263, w: 328, h: 172 },
+        { x: 0, y: 261, w: 362, h: 195 },
+        { x: 0, y: 298, w: 362, h: 140 },
+        { x: 0, y: 309, w: 362, h: 183 },
+        { x: 0, y: 305, w: 352, h: 191 },
+      ],
+    },
+  });
 
   function createImageCache(spriteMap = {}) {
     const cache = new Map();
@@ -178,6 +285,20 @@
     renderShadow(ctx, player, 'rgba(5, 8, 13, 0.26)');
     ctx.save();
     if (player.invulnerable > 0 && Math.floor(player.invulnerable * 16) % 2 === 0) ctx.globalAlpha = 0.56;
+    if (!player.duckActive && !player.slideActive) {
+      const moving = Math.abs(player.vx || 0) > 8 || !player.grounded;
+      const bodyRect = drawAnimatedSheetSprite(ctx, imageCache, 'playerRunSheet', player, {
+        phase: moving ? (world.elapsed || 0) : 0,
+        frameIndex: moving ? null : 1,
+        facing: player.facing || 1,
+      });
+      if (bodyRect) {
+        renderPlayerHead(ctx, player, bodyRect, world.elapsed || 0);
+        ctx.restore();
+        renderAimIndicator(ctx, world);
+        return;
+      }
+    }
     drawSpriteOrPlaceholder(ctx, imageCache, spriteKey, player, player.name || player.character || 'PLAYER');
     ctx.restore();
     renderAimIndicator(ctx, world);
@@ -425,19 +546,190 @@
   }
 
   function getEntitySpriteKey(entity) {
-    if (entity?.type === 'bear') {
-      const frames = ['bear1', 'bear2', 'bear3', 'bear4', 'bear5', 'bear6'];
-      return frames[Math.floor((entity.age || 0) * 8) % frames.length];
-    }
-    if (entity?.type === 'moose') {
-      if (entity.state === 'grazing') return 'moose2';
-      const frames = ['moose1', 'moose2', 'moose3', 'moose2'];
-      return frames[Math.floor((entity.age || 0) * 5) % frames.length];
-    }
+    if (entity?.type === 'salmon') return 'salmonSwimSheet';
+    if (entity?.type === 'bear') return 'bearWalkSheet';
+    if (entity?.type === 'moose') return 'mooseWalkSheet';
+    if (entity?.type === 'eagle') return 'eagleFlySheet';
+    if (entity?.type === 'dad') return 'dadRunSheet';
+    if (entity?.type === 'mom') return 'momRunSheet';
     return entity?.sprite || entity?.type;
   }
 
+  function getEntitySheetOptions(entity) {
+    const age = entity?.age || 0;
+    if (entity?.type === 'salmon') {
+      return {
+        phase: age,
+        yOffset: Math.sin(age * 7) * 3,
+        rotation: Math.sin(age * 6) * 0.16,
+      };
+    }
+    if (entity?.type === 'eagle') {
+      return {
+        phase: age,
+        yOffset: Math.sin(age * 4) * 6,
+        rotation: Math.sin(age * 3) * 0.07,
+      };
+    }
+    if (entity?.type === 'moose' && entity.state === 'grazing') {
+      return {
+        phase: age * 0.35,
+        frameIndex: 1,
+        yOffset: 1,
+      };
+    }
+    if (entity?.type === 'dad') {
+      return {
+        phase: age,
+        yOffset: Math.sin(age * 8) * 2,
+      };
+    }
+    if (entity?.type === 'mom') {
+      return {
+        phase: age * 0.8,
+        yOffset: Math.sin(age * 4) * 1.2,
+      };
+    }
+    return { phase: age };
+  }
+
+  function drawAnimatedSheetSprite(ctx, imageCache, spriteKey, box, options = {}) {
+    const meta = SPRITE_SHEETS[spriteKey];
+    const image = imageCache.get(spriteKey);
+    if (!meta || !image?.complete || !image.naturalWidth) return null;
+
+    const frames = Math.max(1, meta.frames || 1);
+    const frameWidth = Math.floor(image.naturalWidth / frames);
+    if (frameWidth <= 0 || image.naturalHeight <= 0) return null;
+
+    const frameIndex = getSheetFrameIndex(meta, options, frames);
+    const trim = meta.trim?.[frameIndex] || { x: 0, y: 0, w: frameWidth, h: image.naturalHeight };
+    const sourceX = (frameIndex * frameWidth) + trim.x;
+    const sourceY = trim.y;
+    const sourceWidth = Math.max(1, Math.min(trim.w, image.naturalWidth - sourceX));
+    const sourceHeight = Math.max(1, Math.min(trim.h, image.naturalHeight - sourceY));
+    const sourceAspect = sourceWidth / sourceHeight;
+    const boxWidth = box.width || 48;
+    const boxHeight = box.height || 48;
+
+    let renderHeight = boxHeight * (options.heightScale || meta.heightScale || 1);
+    let renderWidth = renderHeight * sourceAspect;
+    const minWidth = boxWidth * (meta.minWidthScale || 0);
+    const maxWidth = boxWidth * (meta.maxWidthScale || 100);
+    if (minWidth > 0 && renderWidth < minWidth) {
+      renderWidth = minWidth;
+      renderHeight = renderWidth / sourceAspect;
+    }
+    if (maxWidth > 0 && renderWidth > maxWidth) {
+      renderWidth = maxWidth;
+      renderHeight = renderWidth / sourceAspect;
+    }
+
+    const centerX = (box.x || 0) + (boxWidth / 2) + (options.xOffset || 0);
+    const bottom = (box.y || 0) + boxHeight + (options.yOffset || 0);
+    const centerY = bottom - (renderHeight / 2);
+    const flip = (options.facing ?? box.facing ?? 1) < 0;
+    const rotation = options.rotation || 0;
+
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    if (rotation) ctx.rotate(rotation);
+    if (flip) ctx.scale(-1, 1);
+    ctx.drawImage(
+      image,
+      sourceX,
+      sourceY,
+      sourceWidth,
+      sourceHeight,
+      -renderWidth / 2,
+      -renderHeight / 2,
+      renderWidth,
+      renderHeight,
+    );
+    ctx.restore();
+
+    return {
+      x: centerX - (renderWidth / 2),
+      y: centerY - (renderHeight / 2),
+      width: renderWidth,
+      height: renderHeight,
+    };
+  }
+
+  function getSheetFrameIndex(meta, options, frames) {
+    if (Number.isFinite(options.frameIndex)) return positiveModulo(Math.floor(options.frameIndex), frames);
+    const fps = Number(options.fps || meta.fps || 8);
+    const phase = Number(options.phase || 0);
+    return positiveModulo(Math.floor(phase * fps), frames);
+  }
+
+  function renderPlayerHead(ctx, player, bodyRect, elapsed) {
+    const radius = Math.max(12, Math.min(20, (player.height || 108) * 0.17));
+    const bob = Math.sin(elapsed * 12) * 1.2;
+    const x = bodyRect.x + (bodyRect.width * 0.52);
+    const y = bodyRect.y - (radius * 0.18) + bob;
+    const isSofie = player.character === 'sofie';
+
+    ctx.save();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#15202c';
+    ctx.fillStyle = isSofie ? '#f0aa79' : '#d7905c';
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = isSofie ? '#6d2d65' : '#102033';
+    ctx.beginPath();
+    ctx.arc(x, y - radius * 0.18, radius * 1.04, Math.PI, Math.PI * 2);
+    ctx.lineTo(x + radius * 0.92, y + radius * 0.05);
+    ctx.lineTo(x - radius * 0.92, y + radius * 0.05);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = '#fff27a';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x - radius * 0.58, y - radius * 0.36);
+    ctx.lineTo(x + radius * 0.58, y - radius * 0.36);
+    ctx.stroke();
+
+    ctx.fillStyle = '#15202c';
+    ctx.beginPath();
+    ctx.arc(x - radius * 0.28, y + radius * 0.08, 1.7, 0, Math.PI * 2);
+    ctx.arc(x + radius * 0.28, y + radius * 0.08, 1.7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function getLegacySheetFallback(spriteKey, entity) {
+    if (spriteKey === 'bearWalkSheet') {
+      const frames = ['bear1', 'bear2', 'bear3', 'bear4', 'bear5', 'bear6'];
+      return frames[Math.floor((entity?.age || 0) * 8) % frames.length];
+    }
+    if (spriteKey === 'mooseWalkSheet') {
+      if (entity?.state === 'grazing') return 'moose2';
+      const frames = ['moose1', 'moose2', 'moose3', 'moose2'];
+      return frames[Math.floor((entity?.age || 0) * 5) % frames.length];
+    }
+    if (spriteKey === 'eagleFlySheet') return 'eagle';
+    if (spriteKey === 'salmonSwimSheet') return 'salmon';
+    if (spriteKey === 'dadRunSheet') return 'dad';
+    if (spriteKey === 'momRunSheet') return 'mom';
+    return null;
+  }
+
   function drawSpriteOrPlaceholder(ctx, imageCache, spriteKey, box, label) {
+    if (SPRITE_SHEETS[spriteKey]) {
+      const sheetRect = drawAnimatedSheetSprite(ctx, imageCache, spriteKey, box, getEntitySheetOptions(box));
+      if (sheetRect) return;
+      const fallbackKey = getLegacySheetFallback(spriteKey, box);
+      if (fallbackKey && fallbackKey !== spriteKey) {
+        drawSpriteOrPlaceholder(ctx, imageCache, fallbackKey, box, label);
+        return;
+      }
+    }
+
     const image = imageCache.get(spriteKey);
     if (image?.complete && image.naturalWidth) {
       ctx.save();

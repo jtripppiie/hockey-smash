@@ -8,6 +8,40 @@ V2 is now the active Hockey Smash path. Keep gameplay in world state and canvas 
 
 ## Completed
 
+### 2026-07-05: v1.4.0 Sprite Sheet Art Port
+
+Changed:
+- `/`
+- `js/games/hockey-smash-world-v2.js`
+- `js/games/hockey-smash-renderer-v2.js`
+- `assets/hockey-smash/sprites/player-run-headless-sheet.webp`
+- `assets/hockey-smash/sprites/dad-run-sheet.webp`
+- `assets/hockey-smash/sprites/mom-run-sheet.webp`
+- `assets/hockey-smash/sprites/bear-walk-sheet.webp`
+- `assets/hockey-smash/sprites/moose-walk-sheet.webp`
+- `assets/hockey-smash/sprites/eagle-fly-sheet.webp`
+- `assets/hockey-smash/sprites/salmon-swim-sheet.webp`
+- `assets/hockey-smash/ASSET_MANIFEST.md`
+- `docs/hockey-smash-sprite-sheet-port.md`
+- `README.md`
+- `package.json`
+- `package-lock.json`
+- `scripts/verify-hockey-smash.js`
+- `docs/hockey-smash-v2-progress.md`
+
+Gameplay/visual impact:
+- Version bumped to `1.4.0`.
+- The player now renders from a six-frame headless run sheet with a canvas-drawn Daniel/Sofie head overlay.
+- Salmon swim, eagle flight, bear walk, moose walk/graze, Dad, and Mom now use six-frame transparent WebP sprite sheets.
+- Eagle flaps, bobs, and tilts instead of using one static image.
+- Salmon wiggles and tilts while falling.
+- The renderer trims each sheet frame by measured alpha bounds so sprites fill their entity boxes instead of shrinking inside transparent padding.
+- Legacy static/per-frame assets remain available as fallbacks if a sheet fails to load.
+
+Verification:
+- `npm run verify`: passed
+- `npm run test:browser`: passed
+
 ### 2026-07-01: v1.3.3 Visible Sun, Street Edge, and Double Jump Polish
 
 Changed:
@@ -554,7 +588,7 @@ salmonFallGravity: 275
 Current Mom preview shape:
 
 ```text
-width: 49
+width: 82
 height: 132
 nonContact: true
 stationary/timed: yes
