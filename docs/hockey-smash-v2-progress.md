@@ -8,6 +8,28 @@ V2 is now the active Hockey Smash path. Keep gameplay in world state and canvas 
 
 ## Completed
 
+### 2026-07-08: Post-Gate Salmon and Eagle Avoidance Fix
+
+Changed:
+- `index.html`
+- `js/games/hockey-smash-world-v2.js`
+- `js/games/hockey-smash-systems-v2.js`
+- `tests/hockey-smash-launch.spec.js`
+- `README.md`
+- `docs/hockey-smash-v2-architecture.md`
+- `docs/hockey-smash-v2-progress.md`
+
+Gameplay/documentation impact:
+- Post-gate salmon now has a default timer in world state.
+- The salmon update loop recovers if the active salmon timer is missing or invalid, so salmon continue spawning after encounters unlock.
+- Player movement now records a shared `lowStance` state when the player is grounded and holding slide.
+- Duckable eagle collisions now use the shared low-stance rule, so Daniel can duck under eagles and Sofie can slide under them.
+- README and architecture docs now describe the low-stance avoidance rule and post-gate salmon timer ownership.
+
+Verification:
+- `npm run verify`: passed
+- `npm run test:browser`: passed
+
 ### 2026-07-05: v1.4.1 Hockey Player Cleanup
 
 Changed:

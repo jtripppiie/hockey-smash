@@ -63,6 +63,7 @@ Canvas/world state should own:
 - lifetimes and timers for game-world objects
 - object-to-object overlap checks
 - player health, damage, invulnerability, and game-over phase
+- player movement stance such as slide, duck, and shared low-stance avoidance
 - cast appearance flags such as once-only Alaska kid cameos
 
 ## Why This Matters
@@ -117,6 +118,17 @@ Example entity shape:
   ttl: null
 }
 ```
+
+Important timer ownership:
+
+```text
+timers.salmon          opening salmon-run spawns
+timers.postGateSalmon  slower salmon spawns after encounters unlock
+timers.encounter       paced encounter spawns
+timers.projectile      throw cooldown
+```
+
+Systems should initialize or recover timer values before subtracting frame time. This keeps older dev/test world states from turning a missing timer into `NaN` and stopping a spawn loop.
 
 Example Mom entity:
 
@@ -178,6 +190,7 @@ After 20 salmon are caught:
 - Mom can appear briefly and say `[Name], clean your room!`
 - Sofie mode can use the dance instructor
 - the Alaska boy/girl cameo can appear once, say `Hi, you're cute`, and leave quickly
+- eagle flybys are `duckable`; any grounded low stance can avoid them, whether Daniel is ducking or Sofie is sliding
 
 ### Health And Game Over
 

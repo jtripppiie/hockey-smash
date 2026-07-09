@@ -102,6 +102,7 @@
       timers: {
         salmon: 0,
         encounter: tuning.encounterSpawnSeconds,
+        postGateSalmon: 1.15,
       },
       debug: createDebugState(options.debug),
       difficulty: createDifficulty(options.difficulty || {}),
@@ -205,6 +206,7 @@
       airJumpsRemaining: 1,
       slideActive: false,
       duckActive: false,
+      lowStance: false,
       safeWindow: 0,
       score: 0,
       maxHealth: 100,

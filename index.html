@@ -1222,7 +1222,7 @@
             if (entity.x < -220 || entity.x > DESIGN_WIDTH + 260) entity.dead = true;
             maybeApplyCameoBoost(entity);
             // Non-contact entities can talk or help, but they do not hurt the player.
-            if (entity.duckable && world.player.duckActive) return;
+            if (isPlayerLowEnoughForDuckable(entity)) return;
             if (!entity.nonContact && Systems.rectsOverlap(playerBox, Systems.hitbox(entity, 8))) {
               const label = entity.type === 'eagle' ? 'DUCK!' : 'BUMP!';
               if (world.debug) world.debug.lastCollision = `${entity.type} -> player`;
@@ -1240,6 +1240,12 @@
             }
           });
           world.entities = world.entities.filter((entity) => entity && !entity.dead);
+        }
+
+        function isPlayerLowEnoughForDuckable(entity) {
+          if (!entity?.duckable) return false;
+          const player = world.player || {};
+          return Boolean(player.lowStance || player.duckActive || player.slideActive);
         }
 
         function updateEncounterBehavior(entity, dt) {

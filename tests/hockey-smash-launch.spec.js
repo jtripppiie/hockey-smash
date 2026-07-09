@@ -526,6 +526,100 @@ test('v2 encounters gate dance instructor to Sofie and Daniel can duck eagles', 
   expect(sofieTypes).toContain('danceInstructor');
 });
 
+test('v2 post-gate salmon timer keeps spawning and low stance avoids eagles', async ({ page }) => {
+  await page.goto('/');
+  await page.click('[data-character="sofie"]');
+  await page.click('#v2-start');
+
+  const timerState = await page.evaluate(() => {
+    const World = window.HOCKEY_SMASH_WORLD_V2;
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    World.advancePhase(world, World.PHASES.ENCOUNTERS);
+    delete world.timers.postGateSalmon;
+    return {
+      before: world.timers.postGateSalmon,
+      salmonBefore: world.entities.filter((entity) => entity.type === 'salmon').length,
+    };
+  });
+  expect(timerState.before).toBeUndefined();
+
+  await page.waitForTimeout(90);
+  const afterTimer = await page.evaluate(() => {
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    return {
+      timer: world.timers.postGateSalmon,
+      salmonAfter: world.entities.filter((entity) => entity.type === 'salmon').length,
+    };
+  });
+  expect(Number.isFinite(afterTimer.timer)).toBe(true);
+  expect(afterTimer.salmonAfter).toBeGreaterThan(timerState.salmonBefore);
+
+  await page.keyboard.down('Shift');
+  await page.waitForTimeout(40);
+
+  const eagleSetup = await page.evaluate(() => {
+    const World = window.HOCKEY_SMASH_WORLD_V2;
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    world.entities = world.entities.filter((entity) => entity.type !== 'eagle');
+    world.player.x = 180;
+    world.player.y = World.GROUND_Y - world.player.height;
+    world.player.grounded = true;
+    world.player.health = 100;
+    world.player.invulnerable = 0;
+    world.entities.push(World.createEntity(world, 'eagle', {
+      sprite: 'eagle',
+      x: world.player.x + 12,
+      y: world.player.y + 24,
+      width: 92,
+      height: 58,
+      vx: 0,
+      hp: 1,
+      maxHp: 1,
+      damage: 10,
+      duckable: true,
+    }));
+    return {
+      health: world.player.health,
+      lowStance: Boolean(world.player.lowStance),
+      slideActive: Boolean(world.player.slideActive),
+    };
+  });
+  expect(eagleSetup).toEqual({
+    health: 100,
+    lowStance: true,
+    slideActive: true,
+  });
+
+  await page.waitForTimeout(90);
+  const whileSliding = await page.evaluate(() => {
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    return {
+      health: world.player.health,
+      lowStance: Boolean(world.player.lowStance),
+      slideActive: Boolean(world.player.slideActive),
+      eagleAlive: world.entities.some((entity) => entity.type === 'eagle' && !entity.dead),
+    };
+  });
+  expect(whileSliding).toEqual({
+    health: 100,
+    lowStance: true,
+    slideActive: true,
+    eagleAlive: true,
+  });
+
+  await page.keyboard.up('Shift');
+  await page.waitForTimeout(90);
+  const afterStanding = await page.evaluate(() => {
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    return {
+      health: world.player.health,
+      eagleAlive: world.entities.some((entity) => entity.type === 'eagle' && !entity.dead),
+    };
+  });
+  expect(afterStanding.health).toBeLessThan(100);
+  expect(afterStanding.eagleAlive).toBe(false);
+});
+
 test('v2 paced encounters do not stack Mom or Dad cameos', async ({ page }) => {
   await page.goto('/');
   await page.click('#v2-start');

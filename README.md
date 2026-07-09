@@ -43,11 +43,11 @@ Controls:
 A / Left Arrow   move left
 D / Right Arrow  move right
 W / Up / Space   jump
-S / Shift        slide
+S / Shift        slide / duck low
 F / Enter        stick / throw
 ```
 
-On phones and tablets, use the buttons inside the game frame. Projectiles always fire to the right.
+On phones and tablets, use the buttons inside the game frame. Projectiles always fire to the right. Sliding or ducking low avoids eagle flybys.
 
 ## What Is In The Game Now
 
@@ -68,7 +68,7 @@ On phones and tablets, use the buttons inside the game frame. Projectiles always
 - Six-frame WebP sheet animation for salmon swimming, bear walking, moose walking/grazing, and eagle flying.
 - Bear, moose, eagle, and dance instructor encounters.
 - Bear currently only walks on the ground. Bear rise/charge behavior is saved for future development.
-- Eagle flies with a flapping sheet, bob, and slight tilt.
+- Eagle flies with a flapping sheet, bob, and slight tilt. Daniel can duck under it, and Sofie can slide under it.
 
 ## Main Files
 
@@ -86,6 +86,7 @@ What they do:
 - `index.html` is the main game page.
 - `js/games/hockey-smash-world-v2.js` creates the game world, player, salmon, Mom, Dad, cameos, and tuning values.
 - `js/games/hockey-smash-renderer-v2.js` draws the world on the canvas.
+- `js/games/hockey-smash-systems-v2.js` updates player movement, salmon spawning/catches, encounter spawning, and projectiles.
 - `assets/hockey-smash/ASSET_MANIFEST.md` lists the important art files.
 
 ## The Simple Game Loop

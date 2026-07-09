@@ -83,8 +83,10 @@
     const move = (input.right ? 1 : 0) - (input.left ? 1 : 0);
     const boost = player.speedBoost > 0 ? (world.tuning.playerBoostMultiplier || 1.18) : 1;
     const speed = (input.slide ? world.tuning.slideSpeed : world.tuning.walkSpeed) * boost;
-    player.duckActive = Boolean(input.slide && player.character === 'daniel' && player.grounded);
+    const lowStance = Boolean(input.slide && player.grounded);
+    player.duckActive = Boolean(lowStance && player.character === 'daniel');
     player.slideActive = Boolean(input.slide && !player.duckActive);
+    player.lowStance = lowStance;
     const targetVx = move * speed;
     const accel = player.grounded ? world.tuning.groundAcceleration : world.tuning.airAcceleration;
     const friction = player.grounded ? world.tuning.groundFriction : world.tuning.airFriction;
@@ -128,7 +130,10 @@
       player.airJumpsRemaining = world.tuning.airJumps || 1;
       player.coyoteTimer = world.tuning.coyoteTimeSeconds || 0.09;
     }
-    if (!player.grounded) player.duckActive = false;
+    if (!player.grounded) {
+      player.duckActive = false;
+      player.lowStance = false;
+    }
   }
 
   // ---- Salmon (the main collectible) --------------------------------------
@@ -142,6 +147,7 @@
     // Salmon keep falling after the 20-salmon gate, but they slow down a bit
     // so encounters can share the screen without becoming impossible.
     const salmonTimerName = world.phase === World.PHASES.SALMON_RUN ? 'salmon' : 'postGateSalmon';
+    if (!Number.isFinite(world.timers[salmonTimerName])) world.timers[salmonTimerName] = 0;
     world.timers[salmonTimerName] -= dt;
     if (world.timers[salmonTimerName] <= 0) {
       spawnHarnessSalmon(game);
