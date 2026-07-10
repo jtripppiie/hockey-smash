@@ -207,6 +207,43 @@
         padding: 1rem;
         background: rgba(5, 8, 13, 0.68);
       }
+
+      .v2-pause {
+        position: absolute;
+        inset: 0;
+        z-index: 12;
+        display: none;
+        place-items: center;
+        color: #fff;
+        text-align: center;
+        background: rgba(5, 18, 35, 0.72);
+        backdrop-filter: blur(3px);
+      }
+
+      .dev-game-frame.is-paused .v2-pause { display: grid; }
+
+      .v2-pause__panel {
+        width: min(360px, 82%);
+        padding: 1.25rem;
+        border: 2px solid rgba(255, 255, 255, 0.7);
+        border-radius: 18px;
+        background: #123b5f;
+        box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+      }
+
+      .v2-pause__panel h2 { margin: 0 0 0.45rem; }
+
+      .v2-pause-button {
+        position: absolute;
+        z-index: 9;
+        display: none;
+        top: 0.7rem;
+        right: 9.2rem;
+        min-width: 42px;
+        min-height: 38px;
+        padding: 0.35rem 0.6rem;
+      }
+      .dev-game-frame.is-playing .v2-pause-button { display: block; }
       .dev-game-frame.is-game-over .v2-game-over {
         display: grid;
       }
@@ -708,11 +745,11 @@
             </span>
             <span class="v2-fullscreen__label">Fullscreen</span>
           </button>
-          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v1.4.1</div>
+          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v1.5.0</div>
           <div id="v2-hud" class="v2-hud" aria-live="polite">
             <div class="v2-hud__stack">
               <div class="v2-hud__row">
-                <span id="v2-hud-score" class="v2-hud__score">Salmon 0/20</span>
+                <span id="v2-hud-score" class="v2-hud__score">Salmon 0/20 · 0</span>
                 <span id="v2-hud-phase" class="v2-hud__phase">Countdown</span>
               </div>
               <div class="v2-health" aria-label="Player health">
@@ -721,6 +758,7 @@
               </div>
             </div>
           </div>
+          <button id="v2-pause-button" class="v2-pause-button" type="button" aria-label="Pause game" aria-pressed="false">Ⅱ</button>
           <div id="v2-debug-panel" class="v2-debug-panel" aria-live="polite"></div>
           <div id="v2-safe-areas" class="v2-safe-areas" aria-hidden="true">
             <span class="v2-safe-area v2-safe-area--hud"></span>
@@ -730,7 +768,16 @@
             <div class="v2-game-over__panel">
               <h2 id="v2-game-over-title">Sidewalk Survived?</h2>
               <p id="v2-game-over-copy">Take a breath, then try again.</p>
+              <p id="v2-game-over-score">Score 0 · Best 0</p>
               <button id="v2-retry" type="button">Retry</button>
+            </div>
+          </section>
+
+          <section id="v2-pause" class="v2-pause" aria-labelledby="v2-pause-title">
+            <div class="v2-pause__panel">
+              <h2 id="v2-pause-title">Paused</h2>
+              <p>Stretch your hands. Press P, Escape, or the button to keep playing.</p>
+              <button id="v2-resume" type="button">Resume</button>
             </div>
           </section>
 
@@ -808,9 +855,9 @@
       </section>
     </main>
 
-    <script src="js/games/hockey-smash-world-v2.js?v=1.4.1"></script>
-    <script src="js/games/hockey-smash-renderer-v2.js?v=1.4.1"></script>
-    <script src="js/games/hockey-smash-systems-v2.js?v=1.4.1"></script>
+    <script src="js/games/hockey-smash-world-v2.js?v=1.5.0"></script>
+    <script src="js/games/hockey-smash-renderer-v2.js?v=1.5.0"></script>
+    <script src="js/games/hockey-smash-systems-v2.js?v=1.5.0"></script>
     <script>
       (function () {
         const DESIGN_WIDTH = 1024;
@@ -874,6 +921,9 @@
         const healthLabel = document.getElementById('v2-health-label');
         const healthFill = document.getElementById('v2-health-fill');
         const retryButton = document.getElementById('v2-retry');
+        const gameOverScore = document.getElementById('v2-game-over-score');
+        const pauseButton = document.getElementById('v2-pause-button');
+        const resumeButton = document.getElementById('v2-resume');
         const debugPanel = document.getElementById('v2-debug-panel');
         const safeAreaOverlay = document.getElementById('v2-safe-areas');
         const splashHero = document.getElementById('v2-splash-hero');
@@ -881,7 +931,8 @@
         const World = window.HOCKEY_SMASH_WORLD_V2;
         const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
         const Systems = window.HOCKEY_SMASH_SYSTEMS_V2;
-        const VERSION_FALLBACK = '1.4.1';
+        const VERSION_FALLBACK = '1.5.0';
+        const BEST_SCORE_KEY = 'hockey-smash-best-score';
         const debugEnabled = new URLSearchParams(window.location.search).has('debug');
         const input = {
           left: false,
@@ -898,6 +949,7 @@
         let imageCache = null;
         let lastFrame = performance.now();
         let gameStarted = false;
+        let gamePaused = false;
 
         // The `game` backpack is what we hand to every gameplay system in
         // hockey-smash-systems-v2.js. It carries the live world, the current
@@ -928,11 +980,13 @@
           world.timers.encounter = 0.8;
           world.timers.projectile = 0;
           world.timers.postGateSalmon = 1.15;
+          world.player.bestScore = loadBestScore();
           // Keep the systems' backpack pointed at the fresh world and reset the
           // encounter rotation so a new round starts from the top of the list.
           game.world = world;
           game.encounterIndex = 0;
           gameFrame.classList.remove('is-game-over');
+          setPaused(false);
           imageCache = Renderer.createImageCache({
             ...normalizeSpritePaths(World.SPRITES),
             sun: 'assets/hockey-smash/backgrounds/sun.webp',
@@ -989,6 +1043,37 @@
           });
         }
 
+        function loadBestScore() {
+          try {
+            return Math.max(0, Number.parseInt(localStorage.getItem(BEST_SCORE_KEY) || '0', 10) || 0);
+          } catch (error) {
+            return 0;
+          }
+        }
+
+        function saveBestScore(score) {
+          const best = Math.max(loadBestScore(), Math.max(0, Math.round(score || 0)));
+          try { localStorage.setItem(BEST_SCORE_KEY, String(best)); } catch (error) { /* Storage may be disabled. */ }
+          return best;
+        }
+
+        function setPaused(paused) {
+          gamePaused = Boolean(paused && gameStarted && world?.phase !== World.PHASES.GAME_OVER);
+          gameFrame.classList.toggle('is-paused', gamePaused);
+          pauseButton?.setAttribute('aria-pressed', gamePaused ? 'true' : 'false');
+          pauseButton?.setAttribute('aria-label', gamePaused ? 'Resume game' : 'Pause game');
+          if (pauseButton) pauseButton.textContent = gamePaused ? '▶' : 'Ⅱ';
+          if (!gamePaused) lastFrame = performance.now();
+        }
+
+        function bindPauseControls() {
+          pauseButton?.addEventListener('click', () => setPaused(!gamePaused));
+          resumeButton?.addEventListener('click', () => setPaused(false));
+          document.addEventListener('visibilitychange', () => {
+            if (document.hidden && gameStarted) setPaused(true);
+          });
+        }
+
         function bindFullscreen() {
           fullscreenButton?.addEventListener('click', async () => {
             try {
@@ -1029,6 +1114,12 @@
 
         function bindKeyboardInput() {
           window.addEventListener('keydown', (event) => {
+            if ((event.key === 'p' || event.key === 'P' || event.key === 'Escape') && gameStarted) {
+              event.preventDefault();
+              setPaused(!gamePaused);
+              return;
+            }
+            if (gamePaused) return;
             if (handleDebugKey(event)) return;
             const action = keyToAction(event.key);
             if (!action) return;
@@ -1119,6 +1210,7 @@
         function updateHarnessWorld(dt) {
           if (!world?.player) return;
           if (!gameStarted) return;
+          if (gamePaused) return;
           // The game loop is like a recipe: update the player, update the game phase,
           // update objects, then draw the final result in renderWorld().
           if (world.phase === World.PHASES.GAME_OVER) {
@@ -1160,6 +1252,8 @@
             World.advancePhase(world, World.PHASES.GAME_OVER);
             world.message = `${world.player.name} needs cocoa and a rematch.`;
             gameFrame.classList.add('is-game-over');
+            world.player.bestScore = saveBestScore(world.player.score);
+            gameOverScore.textContent = `Score ${world.player.score || 0} · Best ${world.player.bestScore}`;
             world.effects.push({ x: world.player.x, y: world.player.y - 18, text: 'OOF!', life: 1.0 });
             return;
           }
@@ -1347,7 +1441,7 @@
         function updateHud() {
           if (!world) return;
           const combo = world.player.combo > 1 ? ` · x${world.player.combo}` : '';
-          if (hudScore) hudScore.textContent = `Salmon ${world.salmonCaught || 0}/${world.salmonTarget || 0} · ${world.player.score || 0}${combo}`;
+          if (hudScore) hudScore.textContent = `Salmon ${world.salmonCaught || 0}/${world.salmonTarget || 0} · ${world.player.score || 0}${combo} · Best ${world.player.bestScore || 0}`;
           if (hudPhase) hudPhase.textContent = formatPhase(world.phase);
           const maxHealth = Math.max(1, world.player.maxHealth || 100);
           const health = Math.max(0, Math.min(maxHealth, world.player.health ?? maxHealth));
@@ -1455,6 +1549,7 @@
 
         bindCharacterButtons();
         bindSplashControls();
+        bindPauseControls();
         bindFullscreen();
         bindKeyboardInput();
         bindPointerInput();

@@ -29,9 +29,9 @@ test('root serves Hockey Smash game', async ({ page }) => {
     canvasWidth: 1024,
     canvasHeight: 576,
   });
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=1.4.1'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=1.4.1'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=1.4.1'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=1.5.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=1.5.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=1.5.0'))).toBe(true);
   expect(requestedUrls.some((url) => url.includes('player-run-headless-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('dad-run-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('mom-run-sheet.webp'))).toBe(false);
@@ -775,4 +775,31 @@ test('v2 Alaska kid cameos are once-only, timed, and dismissible', async ({ page
     return world.entities.some((entity) => !entity.dead && (entity.type === 'alaskanGirl' || entity.type === 'alaskanBoy'));
   });
   expect(cameoRemaining).toBe(false);
+});
+
+test('v2 pause freezes play and a finished run saves the personal best', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#v2-start').click();
+
+  await page.keyboard.press('KeyP');
+  await expect(page.locator('#v2-game-frame')).toHaveClass(/is-paused/);
+  await expect(page.locator('#v2-pause')).toBeVisible();
+  const elapsedBeforePause = await page.evaluate(() => window.HOCKEY_SMASH_V2_DEV.getWorld().elapsed);
+  await page.waitForTimeout(180);
+  const elapsedWhilePaused = await page.evaluate(() => window.HOCKEY_SMASH_V2_DEV.getWorld().elapsed);
+  expect(elapsedWhilePaused).toBeCloseTo(elapsedBeforePause, 2);
+
+  await page.locator('#v2-resume').click();
+  await expect(page.locator('#v2-game-frame')).not.toHaveClass(/is-paused/);
+  await page.evaluate(() => {
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    world.player.score = 321;
+    world.player.health = 0;
+  });
+  await expect(page.locator('#v2-game-frame')).toHaveClass(/is-game-over/);
+  await expect(page.locator('#v2-game-over-score')).toContainText('Score 321 · Best 321');
+  await expect.poll(() => page.evaluate(() => localStorage.getItem('hockey-smash-best-score'))).toBe('321');
+
+  await page.locator('#v2-retry').click();
+  await expect(page.locator('#v2-hud-score')).toContainText('Best 321');
 });

@@ -1,8 +1,8 @@
 {
   "name": "hockey-smash",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "private": true,
-  "description": "Static Hockey Smash browser game verification helpers.",
+  "description": "A beginner-friendly side-scrolling browser game set in Soldotna, Alaska.",
   "scripts": {
     "verify": "npm run verify:syntax && npm run verify:hockey",
     "verify:syntax": "sh -c 'set -e; for f in js/games/*.js; do node --check \"$f\"; done; if [ -d scripts ]; then for f in scripts/*.js; do [ -e \"$f\" ] && node --check \"$f\"; done; fi'",

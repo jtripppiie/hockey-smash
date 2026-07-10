@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.5.0 - Learning Edition
+
+- Added pause/resume with keyboard, touch-friendly buttons, and automatic tab-hide pausing.
+- Added a personal best score saved in the browser and shown in the HUD and game-over panel.
+- Initialized combo state explicitly so the player model documents all scoring memory.
+- Added a beginner code tour, project map, experiments, and troubleshooting guide.
+- Rewrote the contribution guide for the current playable architecture.
+- Expanded automated verification for the new gameplay and documentation contracts.
+
 ## v2 Harness Promotion And Repo Cleanup
 
 - Promoted Hockey Smash v2 as the current playable direction.

@@ -7,7 +7,7 @@ You pick Daniel or Sofie, type a player name, catch falling salmon, then survive
 Current version:
 
 ```text
-1.4.1
+1.5.0
 ```
 
 ## Quick Start
@@ -45,6 +45,7 @@ D / Right Arrow  move right
 W / Up / Space   jump
 S / Shift        slide / duck low
 F / Enter        stick / throw
+P / Escape       pause / resume
 ```
 
 On phones and tablets, use the buttons inside the game frame. Projectiles always fire to the right. Sliding or ducking low avoids eagle flybys.
@@ -58,6 +59,8 @@ On phones and tablets, use the buttons inside the game frame. Projectiles always
 - Salmon run with animated landing markers.
 - Smoother player movement with acceleration, friction, jump buffering, coyote time, double jump, and short-hop jumps.
 - Catch counter and health bar.
+- Score combos and a personal best saved in the browser.
+- Pause/resume controls; switching tabs pauses automatically.
 - Day/night sky with sun and moon.
 - Parallax-style Soldotna background.
 - Daniel hockey puck projectile.
@@ -88,6 +91,7 @@ What they do:
 - `js/games/hockey-smash-renderer-v2.js` draws the world on the canvas.
 - `js/games/hockey-smash-systems-v2.js` updates player movement, salmon spawning/catches, encounter spawning, and projectiles.
 - `assets/hockey-smash/ASSET_MANIFEST.md` lists the important art files.
+- `docs/LEARNING_GUIDE.md` is a guided code tour with safe first projects.
 
 ## The Simple Game Loop
 
