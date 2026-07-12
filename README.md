@@ -7,7 +7,7 @@ You pick Daniel or Sofie, type a player name, catch falling salmon, then survive
 Current version:
 
 ```text
-1.5.2
+1.6.0
 ```
 
 ## Quick Start
@@ -280,8 +280,7 @@ max active damage threat at level 1: 1
 Useful extra notes:
 
 - `docs/hockey-smash-v2-architecture.md`
-- `docs/hockey-smash-v2-migration-checklist.md`
-- `docs/hockey-smash-v2-progress.md`
-- `docs/hockey-smash-v2-encounter-polish-plan.md`
+- `docs/hockey-smash-sprite-sheet-port.md`
+- `docs/GAMEPLAY_POLISH.md`
 
-Start with this README first. The docs folder is for deeper notes and work history.
+Start with this README first. Historical release details live in `CHANGELOG.md`.

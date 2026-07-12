@@ -10,25 +10,17 @@ const requiredFiles = [
   'docs/hockey-smash-v2-architecture.md',
   'docs/LEARNING_GUIDE.md',
   'docs/README.md',
-  'docs/hockey-smash-v2-encounter-polish-plan.md',
-  'docs/hockey-smash-v2-migration-checklist.md',
-  'docs/hockey-smash-v2-progress.md',
+  'docs/GAMEPLAY_POLISH.md',
   'docs/hockey-smash-sprite-sheet-port.md',
-  'docs/hockey-smash-v1.3-polish-notes.md',
   'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1280x720.webp',
   'assets/hockey-smash/backgrounds/sun.webp',
   'assets/hockey-smash/backgrounds/moon.webp',
   'assets/hockey-smash/backgrounds/parallax/PLACEHOLDER_ASSETS.md',
-  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-mountains-bg-1536x576.png',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-kenai-mountains-bg-1536x576.svg',
-  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-soldotna-storefronts-mid-1536x320.png',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-nelson-engineering-sign-1536x320.svg',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-soldotna-city-nelson-engineering-mid-1536x320.svg',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-soldotna-city-nelson-engineering-mid-1536x320.webp',
-  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-sidewalk-front-1536x170.png',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-sidewalk-soldotna-front-1536x170.svg',
-  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-sidewalk-soldotna-front-1536x170.png',
-  'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-town-foreground-1536x526.png',
   'assets/hockey-smash/backgrounds/parallax/hockey-smash-parallax-skyline-far-1536x576.svg',
   'assets/hockey-smash/sprites/daniel-hockey-idle.webp',
   'assets/hockey-smash/sprites/daniel-hockey-slide.webp',
@@ -104,11 +96,7 @@ const harness = html;
 const worldSource = read('js/games/hockey-smash-world-v2.js');
 const rendererSource = read('js/games/hockey-smash-renderer-v2.js');
 const systemsSource = read('js/games/hockey-smash-systems-v2.js');
-const progress = read('docs/hockey-smash-v2-progress.md');
-const checklist = read('docs/hockey-smash-v2-migration-checklist.md');
 const architecture = read('docs/hockey-smash-v2-architecture.md');
-const polishNotes = read('docs/hockey-smash-v1.3-polish-notes.md');
-const encounterPolishPlan = read('docs/hockey-smash-v2-encounter-polish-plan.md');
 const spriteSheetPort = read('docs/hockey-smash-sprite-sheet-port.md');
 const parallaxPlaceholders = read('assets/hockey-smash/backgrounds/parallax/PLACEHOLDER_ASSETS.md');
 
@@ -122,10 +110,10 @@ requireText('v2 harness', harness, 'data-character="sofie"', 'Sofie selection is
 requireText('v2 harness', harness, 'data-action="stick"', 'Stick action control is missing.');
 requireText('v2 harness', harness, 'id="v2-fullscreen"', 'V2 fullscreen toggle is missing.');
 requireText('v2 harness', harness, 'id="v2-version-badge"', 'V2 version overlay badge is missing.');
-if (packageJson.version !== '1.5.2') errors.push('package.json version should be 1.5.2.');
+if (packageJson.version !== '1.6.0') errors.push('package.json version should be 1.6.0.');
 if (packageLock.version !== packageJson.version) errors.push('package-lock.json root version should match package.json.');
 if (packageLock.packages?.['']?.version !== packageJson.version) errors.push('package-lock package version should match package.json.');
-requireText('v2 harness', harness, "const VERSION_FALLBACK = '1.5.2'", 'V2 version fallback should match package.json.');
+requireText('v2 harness', harness, "const VERSION_FALLBACK = '1.6.0'", 'V2 version fallback should match package.json.');
 requireText('v2 harness', harness, 'loadVersionBadge', 'V2 version badge loader is missing.');
 requireText('v2 harness', harness, 'fetch(\'package.json\'', 'V2 version badge should read package.json when available.');
 requireText('v2 harness', harness, 'id="v2-hud-score"', 'V2 mobile scoring HUD is missing.');
@@ -134,6 +122,9 @@ requireText('v2 harness', harness, 'id="v2-retry"', 'V2 retry button is missing.
 requireText('v2 harness', harness, 'updateHud', 'V2 HUD update loop is missing.');
 requireText('v2 harness', harness, 'Salmon ${world.salmonCaught', 'V2 HUD should show salmon score.');
 requireText('v2 systems', systemsSource, 'PERFECT +${points}', 'V2 perfect catch feedback is missing.');
+requireText('v2 systems', systemsSource, "text: 'MISSED'", 'V2 missed-salmon feedback is missing.');
+requireText('v2 systems', systemsSource, "kind: 'burst'", 'V2 gameplay particle bursts are missing.');
+requireText('v2 renderer', rendererSource, 'function renderBurst', 'V2 particle burst renderer is missing.');
 requireText('v2 systems', systemsSource, 'COMBO x', 'V2 salmon combo feedback is missing.');
 requireText('v2 systems', systemsSource, 'addWarning', 'V2 encounter warning effect helper is missing.');
 requireText('v2 harness', harness, 'maybeApplyCameoBoost', 'V2 cameo boost proximity handler is missing.');
@@ -188,9 +179,9 @@ requireText('v2 systems', systemsSource, 'countActiveThreats', 'V2 active threat
 requireText('v2 harness', harness, 'HOCKEY_SMASH_WORLD_V2', 'V2 world script usage is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_RENDERER_V2', 'V2 renderer script usage is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_SYSTEMS_V2', 'V2 gameplay systems script usage is missing.');
-requireText('v2 harness', harness, 'hockey-smash-world-v2.js?v=1.5.2', 'V2 world script include should be cache-busted.');
-requireText('v2 harness', harness, 'hockey-smash-renderer-v2.js?v=1.5.2', 'V2 renderer script include should be cache-busted.');
-requireText('v2 harness', harness, 'hockey-smash-systems-v2.js?v=1.5.2', 'V2 gameplay systems script include should be cache-busted.');
+requireText('v2 harness', harness, 'hockey-smash-world-v2.js?v=1.6.0', 'V2 world script include should be cache-busted.');
+requireText('v2 harness', harness, 'hockey-smash-renderer-v2.js?v=1.6.0', 'V2 renderer script include should be cache-busted.');
+requireText('v2 harness', harness, 'hockey-smash-systems-v2.js?v=1.6.0', 'V2 gameplay systems script include should be cache-busted.');
 requireText('v2 harness', harness, 'BEST_SCORE_KEY', 'V2 personal-best storage is missing.');
 requireText('v2 harness', harness, 'bindPauseControls', 'V2 pause controls are missing.');
 requireText('v2 harness', harness, 'visibilitychange', 'V2 should pause when the tab is hidden.');
@@ -269,25 +260,9 @@ requireText('v2 renderer', rendererSource, 'ripple', 'V2 animated salmon marker 
 requireText('v2 renderer', rendererSource, 'renderHitboxes', 'V2 debug hitbox renderer is missing.');
 requireText('v2 renderer', rendererSource, 'renderShadow', 'V2 readable entity shadow renderer is missing.');
 requireText('v2 renderer', rendererSource, 'renderEntityHealth', 'V2 target health pip renderer is missing.');
-requireText('v2 progress docs', progress, 'Main v2 game play shell and tuning pass', 'V2 progress docs are missing latest main game update.');
-requireText('v2 progress docs', progress, 'v1.4.0 Sprite Sheet Art Port', 'V2 progress docs are missing v1.4.0 sprite sheet notes.');
-requireText('v2 progress docs', progress, 'v1.3.3 Visible Sun, Street Edge, and Double Jump Polish', 'V2 progress docs are missing v1.3.3 visual/movement polish notes.');
-requireText('v2 progress docs', progress, 'v1.3.2 GitHub Pages Sprite Path Hotfix', 'V2 progress docs are missing v1.3.2 hotfix notes.');
-requireText('v2 progress docs', progress, 'v1.3.1 Version and Teaching Comments', 'V2 progress docs are missing v1.3.1 notes.');
-requireText('v2 progress docs', progress, 'salmon landing markers', 'V2 progress docs are missing salmon marker update.');
-requireText('v2 progress docs', progress, 'v1.3 Health, Cast, and Readability Polish', 'V2 progress docs are missing v1.3 polish entry.');
-requireText('v2 checklist docs', checklist, 'Add main v2 game splash, mobile layout, fullscreen, and tuning', 'V2 checklist is missing latest main game update.');
-requireText('v2 checklist docs', checklist, 'Add v1.3 health, cast, and readability polish', 'V2 checklist is missing v1.3 polish entry.');
-requireText('v2 checklist docs', checklist, 'salmon landing markers', 'V2 checklist is missing salmon marker update.');
-requireText('v2 checklist docs', checklist, 'cameo speed boosts', 'V2 checklist is missing encounter polish items.');
 requireText('v2 architecture docs', architecture, 'width: 49', 'V2 architecture Mom dimensions are stale.');
 requireText('v2 architecture docs', architecture, 'player.health', 'V2 architecture docs are missing player health ownership.');
 requireText('v2 architecture docs', architecture, 'V2 is now the active Hockey Smash path', 'V2 architecture docs still describe the old isolated-only plan.');
-requireText('v1.3 polish notes', polishNotes, 'Alaska kid cameo', 'V1.3 polish notes are missing cameo detail.');
-requireText('v1.3 polish notes', polishNotes, 'Daniel Sister Support', 'V1.3 polish notes are missing sister support detail.');
-requireText('encounter polish plan', encounterPolishPlan, 'Reviewer Take', 'V2 encounter polish plan is missing reviewer notes.');
-requireText('encounter polish plan', encounterPolishPlan, 'perfect catch bonus', 'V2 encounter polish plan is missing salmon scoring notes.');
-requireText('encounter polish plan', encounterPolishPlan, 'Dad lawn mower asset', 'V2 encounter polish plan is missing Dad asset follow-up.');
 requireText('sprite sheet port docs', spriteSheetPort, 'dual matte expression', 'Sprite sheet port docs should document matte cleanup.');
 requireText('sprite sheet port docs', spriteSheetPort, 'SPRITE_SHEETS', 'Sprite sheet port docs should document renderer metadata.');
 requireText('parallax placeholders', parallaxPlaceholders, 'hockey-smash-parallax-skyline-far-1536x576.svg', 'Far parallax placeholder spec is missing.');

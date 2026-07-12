@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.6.0 - Game Feel And Repository Cleanup
+
+- Added lightweight particle bursts for catches, perfect catches, hard landings, damage, and Salmon Run completion.
+- Added clear missed-salmon feedback and combo reset behavior.
+- Reduced unfair salmon clusters by retrying nearby horizontal spawn positions.
+- Consolidated current gameplay-feel documentation into `docs/GAMEPLAY_POLISH.md`.
+- Removed superseded planning documents, a tracked test artifact, and unused raster background exports.
+- Simplified verification so it checks the current product contract instead of retired migration notes.
+
 ## 1.5.2 - Complete Pad And Sprite Proportions
 
 - Added visible reserved up/down directions to the circular movement pad.

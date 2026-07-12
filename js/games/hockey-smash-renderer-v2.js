@@ -377,6 +377,10 @@
   function renderEffects(ctx, world) {
     (world.effects || []).forEach((effect) => {
       if (!effect || effect.life <= 0) return;
+      if (effect.kind === 'burst') {
+        renderBurst(ctx, effect);
+        return;
+      }
       ctx.save();
       ctx.globalAlpha = Math.max(0, Math.min(1, effect.life / 0.8));
       ctx.fillStyle = '#fff27a';
@@ -384,6 +388,27 @@
       ctx.fillText(String(effect.text || ''), effect.x || 0, effect.y || 0);
       ctx.restore();
     });
+  }
+
+  function renderBurst(ctx, effect) {
+    const maxLife = effect.maxLife || 0.6;
+    const progress = Math.max(0, Math.min(1, 1 - effect.life / maxLife));
+    const count = Math.max(1, effect.particles || 8);
+    const spread = effect.spread || 50;
+    ctx.save();
+    ctx.globalAlpha = 1 - progress;
+    ctx.fillStyle = effect.color || '#fff27a';
+    for (let index = 0; index < count; index += 1) {
+      const angle = (Math.PI * 2 * index / count) + (index % 2) * 0.19;
+      const distance = spread * progress * (0.55 + (index % 3) * 0.2);
+      const x = (effect.x || 0) + Math.cos(angle) * distance;
+      const y = (effect.y || 0) + Math.sin(angle) * distance + progress * progress * 18;
+      const size = Math.max(1.5, 4.5 * (1 - progress));
+      ctx.beginPath();
+      ctx.arc(x, y, size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
   }
 
   function renderCountdown(ctx, world, width, height) {

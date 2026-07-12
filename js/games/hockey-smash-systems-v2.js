@@ -63,6 +63,7 @@
     const { world, input, World } = game;
     const { DESIGN_WIDTH, GROUND_Y } = game.constants;
     const player = world.player;
+    const wasGrounded = Boolean(player.grounded);
     player.invulnerable = Math.max(0, (player.invulnerable || 0) - dt);
     player.speedBoost = Math.max(0, (player.speedBoost || 0) - dt);
     player.comboTimer = Math.max(0, (player.comboTimer || 0) - dt);
@@ -124,11 +125,18 @@
     player.vy += world.tuning.gravity * dt;
     player.y += player.vy * dt;
     if (player.y + player.height >= GROUND_Y) {
+      const landingSpeed = player.vy;
       player.y = GROUND_Y - player.height;
       player.vy = 0;
       player.grounded = true;
       player.airJumpsRemaining = world.tuning.airJumps || 1;
       player.coyoteTimer = world.tuning.coyoteTimeSeconds || 0.09;
+      if (!wasGrounded && landingSpeed > 260) {
+        world.effects.push({
+          kind: 'burst', x: player.x + player.width / 2, y: GROUND_Y - 5,
+          color: '#d8edf5', particles: 8, spread: 42, life: 0.42, maxLife: 0.42,
+        });
+      }
     }
     if (!player.grounded) {
       player.duckActive = false;
@@ -174,7 +182,17 @@
       }
 
       if (rectsOverlap(playerBox, hitbox(entity, 4))) collectSalmon(game, entity);
-      if (entity.y > DESIGN_HEIGHT + 70) entity.dead = true;
+      if (entity.y > DESIGN_HEIGHT + 70) {
+        entity.dead = true;
+        world.player.combo = 0;
+        world.player.comboTimer = 0;
+        world.effects.push({
+          x: entity.x + entity.width / 2,
+          y: GROUND_Y - 18,
+          text: 'MISSED',
+          life: 0.55,
+        });
+      }
     });
 
     world.entities = world.entities.filter((entity) => entity && !entity.dead);
@@ -201,6 +219,16 @@
       text: isPerfect ? `PERFECT +${points}` : `+${points}`,
       life: 0.6,
     });
+    world.effects.push({
+      kind: 'burst',
+      x: entity.x + entity.width / 2,
+      y: entity.y + entity.height / 2,
+      color: isPerfect ? '#fff27a' : '#78dcff',
+      particles: isPerfect ? 14 : 8,
+      spread: isPerfect ? 70 : 46,
+      life: 0.55,
+      maxLife: 0.55,
+    });
     if (world.player.combo >= 3) {
       world.effects.push({
         x: entity.x + entity.width / 2,
@@ -215,8 +243,16 @@
   function spawnHarnessSalmon(game) {
     const { world, World } = game;
     const { DESIGN_WIDTH } = game.constants;
+    const activeSalmon = world.entities.filter((entity) => entity && !entity.dead && entity.type === 'salmon');
+    let spawnX = 36 + Math.random() * (DESIGN_WIDTH - 108);
+    // Give the player a readable choice: avoid dropping a new fish almost on top
+    // of an existing one when there is room elsewhere.
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      if (activeSalmon.every((entity) => Math.abs(entity.x - spawnX) >= 120)) break;
+      spawnX = 36 + Math.random() * (DESIGN_WIDTH - 108);
+    }
     const salmon = World.createSalmon(world, {
-      x: 36 + Math.random() * (DESIGN_WIDTH - 108),
+      x: spawnX,
       y: -70 - Math.random() * 90,
       vx: -75 + Math.random() * 150,
       vy: world.tuning.salmonFallVelocity + Math.random() * world.tuning.salmonFallVelocityRange,
