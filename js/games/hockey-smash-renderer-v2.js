@@ -286,10 +286,10 @@
         ctx.shadowColor = '#fff27a';
         ctx.shadowBlur = 18;
         ctx.globalAlpha = 0.96;
+        // Tint only pixels drawn by the salmon image. The old source-atop fill
+        // ran against the already-painted world and could create a gold box.
+        ctx.filter = 'sepia(1) saturate(4) hue-rotate(2deg) brightness(1.16)';
         drawSpriteOrPlaceholder(ctx, imageCache, getEntitySpriteKey(entity), drawBox, entity.type || 'ENTITY');
-        ctx.globalCompositeOperation = 'source-atop';
-        ctx.fillStyle = 'rgba(255, 210, 45, 0.38)';
-        ctx.fillRect(drawBox.x, drawBox.y, drawBox.width, drawBox.height);
         ctx.restore();
       } else {
         drawSpriteOrPlaceholder(ctx, imageCache, getEntitySpriteKey(entity), drawBox, entity.type || 'ENTITY');

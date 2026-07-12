@@ -110,10 +110,10 @@ requireText('v2 harness', harness, 'data-character="sofie"', 'Sofie selection is
 requireText('v2 harness', harness, 'data-action="stick"', 'Stick action control is missing.');
 requireText('v2 harness', harness, 'id="v2-fullscreen"', 'V2 fullscreen toggle is missing.');
 requireText('v2 harness', harness, 'id="v2-version-badge"', 'V2 version overlay badge is missing.');
-if (packageJson.version !== '2.1.0') errors.push('package.json version should be 2.1.0.');
+if (packageJson.version !== '2.1.1') errors.push('package.json version should be 2.1.1.');
 if (packageLock.version !== packageJson.version) errors.push('package-lock.json root version should match package.json.');
 if (packageLock.packages?.['']?.version !== packageJson.version) errors.push('package-lock package version should match package.json.');
-requireText('v2 harness', harness, "const VERSION_FALLBACK = '2.1.0'", 'V2 version fallback should match package.json.');
+requireText('v2 harness', harness, "const VERSION_FALLBACK = '2.1.1'", 'V2 version fallback should match package.json.');
 requireText('v2 harness', harness, 'loadVersionBadge', 'V2 version badge loader is missing.');
 requireText('v2 harness', harness, 'fetch(\'package.json\'', 'V2 version badge should read package.json when available.');
 requireText('v2 harness', harness, 'id="v2-hud-score"', 'V2 mobile scoring HUD is missing.');
@@ -125,6 +125,7 @@ requireText('v2 systems', systemsSource, "isPerfect ? 'GOLDEN PERFECT'", 'V2 gol
 requireText('v2 systems', systemsSource, "text: 'MISSED'", 'V2 missed-salmon feedback is missing.');
 requireText('v2 systems', systemsSource, "kind: 'burst'", 'V2 gameplay particle bursts are missing.');
 requireText('v2 renderer', rendererSource, 'function renderBurst', 'V2 particle burst renderer is missing.');
+forbidText('v2 renderer', rendererSource, "globalCompositeOperation = 'source-atop'", 'Golden salmon tint must not composite against the painted world.');
 requireText('v2 systems', systemsSource, 'COMBO x', 'V2 salmon combo feedback is missing.');
 requireText('v2 systems', systemsSource, 'addWarning', 'V2 encounter warning effect helper is missing.');
 requireText('v2 harness', harness, 'maybeApplyCameoBoost', 'V2 cameo boost proximity handler is missing.');
@@ -179,9 +180,9 @@ requireText('v2 systems', systemsSource, 'countActiveThreats', 'V2 active threat
 requireText('v2 harness', harness, 'HOCKEY_SMASH_WORLD_V2', 'V2 world script usage is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_RENDERER_V2', 'V2 renderer script usage is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_SYSTEMS_V2', 'V2 gameplay systems script usage is missing.');
-requireText('v2 harness', harness, 'hockey-smash-world-v2.js?v=2.1.0', 'V2 world script include should be cache-busted.');
-requireText('v2 harness', harness, 'hockey-smash-renderer-v2.js?v=2.1.0', 'V2 renderer script include should be cache-busted.');
-requireText('v2 harness', harness, 'hockey-smash-systems-v2.js?v=2.1.0', 'V2 gameplay systems script include should be cache-busted.');
+requireText('v2 harness', harness, 'hockey-smash-world-v2.js?v=2.1.1', 'V2 world script include should be cache-busted.');
+requireText('v2 harness', harness, 'hockey-smash-renderer-v2.js?v=2.1.1', 'V2 renderer script include should be cache-busted.');
+requireText('v2 harness', harness, 'hockey-smash-systems-v2.js?v=2.1.1', 'V2 gameplay systems script include should be cache-busted.');
 requireText('v2 harness', harness, 'BEST_SCORE_KEY', 'V2 personal-best storage is missing.');
 requireText('v2 harness', harness, 'bindPauseControls', 'V2 pause controls are missing.');
 requireText('v2 harness', harness, 'visibilitychange', 'V2 should pause when the tab is hidden.');

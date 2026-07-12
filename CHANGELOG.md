@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.1.1 - Golden Salmon Composite Fix
+
+- Removed the canvas-wide `source-atop` tint that could paint rectangular artifacts around golden salmon.
+- Applied the golden treatment as an image filter during the salmon draw only.
+- Unified all four active direction arrows to the same color and opacity.
+- Added verification that rejects the unsafe composite mode.
+
 ## 2.1.0 - Clean Creature Animation
 
 - Replaced corrupted salmon, bear, moose, and eagle sheets with clean transparent six-frame assets.

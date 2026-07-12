@@ -468,7 +468,7 @@
         border: 0;
         border-radius: 0;
         background: transparent;
-        color: rgba(255, 255, 255, 0.55);
+        color: rgba(255, 255, 255, 0.62);
         font-size: 16px;
         line-height: 1;
         touch-action: none;
@@ -480,7 +480,7 @@
         position: absolute;
         left: 50%;
         z-index: 0;
-        color: rgba(255, 255, 255, 0.38);
+        color: rgba(255, 255, 255, 0.62);
         font-size: 14px;
         line-height: 1;
         width: 42%;
@@ -850,7 +850,7 @@
             </span>
             <span class="v2-fullscreen__label">Fullscreen</span>
           </button>
-          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v2.1.0</div>
+          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v2.1.1</div>
           <div id="v2-hud" class="v2-hud" aria-live="polite">
             <div class="v2-hud__stack">
               <div class="v2-hud__row">
@@ -966,9 +966,9 @@
       </section>
     </main>
 
-    <script src="js/games/hockey-smash-world-v2.js?v=2.1.0"></script>
-    <script src="js/games/hockey-smash-renderer-v2.js?v=2.1.0"></script>
-    <script src="js/games/hockey-smash-systems-v2.js?v=2.1.0"></script>
+    <script src="js/games/hockey-smash-world-v2.js?v=2.1.1"></script>
+    <script src="js/games/hockey-smash-renderer-v2.js?v=2.1.1"></script>
+    <script src="js/games/hockey-smash-systems-v2.js?v=2.1.1"></script>
     <script>
       (function () {
         const DESIGN_WIDTH = 1024;
@@ -1043,7 +1043,7 @@
         const World = window.HOCKEY_SMASH_WORLD_V2;
         const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
         const Systems = window.HOCKEY_SMASH_SYSTEMS_V2;
-        const VERSION_FALLBACK = '2.1.0';
+        const VERSION_FALLBACK = '2.1.1';
         const BEST_SCORE_KEY = 'hockey-smash-best-score';
         const SOUND_KEY = 'hockey-smash-sound-muted';
         const debugEnabled = new URLSearchParams(window.location.search).has('debug');

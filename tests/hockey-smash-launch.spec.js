@@ -29,9 +29,9 @@ test('root serves Hockey Smash game', async ({ page }) => {
     canvasWidth: 1024,
     canvasHeight: 576,
   });
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.1.0'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.1.0'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.1.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.1.1'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.1.1'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.1.1'))).toBe(true);
   expect(requestedUrls.some((url) => url.includes('player-run-headless-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('dad-run-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('mom-run-sheet.webp'))).toBe(false);
@@ -860,4 +860,12 @@ test('direction pad stays thumb-sized when the browser uses very large text', as
   expect(size.sideFontSize).toBe('16px');
   expect(size.topGap).toBeGreaterThanOrEqual(8);
   expect(size.bottomGap).toBeGreaterThanOrEqual(8);
+});
+
+test('golden salmon tint cannot paint a rectangular composite artifact', async ({ page }) => {
+  await page.goto('/');
+  const rendererSource = await page.request.get('/js/games/hockey-smash-renderer-v2.js?v=2.1.1');
+  const source = await rendererSource.text();
+  expect(source).toContain("ctx.filter = 'sepia(1) saturate(4)");
+  expect(source).not.toContain("globalCompositeOperation = 'source-atop'");
 });
