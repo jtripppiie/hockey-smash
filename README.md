@@ -7,7 +7,7 @@ You pick Daniel or Sofie, type a player name, catch falling salmon, then survive
 Current version:
 
 ```text
-2.2.1
+2.2.2
 ```
 
 ## Quick Start
@@ -171,7 +171,7 @@ Good:
 ```text
 daniel-hockey-idle.webp
 projectile-hockey-puck.webp
-bear-walk-01.webp
+bear-walk-sheet-v2.png
 ```
 
 Avoid:

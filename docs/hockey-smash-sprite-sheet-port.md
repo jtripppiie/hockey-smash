@@ -15,7 +15,7 @@ eagle-fly-sheet-v2.png
 salmon-static-v2.png (single-image replacement; no animation sheet)
 ```
 
-The older one-frame and per-frame WebP files remain as fallbacks.
+Retired one-frame and per-frame creature fallbacks have been removed. If an active sheet fails to load, the renderer shows a labeled placeholder so a missing asset is obvious instead of silently switching artwork.
 
 ## Source Assets
 

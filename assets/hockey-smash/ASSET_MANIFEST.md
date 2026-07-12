@@ -51,10 +51,8 @@ character-or-entity-action-or-state-frame.webp
 | `sprites/moose-static-v2.png` | Clean static moose | 334x365 | Single transparent encounter image with preserved proportions. |
 | `sprites/eagle-fly-sheet-v2.png` | Clean six-frame eagle flight sheet | 2172x724 | Transparent full wing-flap cycle. |
 | `sprites/salmon-static-v2.png` | Clean static salmon | 390x195 | Single transparent collectible image; horizontally flipped by entity facing. |
-| `sprites/bear-walk-01.webp` through `sprites/bear-walk-06.webp` | Bear walk animation frames | source dimensions | Legacy fallback if sheet loading fails. |
-| `sprites/eagle-flap-mid.webp` | Eagle encounter sprite | source dimensions | Legacy fallback if sheet loading fails. |
-| `sprites/dad-cameo.webp` | Dad mower encounter | source dimensions | Legacy fallback if sheet loading fails. |
-| `sprites/mom-cameo.webp` | Mom cameo | source dimensions | Legacy fallback if sheet loading fails. |
+| `sprites/dad-cameo.webp` | Dad mower encounter | source dimensions | Active Dad encounter art. |
+| `sprites/mom-cameo.webp` | Mom cameo | source dimensions | Active Mom cameo art. |
 | `sprites/alaska-boy-cameo.webp` | Alaska boy cameo | source dimensions | Active v2 boost cameo. |
 | `sprites/alaska-girl-cameo.webp` | Alaska girl cameo | source dimensions | Active v2 boost cameo. |
 | `sprites/projectile-hockey-puck.webp` | Daniel projectile | 32x24 | Generated transparent WebP. |

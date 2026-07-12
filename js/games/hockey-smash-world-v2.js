@@ -29,13 +29,6 @@
     moose: 'assets/hockey-smash/sprites/moose-static-v2.png',
     eagleFlySheet: 'assets/hockey-smash/sprites/eagle-fly-sheet-v2.png',
     salmon: 'assets/hockey-smash/sprites/salmon-static-v2.png',
-    bear: 'assets/hockey-smash/sprites/bear-walk-01.webp',
-    bear1: 'assets/hockey-smash/sprites/bear-walk-01.webp',
-    bear2: 'assets/hockey-smash/sprites/bear-walk-02.webp',
-    bear3: 'assets/hockey-smash/sprites/bear-walk-03.webp',
-    bear4: 'assets/hockey-smash/sprites/bear-walk-04.webp',
-    bear5: 'assets/hockey-smash/sprites/bear-walk-05.webp',
-    bear6: 'assets/hockey-smash/sprites/bear-walk-06.webp',
     dad: 'assets/hockey-smash/sprites/dad-cameo.webp',
     mom: 'assets/hockey-smash/sprites/mom-cameo.webp',
     danceInstructor: 'assets/hockey-smash/sprites/sofie-dance-instructor.webp',
@@ -43,7 +36,6 @@
     alaskanGirl: 'assets/hockey-smash/sprites/alaska-girl-cameo.webp',
     projectilePuck: 'assets/hockey-smash/sprites/projectile-hockey-puck.webp',
     projectileShoe: 'assets/hockey-smash/sprites/projectile-dancer-shoe.webp',
-    eagle: 'assets/hockey-smash/sprites/eagle-flap-mid.webp',
   });
 
   const DEFAULT_TUNING = Object.freeze({

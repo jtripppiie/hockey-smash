@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.2.2 - Remove Retired Creature Fallbacks
+
+- Removed the legacy creature fallback-selection function from the renderer.
+- Removed six obsolete bear frames and three obsolete eagle frames.
+- Removed stale sprite-map keys, verifier requirements, manifest entries, and documentation claims.
+- Bear/eagle now use only their clean sheets; moose/salmon use only their clean static images.
+- Missing active creature art now produces an obvious labeled placeholder instead of silently switching sources.
+
 ## 2.2.1 - Visible Hits And Static Moose
 
 - Projectiles can only hit or dismiss targets while both objects overlap the visible playfield.

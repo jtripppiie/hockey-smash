@@ -595,24 +595,10 @@
     return positiveModulo(Math.floor(phase * fps), frames);
   }
 
-  function getLegacySheetFallback(spriteKey, entity) {
-    if (spriteKey === 'bearWalkSheet') {
-      const frames = ['bear1', 'bear2', 'bear3', 'bear4', 'bear5', 'bear6'];
-      return frames[Math.floor((entity?.age || 0) * 8) % frames.length];
-    }
-    if (spriteKey === 'eagleFlySheet') return 'eagle';
-    return null;
-  }
-
   function drawSpriteOrPlaceholder(ctx, imageCache, spriteKey, box, label) {
     if (SPRITE_SHEETS[spriteKey]) {
       const sheetRect = drawAnimatedSheetSprite(ctx, imageCache, spriteKey, box, getEntitySheetOptions(box));
       if (sheetRect) return;
-      const fallbackKey = getLegacySheetFallback(spriteKey, box);
-      if (fallbackKey && fallbackKey !== spriteKey) {
-        drawSpriteOrPlaceholder(ctx, imageCache, fallbackKey, box, label);
-        return;
-      }
     }
 
     const image = imageCache.get(spriteKey);
