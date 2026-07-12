@@ -29,9 +29,9 @@ test('root serves Hockey Smash game', async ({ page }) => {
     canvasWidth: 1024,
     canvasHeight: 576,
   });
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.0.1'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.0.1'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.0.1'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.1.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.1.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.1.0'))).toBe(true);
   expect(requestedUrls.some((url) => url.includes('player-run-headless-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('dad-run-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('mom-run-sheet.webp'))).toBe(false);
@@ -838,9 +838,26 @@ test('direction pad stays thumb-sized when the browser uses very large text', as
   const size = await page.evaluate(() => {
     document.documentElement.style.fontSize = '46px';
     const box = document.querySelector('.v2-dpad').getBoundingClientRect();
-    return { width: box.width, height: box.height };
+    const up = document.querySelector('.v2-dpad__reserved--up');
+    const down = document.querySelector('.v2-dpad__reserved--down');
+    const knob = document.querySelector('.v2-dpad__knob').getBoundingClientRect();
+    const upBox = up.getBoundingClientRect();
+    const downBox = down.getBoundingClientRect();
+    const arrow = document.querySelector('.v2-dpad__direction');
+    return {
+      width: box.width,
+      height: box.height,
+      upFontSize: getComputedStyle(up).fontSize,
+      sideFontSize: getComputedStyle(arrow).fontSize,
+      topGap: knob.top - upBox.bottom,
+      bottomGap: downBox.top - knob.bottom,
+    };
   });
   expect(size.width).toBeLessThanOrEqual(104);
   expect(size.height).toBeLessThanOrEqual(104);
   expect(size.width).toBeGreaterThanOrEqual(76);
+  expect(size.upFontSize).toBe('14px');
+  expect(size.sideFontSize).toBe('16px');
+  expect(size.topGap).toBeGreaterThanOrEqual(8);
+  expect(size.bottomGap).toBeGreaterThanOrEqual(8);
 });

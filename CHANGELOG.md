@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.1.0 - Clean Creature Animation
+
+- Replaced corrupted salmon, bear, moose, and eagle sheets with clean transparent six-frame assets.
+- Removed the retired sheets so their baked neon/matte artifacts cannot return as fallbacks.
+- Updated renderer trim metadata for the new frame silhouettes.
+- Wired the moose's dedicated head-lowered frame to its grazing state.
+- Increased visible clearance between the direction pad's top/bottom arrows and center knob.
+- Added browser assertions for the vertical direction-icon gaps.
+
+## 2.0.2 - Direction Icon Spacing
+
+- Fixed all four direction arrows at 16px so accessibility text scaling cannot enlarge the glyphs.
+- Added visible clearance between the up/down arrows, center knob, and outer rim.
+- Expanded the large-text browser regression to verify arrow sizing.
+
 ## 2.0.1 - Direction Pad Size Guard
 
 - Capped the circular direction pad at 104px instead of sizing it with text-relative units.

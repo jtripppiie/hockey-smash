@@ -9,10 +9,10 @@ Hockey Smash v1.4.0 ports the generated wildlife sprite-sheet work into the v2 c
 New runtime sheets live in `assets/hockey-smash/sprites/`:
 
 ```text
-bear-walk-sheet.webp
-moose-walk-sheet.webp
-eagle-fly-sheet.webp
-salmon-swim-sheet.webp
+bear-walk-sheet-v2.png
+moose-walk-sheet-v2.png
+eagle-fly-sheet-v2.png
+salmon-swim-sheet-v2.png
 ```
 
 The older one-frame and per-frame WebP files remain as fallbacks.

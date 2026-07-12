@@ -7,7 +7,7 @@ You pick Daniel or Sofie, type a player name, catch falling salmon, then survive
 Current version:
 
 ```text
-2.0.1
+2.1.0
 ```
 
 ## Quick Start

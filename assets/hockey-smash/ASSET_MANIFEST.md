@@ -13,7 +13,7 @@ The game is currently in **playable preview plus starter asset** state:
 - Optional image spec: complete.
 - Starter image assets: generated and placed in project folders.
 - Playable implementation: underway on `main`.
-- Production sprite sheets are pre-keyed to transparent WebP and loaded by the canvas renderer.
+- Production sprite sheets use transparent PNG/WebP and are loaded by the canvas renderer.
 
 ## Generated Assets
 
@@ -47,10 +47,10 @@ character-or-entity-action-or-state-frame.webp
 | `sprites/sofie-dancer-idle.webp` | Sofie player idle/run pose | source dimensions | Active v2 player sprite. |
 | `sprites/sofie-dance-spin.webp` | Sofie spin/slide pose | source dimensions | Also reused for Daniel sister support until dedicated art exists. |
 | `sprites/sofie-dance-instructor.webp` | Sofie dance instructor encounter | source dimensions | Active v2 instructor/teacher encounter. |
-| `sprites/bear-walk-sheet.webp` | Six-frame bear walk sheet | 2172x724 | Active v1.4.0 bear encounter animation. |
-| `sprites/moose-walk-sheet.webp` | Six-frame moose walk sheet | 2172x724 | Active v1.4.0 moose encounter animation. |
-| `sprites/eagle-fly-sheet.webp` | Six-frame eagle flight sheet | 2172x724 | Active v1.4.0 eagle encounter animation. |
-| `sprites/salmon-swim-sheet.webp` | Six-frame salmon swim sheet | 2172x724 | Active v1.4.0 salmon collectible animation. |
+| `sprites/bear-walk-sheet-v2.png` | Clean six-frame bear walk sheet | 2172x724 | Transparent artifact-free bear encounter animation. |
+| `sprites/moose-walk-sheet-v2.png` | Clean six-frame moose walk/graze sheet | 2172x724 | Five walk poses plus a head-lowered grazing pose. |
+| `sprites/eagle-fly-sheet-v2.png` | Clean six-frame eagle flight sheet | 2172x724 | Transparent full wing-flap cycle. |
+| `sprites/salmon-swim-sheet-v2.png` | Clean six-frame salmon swim sheet | 2172x724 | Transparent flexing salmon collectible animation. |
 | `sprites/salmon-falling.webp` | Falling salmon collectible | source dimensions | Active v2 salmon sprite. |
 | `sprites/bear-walk-01.webp` through `sprites/bear-walk-06.webp` | Bear walk animation frames | source dimensions | Legacy fallback if sheet loading fails. |
 | `sprites/moose-walk-01.webp` through `sprites/moose-walk-03.webp` | Moose walk animation frames | source dimensions | Legacy fallback if sheet loading fails. |
@@ -64,7 +64,7 @@ character-or-entity-action-or-state-frame.webp
 
 ## Transparency Notes
 
-The current runtime sprite assets are WebP files. Projectile sprites were produced from green-screen sources using `ffmpeg` and the `colorkey` filter. The v1.4.0 wildlife and salmon sprite sheets were ported from the shared Alaska graphics work with a stricter dual matte expression that removes magenta/purple and green source backgrounds before exporting lossless transparent WebP.
+Runtime sprites use transparent WebP or PNG. Projectile sprites were produced from green-screen sources using `ffmpeg` and the `colorkey` filter. The current wildlife and salmon sheets were generated as consistent six-frame chroma-key sheets, converted locally to alpha with a soft matte and despill, and validated at original resolution. They replace retired sheets whose magenta/purple matte corruption was baked into the pixels.
 
 PNG files are retained only where they are still used by the parallax background pipeline. Source-only sprite copies and unused alternate background variants are intentionally removed so the asset folder stays easy to understand.
 
