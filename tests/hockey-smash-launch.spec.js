@@ -29,9 +29,9 @@ test('root serves Hockey Smash game', async ({ page }) => {
     canvasWidth: 1024,
     canvasHeight: 576,
   });
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.0.0'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.0.0'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.0.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.0.1'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.0.1'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.0.1'))).toBe(true);
   expect(requestedUrls.some((url) => url.includes('player-run-headless-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('dad-run-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('mom-run-sheet.webp'))).toBe(false);
@@ -829,4 +829,18 @@ test('championship edition exposes sound, golden salmon, active pad directions, 
   });
   await expect(page.locator('#v2-game-over-title')).toHaveText('Soldotna Champion!');
   await expect(page.locator('#v2-game-frame')).toHaveClass(/is-game-over/);
+});
+
+test('direction pad stays thumb-sized when the browser uses very large text', async ({ page }) => {
+  await page.setViewportSize({ width: 470, height: 720 });
+  await page.goto('/');
+  await page.click('#v2-start');
+  const size = await page.evaluate(() => {
+    document.documentElement.style.fontSize = '46px';
+    const box = document.querySelector('.v2-dpad').getBoundingClientRect();
+    return { width: box.width, height: box.height };
+  });
+  expect(size.width).toBeLessThanOrEqual(104);
+  expect(size.height).toBeLessThanOrEqual(104);
+  expect(size.width).toBeGreaterThanOrEqual(76);
 });

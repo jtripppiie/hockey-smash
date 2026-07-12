@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.0.1 - Direction Pad Size Guard
+
+- Capped the circular direction pad at 104px instead of sizing it with text-relative units.
+- Kept the pad between 76px and 104px across narrow viewports and large accessibility text settings.
+- Added browser coverage that reproduces a 46px root font and verifies the pad remains thumb-sized.
+
 ## 2.0.0 - Championship Edition
 
 - Activated all four circular-pad directions: left/right move, up jumps, and down slides or ducks.

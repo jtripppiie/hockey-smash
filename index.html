@@ -444,9 +444,11 @@
         outline-offset: 3px;
       }
       .v2-dpad {
+        --v2-dpad-size: clamp(76px, 22vw, 104px);
+        --v2-dpad-travel: clamp(16px, 4vw, 23px);
         position: relative;
-        width: 6.5rem;
-        height: 6.5rem;
+        width: var(--v2-dpad-size);
+        height: var(--v2-dpad-size);
         overflow: hidden;
         border: 2px solid rgba(255, 255, 255, 0.28);
         border-radius: 50%;
@@ -471,8 +473,8 @@
         touch-action: none;
         -webkit-tap-highlight-color: transparent;
       }
-      .v2-dpad__direction[data-action="left"] { left: 0; padding-right: 1.8rem; }
-      .v2-dpad__direction[data-action="right"] { right: 0; padding-left: 1.8rem; }
+      .v2-dpad__direction[data-action="left"] { left: 0; padding-right: 28px; }
+      .v2-dpad__direction[data-action="right"] { right: 0; padding-left: 28px; }
       .v2-dpad__reserved {
         position: absolute;
         left: 50%;
@@ -499,8 +501,8 @@
         left: 50%;
         top: 50%;
         z-index: 2;
-        width: 2.65rem;
-        height: 2.65rem;
+        width: clamp(32px, 9vw, 42px);
+        height: clamp(32px, 9vw, 42px);
         border: 2px solid rgba(255, 255, 255, 0.38);
         border-radius: 50%;
         background: rgba(234, 242, 255, 0.2);
@@ -511,19 +513,19 @@
       }
       .v2-dpad[data-direction="left"] .v2-dpad__knob {
         background: #fff27a;
-        transform: translate(calc(-50% - 1.45rem), -50%);
+        transform: translate(calc(-50% - var(--v2-dpad-travel)), -50%);
       }
       .v2-dpad[data-direction="right"] .v2-dpad__knob {
         background: #fff27a;
-        transform: translate(calc(-50% + 1.45rem), -50%);
+        transform: translate(calc(-50% + var(--v2-dpad-travel)), -50%);
       }
       .v2-dpad[data-direction="jump"] .v2-dpad__knob {
         background: #fff27a;
-        transform: translate(-50%, calc(-50% - 1.45rem));
+        transform: translate(-50%, calc(-50% - var(--v2-dpad-travel)));
       }
       .v2-dpad[data-direction="slide"] .v2-dpad__knob {
         background: #fff27a;
-        transform: translate(-50%, calc(-50% + 1.45rem));
+        transform: translate(-50%, calc(-50% + var(--v2-dpad-travel)));
       }
       .v2-control svg {
         pointer-events: none;
@@ -847,7 +849,7 @@
             </span>
             <span class="v2-fullscreen__label">Fullscreen</span>
           </button>
-          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v2.0.0</div>
+          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v2.0.1</div>
           <div id="v2-hud" class="v2-hud" aria-live="polite">
             <div class="v2-hud__stack">
               <div class="v2-hud__row">
@@ -963,9 +965,9 @@
       </section>
     </main>
 
-    <script src="js/games/hockey-smash-world-v2.js?v=2.0.0"></script>
-    <script src="js/games/hockey-smash-renderer-v2.js?v=2.0.0"></script>
-    <script src="js/games/hockey-smash-systems-v2.js?v=2.0.0"></script>
+    <script src="js/games/hockey-smash-world-v2.js?v=2.0.1"></script>
+    <script src="js/games/hockey-smash-renderer-v2.js?v=2.0.1"></script>
+    <script src="js/games/hockey-smash-systems-v2.js?v=2.0.1"></script>
     <script>
       (function () {
         const DESIGN_WIDTH = 1024;
@@ -1040,7 +1042,7 @@
         const World = window.HOCKEY_SMASH_WORLD_V2;
         const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
         const Systems = window.HOCKEY_SMASH_SYSTEMS_V2;
-        const VERSION_FALLBACK = '2.0.0';
+        const VERSION_FALLBACK = '2.0.1';
         const BEST_SCORE_KEY = 'hockey-smash-best-score';
         const SOUND_KEY = 'hockey-smash-sound-muted';
         const debugEnabled = new URLSearchParams(window.location.search).has('debug');
