@@ -462,6 +462,18 @@
       }
       .v2-dpad__direction[data-action="left"] { left: 0; padding-right: 1.8rem; }
       .v2-dpad__direction[data-action="right"] { right: 0; padding-left: 1.8rem; }
+      .v2-dpad__reserved {
+        position: absolute;
+        left: 50%;
+        z-index: 0;
+        color: rgba(255, 255, 255, 0.38);
+        font-size: 1rem;
+        line-height: 1;
+        pointer-events: none;
+        transform: translateX(-50%);
+      }
+      .v2-dpad__reserved--up { top: 0.55rem; }
+      .v2-dpad__reserved--down { bottom: 0.55rem; }
       .v2-dpad__direction:focus-visible {
         outline: 3px solid #fff27a;
         outline-offset: -5px;
@@ -811,7 +823,7 @@
             </span>
             <span class="v2-fullscreen__label">Fullscreen</span>
           </button>
-          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v1.5.1</div>
+          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v1.5.2</div>
           <div id="v2-hud" class="v2-hud" aria-live="polite">
             <div class="v2-hud__stack">
               <div class="v2-hud__row">
@@ -874,8 +886,10 @@
           <div class="v2-controls" aria-label="Hockey Smash arena controls">
             <div class="v2-control-group v2-control-group--dpad" aria-label="Movement controls">
               <div class="v2-dpad" data-dpad data-direction="center" aria-label="Circular direction pad">
+                <span class="v2-dpad__reserved v2-dpad__reserved--up" aria-hidden="true">▲</span>
                 <button class="v2-dpad__direction" type="button" data-action="left" data-dpad-action aria-label="Move left">◀</button>
                 <button class="v2-dpad__direction" type="button" data-action="right" data-dpad-action aria-label="Move right">▶</button>
+                <span class="v2-dpad__reserved v2-dpad__reserved--down" aria-hidden="true">▼</span>
                 <span class="v2-dpad__knob" aria-hidden="true"></span>
               </div>
             </div>
@@ -924,9 +938,9 @@
       </section>
     </main>
 
-    <script src="js/games/hockey-smash-world-v2.js?v=1.5.1"></script>
-    <script src="js/games/hockey-smash-renderer-v2.js?v=1.5.1"></script>
-    <script src="js/games/hockey-smash-systems-v2.js?v=1.5.1"></script>
+    <script src="js/games/hockey-smash-world-v2.js?v=1.5.2"></script>
+    <script src="js/games/hockey-smash-renderer-v2.js?v=1.5.2"></script>
+    <script src="js/games/hockey-smash-systems-v2.js?v=1.5.2"></script>
     <script>
       (function () {
         const DESIGN_WIDTH = 1024;
@@ -1000,7 +1014,7 @@
         const World = window.HOCKEY_SMASH_WORLD_V2;
         const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
         const Systems = window.HOCKEY_SMASH_SYSTEMS_V2;
-        const VERSION_FALLBACK = '1.5.1';
+        const VERSION_FALLBACK = '1.5.2';
         const BEST_SCORE_KEY = 'hockey-smash-best-score';
         const debugEnabled = new URLSearchParams(window.location.search).has('debug');
         const input = {

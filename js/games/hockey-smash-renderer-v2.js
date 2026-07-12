@@ -618,13 +618,23 @@
 
     const image = imageCache.get(spriteKey);
     if (image?.complete && image.naturalWidth) {
+      const preserveAspect = ['mom', 'dad', 'danceInstructor', 'alaskanBoy', 'alaskanGirl'].includes(spriteKey);
+      const boxWidth = box.width || 48;
+      const boxHeight = box.height || 48;
+      const scale = preserveAspect
+        ? Math.min(boxWidth / image.naturalWidth, boxHeight / image.naturalHeight)
+        : null;
+      const drawWidth = preserveAspect ? image.naturalWidth * scale : boxWidth;
+      const drawHeight = preserveAspect ? image.naturalHeight * scale : boxHeight;
+      const drawX = (box.x || 0) + (boxWidth - drawWidth) / 2;
+      const drawY = (box.y || 0) + boxHeight - drawHeight;
       ctx.save();
       if (box.facing < 0) {
-        ctx.translate((box.x || 0) + (box.width || 0), box.y || 0);
+        ctx.translate((box.x || 0) + boxWidth, 0);
         ctx.scale(-1, 1);
-        ctx.drawImage(image, 0, 0, box.width || 48, box.height || 48);
+        ctx.drawImage(image, boxWidth - (drawX - (box.x || 0)) - drawWidth, drawY, drawWidth, drawHeight);
       } else {
-        ctx.drawImage(image, box.x || 0, box.y || 0, box.width || 48, box.height || 48);
+        ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
       }
       ctx.restore();
       return;

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.2 - Complete Pad And Sprite Proportions
+
+- Added visible reserved up/down directions to the circular movement pad.
+- Preserved the original aspect ratios of Mom, Dad, the Alaska kids, and the dance instructor sprites.
+
 ## 1.5.1 - Circular Direction Pad
 
 - Replaced the separate left/right movement buttons with a circular direction pad.
