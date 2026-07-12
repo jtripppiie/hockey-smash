@@ -19,11 +19,101 @@ This separation is important. A salmon's position belongs in the world, its fall
 
 ## Run the Game
 
+You need a code editor (such as VS Code), a web browser, and a terminal. A terminal is a window where you type commands instead of clicking buttons.
+
+1. Open the `roadside-realm` folder in your code editor.
+2. Open a terminal in that folder. In VS Code, choose **Terminal > New Terminal**.
+3. Type this command and press Enter:
+
 ```bash
 python3 -m http.server 8000
 ```
 
-Open `http://localhost:8000/`. After a change, refresh the page. Use `http://localhost:8000/?debug=1` to see game state and press `H` for hitboxes or `G` for god mode.
+4. Open `http://localhost:8000/` in your browser.
+5. Leave the terminal running while you work. To stop the server, click the terminal and press **Ctrl+C**.
+
+After a change, save the file and refresh the browser. If the old version still appears, use a hard refresh: **Ctrl+Shift+R** on Windows/Linux or **Command+Shift+R** on a Mac.
+
+Use `http://localhost:8000/?debug=1` to see game state. Press `H` for hitboxes or `G` for god mode.
+
+## Your First Change: Jump Higher
+
+This experiment changes one number. It is safe, easy to see, and easy to undo.
+
+1. Start the game by following **Run the Game** above.
+2. In your editor, open `js/games/hockey-smash-world-v2.js`.
+3. Search for `jumpVelocity`. In most editors, press **Ctrl+F** or **Command+F** and type the word.
+4. You will find this line inside `DEFAULT_TUNING`:
+
+```js
+jumpVelocity: 810,
+```
+
+5. Change `810` to `950`:
+
+```js
+jumpVelocity: 950,
+```
+
+6. Save the file, refresh the browser, start a run, and press Jump. The player should jump higher.
+
+Why it works: `jumpVelocity` is the upward push given to the player. A larger number means a stronger jump. Try `700` for a lower jump or `1100` for a very high one. Change only this number so you know what caused the result.
+
+To undo the experiment, change the number back to `810`. If the game shows a blank page, check that the comma after the number is still there.
+
+## Your Second Change: Restyle the Direction Pad
+
+The direction pad is HTML styled with CSS. CSS is the part of a web page that controls colors, sizes, spacing, and shapes.
+
+1. Open `index.html`.
+2. Search for `.v2-control-group--dpad .v2-control`.
+3. You will see a block like this:
+
+```css
+.v2-control-group--dpad .v2-control {
+  width: 4.5rem;
+  min-width: 4.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  border-radius: 18px;
+  background: rgba(10, 20, 33, 0.72);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.95rem;
+}
+```
+
+4. Make one small change, save, and refresh. Here are safe experiments:
+
+| What you want | What to change | Example |
+| --- | --- | --- |
+| Wider buttons | `width` and `min-width` | `5rem` |
+| Rounder corners | `border-radius` | `28px` |
+| Brighter arrows | last number in `color` | `1` |
+| A blue pad | `background` | `rgba(20, 70, 120, 0.72)` |
+| More space between buttons | `gap` in `.v2-control-group--dpad` | `0.8rem` |
+
+`rgba` colors contain red, green, blue, and transparency. The final number goes from `0` (invisible) to `1` (solid).
+
+Do not remove the braces `{ }`, colons `:`, or semicolons `;`. They are punctuation the browser uses to understand CSS. If something looks wrong, undo once with **Ctrl+Z** or **Command+Z**, save, and refresh again.
+
+The line `-webkit-tap-highlight-color: transparent` elsewhere in the control styles prevents a blue rectangle from flashing over a button on some phones. Leave it in place unless you are deliberately experimenting with touch feedback.
+
+## Check Your Work
+
+Play the game first. Try both left and right controls, jump several times, and check both portrait and landscape orientation if you have a phone.
+
+Then run:
+
+```bash
+npm run verify
+```
+
+If it says `Hockey Smash v2 verification passed`, the basic checks succeeded. For the full browser test, run:
+
+```bash
+npm run test:browser
+```
+
+If a command fails, read the first error—not all the errors at once. The first one is usually the useful clue. You can always undo your last edit and try a smaller change.
 
 ## Read the Code in This Order
 
@@ -75,7 +165,7 @@ npm run verify
 npm run test:browser
 ```
 
-The first command catches missing files, syntax errors, version drift, and important architecture mistakes. The second opens a real browser and checks player-visible behavior. Tests are a safety net, not a replacement for playing.
+The first command catches missing files, syntax errors, version drift, and important architecture mistakes. The second opens a real browser and checks player-visible behavior. Tests are a safety net, not a replacement for playing. If this is your first lesson, the longer **Check Your Work** section above explains these commands more gently.
 
 ## When Something Breaks
 

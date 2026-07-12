@@ -407,6 +407,9 @@
         gap: 0.4rem;
         pointer-events: auto;
       }
+      .v2-control-group--dpad {
+        gap: 0.5rem;
+      }
       .v2-control {
         min-width: 3rem;
         min-height: 3rem;
@@ -422,6 +425,22 @@
         backdrop-filter: blur(8px);
         touch-action: none;
         user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        outline: none;
+      }
+      .v2-control:focus-visible {
+        outline: 3px solid #fff27a;
+        outline-offset: 3px;
+      }
+      .v2-control-group--dpad .v2-control {
+        /* Match the Android game's low-profile, thumb-friendly movement pads. */
+        width: 4.5rem;
+        min-width: 4.5rem;
+        border: 2px solid rgba(255, 255, 255, 0.28);
+        border-radius: 18px;
+        background: rgba(10, 20, 33, 0.72);
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 0.95rem;
       }
       .v2-control svg {
         pointer-events: none;
@@ -806,7 +825,7 @@
           </section>
 
           <div class="v2-controls" aria-label="Hockey Smash arena controls">
-            <div class="v2-control-group" aria-label="Movement controls">
+            <div class="v2-control-group v2-control-group--dpad" aria-label="Movement controls">
               <button class="v2-control" type="button" data-action="left" aria-label="Move left">◀</button>
               <button class="v2-control" type="button" data-action="right" aria-label="Move right">▶</button>
             </div>
