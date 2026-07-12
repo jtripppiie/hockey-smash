@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.2.1 - Visible Hits And Static Moose
+
+- Projectiles can only hit or dismiss targets while both objects overlap the visible playfield.
+- Replaced the moose animation sheet with one clean proportional static image.
+- Removed the duplicate `moose` sprite key that silently selected an obsolete fallback.
+- Removed the moose sheet and three unused legacy frame assets.
+- Added browser coverage proving off-screen targets survive and visible targets can still be hit.
+
 ## 2.2.0 - Objective And Accessibility Clarity
 
 - Added a phase-aware objective bar for the 20-salmon goal and 90-second championship survival goal.

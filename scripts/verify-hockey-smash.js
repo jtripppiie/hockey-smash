@@ -28,13 +28,11 @@ const requiredFiles = [
   'assets/hockey-smash/sprites/sofie-dancer-idle.webp',
   'assets/hockey-smash/sprites/sofie-dance-spin.webp',
   'assets/hockey-smash/sprites/bear-walk-sheet-v2.png',
-  'assets/hockey-smash/sprites/moose-walk-sheet-v2.png',
+  'assets/hockey-smash/sprites/moose-static-v2.png',
   'assets/hockey-smash/sprites/eagle-fly-sheet-v2.png',
   'assets/hockey-smash/sprites/salmon-static-v2.png',
   'assets/hockey-smash/sprites/bear-walk-01.webp',
   'assets/hockey-smash/sprites/bear-walk-06.webp',
-  'assets/hockey-smash/sprites/moose-walk-01.webp',
-  'assets/hockey-smash/sprites/moose-walk-03.webp',
   'assets/hockey-smash/sprites/eagle-flap-mid.webp',
   'assets/hockey-smash/sprites/mom-cameo.webp',
   'assets/hockey-smash/sprites/dad-cameo.webp',
@@ -109,10 +107,10 @@ requireText('v2 harness', harness, 'data-character="sofie"', 'Sofie selection is
 requireText('v2 harness', harness, 'data-action="stick"', 'Stick action control is missing.');
 requireText('v2 harness', harness, 'id="v2-fullscreen"', 'V2 fullscreen toggle is missing.');
 requireText('v2 harness', harness, 'id="v2-version-badge"', 'V2 version overlay badge is missing.');
-if (packageJson.version !== '2.2.0') errors.push('package.json version should be 2.2.0.');
+if (packageJson.version !== '2.2.1') errors.push('package.json version should be 2.2.1.');
 if (packageLock.version !== packageJson.version) errors.push('package-lock.json root version should match package.json.');
 if (packageLock.packages?.['']?.version !== packageJson.version) errors.push('package-lock package version should match package.json.');
-requireText('v2 harness', harness, "const VERSION_FALLBACK = '2.2.0'", 'V2 version fallback should match package.json.');
+requireText('v2 harness', harness, "const VERSION_FALLBACK = '2.2.1'", 'V2 version fallback should match package.json.');
 requireText('v2 harness', harness, 'loadVersionBadge', 'V2 version badge loader is missing.');
 requireText('v2 harness', harness, 'fetch(\'package.json\'', 'V2 version badge should read package.json when available.');
 requireText('v2 harness', harness, 'id="v2-hud-score"', 'V2 mobile scoring HUD is missing.');
@@ -181,9 +179,10 @@ requireText('v2 systems', systemsSource, 'countActiveThreats', 'V2 active threat
 requireText('v2 harness', harness, 'HOCKEY_SMASH_WORLD_V2', 'V2 world script usage is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_RENDERER_V2', 'V2 renderer script usage is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_SYSTEMS_V2', 'V2 gameplay systems script usage is missing.');
-requireText('v2 harness', harness, 'hockey-smash-world-v2.js?v=2.2.0', 'V2 world script include should be cache-busted.');
-requireText('v2 harness', harness, 'hockey-smash-renderer-v2.js?v=2.2.0', 'V2 renderer script include should be cache-busted.');
-requireText('v2 harness', harness, 'hockey-smash-systems-v2.js?v=2.2.0', 'V2 gameplay systems script include should be cache-busted.');
+requireText('v2 harness', harness, 'hockey-smash-world-v2.js?v=2.2.1', 'V2 world script include should be cache-busted.');
+requireText('v2 harness', harness, 'hockey-smash-renderer-v2.js?v=2.2.1', 'V2 renderer script include should be cache-busted.');
+requireText('v2 harness', harness, 'hockey-smash-systems-v2.js?v=2.2.1', 'V2 gameplay systems script include should be cache-busted.');
+requireText('v2 systems', systemsSource, 'isInsidePlayfield', 'Projectile collisions should be limited to visible objects.');
 requireText('v2 harness', harness, 'id="v2-objective-fill"', 'V2 objective progress bar is missing.');
 requireText('v2 harness', harness, 'class="v2-control__cooldown"', 'V2 throw cooldown indicator is missing.');
 requireText('v2 harness', harness, 'prefers-reduced-motion: reduce', 'V2 reduced-motion support is missing.');
@@ -223,15 +222,13 @@ forbidText('v2 world', worldSource, 'player-run-headless-sheet.webp', 'Hockey Sm
 forbidText('v2 world', worldSource, 'dad-run-sheet.webp', 'Hockey Smash Dad should keep the Hockey Smash cameo art.');
 forbidText('v2 world', worldSource, 'mom-run-sheet.webp', 'Hockey Smash Mom should keep the Hockey Smash cameo art.');
 requireText('v2 world', worldSource, 'bear-walk-sheet-v2.png', 'V2 clean bear walk sheet asset is missing.');
-requireText('v2 world', worldSource, 'moose-walk-sheet-v2.png', 'V2 clean moose walk sheet asset is missing.');
+requireText('v2 world', worldSource, 'moose-static-v2.png', 'V2 clean static moose asset is missing.');
 requireText('v2 world', worldSource, 'eagle-fly-sheet-v2.png', 'V2 clean eagle fly sheet asset is missing.');
 requireText('v2 world', worldSource, 'salmon-static-v2.png', 'V2 clean static salmon asset is missing.');
 requireText('v2 world', worldSource, 'projectile-hockey-puck.webp', 'V2 hockey puck projectile asset is missing.');
 requireText('v2 world', worldSource, 'projectile-dancer-shoe.webp', 'V2 dancer shoe projectile asset is missing.');
 requireText('v2 world', worldSource, 'bear-walk-01.webp', 'V2 bear sprite should use descriptive walk-frame art.');
 requireText('v2 world', worldSource, 'bear-walk-06.webp', 'V2 bear animation frames are missing.');
-requireText('v2 world', worldSource, 'moose-walk-01.webp', 'V2 moose sprite should use descriptive walk-frame art.');
-requireText('v2 world', worldSource, 'moose-walk-03.webp', 'V2 moose animation frames are missing.');
 requireText('v2 world', worldSource, 'Hi, you\\\'re cute', 'V2 Alaska kid cameo line is stale.');
 requireText('v2 world', worldSource, 'boostGiven: false', 'V2 Alaska kid boost state is missing.');
 requireText('v2 world', worldSource, 'ttl: 5', 'V2 Alaska kid cameos should be five-second pop-in moments.');
@@ -259,7 +256,7 @@ requireText('v2 renderer', rendererSource, 'getEntitySheetOptions', 'V2 entity s
 requireText('v2 renderer', rendererSource, 'eagleFlySheet', 'V2 eagle flight sheet renderer is missing.');
 forbidText('v2 renderer', rendererSource, 'salmonSwimSheet', 'Static salmon should not use sprite-sheet animation.');
 requireText('v2 renderer', rendererSource, 'bear6', 'V2 bear walk-frame renderer is missing.');
-requireText('v2 renderer', rendererSource, 'moose3', 'V2 moose walk-frame renderer is missing.');
+forbidText('v2 renderer', rendererSource, 'mooseWalkSheet', 'Static moose should not use sprite-sheet animation.');
 requireText('v2 renderer', rendererSource, 'renderSalmonMarker', 'V2 salmon landing marker renderer is missing.');
 requireText('v2 renderer', rendererSource, 'ripple', 'V2 animated salmon marker ripple is missing.');
 requireText('v2 renderer', rendererSource, 'renderHitboxes', 'V2 debug hitbox renderer is missing.');

@@ -29,9 +29,9 @@ test('root serves Hockey Smash game', async ({ page }) => {
     canvasWidth: 1024,
     canvasHeight: 576,
   });
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.2.0'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.2.0'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.2.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.2.1'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.2.1'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.2.1'))).toBe(true);
   expect(requestedUrls.some((url) => url.includes('player-run-headless-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('dad-run-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('mom-run-sheet.webp'))).toBe(false);
@@ -864,7 +864,7 @@ test('direction pad stays thumb-sized when the browser uses very large text', as
 
 test('golden salmon uses a shape halo without bitmap filters or rectangular composites', async ({ page }) => {
   await page.goto('/');
-  const rendererSource = await page.request.get('/js/games/hockey-smash-renderer-v2.js?v=2.2.0');
+  const rendererSource = await page.request.get('/js/games/hockey-smash-renderer-v2.js?v=2.2.1');
   const source = await rendererSource.text();
   expect(source).toContain('ctx.ellipse(centerX, centerY');
   expect(source).not.toContain("ctx.filter = 'sepia");
@@ -897,4 +897,24 @@ test('objective bar and throw control expose live gameplay progress', async ({ p
     world.difficulty.elapsedInEncounters = 45;
   });
   await expect(page.locator('#v2-objective-label')).toHaveText(/Survive 4[45]s/);
+});
+
+test('projectiles cannot hit or dismiss targets outside the visible playfield', async ({ page }) => {
+  await page.goto('/');
+  const result = await page.evaluate(() => {
+    const World = window.HOCKEY_SMASH_WORLD_V2;
+    const Systems = window.HOCKEY_SMASH_SYSTEMS_V2;
+    const world = World.createWorld();
+    const target = World.createEntity(world, 'dad', { x: 1030, y: 400, width: 80, height: 90, hp: 1, dismissOnProjectile: true });
+    const projectile = World.createEntity(world, 'projectile', { x: 1030, y: 420, width: 32, height: 24 });
+    world.entities.push(target, projectile);
+    const game = { world, constants: { DESIGN_WIDTH: 1024, DESIGN_HEIGHT: 576 } };
+    Systems.collideProjectile(game, projectile);
+    const offscreenSurvived = !target.dead && !projectile.dead;
+    target.x = 900;
+    projectile.x = 900;
+    Systems.collideProjectile(game, projectile);
+    return { offscreenSurvived, visibleHit: target.dead && projectile.dead };
+  });
+  expect(result).toEqual({ offscreenSurvived: true, visibleHit: true });
 });

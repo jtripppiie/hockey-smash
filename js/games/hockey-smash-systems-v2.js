@@ -562,10 +562,14 @@
   // handles hits: some visitors are dismissed in one shot, threats lose HP.
   function collideProjectile(game, projectile) {
     const { world } = game;
+    const { DESIGN_WIDTH, DESIGN_HEIGHT } = game.constants;
     const projectileBox = hitbox(projectile, 2);
+    if (!isInsidePlayfield(projectileBox, DESIGN_WIDTH, DESIGN_HEIGHT)) return;
     for (const target of world.entities) {
       if (!target || target.dead || target.type === 'projectile' || target.type === 'salmon') continue;
-      if (!rectsOverlap(projectileBox, hitbox(target, 8))) continue;
+      const targetBox = hitbox(target, 8);
+      if (!isInsidePlayfield(targetBox, DESIGN_WIDTH, DESIGN_HEIGHT)) continue;
+      if (!rectsOverlap(projectileBox, targetBox)) continue;
       // Some friendly/funny visitors are dismissed in one shot instead of taking HP damage.
       if (target.dismissOnProjectile) {
         projectile.dead = true;
@@ -585,6 +589,10 @@
       }
       break;
     }
+  }
+
+  function isInsidePlayfield(box, width, height) {
+    return box.x < width && box.x + box.width > 0 && box.y < height && box.y + box.height > 0;
   }
 
   // Everything the page (index.html) and tests are allowed to call.

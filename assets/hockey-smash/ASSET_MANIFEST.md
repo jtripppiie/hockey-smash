@@ -48,11 +48,10 @@ character-or-entity-action-or-state-frame.webp
 | `sprites/sofie-dance-spin.webp` | Sofie spin/slide pose | source dimensions | Also reused for Daniel sister support until dedicated art exists. |
 | `sprites/sofie-dance-instructor.webp` | Sofie dance instructor encounter | source dimensions | Active v2 instructor/teacher encounter. |
 | `sprites/bear-walk-sheet-v2.png` | Clean six-frame bear walk sheet | 2172x724 | Transparent artifact-free bear encounter animation. |
-| `sprites/moose-walk-sheet-v2.png` | Clean six-frame moose walk/graze sheet | 2172x724 | Five walk poses plus a head-lowered grazing pose. |
+| `sprites/moose-static-v2.png` | Clean static moose | 334x365 | Single transparent encounter image with preserved proportions. |
 | `sprites/eagle-fly-sheet-v2.png` | Clean six-frame eagle flight sheet | 2172x724 | Transparent full wing-flap cycle. |
 | `sprites/salmon-static-v2.png` | Clean static salmon | 390x195 | Single transparent collectible image; horizontally flipped by entity facing. |
 | `sprites/bear-walk-01.webp` through `sprites/bear-walk-06.webp` | Bear walk animation frames | source dimensions | Legacy fallback if sheet loading fails. |
-| `sprites/moose-walk-01.webp` through `sprites/moose-walk-03.webp` | Moose walk animation frames | source dimensions | Legacy fallback if sheet loading fails. |
 | `sprites/eagle-flap-mid.webp` | Eagle encounter sprite | source dimensions | Legacy fallback if sheet loading fails. |
 | `sprites/dad-cameo.webp` | Dad mower encounter | source dimensions | Legacy fallback if sheet loading fails. |
 | `sprites/mom-cameo.webp` | Mom cameo | source dimensions | Legacy fallback if sheet loading fails. |

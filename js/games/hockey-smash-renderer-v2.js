@@ -22,21 +22,6 @@
         { x: 3, y: 271, w: 330, h: 199 },
       ],
     },
-    mooseWalkSheet: {
-      frames: 6,
-      fps: 6,
-      heightScale: 1.2,
-      minWidthScale: 1.0,
-      maxWidthScale: 1.44,
-      trim: [
-        { x: 22, y: 186, w: 340, h: 334 },
-        { x: 0, y: 187, w: 362, h: 333 },
-        { x: 0, y: 186, w: 362, h: 333 },
-        { x: 0, y: 186, w: 362, h: 334 },
-        { x: 0, y: 188, w: 362, h: 332 },
-        { x: 0, y: 281, w: 351, h: 243 },
-      ],
-    },
     eagleFlySheet: {
       frames: 6,
       fps: 10,
@@ -516,7 +501,7 @@
   function getEntitySpriteKey(entity) {
     if (entity?.type === 'salmon') return 'salmon';
     if (entity?.type === 'bear') return 'bearWalkSheet';
-    if (entity?.type === 'moose') return 'mooseWalkSheet';
+    if (entity?.type === 'moose') return 'moose';
     if (entity?.type === 'eagle') return 'eagleFlySheet';
     return entity?.sprite || entity?.type;
   }
@@ -535,13 +520,6 @@
         phase: age,
         yOffset: Math.sin(age * 4) * 6,
         rotation: Math.sin(age * 3) * 0.07,
-      };
-    }
-    if (entity?.type === 'moose' && entity.state === 'grazing') {
-      return {
-        phase: age * 0.35,
-        frameIndex: 5,
-        yOffset: 1,
       };
     }
     return { phase: age };
@@ -622,11 +600,6 @@
       const frames = ['bear1', 'bear2', 'bear3', 'bear4', 'bear5', 'bear6'];
       return frames[Math.floor((entity?.age || 0) * 8) % frames.length];
     }
-    if (spriteKey === 'mooseWalkSheet') {
-      if (entity?.state === 'grazing') return 'moose2';
-      const frames = ['moose1', 'moose2', 'moose3', 'moose2'];
-      return frames[Math.floor((entity?.age || 0) * 5) % frames.length];
-    }
     if (spriteKey === 'eagleFlySheet') return 'eagle';
     return null;
   }
@@ -644,7 +617,7 @@
 
     const image = imageCache.get(spriteKey);
     if (image?.complete && image.naturalWidth) {
-      const preserveAspect = ['salmon', 'mom', 'dad', 'danceInstructor', 'alaskanBoy', 'alaskanGirl'].includes(spriteKey);
+      const preserveAspect = ['salmon', 'moose', 'mom', 'dad', 'danceInstructor', 'alaskanBoy', 'alaskanGirl'].includes(spriteKey);
       const boxWidth = box.width || 48;
       const boxHeight = box.height || 48;
       const scale = preserveAspect

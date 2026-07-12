@@ -10,7 +10,7 @@ New runtime sheets live in `assets/hockey-smash/sprites/`:
 
 ```text
 bear-walk-sheet-v2.png
-moose-walk-sheet-v2.png
+moose-static-v2.png (single-image replacement; no animation sheet)
 eagle-fly-sheet-v2.png
 salmon-static-v2.png (single-image replacement; no animation sheet)
 ```
