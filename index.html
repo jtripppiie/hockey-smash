@@ -244,6 +244,17 @@
         padding: 0.35rem 0.6rem;
       }
       .dev-game-frame.is-playing .v2-pause-button { display: block; }
+      .v2-sound-button {
+        position: absolute;
+        top: 0.7rem;
+        right: 12.3rem;
+        z-index: 9;
+        display: none;
+        min-width: 42px;
+        min-height: 38px;
+        padding: 0.35rem 0.6rem;
+      }
+      .dev-game-frame.is-playing .v2-sound-button { display: block; }
       .dev-game-frame.is-game-over .v2-game-over {
         display: grid;
       }
@@ -469,7 +480,12 @@
         color: rgba(255, 255, 255, 0.38);
         font-size: 1rem;
         line-height: 1;
-        pointer-events: none;
+        width: 42%;
+        height: 32%;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        pointer-events: auto;
         transform: translateX(-50%);
       }
       .v2-dpad__reserved--up { top: 0.55rem; }
@@ -500,6 +516,14 @@
       .v2-dpad[data-direction="right"] .v2-dpad__knob {
         background: #fff27a;
         transform: translate(calc(-50% + 1.45rem), -50%);
+      }
+      .v2-dpad[data-direction="jump"] .v2-dpad__knob {
+        background: #fff27a;
+        transform: translate(-50%, calc(-50% - 1.45rem));
+      }
+      .v2-dpad[data-direction="slide"] .v2-dpad__knob {
+        background: #fff27a;
+        transform: translate(-50%, calc(-50% + 1.45rem));
       }
       .v2-control svg {
         pointer-events: none;
@@ -823,7 +847,7 @@
             </span>
             <span class="v2-fullscreen__label">Fullscreen</span>
           </button>
-          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v1.6.1</div>
+          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v2.0.0</div>
           <div id="v2-hud" class="v2-hud" aria-live="polite">
             <div class="v2-hud__stack">
               <div class="v2-hud__row">
@@ -837,6 +861,7 @@
             </div>
           </div>
           <button id="v2-pause-button" class="v2-pause-button" type="button" aria-label="Pause game" aria-pressed="false">Ⅱ</button>
+          <button id="v2-sound-button" class="v2-sound-button" type="button" aria-label="Mute sound" aria-pressed="false">♪</button>
           <div id="v2-debug-panel" class="v2-debug-panel" aria-live="polite"></div>
           <div id="v2-safe-areas" class="v2-safe-areas" aria-hidden="true">
             <span class="v2-safe-area v2-safe-area--hud"></span>
@@ -886,10 +911,10 @@
           <div class="v2-controls" aria-label="Hockey Smash arena controls">
             <div class="v2-control-group v2-control-group--dpad" aria-label="Movement controls">
               <div class="v2-dpad" data-dpad data-direction="center" aria-label="Circular direction pad">
-                <span class="v2-dpad__reserved v2-dpad__reserved--up" aria-hidden="true">▲</span>
+                <button class="v2-dpad__reserved v2-dpad__reserved--up" type="button" tabindex="-1" aria-label="Jump">▲</button>
                 <button class="v2-dpad__direction" type="button" data-action="left" data-dpad-action aria-label="Move left">◀</button>
                 <button class="v2-dpad__direction" type="button" data-action="right" data-dpad-action aria-label="Move right">▶</button>
-                <span class="v2-dpad__reserved v2-dpad__reserved--down" aria-hidden="true">▼</span>
+                <button class="v2-dpad__reserved v2-dpad__reserved--down" type="button" tabindex="-1" aria-label="Slide">▼</button>
                 <span class="v2-dpad__knob" aria-hidden="true"></span>
               </div>
             </div>
@@ -938,9 +963,9 @@
       </section>
     </main>
 
-    <script src="js/games/hockey-smash-world-v2.js?v=1.6.1"></script>
-    <script src="js/games/hockey-smash-renderer-v2.js?v=1.6.1"></script>
-    <script src="js/games/hockey-smash-systems-v2.js?v=1.6.1"></script>
+    <script src="js/games/hockey-smash-world-v2.js?v=2.0.0"></script>
+    <script src="js/games/hockey-smash-renderer-v2.js?v=2.0.0"></script>
+    <script src="js/games/hockey-smash-systems-v2.js?v=2.0.0"></script>
     <script>
       (function () {
         const DESIGN_WIDTH = 1024;
@@ -1006,6 +1031,7 @@
         const retryButton = document.getElementById('v2-retry');
         const gameOverScore = document.getElementById('v2-game-over-score');
         const pauseButton = document.getElementById('v2-pause-button');
+        const soundButton = document.getElementById('v2-sound-button');
         const resumeButton = document.getElementById('v2-resume');
         const debugPanel = document.getElementById('v2-debug-panel');
         const safeAreaOverlay = document.getElementById('v2-safe-areas');
@@ -1014,8 +1040,9 @@
         const World = window.HOCKEY_SMASH_WORLD_V2;
         const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
         const Systems = window.HOCKEY_SMASH_SYSTEMS_V2;
-        const VERSION_FALLBACK = '1.6.1';
+        const VERSION_FALLBACK = '2.0.0';
         const BEST_SCORE_KEY = 'hockey-smash-best-score';
+        const SOUND_KEY = 'hockey-smash-sound-muted';
         const debugEnabled = new URLSearchParams(window.location.search).has('debug');
         const input = {
           left: false,
@@ -1033,6 +1060,8 @@
         let lastFrame = performance.now();
         let gameStarted = false;
         let gamePaused = false;
+        let soundMuted = localStorage.getItem(SOUND_KEY) === 'true';
+        let audioContext = null;
 
         // The `game` backpack is what we hand to every gameplay system in
         // hockey-smash-systems-v2.js. It carries the live world, the current
@@ -1069,6 +1098,8 @@
           game.world = world;
           game.encounterIndex = 0;
           gameFrame.classList.remove('is-game-over');
+          document.getElementById('v2-game-over-title').textContent = 'Sidewalk Survived?';
+          document.getElementById('v2-game-over-copy').textContent = 'Take a breath, then try again.';
           setPaused(false);
           imageCache = Renderer.createImageCache({
             ...normalizeSpritePaths(World.SPRITES),
@@ -1116,6 +1147,7 @@
             gameStarted = true;
             gameFrame.classList.add('is-playing');
             canvas.focus?.();
+            playSound('start');
           });
 
           retryButton?.addEventListener('click', () => {
@@ -1141,7 +1173,7 @@
         }
 
         function setPaused(paused) {
-          gamePaused = Boolean(paused && gameStarted && world?.phase !== World.PHASES.GAME_OVER);
+          gamePaused = Boolean(paused && gameStarted && ![World.PHASES.GAME_OVER, World.PHASES.VICTORY].includes(world?.phase));
           gameFrame.classList.toggle('is-paused', gamePaused);
           pauseButton?.setAttribute('aria-pressed', gamePaused ? 'true' : 'false');
           pauseButton?.setAttribute('aria-label', gamePaused ? 'Resume game' : 'Pause game');
@@ -1155,6 +1187,43 @@
           document.addEventListener('visibilitychange', () => {
             if (document.hidden && gameStarted) setPaused(true);
           });
+        }
+
+        function bindSoundControls() {
+          const sync = () => {
+            soundButton?.setAttribute('aria-pressed', soundMuted ? 'true' : 'false');
+            soundButton?.setAttribute('aria-label', soundMuted ? 'Enable sound' : 'Mute sound');
+            if (soundButton) soundButton.textContent = soundMuted ? '×♪' : '♪';
+          };
+          soundButton?.addEventListener('click', () => {
+            soundMuted = !soundMuted;
+            localStorage.setItem(SOUND_KEY, String(soundMuted));
+            sync();
+            if (!soundMuted) playSound('start');
+          });
+          sync();
+        }
+
+        function playSound(kind) {
+          if (soundMuted) return;
+          const AudioCtor = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtor) return;
+          audioContext ||= new AudioCtor();
+          const notes = {
+            start: [392, 0.08], catch: [660, 0.07], perfect: [880, 0.13], golden: [1046, 0.2],
+            throw: [220, 0.06], damage: [110, 0.16], victory: [784, 0.35],
+          };
+          const [frequency, duration] = notes[kind] || notes.catch;
+          const oscillator = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          oscillator.type = kind === 'damage' ? 'sawtooth' : 'triangle';
+          oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+          gain.gain.setValueAtTime(0.0001, audioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.11, audioContext.currentTime + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + duration);
+          oscillator.connect(gain).connect(audioContext.destination);
+          oscillator.start();
+          oscillator.stop(audioContext.currentTime + duration + 0.02);
         }
 
         function bindFullscreen() {
@@ -1224,6 +1293,7 @@
           document.querySelectorAll('[data-action]:not([data-dpad-action])').forEach((button) => {
             button.addEventListener('pointerdown', (event) => {
               event.preventDefault();
+              navigator.vibrate?.(8);
               const action = button.dataset.action;
               heldPointers.set(event.pointerId, action);
               if (action === 'jump' && !input.jump) input.jumpPressed = true;
@@ -1251,23 +1321,32 @@
           if (!pad) return;
 
           const setDirection = (pointerId, clientX) => {
-            const middle = pad.getBoundingClientRect().left + pad.getBoundingClientRect().width / 2;
-            const action = clientX < middle ? 'left' : 'right';
+            const rect = pad.getBoundingClientRect();
+            const dx = clientX - (rect.left + rect.width / 2);
+            const pointer = heldPointers.get(`point-${pointerId}`);
+            const dy = (pointer?.clientY || rect.top + rect.height / 2) - (rect.top + rect.height / 2);
+            const action = Math.abs(dy) > Math.abs(dx)
+              ? (dy < 0 ? 'jump' : 'slide')
+              : (dx < 0 ? 'left' : 'right');
             const previous = heldPointers.get(pointerId);
             if (previous && previous !== action) input[previous] = false;
             heldPointers.set(pointerId, action);
+            if (action === 'jump' && !input.jump) input.jumpPressed = true;
             input[action] = true;
             pad.dataset.direction = action;
           };
 
           pad.addEventListener('pointerdown', (event) => {
             event.preventDefault();
+            navigator.vibrate?.(8);
+            heldPointers.set(`point-${event.pointerId}`, { clientY: event.clientY });
             setDirection(event.pointerId, event.clientX);
             pad.setPointerCapture?.(event.pointerId);
           }, { passive: false });
           pad.addEventListener('pointermove', (event) => {
             if (!heldPointers.has(event.pointerId)) return;
             event.preventDefault();
+            heldPointers.set(`point-${event.pointerId}`, { clientY: event.clientY });
             setDirection(event.pointerId, event.clientX);
           }, { passive: false });
           ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((type) => {
@@ -1275,6 +1354,7 @@
               const action = heldPointers.get(event.pointerId);
               if (action) input[action] = false;
               heldPointers.delete(event.pointerId);
+              heldPointers.delete(`point-${event.pointerId}`);
               pad.dataset.direction = 'center';
             });
           });
@@ -1331,7 +1411,7 @@
           if (gamePaused) return;
           // The game loop is like a recipe: update the player, update the game phase,
           // update objects, then draw the final result in renderWorld().
-          if (world.phase === World.PHASES.GAME_OVER) {
+          if ([World.PHASES.GAME_OVER, World.PHASES.VICTORY].includes(world.phase)) {
             updateEffects(dt);
             updateEnvironment(dt);
             updateDebugState(dt);
@@ -1341,6 +1421,7 @@
           Systems.updatePlayer(game, dt);
           updatePhase(dt);
           World.updateDifficulty(world, dt);
+          announceLevel();
           Systems.updateSalmonLoop(game, dt);
           updateEncounterLoop(dt);
           updateProjectiles(dt);
@@ -1405,6 +1486,23 @@
               color: '#fff27a', particles: 24, spread: 130, life: 1.1, maxLife: 1.1,
             });
           }
+          if (world.phase === World.PHASES.ENCOUNTERS && (world.difficulty?.elapsedInEncounters || 0) >= 90) {
+            World.advancePhase(world, World.PHASES.VICTORY);
+            world.player.bestScore = saveBestScore(world.player.score);
+            gameFrame.classList.add('is-game-over');
+            document.getElementById('v2-game-over-title').textContent = 'Soldotna Champion!';
+            document.getElementById('v2-game-over-copy').textContent = 'You caught the salmon and survived every sidewalk surprise.';
+            gameOverScore.textContent = `Score ${world.player.score || 0} · Best ${world.player.bestScore}`;
+            world.effects.push({ kind: 'burst', x: DESIGN_WIDTH / 2, y: DESIGN_HEIGHT / 2, color: '#fff27a', particles: 36, spread: 220, life: 1.4, maxLife: 1.4, sound: 'victory' });
+          }
+        }
+
+        function announceLevel() {
+          if (world.phase !== World.PHASES.ENCOUNTERS) return;
+          const level = world.difficulty?.level || 1;
+          if (world.lastAnnouncedLevel === level) return;
+          world.lastAnnouncedLevel = level;
+          world.effects.push({ x: DESIGN_WIDTH / 2 - 54, y: 150, text: `LEVEL ${level}`, life: 1.1, sound: level > 1 ? 'perfect' : null });
         }
 
         function updateEncounterLoop(dt) {
@@ -1516,6 +1614,7 @@
             y: player.y - 16,
             text: `${label} -${amount}`,
             life: 0.7,
+            sound: 'damage',
           });
           world.effects.push({
             kind: 'burst', x: player.x + player.width / 2, y: player.y + player.height / 2,
@@ -1539,6 +1638,10 @@
 
         function updateEffects(dt) {
           world.effects.forEach((effect) => {
+            if (effect.sound && !effect.soundPlayed) {
+              effect.soundPlayed = true;
+              playSound(effect.sound);
+            }
             effect.life -= dt;
             effect.y -= 24 * dt;
           });
@@ -1582,6 +1685,7 @@
         function formatPhase(phase) {
           if (phase === World.PHASES.SALMON_RUN) return 'Salmon Run';
           if (phase === World.PHASES.ENCOUNTERS) return `Level ${world.difficulty?.level || 1}`;
+          if (phase === World.PHASES.VICTORY) return 'Champion';
           if (phase === World.PHASES.GAME_OVER) return 'Game Over';
           return 'Countdown';
         }
@@ -1676,6 +1780,7 @@
         bindCharacterButtons();
         bindSplashControls();
         bindPauseControls();
+        bindSoundControls();
         bindFullscreen();
         bindKeyboardInput();
         bindPointerInput();

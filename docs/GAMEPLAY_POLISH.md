@@ -24,7 +24,17 @@ These effects do not affect collision or scoring. They are visual confirmation t
 
 ## Direction Pad Contract
 
-The circular pad visibly includes up, down, left, and right. Left and right drive the current side-scrolling movement. Up and down are deliberately reserved, so a future feature can activate them without redesigning the control.
+The circular pad includes four active directions. Left and right move, up triggers the same buffered jump as the keyboard, and down holds the shared slide/duck action. Dragging through the pad changes actions without requiring a new touch.
+
+Touch presses request a tiny vibration on devices that support the Vibration API. Unsupported browsers simply ignore the request.
+
+## Audio Without Asset Downloads
+
+The browser synthesizes short cues with the Web Audio API after the player presses Start. No sound autoplays before a user gesture. The mute button stores its preference in local storage, and the game remains fully playable when Web Audio is unavailable.
+
+## Golden Salmon And Victory
+
+Each spawned salmon has a small chance to become golden. A golden catch has a 50-point base value and distinct light, particles, text, and audio. After the opening catch goal, the encounter stage announces difficulty levels. Surviving 90 encounter seconds advances world state to `victory`, saves the best score, and shows the championship results panel.
 
 ## Sprite Proportions
 

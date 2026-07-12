@@ -211,21 +211,23 @@
     world.player.combo = Math.min(9, (world.player.combo || 0) + 1);
     world.player.comboTimer = 2.1;
     const comboBonus = Math.max(0, (world.player.combo - 1) * 3);
-    const points = (isPerfect ? 25 : 10) + comboBonus;
+    const golden = entity.variant === 'golden';
+    const points = (golden ? 50 : (isPerfect ? 25 : 10)) + comboBonus;
     world.player.score = (world.player.score || 0) + points;
     world.effects.push({
       x: entity.x + entity.width / 2,
       y: Math.max(40, entity.y - 10),
-      text: isPerfect ? `PERFECT +${points}` : `+${points}`,
+      text: golden ? `${isPerfect ? 'GOLDEN PERFECT' : 'GOLDEN'} +${points}` : (isPerfect ? `PERFECT +${points}` : `+${points}`),
       life: 0.6,
+      sound: golden ? 'golden' : (isPerfect ? 'perfect' : 'catch'),
     });
     world.effects.push({
       kind: 'burst',
       x: entity.x + entity.width / 2,
       y: entity.y + entity.height / 2,
-      color: isPerfect ? '#fff27a' : '#78dcff',
-      particles: isPerfect ? 14 : 8,
-      spread: isPerfect ? 70 : 46,
+      color: golden || isPerfect ? '#fff27a' : '#78dcff',
+      particles: golden ? 20 : (isPerfect ? 14 : 8),
+      spread: golden ? 95 : (isPerfect ? 70 : 46),
       life: 0.55,
       maxLife: 0.55,
     });
@@ -553,6 +555,7 @@
       nonContact: true,
       bubble: '',
     }));
+    world.effects.push({ kind: 'burst', x: player.x + player.width, y: player.y + 48, color: '#d9f3ff', particles: 5, spread: 24, life: 0.2, maxLife: 0.2, sound: 'throw' });
   }
 
   // collideProjectile() checks one flying projectile against everything else and

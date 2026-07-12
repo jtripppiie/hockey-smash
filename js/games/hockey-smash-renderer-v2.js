@@ -281,7 +281,19 @@
       const drawBox = entity.mowerOffset ? { ...entity, y: (entity.y || 0) + entity.mowerOffset } : entity;
       // Most entities are drawn by their sprite key. If an image is missing,
       // drawSpriteOrPlaceholder writes a labeled box so the bug is visible.
-      drawSpriteOrPlaceholder(ctx, imageCache, getEntitySpriteKey(entity), drawBox, entity.type || 'ENTITY');
+      if (entity.type === 'salmon' && entity.variant === 'golden') {
+        ctx.save();
+        ctx.shadowColor = '#fff27a';
+        ctx.shadowBlur = 18;
+        ctx.globalAlpha = 0.96;
+        drawSpriteOrPlaceholder(ctx, imageCache, getEntitySpriteKey(entity), drawBox, entity.type || 'ENTITY');
+        ctx.globalCompositeOperation = 'source-atop';
+        ctx.fillStyle = 'rgba(255, 210, 45, 0.38)';
+        ctx.fillRect(drawBox.x, drawBox.y, drawBox.width, drawBox.height);
+        ctx.restore();
+      } else {
+        drawSpriteOrPlaceholder(ctx, imageCache, getEntitySpriteKey(entity), drawBox, entity.type || 'ENTITY');
+      }
       renderEntityHealth(ctx, drawBox);
       if (entity.bubble) renderBubble(ctx, drawBox, entity.bubble);
     });

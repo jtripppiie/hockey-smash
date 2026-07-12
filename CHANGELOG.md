@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.0.0 - Championship Edition
+
+- Activated all four circular-pad directions: left/right move, up jumps, and down slides or ducks.
+- Added subtle supported-device haptics when pressing touch controls.
+- Added lightweight synthesized audio for start, catches, perfect/golden catches, throws, damage, levels, and victory.
+- Added a visible mute control with a saved preference and user-gesture-safe audio startup.
+- Added rare golden salmon with 50 base points, a gold treatment, larger particles, and a unique cue.
+- Added projectile launch particles and sound while retaining full-field travel.
+- Added level announcements during encounters.
+- Added a real championship victory after surviving 90 seconds of encounters, with results and celebration effects.
+- Documented the new systems and extension points for learners.
+
 ## 1.6.1 - Full-Field Projectiles
 
 - Extended puck and shoe lifetime so a clear shot crosses the entire playfield.

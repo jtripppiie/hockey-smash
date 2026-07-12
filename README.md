@@ -7,7 +7,7 @@ You pick Daniel or Sofie, type a player name, catch falling salmon, then survive
 Current version:
 
 ```text
-1.6.1
+2.0.0
 ```
 
 ## Quick Start
@@ -48,7 +48,7 @@ F / Enter        stick / throw
 P / Escape       pause / resume
 ```
 
-On phones and tablets, use the buttons inside the game frame. Projectiles always fire to the right. Sliding or ducking low avoids eagle flybys.
+On phones and tablets, use the circular pad: left/right moves, up jumps, and down slides or ducks. Projectiles always fire to the right. Sliding or ducking low avoids eagle flybys.
 
 ## What Is In The Game Now
 
@@ -60,6 +60,9 @@ On phones and tablets, use the buttons inside the game frame. Projectiles always
 - Smoother player movement with acceleration, friction, jump buffering, coyote time, double jump, and short-hop jumps.
 - Catch counter and health bar.
 - Score combos and a personal best saved in the browser.
+- Golden salmon worth 50 base points, with a bright visual and sound cue.
+- Synthesized game sounds with a persistent mute preference and no downloaded audio files.
+- Level announcements and a real victory after surviving 90 encounter seconds.
 - Pause/resume controls; switching tabs pauses automatically.
 - Day/night sky with sun and moon.
 - Parallax-style Soldotna background.

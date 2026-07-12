@@ -29,9 +29,9 @@ test('root serves Hockey Smash game', async ({ page }) => {
     canvasWidth: 1024,
     canvasHeight: 576,
   });
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=1.6.1'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=1.6.1'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=1.6.1'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.0.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.0.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.0.0'))).toBe(true);
   expect(requestedUrls.some((url) => url.includes('player-run-headless-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('dad-run-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('mom-run-sheet.webp'))).toBe(false);
@@ -804,4 +804,29 @@ test('v2 pause freezes play and a finished run saves the personal best', async (
 
   await page.locator('#v2-retry').click();
   await expect(page.locator('#v2-hud-score')).toContainText('Best 321');
+});
+
+test('championship edition exposes sound, golden salmon, active pad directions, and victory', async ({ page }) => {
+  await page.goto('/');
+  await page.click('#v2-start');
+
+  await expect(page.locator('#v2-sound-button')).toBeVisible();
+  await page.click('#v2-sound-button');
+  await expect(page.locator('#v2-sound-button')).toHaveAttribute('aria-pressed', 'true');
+  expect(await page.evaluate(() => localStorage.getItem('hockey-smash-sound-muted'))).toBe('true');
+
+  const contracts = await page.evaluate(() => ({
+    victoryPhase: window.HOCKEY_SMASH_WORLD_V2.PHASES.VICTORY,
+    upLabel: document.querySelector('.v2-dpad__reserved--up')?.getAttribute('aria-label'),
+    downLabel: document.querySelector('.v2-dpad__reserved--down')?.getAttribute('aria-label'),
+  }));
+  expect(contracts).toEqual({ victoryPhase: 'victory', upLabel: 'Jump', downLabel: 'Slide' });
+
+  await page.evaluate(() => {
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    world.phase = window.HOCKEY_SMASH_WORLD_V2.PHASES.ENCOUNTERS;
+    world.difficulty.elapsedInEncounters = 90;
+  });
+  await expect(page.locator('#v2-game-over-title')).toHaveText('Soldotna Champion!');
+  await expect(page.locator('#v2-game-frame')).toHaveClass(/is-game-over/);
 });

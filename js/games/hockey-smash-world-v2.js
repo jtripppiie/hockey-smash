@@ -13,6 +13,7 @@
     COUNTDOWN: 'countdown',
     SALMON_RUN: 'salmonRun',
     ENCOUNTERS: 'encounters',
+    VICTORY: 'victory',
     GAME_OVER: 'gameOver',
   });
 
@@ -254,6 +255,7 @@
       collectible: true,
       nonContact: true,
       perfectWindow: world.tuning.perfectCatchWindowSeconds,
+      variant: Math.random() < 0.12 ? 'golden' : 'normal',
       hasLanded: false,
       ...values,
     });
