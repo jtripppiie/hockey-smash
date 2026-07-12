@@ -7,7 +7,7 @@ You pick Daniel or Sofie, type a player name, catch falling salmon, then survive
 Current version:
 
 ```text
-2.1.4
+2.2.0
 ```
 
 ## Quick Start
@@ -59,6 +59,9 @@ On phones and tablets, use the circular pad: left/right moves, up jumps, and dow
 - Salmon run with animated landing markers.
 - Smoother player movement with acceleration, friction, jump buffering, coyote time, double jump, and short-hop jumps.
 - Catch counter and health bar.
+- Phase-aware objective bar for salmon catches and championship survival time.
+- Visible throw-button cooldown and a short first-run control cue.
+- Reduced-motion support that preserves gameplay feedback.
 - Score combos and a personal best saved in the browser.
 - Golden salmon worth 50 base points, with a bright visual and sound cue.
 - Synthesized game sounds with a persistent mute preference and no downloaded audio files.

@@ -198,6 +198,30 @@
       .v2-health__fill.is-low {
         background: linear-gradient(90deg, #ff5d5d, #ffb347);
       }
+      .v2-objective {
+        display: grid;
+        grid-template-columns: auto minmax(5rem, 1fr);
+        align-items: center;
+        gap: 0.38rem;
+        font-size: 0.66rem;
+        color: rgba(255, 248, 223, 0.86);
+      }
+      .v2-objective__track {
+        height: 0.38rem;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.18);
+      }
+      .v2-objective__fill {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #78dcff, #fff27a);
+        transform: scaleX(0);
+        transform-origin: left center;
+        transition: transform 180ms ease;
+      }
       .v2-game-over {
         position: absolute;
         inset: 0;
@@ -532,9 +556,23 @@
         pointer-events: none;
       }
       .v2-control--stick {
+        position: relative;
+        overflow: hidden;
         /* Same circle size as the others so the action cluster reads as a set. */
         min-width: 3rem;
         width: 3rem;
+      }
+      .v2-control__cooldown {
+        position: absolute;
+        left: 18%;
+        right: 18%;
+        bottom: 5px;
+        height: 3px;
+        border-radius: 999px;
+        background: #fff27a;
+        transform: scaleX(var(--cooldown-ready, 1));
+        transform-origin: left center;
+        pointer-events: none;
       }
       .v2-control.is-pressed {
         transform: translateY(2px) scale(0.98);
@@ -678,6 +716,14 @@
           min-height: 2.85rem;
           width: 2.85rem;
           height: 2.85rem;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
         }
       }
       @media (max-width: 850px) and (orientation: portrait) {
@@ -850,7 +896,7 @@
             </span>
             <span class="v2-fullscreen__label">Fullscreen</span>
           </button>
-          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v2.1.4</div>
+          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v2.2.0</div>
           <div id="v2-hud" class="v2-hud" aria-live="polite">
             <div class="v2-hud__stack">
               <div class="v2-hud__row">
@@ -860,6 +906,10 @@
               <div class="v2-health" aria-label="Player health">
                 <span id="v2-health-label">HP 100</span>
                 <span class="v2-health__track" aria-hidden="true"><span id="v2-health-fill" class="v2-health__fill"></span></span>
+              </div>
+              <div class="v2-objective" aria-label="Stage objective progress">
+                <span id="v2-objective-label">Get ready</span>
+                <span class="v2-objective__track" aria-hidden="true"><span id="v2-objective-fill" class="v2-objective__fill"></span></span>
               </div>
             </div>
           </div>
@@ -941,6 +991,7 @@
                   <path d="M7 3l9 13" />
                   <ellipse cx="8.5" cy="18.5" rx="4.5" ry="2.2" fill="currentColor" stroke="none" />
                 </svg>
+                <span class="v2-control__cooldown" aria-hidden="true"></span>
               </button>
             </div>
           </div>
@@ -966,9 +1017,9 @@
       </section>
     </main>
 
-    <script src="js/games/hockey-smash-world-v2.js?v=2.1.4"></script>
-    <script src="js/games/hockey-smash-renderer-v2.js?v=2.1.4"></script>
-    <script src="js/games/hockey-smash-systems-v2.js?v=2.1.4"></script>
+    <script src="js/games/hockey-smash-world-v2.js?v=2.2.0"></script>
+    <script src="js/games/hockey-smash-renderer-v2.js?v=2.2.0"></script>
+    <script src="js/games/hockey-smash-systems-v2.js?v=2.2.0"></script>
     <script>
       (function () {
         const DESIGN_WIDTH = 1024;
@@ -1031,6 +1082,9 @@
         const hudPhase = document.getElementById('v2-hud-phase');
         const healthLabel = document.getElementById('v2-health-label');
         const healthFill = document.getElementById('v2-health-fill');
+        const objectiveLabel = document.getElementById('v2-objective-label');
+        const objectiveFill = document.getElementById('v2-objective-fill');
+        const stickButton = document.querySelector('.v2-control--stick');
         const retryButton = document.getElementById('v2-retry');
         const gameOverScore = document.getElementById('v2-game-over-score');
         const pauseButton = document.getElementById('v2-pause-button');
@@ -1043,7 +1097,7 @@
         const World = window.HOCKEY_SMASH_WORLD_V2;
         const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
         const Systems = window.HOCKEY_SMASH_SYSTEMS_V2;
-        const VERSION_FALLBACK = '2.1.4';
+        const VERSION_FALLBACK = '2.2.0';
         const BEST_SCORE_KEY = 'hockey-smash-best-score';
         const SOUND_KEY = 'hockey-smash-sound-muted';
         const debugEnabled = new URLSearchParams(window.location.search).has('debug');
@@ -1151,6 +1205,7 @@
             gameFrame.classList.add('is-playing');
             canvas.focus?.();
             playSound('start');
+            world.effects.push({ x: 330, y: 118, text: 'MOVE • JUMP • SLIDE • THROW', life: 2.4 });
           });
 
           retryButton?.addEventListener('click', () => {
@@ -1682,6 +1737,26 @@
           if (healthFill) {
             healthFill.style.transform = `scaleX(${healthPct})`;
             healthFill.classList.toggle('is-low', healthPct <= 0.35);
+          }
+          let objective = 0;
+          let objectiveText = 'Get ready';
+          if (world.phase === World.PHASES.SALMON_RUN) {
+            objective = Math.min(1, (world.salmonCaught || 0) / Math.max(1, world.salmonTarget || 20));
+            objectiveText = `Catch ${Math.max(0, (world.salmonTarget || 20) - (world.salmonCaught || 0))} more`;
+          } else if (world.phase === World.PHASES.ENCOUNTERS) {
+            const survived = Math.min(90, world.difficulty?.elapsedInEncounters || 0);
+            objective = survived / 90;
+            objectiveText = `Survive ${Math.ceil(90 - survived)}s`;
+          } else if (world.phase === World.PHASES.VICTORY) {
+            objective = 1;
+            objectiveText = 'Champion!';
+          }
+          if (objectiveLabel) objectiveLabel.textContent = objectiveText;
+          if (objectiveFill) objectiveFill.style.transform = `scaleX(${objective})`;
+          const cooldownReady = 1 - Math.min(1, Math.max(0, world.timers.projectile || 0) / 0.28);
+          if (stickButton) {
+            stickButton.style.setProperty('--cooldown-ready', cooldownReady);
+            stickButton.setAttribute('aria-label', cooldownReady >= 1 ? 'Stick or throw — ready' : 'Stick or throw — recharging');
           }
         }
 

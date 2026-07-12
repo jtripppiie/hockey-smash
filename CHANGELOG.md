@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.2.0 - Objective And Accessibility Clarity
+
+- Added a phase-aware objective bar for the 20-salmon goal and 90-second championship survival goal.
+- Added a live readiness bar and accessible ready/recharging label to the throw control.
+- Added a brief four-action coaching cue when a run starts.
+- Added reduced-motion styling without removing gameplay information.
+- Documented the new HUD and accessibility contracts.
+
 ## 2.1.4 - Larger Salmon
 
 - Increased salmon from 54×31 to 66×33 world pixels for easier visibility and catching.

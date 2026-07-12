@@ -46,6 +46,12 @@ Bear, moose, and eagle art uses clean six-frame transparent sheets. Each frame h
 
 Pucks and shoes travel right until they hit a valid target or pass beyond the right edge. Their lifetime is long enough to cross the entire 1024-pixel playfield from the far-left firing position, so shots no longer disappear halfway across an empty screen.
 
+## Objective And Cooldown Clarity
+
+The HUD objective bar changes meaning with the world phase. During Salmon Run it shows progress toward 20 catches; during encounters it counts down the 90 seconds required for championship victory. The throw button has its own small readiness bar tied directly to `world.timers.projectile`, so players can see when the next puck or shoe is available.
+
+Starting a run briefly names the four core actions on the canvas. Browsers requesting reduced motion receive nearly instant transitions while retaining all gameplay and state feedback.
+
 ## Where To Tweak
 
 - Salmon separation: `spawnHarnessSalmon` in `hockey-smash-systems-v2.js`.

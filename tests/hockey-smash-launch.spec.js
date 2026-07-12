@@ -29,9 +29,9 @@ test('root serves Hockey Smash game', async ({ page }) => {
     canvasWidth: 1024,
     canvasHeight: 576,
   });
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.1.4'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.1.4'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.1.4'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.2.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.2.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.2.0'))).toBe(true);
   expect(requestedUrls.some((url) => url.includes('player-run-headless-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('dad-run-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('mom-run-sheet.webp'))).toBe(false);
@@ -864,7 +864,7 @@ test('direction pad stays thumb-sized when the browser uses very large text', as
 
 test('golden salmon uses a shape halo without bitmap filters or rectangular composites', async ({ page }) => {
   await page.goto('/');
-  const rendererSource = await page.request.get('/js/games/hockey-smash-renderer-v2.js?v=2.1.4');
+  const rendererSource = await page.request.get('/js/games/hockey-smash-renderer-v2.js?v=2.2.0');
   const source = await rendererSource.text();
   expect(source).toContain('ctx.ellipse(centerX, centerY');
   expect(source).not.toContain("ctx.filter = 'sepia");
@@ -874,4 +874,27 @@ test('golden salmon uses a shape halo without bitmap filters or rectangular comp
     return World.createSalmon(World.createWorld()).facing;
   });
   expect(facing).toBe(-1);
+});
+
+test('objective bar and throw control expose live gameplay progress', async ({ page }) => {
+  await page.goto('/');
+  await page.click('#v2-start');
+  await page.evaluate(() => {
+    const World = window.HOCKEY_SMASH_WORLD_V2;
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    world.phase = World.PHASES.SALMON_RUN;
+    world.salmonCaught = 10;
+    world.timers.projectile = 10;
+  });
+  await expect(page.locator('#v2-objective-label')).toHaveText('Catch 10 more');
+  await expect(page.locator('#v2-objective-fill')).toHaveCSS('transform', 'matrix(0.5, 0, 0, 1, 0, 0)');
+  await expect(page.locator('.v2-control--stick')).toHaveAttribute('aria-label', /recharging/);
+
+  await page.evaluate(() => {
+    const World = window.HOCKEY_SMASH_WORLD_V2;
+    const world = window.HOCKEY_SMASH_V2_DEV.getWorld();
+    world.phase = World.PHASES.ENCOUNTERS;
+    world.difficulty.elapsedInEncounters = 45;
+  });
+  await expect(page.locator('#v2-objective-label')).toHaveText(/Survive 4[45]s/);
 });
