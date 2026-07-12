@@ -29,9 +29,9 @@ test('root serves Hockey Smash game', async ({ page }) => {
     canvasWidth: 1024,
     canvasHeight: 576,
   });
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.1.3'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.1.3'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.1.3'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.1.4'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.1.4'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.1.4'))).toBe(true);
   expect(requestedUrls.some((url) => url.includes('player-run-headless-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('dad-run-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('mom-run-sheet.webp'))).toBe(false);
@@ -864,7 +864,7 @@ test('direction pad stays thumb-sized when the browser uses very large text', as
 
 test('golden salmon uses a shape halo without bitmap filters or rectangular composites', async ({ page }) => {
   await page.goto('/');
-  const rendererSource = await page.request.get('/js/games/hockey-smash-renderer-v2.js?v=2.1.3');
+  const rendererSource = await page.request.get('/js/games/hockey-smash-renderer-v2.js?v=2.1.4');
   const source = await rendererSource.text();
   expect(source).toContain('ctx.ellipse(centerX, centerY');
   expect(source).not.toContain("ctx.filter = 'sepia");

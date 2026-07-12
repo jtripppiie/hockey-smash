@@ -246,8 +246,8 @@
   function createSalmon(world, values = {}) {
     return createEntity(world, 'salmon', {
       sprite: 'salmon',
-      width: 54,
-      height: 31,
+      width: 66,
+      height: 33,
       y: -60,
       vx: (Math.random() - 0.5) * 80,
       vy: world.tuning.salmonFallVelocity + (Math.random() * world.tuning.salmonFallVelocityRange - (world.tuning.salmonFallVelocityRange / 2)),

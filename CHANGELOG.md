@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.4 - Larger Salmon
+
+- Increased salmon from 54×31 to 66×33 world pixels for easier visibility and catching.
+- Matched the clean static image's exact 2:1 aspect ratio.
+- Kept landing prediction and collision calculations tied to the updated entity dimensions.
+
 ## 2.1.3 - Static Salmon Rendering
 
 - Replaced the salmon animation sheet with one clean transparent fish image.
