@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.1.3 - Static Salmon Rendering
+
+- Replaced the salmon animation sheet with one clean transparent fish image.
+- Removed salmon frame trimming, animation switching, and both obsolete fish assets.
+- Preserved the static image's aspect ratio and flipped it horizontally through entity facing.
+- Updated verification to reject reintroducing the salmon sprite-sheet renderer.
+
+## 2.1.2 - Clean Golden Halo And Salmon Flip
+
+- Flipped salmon horizontally through entity-facing state so all six frames mirror consistently.
+- Removed bitmap filtering from golden salmon to eliminate browser-dependent rectangular filter boxes.
+- Replaced the recolor with a pulsing elliptical halo drawn behind the normal sprite.
+- Added regression coverage for the flipped facing value and filter-free golden renderer.
+
 ## 2.1.1 - Golden Salmon Composite Fix
 
 - Removed the canvas-wide `source-atop` tint that could paint rectangular artifacts around golden salmon.

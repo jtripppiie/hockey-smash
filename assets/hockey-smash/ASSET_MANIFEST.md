@@ -50,8 +50,7 @@ character-or-entity-action-or-state-frame.webp
 | `sprites/bear-walk-sheet-v2.png` | Clean six-frame bear walk sheet | 2172x724 | Transparent artifact-free bear encounter animation. |
 | `sprites/moose-walk-sheet-v2.png` | Clean six-frame moose walk/graze sheet | 2172x724 | Five walk poses plus a head-lowered grazing pose. |
 | `sprites/eagle-fly-sheet-v2.png` | Clean six-frame eagle flight sheet | 2172x724 | Transparent full wing-flap cycle. |
-| `sprites/salmon-swim-sheet-v2.png` | Clean six-frame salmon swim sheet | 2172x724 | Transparent flexing salmon collectible animation. |
-| `sprites/salmon-falling.webp` | Falling salmon collectible | source dimensions | Active v2 salmon sprite. |
+| `sprites/salmon-static-v2.png` | Clean static salmon | 390x195 | Single transparent collectible image; horizontally flipped by entity facing. |
 | `sprites/bear-walk-01.webp` through `sprites/bear-walk-06.webp` | Bear walk animation frames | source dimensions | Legacy fallback if sheet loading fails. |
 | `sprites/moose-walk-01.webp` through `sprites/moose-walk-03.webp` | Moose walk animation frames | source dimensions | Legacy fallback if sheet loading fails. |
 | `sprites/eagle-flap-mid.webp` | Eagle encounter sprite | source dimensions | Legacy fallback if sheet loading fails. |

@@ -52,21 +52,6 @@
         { x: 0, y: 156, w: 263, h: 299 },
       ],
     },
-    salmonSwimSheet: {
-      frames: 6,
-      fps: 12,
-      heightScale: 1.18,
-      minWidthScale: 1.28,
-      maxWidthScale: 1.9,
-      trim: [
-        { x: 31, y: 274, w: 331, h: 162 },
-        { x: 0, y: 254, w: 362, h: 178 },
-        { x: 0, y: 245, w: 353, h: 257 },
-        { x: 73, y: 219, w: 289, h: 261 },
-        { x: 0, y: 245, w: 362, h: 236 },
-        { x: 0, y: 276, w: 343, h: 161 },
-      ],
-    },
   });
 
   function createImageCache(spriteMap = {}) {
@@ -283,12 +268,17 @@
       // drawSpriteOrPlaceholder writes a labeled box so the bug is visible.
       if (entity.type === 'salmon' && entity.variant === 'golden') {
         ctx.save();
-        ctx.shadowColor = '#fff27a';
-        ctx.shadowBlur = 18;
-        ctx.globalAlpha = 0.96;
-        // Tint only pixels drawn by the salmon image. The old source-atop fill
-        // ran against the already-painted world and could create a gold box.
-        ctx.filter = 'sepia(1) saturate(4) hue-rotate(2deg) brightness(1.16)';
+        // A separate halo communicates the bonus without filtering the bitmap.
+        // Some mobile canvas engines rasterize filtered images as visible boxes.
+        const centerX = drawBox.x + drawBox.width / 2;
+        const centerY = drawBox.y + drawBox.height / 2;
+        const pulse = 1 + Math.sin((entity.age || 0) * 8) * 0.08;
+        ctx.globalAlpha = 0.3;
+        ctx.fillStyle = '#fff27a';
+        ctx.beginPath();
+        ctx.ellipse(centerX, centerY, drawBox.width * 0.62 * pulse, drawBox.height * 0.82 * pulse, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
         drawSpriteOrPlaceholder(ctx, imageCache, getEntitySpriteKey(entity), drawBox, entity.type || 'ENTITY');
         ctx.restore();
       } else {
@@ -524,7 +514,7 @@
   }
 
   function getEntitySpriteKey(entity) {
-    if (entity?.type === 'salmon') return 'salmonSwimSheet';
+    if (entity?.type === 'salmon') return 'salmon';
     if (entity?.type === 'bear') return 'bearWalkSheet';
     if (entity?.type === 'moose') return 'mooseWalkSheet';
     if (entity?.type === 'eagle') return 'eagleFlySheet';
@@ -638,7 +628,6 @@
       return frames[Math.floor((entity?.age || 0) * 5) % frames.length];
     }
     if (spriteKey === 'eagleFlySheet') return 'eagle';
-    if (spriteKey === 'salmonSwimSheet') return 'salmon';
     return null;
   }
 
@@ -655,7 +644,7 @@
 
     const image = imageCache.get(spriteKey);
     if (image?.complete && image.naturalWidth) {
-      const preserveAspect = ['mom', 'dad', 'danceInstructor', 'alaskanBoy', 'alaskanGirl'].includes(spriteKey);
+      const preserveAspect = ['salmon', 'mom', 'dad', 'danceInstructor', 'alaskanBoy', 'alaskanGirl'].includes(spriteKey);
       const boxWidth = box.width || 48;
       const boxHeight = box.height || 48;
       const scale = preserveAspect

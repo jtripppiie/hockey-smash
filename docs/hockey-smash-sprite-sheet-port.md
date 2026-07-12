@@ -12,7 +12,7 @@ New runtime sheets live in `assets/hockey-smash/sprites/`:
 bear-walk-sheet-v2.png
 moose-walk-sheet-v2.png
 eagle-fly-sheet-v2.png
-salmon-swim-sheet-v2.png
+salmon-static-v2.png (single-image replacement; no animation sheet)
 ```
 
 The older one-frame and per-frame WebP files remain as fallbacks.

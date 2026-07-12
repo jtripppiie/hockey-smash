@@ -40,7 +40,7 @@ Each spawned salmon has a small chance to become golden. A golden catch has a 50
 
 Static human cameo art is fitted inside its entity box while preserving the source image aspect ratio. The image is centered horizontally and aligned to the bottom of the box. Gameplay collision boxes remain stable even when source art has different proportions.
 
-Animated salmon, bear, moose, and eagle art uses clean six-frame transparent sheets. Each frame has measured alpha bounds in `SPRITE_SHEETS`, allowing the renderer to crop unused transparent space without stretching or exposing background artifacts. The moose's sixth pose is reserved for grazing.
+Bear, moose, and eagle art uses clean six-frame transparent sheets. Each frame has measured alpha bounds in `SPRITE_SHEETS`, allowing the renderer to crop unused transparent space without stretching or exposing background artifacts. The moose's sixth pose is reserved for grazing. Salmon deliberately uses one clean static image to avoid sheet-boundary and frame-transition artifacts; entity facing flips the whole image horizontally.
 
 ## Full-Field Projectiles
 
