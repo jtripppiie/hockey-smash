@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.1 - Full-Field Projectiles
+
+- Extended puck and shoe lifetime so a clear shot crosses the entire playfield.
+- Kept target collision and right-edge cleanup behavior unchanged.
+
 ## 1.6.0 - Game Feel And Repository Cleanup
 
 - Added lightweight particle bursts for catches, perfect catches, hard landings, damage, and Salmon Run completion.

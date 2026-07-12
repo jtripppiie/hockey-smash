@@ -547,7 +547,9 @@
       height,
       vx: 520 * direction,
       vy: 0,
-      ttl: 0.9,
+      // Long enough to cross the full 1024px playfield even when fired from
+      // the far-left edge. Off-screen cleanup still removes it past the right.
+      ttl: 2.4,
       nonContact: true,
       bubble: '',
     }));

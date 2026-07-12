@@ -29,9 +29,9 @@ test('root serves Hockey Smash game', async ({ page }) => {
     canvasWidth: 1024,
     canvasHeight: 576,
   });
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=1.6.0'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=1.6.0'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=1.6.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=1.6.1'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=1.6.1'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=1.6.1'))).toBe(true);
   expect(requestedUrls.some((url) => url.includes('player-run-headless-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('dad-run-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('mom-run-sheet.webp'))).toBe(false);
@@ -147,6 +147,7 @@ test('v2 start screen applies name, character, controls, and movement', async ({
       sprite: projectile?.sprite,
       width: projectile?.width,
       height: projectile?.height,
+      ttl: projectile?.ttl,
     };
   });
   expect(projectileState.facing).toBe(-1);
@@ -155,6 +156,7 @@ test('v2 start screen applies name, character, controls, and movement', async ({
   expect(projectileState.sprite).toBe('projectileShoe');
   expect(projectileState.width).toBe(40);
   expect(projectileState.height).toBe(28);
+  expect(projectileState.ttl * projectileState.vx).toBeGreaterThan(1024);
 
   const damageState = await page.evaluate(() => {
     const World = window.HOCKEY_SMASH_WORLD_V2;

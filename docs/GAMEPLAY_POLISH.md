@@ -30,6 +30,10 @@ The circular pad visibly includes up, down, left, and right. Left and right driv
 
 Static human cameo art is fitted inside its entity box while preserving the source image aspect ratio. The image is centered horizontally and aligned to the bottom of the box. Gameplay collision boxes remain stable even when source art has different proportions.
 
+## Full-Field Projectiles
+
+Pucks and shoes travel right until they hit a valid target or pass beyond the right edge. Their lifetime is long enough to cross the entire 1024-pixel playfield from the far-left firing position, so shots no longer disappear halfway across an empty screen.
+
 ## Where To Tweak
 
 - Salmon separation: `spawnHarnessSalmon` in `hockey-smash-systems-v2.js`.

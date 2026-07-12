@@ -1,6 +1,6 @@
 {
   "name": "hockey-smash",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "private": true,
   "description": "A beginner-friendly side-scrolling browser game set in Soldotna, Alaska.",
   "scripts": {
