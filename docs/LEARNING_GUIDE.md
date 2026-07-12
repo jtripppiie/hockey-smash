@@ -66,18 +66,16 @@ To undo the experiment, change the number back to `810`. If the game shows a bla
 The direction pad is HTML styled with CSS. CSS is the part of a web page that controls colors, sizes, spacing, and shapes.
 
 1. Open `index.html`.
-2. Search for `.v2-control-group--dpad .v2-control`.
+2. Search for `.v2-dpad`.
 3. You will see a block like this:
 
 ```css
-.v2-control-group--dpad .v2-control {
-  width: 4.5rem;
-  min-width: 4.5rem;
+.v2-dpad {
+  width: 6.5rem;
+  height: 6.5rem;
   border: 2px solid rgba(255, 255, 255, 0.28);
-  border-radius: 18px;
+  border-radius: 50%;
   background: rgba(10, 20, 33, 0.72);
-  color: rgba(255, 255, 255, 0.82);
-  font-size: 0.95rem;
 }
 ```
 
@@ -85,11 +83,10 @@ The direction pad is HTML styled with CSS. CSS is the part of a web page that co
 
 | What you want | What to change | Example |
 | --- | --- | --- |
-| Wider buttons | `width` and `min-width` | `5rem` |
-| Rounder corners | `border-radius` | `28px` |
-| Brighter arrows | last number in `color` | `1` |
+| A bigger pad | `width` and `height` | `7.5rem` |
+| Make it square | `border-radius` | `18px` |
 | A blue pad | `background` | `rgba(20, 70, 120, 0.72)` |
-| More space between buttons | `gap` in `.v2-control-group--dpad` | `0.8rem` |
+| Move the thumb farther | `1.45rem` in the knob transforms | `1.8rem` |
 
 `rgba` colors contain red, green, blue, and transparency. The final number goes from `0` (invisible) to `1` (solid).
 

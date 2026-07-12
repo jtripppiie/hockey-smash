@@ -408,7 +408,7 @@
         pointer-events: auto;
       }
       .v2-control-group--dpad {
-        gap: 0.5rem;
+        position: relative;
       }
       .v2-control {
         min-width: 3rem;
@@ -432,15 +432,62 @@
         outline: 3px solid #fff27a;
         outline-offset: 3px;
       }
-      .v2-control-group--dpad .v2-control {
-        /* Match the Android game's low-profile, thumb-friendly movement pads. */
-        width: 4.5rem;
-        min-width: 4.5rem;
+      .v2-dpad {
+        position: relative;
+        width: 6.5rem;
+        height: 6.5rem;
+        overflow: hidden;
         border: 2px solid rgba(255, 255, 255, 0.28);
-        border-radius: 18px;
+        border-radius: 50%;
         background: rgba(10, 20, 33, 0.72);
-        color: rgba(255, 255, 255, 0.82);
-        font-size: 0.95rem;
+        box-shadow: inset 0 0 0 0.35rem rgba(255, 255, 255, 0.04), 0 0.4rem 1rem rgba(0, 0, 0, 0.28);
+        touch-action: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .v2-dpad__direction {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        z-index: 1;
+        width: 50%;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 1rem;
+        touch-action: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .v2-dpad__direction[data-action="left"] { left: 0; padding-right: 1.8rem; }
+      .v2-dpad__direction[data-action="right"] { right: 0; padding-left: 1.8rem; }
+      .v2-dpad__direction:focus-visible {
+        outline: 3px solid #fff27a;
+        outline-offset: -5px;
+      }
+      .v2-dpad__knob {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 2;
+        width: 2.65rem;
+        height: 2.65rem;
+        border: 2px solid rgba(255, 255, 255, 0.38);
+        border-radius: 50%;
+        background: rgba(234, 242, 255, 0.2);
+        box-shadow: 0 0.2rem 0.55rem rgba(0, 0, 0, 0.38);
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        transition: transform 70ms ease, background 70ms ease;
+      }
+      .v2-dpad[data-direction="left"] .v2-dpad__knob {
+        background: #fff27a;
+        transform: translate(calc(-50% - 1.45rem), -50%);
+      }
+      .v2-dpad[data-direction="right"] .v2-dpad__knob {
+        background: #fff27a;
+        transform: translate(calc(-50% + 1.45rem), -50%);
       }
       .v2-control svg {
         pointer-events: none;
@@ -764,7 +811,7 @@
             </span>
             <span class="v2-fullscreen__label">Fullscreen</span>
           </button>
-          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v1.5.0</div>
+          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v1.5.1</div>
           <div id="v2-hud" class="v2-hud" aria-live="polite">
             <div class="v2-hud__stack">
               <div class="v2-hud__row">
@@ -826,8 +873,11 @@
 
           <div class="v2-controls" aria-label="Hockey Smash arena controls">
             <div class="v2-control-group v2-control-group--dpad" aria-label="Movement controls">
-              <button class="v2-control" type="button" data-action="left" aria-label="Move left">◀</button>
-              <button class="v2-control" type="button" data-action="right" aria-label="Move right">▶</button>
+              <div class="v2-dpad" data-dpad data-direction="center" aria-label="Circular direction pad">
+                <button class="v2-dpad__direction" type="button" data-action="left" data-dpad-action aria-label="Move left">◀</button>
+                <button class="v2-dpad__direction" type="button" data-action="right" data-dpad-action aria-label="Move right">▶</button>
+                <span class="v2-dpad__knob" aria-hidden="true"></span>
+              </div>
             </div>
             <div class="v2-control-group" aria-label="Action controls">
               <!-- Icons instead of letters so a player can aim with a thumb and
@@ -874,9 +924,9 @@
       </section>
     </main>
 
-    <script src="js/games/hockey-smash-world-v2.js?v=1.5.0"></script>
-    <script src="js/games/hockey-smash-renderer-v2.js?v=1.5.0"></script>
-    <script src="js/games/hockey-smash-systems-v2.js?v=1.5.0"></script>
+    <script src="js/games/hockey-smash-world-v2.js?v=1.5.1"></script>
+    <script src="js/games/hockey-smash-renderer-v2.js?v=1.5.1"></script>
+    <script src="js/games/hockey-smash-systems-v2.js?v=1.5.1"></script>
     <script>
       (function () {
         const DESIGN_WIDTH = 1024;
@@ -950,7 +1000,7 @@
         const World = window.HOCKEY_SMASH_WORLD_V2;
         const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
         const Systems = window.HOCKEY_SMASH_SYSTEMS_V2;
-        const VERSION_FALLBACK = '1.5.0';
+        const VERSION_FALLBACK = '1.5.1';
         const BEST_SCORE_KEY = 'hockey-smash-best-score';
         const debugEnabled = new URLSearchParams(window.location.search).has('debug');
         const input = {
@@ -1156,7 +1206,8 @@
         }
 
         function bindPointerInput() {
-          document.querySelectorAll('[data-action]').forEach((button) => {
+          bindDirectionPad();
+          document.querySelectorAll('[data-action]:not([data-dpad-action])').forEach((button) => {
             button.addEventListener('pointerdown', (event) => {
               event.preventDefault();
               const action = button.dataset.action;
@@ -1177,6 +1228,40 @@
                 button.classList.remove('is-pressed');
                 button.setAttribute('aria-pressed', 'false');
               });
+            });
+          });
+        }
+
+        function bindDirectionPad() {
+          const pad = document.querySelector('[data-dpad]');
+          if (!pad) return;
+
+          const setDirection = (pointerId, clientX) => {
+            const middle = pad.getBoundingClientRect().left + pad.getBoundingClientRect().width / 2;
+            const action = clientX < middle ? 'left' : 'right';
+            const previous = heldPointers.get(pointerId);
+            if (previous && previous !== action) input[previous] = false;
+            heldPointers.set(pointerId, action);
+            input[action] = true;
+            pad.dataset.direction = action;
+          };
+
+          pad.addEventListener('pointerdown', (event) => {
+            event.preventDefault();
+            setDirection(event.pointerId, event.clientX);
+            pad.setPointerCapture?.(event.pointerId);
+          }, { passive: false });
+          pad.addEventListener('pointermove', (event) => {
+            if (!heldPointers.has(event.pointerId)) return;
+            event.preventDefault();
+            setDirection(event.pointerId, event.clientX);
+          }, { passive: false });
+          ['pointerup', 'pointercancel', 'lostpointercapture'].forEach((type) => {
+            pad.addEventListener(type, (event) => {
+              const action = heldPointers.get(event.pointerId);
+              if (action) input[action] = false;
+              heldPointers.delete(event.pointerId);
+              pad.dataset.direction = 'center';
             });
           });
         }

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.5.1 - Circular Direction Pad
+
+- Replaced the separate left/right movement buttons with a circular direction pad.
+- Added a moving thumb indicator and continuous left/right direction changes while dragging.
+- Removed native blue mobile tap highlighting while preserving keyboard focus cues.
+- Expanded the beginner guide with direction-pad styling instructions.
+
 ## 1.5.0 - Learning Edition
 
 - Added pause/resume with keyboard, touch-friendly buttons, and automatic tab-hide pausing.
