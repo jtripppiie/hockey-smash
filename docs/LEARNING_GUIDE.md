@@ -129,6 +129,7 @@ Change only one value at a time and write down what happened.
 | Jump higher | world file | `jumpVelocity` |
 | Run faster | world file | `walkSpeed` |
 | Drop more salmon | world file | `salmonSpawnSeconds` |
+| Change special salmon odds | systems file | `applySalmonVariant` thresholds |
 | Make combos last longer | systems file | `player.comboTimer = 2.1` |
 | Change a Dad joke | `index.html` | one string in `DAD_JOKES` |
 | Change sky speed | world file | `cycleSeconds` |

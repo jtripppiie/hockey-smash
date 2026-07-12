@@ -243,7 +243,7 @@
       nonContact: true,
       facing: -1,
       perfectWindow: world.tuning.perfectCatchWindowSeconds,
-      variant: Math.random() < 0.12 ? 'golden' : 'normal',
+      variant: 'normal',
       hasLanded: false,
       ...values,
     });

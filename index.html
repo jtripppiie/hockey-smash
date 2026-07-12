@@ -900,7 +900,7 @@
             </span>
             <span class="v2-fullscreen__label">Fullscreen</span>
           </button>
-          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v2.3.0</div>
+          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v2.4.0</div>
           <div id="v2-hud" class="v2-hud" aria-live="polite">
             <div class="v2-hud__stack">
               <div class="v2-hud__row">
@@ -1021,9 +1021,9 @@
       </section>
     </main>
 
-    <script src="js/games/hockey-smash-world-v2.js?v=2.3.0"></script>
-    <script src="js/games/hockey-smash-renderer-v2.js?v=2.3.0"></script>
-    <script src="js/games/hockey-smash-systems-v2.js?v=2.3.0"></script>
+    <script src="js/games/hockey-smash-world-v2.js?v=2.4.0"></script>
+    <script src="js/games/hockey-smash-renderer-v2.js?v=2.4.0"></script>
+    <script src="js/games/hockey-smash-systems-v2.js?v=2.4.0"></script>
     <script>
       (function () {
         const DESIGN_WIDTH = 1024;
@@ -1101,7 +1101,7 @@
         const World = window.HOCKEY_SMASH_WORLD_V2;
         const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
         const Systems = window.HOCKEY_SMASH_SYSTEMS_V2;
-        const VERSION_FALLBACK = '2.3.0';
+        const VERSION_FALLBACK = '2.4.0';
         const BEST_SCORE_KEY = 'hockey-smash-best-score';
         const SOUND_KEY = 'hockey-smash-sound-muted';
         const debugEnabled = new URLSearchParams(window.location.search).has('debug');
@@ -1568,6 +1568,11 @@
           const level = world.difficulty?.level || 1;
           if (world.lastAnnouncedLevel === level) return;
           world.lastAnnouncedLevel = level;
+          if (level > 1) {
+            const before = world.player.health || 0;
+            world.player.health = Math.min(world.player.maxHealth || 100, before + 8);
+            if (world.player.health > before) world.effects.push({ x: world.player.x, y: world.player.y - 36, text: 'LEVEL HEAL +8', life: 0.8 });
+          }
           world.effects.push({ x: DESIGN_WIDTH / 2 - 54, y: 150, text: `LEVEL ${level}`, life: 1.1, sound: level > 1 ? 'perfect' : null });
         }
 

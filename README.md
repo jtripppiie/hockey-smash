@@ -7,7 +7,7 @@ You pick Daniel or Sofie, type a player name, catch falling salmon, then survive
 Current version:
 
 ```text
-2.3.0
+2.4.0
 ```
 
 ## Quick Start
@@ -63,7 +63,8 @@ On phones and tablets, use the circular pad: left/right moves, up jumps, and dow
 - Visible throw-button cooldown and a short first-run control cue.
 - Reduced-motion support that preserves gameplay feedback.
 - Score combos and a personal best saved in the browser.
-- Golden salmon worth 50 base points, with a bright visual and sound cue.
+- Golden, swift, and heavy salmon with distinct movement, size, scoring, and visual cues.
+- Five-catch streak healing and small level-up recovery rewards.
 - Synthesized game sounds with a persistent mute preference and no downloaded audio files.
 - Level announcements and a real victory after surviving 90 encounter seconds.
 - Pause/resume controls; switching tabs pauses automatically.

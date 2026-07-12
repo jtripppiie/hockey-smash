@@ -29,9 +29,9 @@ test('root serves Hockey Smash game', async ({ page }) => {
     canvasWidth: 1024,
     canvasHeight: 576,
   });
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.3.0'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.3.0'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.3.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.4.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.4.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.4.0'))).toBe(true);
   expect(requestedUrls.some((url) => url.includes('player-run-headless-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('dad-run-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('mom-run-sheet.webp'))).toBe(false);
@@ -864,7 +864,7 @@ test('direction pad stays thumb-sized when the browser uses very large text', as
 
 test('golden salmon uses a shape halo without bitmap filters or rectangular composites', async ({ page }) => {
   await page.goto('/');
-  const rendererSource = await page.request.get('/js/games/hockey-smash-renderer-v2.js?v=2.3.0');
+  const rendererSource = await page.request.get('/js/games/hockey-smash-renderer-v2.js?v=2.4.0');
   const source = await rendererSource.text();
   expect(source).toContain('ctx.ellipse(centerX, centerY');
   expect(source).not.toContain("ctx.filter = 'sepia");
@@ -929,4 +929,19 @@ test('game starts and sound controls work when browser storage is unavailable', 
   await expect(page.locator('#v2-game-frame')).toHaveClass(/is-playing/);
   await page.click('#v2-sound-button');
   await expect(page.locator('#v2-sound-button')).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('salmon variants have deterministic readable gameplay contracts', async ({ page }) => {
+  await page.goto('/');
+  const variants = await page.evaluate(() => {
+    const World = window.HOCKEY_SMASH_WORLD_V2;
+    const Systems = window.HOCKEY_SMASH_SYSTEMS_V2;
+    const make = (roll) => Systems.applySalmonVariant(World.createSalmon(World.createWorld(), { vx: 40, vy: 200 }), roll);
+    return [make(0.01), make(0.1), make(0.25), make(0.8)].map(({ variant, width, height, vx, vy, fallGravity }) => ({ variant, width, height, vx, vy, fallGravity }));
+  });
+  expect(variants.map((item) => item.variant)).toEqual(['golden', 'swift', 'heavy', 'normal']);
+  expect(variants[1].vy).toBeGreaterThan(variants[3].vy);
+  expect(variants[1].vx).toBeGreaterThan(variants[3].vx);
+  expect(variants[2].width).toBeGreaterThan(variants[3].width);
+  expect(variants[2].vy).toBeLessThan(variants[3].vy);
 });

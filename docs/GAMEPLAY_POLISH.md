@@ -8,6 +8,16 @@ Before a salmon appears, the spawn helper compares its horizontal position with 
 
 Missing a salmon clears the current combo and shows a short `MISSED` cue. Catching still rewards quick movement, while the player can immediately begin a new streak.
 
+## Salmon Variety And Rewards
+
+Most salmon remain normal. A weighted roll can create three readable special types:
+
+- `golden` — rare, 50 base points, yellow halo;
+- `swift` — faster horizontal/falling motion, 25 base points, blue halo;
+- `heavy` — larger and slower, 35 base points, orange halo.
+
+Variant selection is isolated in `applySalmonVariant`, making probabilities and movement easy to teach and test. Reaching a five-catch combo restores 8 health. Each new encounter level after level one can also restore 8 health, rewarding survival without removing difficulty.
+
 ## Particle Bursts
 
 Temporary visual feedback stays in `world.effects`. A burst records only its center, color, particle count, spread, and lifetime. The renderer derives particle positions from those values, so no DOM nodes or independent animation timers are needed.

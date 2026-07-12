@@ -251,7 +251,7 @@
       const drawBox = entity.mowerOffset ? { ...entity, y: (entity.y || 0) + entity.mowerOffset } : entity;
       // Most entities are drawn by their sprite key. If an image is missing,
       // drawSpriteOrPlaceholder writes a labeled box so the bug is visible.
-      if (entity.type === 'salmon' && entity.variant === 'golden') {
+      if (entity.type === 'salmon' && entity.variant !== 'normal') {
         ctx.save();
         // A separate halo communicates the bonus without filtering the bitmap.
         // Some mobile canvas engines rasterize filtered images as visible boxes.
@@ -259,7 +259,7 @@
         const centerY = drawBox.y + drawBox.height / 2;
         const pulse = 1 + Math.sin((entity.age || 0) * 8) * 0.08;
         ctx.globalAlpha = 0.3;
-        ctx.fillStyle = '#fff27a';
+        ctx.fillStyle = { golden: '#fff27a', swift: '#78dcff', heavy: '#ffad5c' }[entity.variant] || '#fff27a';
         ctx.beginPath();
         ctx.ellipse(centerX, centerY, drawBox.width * 0.62 * pulse, drawBox.height * 0.82 * pulse, 0, 0, Math.PI * 2);
         ctx.fill();

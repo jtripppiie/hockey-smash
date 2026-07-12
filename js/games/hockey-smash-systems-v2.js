@@ -173,7 +173,7 @@
       entity.age += dt;
       entity.x += entity.vx * dt;
       entity.y += entity.vy * dt;
-      entity.vy += world.tuning.salmonFallGravity * dt;
+      entity.vy += (entity.fallGravity || world.tuning.salmonFallGravity) * dt;
       if (entity.y >= GROUND_Y - entity.height && !entity.hasLanded) {
         entity.hasLanded = true;
         entity.y = GROUND_Y - entity.height;
@@ -211,23 +211,25 @@
     world.player.combo = Math.min(9, (world.player.combo || 0) + 1);
     world.player.comboTimer = 2.1;
     const comboBonus = Math.max(0, (world.player.combo - 1) * 3);
-    const golden = entity.variant === 'golden';
-    const points = (golden ? 50 : (isPerfect ? 25 : 10)) + comboBonus;
+    const variant = entity.variant || 'normal';
+    const variantPoints = { golden: 50, swift: 25, heavy: 35 };
+    const points = (variantPoints[variant] || (isPerfect ? 25 : 10)) + comboBonus;
+    const variantLabel = { golden: 'GOLDEN', swift: 'SWIFT', heavy: 'HEAVY' }[variant] || '';
     world.player.score = (world.player.score || 0) + points;
     world.effects.push({
       x: entity.x + entity.width / 2,
       y: Math.max(40, entity.y - 10),
-      text: golden ? `${isPerfect ? 'GOLDEN PERFECT' : 'GOLDEN'} +${points}` : (isPerfect ? `PERFECT +${points}` : `+${points}`),
+      text: variantLabel ? `${variantLabel}${isPerfect ? ' PERFECT' : ''} +${points}` : (isPerfect ? `PERFECT +${points}` : `+${points}`),
       life: 0.6,
-      sound: golden ? 'golden' : (isPerfect ? 'perfect' : 'catch'),
+      sound: variant === 'golden' ? 'golden' : (isPerfect ? 'perfect' : 'catch'),
     });
     world.effects.push({
       kind: 'burst',
       x: entity.x + entity.width / 2,
       y: entity.y + entity.height / 2,
-      color: golden || isPerfect ? '#fff27a' : '#78dcff',
-      particles: golden ? 20 : (isPerfect ? 14 : 8),
-      spread: golden ? 95 : (isPerfect ? 70 : 46),
+      color: variant === 'golden' || isPerfect ? '#fff27a' : (variant === 'heavy' ? '#ffad5c' : '#78dcff'),
+      particles: variant === 'golden' ? 20 : (variant !== 'normal' ? 14 : (isPerfect ? 14 : 8)),
+      spread: variant === 'golden' ? 95 : (variant !== 'normal' ? 72 : (isPerfect ? 70 : 46)),
       life: 0.55,
       maxLife: 0.55,
     });
@@ -238,6 +240,10 @@
         text: `COMBO x${world.player.combo}`,
         life: 0.7,
       });
+    }
+    if (world.player.combo === 5) {
+      world.player.health = Math.min(world.player.maxHealth || 100, (world.player.health || 0) + 8);
+      world.effects.push({ x: world.player.x, y: world.player.y - 42, text: 'STREAK HEAL +8', life: 0.85, sound: 'perfect' });
     }
     if (world.debug) world.debug.lastCollision = 'player -> salmon';
   }
@@ -259,8 +265,28 @@
       vx: -75 + Math.random() * 150,
       vy: world.tuning.salmonFallVelocity + Math.random() * world.tuning.salmonFallVelocityRange,
     });
+    applySalmonVariant(salmon, Math.random());
     spawnSalmonLandingMarker(game, salmon);
     world.entities.push(salmon);
+  }
+
+  function applySalmonVariant(salmon, roll) {
+    if (roll < 0.08) salmon.variant = 'golden';
+    else if (roll < 0.22) salmon.variant = 'swift';
+    else if (roll < 0.34) salmon.variant = 'heavy';
+    else salmon.variant = 'normal';
+    if (salmon.variant === 'swift') {
+      salmon.vy *= 1.45;
+      salmon.vx *= 1.35;
+      salmon.fallGravity = 360;
+    }
+    if (salmon.variant === 'heavy') {
+      salmon.width = 82;
+      salmon.height = 41;
+      salmon.vy *= 0.76;
+      salmon.fallGravity = 180;
+    }
+    return salmon;
   }
 
   // spawnSalmonLandingMarker() drops the yellow "run here" marker on the ground
@@ -605,6 +631,7 @@
     updatePlayer,
     updateSalmonLoop,
     spawnNextEncounter,
+    applySalmonVariant,
     collideProjectile,
     collectSalmon,
     // supporting spawners the page/dev-harness still calls directly

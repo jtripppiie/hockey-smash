@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.4.0 - Salmon Variety And Reward Loops
+
+- Added deterministic normal, golden, swift, and heavy salmon variants.
+- Swift salmon move and fall faster; heavy salmon are larger and fall more slowly.
+- Added distinct yellow, blue, and orange non-rectangular halos and balanced base scores.
+- Added an 8-health reward at a five-catch streak.
+- Added up to 8 health recovery when advancing encounter levels.
+- Documented variant probabilities, tuning points, and reward rules.
+- Added browser coverage for each variant's movement and size contract.
+
 ## 2.3.0 - Professional Release Gate
 
 - Added safe storage helpers so disabled/unavailable local storage cannot prevent startup or mute controls.
