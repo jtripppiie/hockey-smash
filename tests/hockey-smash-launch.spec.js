@@ -29,9 +29,9 @@ test('root serves Hockey Smash game', async ({ page }) => {
     canvasWidth: 1024,
     canvasHeight: 576,
   });
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.2.2'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.2.2'))).toBe(true);
-  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.2.2'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-world-v2.js?v=2.3.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-renderer-v2.js?v=2.3.0'))).toBe(true);
+  expect(requestedUrls.some((url) => url.includes('hockey-smash-systems-v2.js?v=2.3.0'))).toBe(true);
   expect(requestedUrls.some((url) => url.includes('player-run-headless-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('dad-run-sheet.webp'))).toBe(false);
   expect(requestedUrls.some((url) => url.includes('mom-run-sheet.webp'))).toBe(false);
@@ -864,7 +864,7 @@ test('direction pad stays thumb-sized when the browser uses very large text', as
 
 test('golden salmon uses a shape halo without bitmap filters or rectangular composites', async ({ page }) => {
   await page.goto('/');
-  const rendererSource = await page.request.get('/js/games/hockey-smash-renderer-v2.js?v=2.2.2');
+  const rendererSource = await page.request.get('/js/games/hockey-smash-renderer-v2.js?v=2.3.0');
   const source = await rendererSource.text();
   expect(source).toContain('ctx.ellipse(centerX, centerY');
   expect(source).not.toContain("ctx.filter = 'sepia");
@@ -917,4 +917,16 @@ test('projectiles cannot hit or dismiss targets outside the visible playfield', 
     return { offscreenSurvived, visibleHit: target.dead && projectile.dead };
   });
   expect(result).toEqual({ offscreenSurvived: true, visibleHit: true });
+});
+
+test('game starts and sound controls work when browser storage is unavailable', async ({ page }) => {
+  await page.addInitScript(() => {
+    Storage.prototype.getItem = function getItem() { throw new DOMException('Storage disabled'); };
+    Storage.prototype.setItem = function setItem() { throw new DOMException('Storage disabled'); };
+  });
+  await page.goto('/');
+  await page.click('#v2-start');
+  await expect(page.locator('#v2-game-frame')).toHaveClass(/is-playing/);
+  await page.click('#v2-sound-button');
+  await expect(page.locator('#v2-sound-button')).toHaveAttribute('aria-pressed', 'true');
 });

@@ -11,6 +11,7 @@ const requiredFiles = [
   'docs/LEARNING_GUIDE.md',
   'docs/README.md',
   'docs/GAMEPLAY_POLISH.md',
+  'docs/RELEASE_CHECKLIST.md',
   'docs/hockey-smash-sprite-sheet-port.md',
   'assets/hockey-smash/backgrounds/soldotna_cityscape_background_01_1280x720.webp',
   'assets/hockey-smash/backgrounds/sun.webp',
@@ -104,10 +105,10 @@ requireText('v2 harness', harness, 'data-character="sofie"', 'Sofie selection is
 requireText('v2 harness', harness, 'data-action="stick"', 'Stick action control is missing.');
 requireText('v2 harness', harness, 'id="v2-fullscreen"', 'V2 fullscreen toggle is missing.');
 requireText('v2 harness', harness, 'id="v2-version-badge"', 'V2 version overlay badge is missing.');
-if (packageJson.version !== '2.2.2') errors.push('package.json version should be 2.2.2.');
+if (packageJson.version !== '2.3.0') errors.push('package.json version should be 2.3.0.');
 if (packageLock.version !== packageJson.version) errors.push('package-lock.json root version should match package.json.');
 if (packageLock.packages?.['']?.version !== packageJson.version) errors.push('package-lock package version should match package.json.');
-requireText('v2 harness', harness, "const VERSION_FALLBACK = '2.2.2'", 'V2 version fallback should match package.json.');
+requireText('v2 harness', harness, "const VERSION_FALLBACK = '2.3.0'", 'V2 version fallback should match package.json.');
 requireText('v2 harness', harness, 'loadVersionBadge', 'V2 version badge loader is missing.');
 requireText('v2 harness', harness, 'fetch(\'package.json\'', 'V2 version badge should read package.json when available.');
 requireText('v2 harness', harness, 'id="v2-hud-score"', 'V2 mobile scoring HUD is missing.');
@@ -176,11 +177,13 @@ requireText('v2 systems', systemsSource, 'countActiveThreats', 'V2 active threat
 requireText('v2 harness', harness, 'HOCKEY_SMASH_WORLD_V2', 'V2 world script usage is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_RENDERER_V2', 'V2 renderer script usage is missing.');
 requireText('v2 harness', harness, 'HOCKEY_SMASH_SYSTEMS_V2', 'V2 gameplay systems script usage is missing.');
-requireText('v2 harness', harness, 'hockey-smash-world-v2.js?v=2.2.2', 'V2 world script include should be cache-busted.');
-requireText('v2 harness', harness, 'hockey-smash-renderer-v2.js?v=2.2.2', 'V2 renderer script include should be cache-busted.');
-requireText('v2 harness', harness, 'hockey-smash-systems-v2.js?v=2.2.2', 'V2 gameplay systems script include should be cache-busted.');
+requireText('v2 harness', harness, 'hockey-smash-world-v2.js?v=2.3.0', 'V2 world script include should be cache-busted.');
+requireText('v2 harness', harness, 'hockey-smash-renderer-v2.js?v=2.3.0', 'V2 renderer script include should be cache-busted.');
+requireText('v2 harness', harness, 'hockey-smash-systems-v2.js?v=2.3.0', 'V2 gameplay systems script include should be cache-busted.');
 requireText('v2 systems', systemsSource, 'isInsidePlayfield', 'Projectile collisions should be limited to visible objects.');
 requireText('v2 harness', harness, 'id="v2-objective-fill"', 'V2 objective progress bar is missing.');
+requireText('v2 harness', harness, 'function readStorage', 'V2 storage reads should fail safely.');
+requireText('v2 harness', harness, 'function writeStorage', 'V2 storage writes should fail safely.');
 requireText('v2 harness', harness, 'class="v2-control__cooldown"', 'V2 throw cooldown indicator is missing.');
 requireText('v2 harness', harness, 'prefers-reduced-motion: reduce', 'V2 reduced-motion support is missing.');
 requireText('v2 harness', harness, 'BEST_SCORE_KEY', 'V2 personal-best storage is missing.');

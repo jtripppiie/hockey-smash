@@ -8,5 +8,6 @@ Current references:
 - `hockey-smash-v2-architecture.md` — technical architecture.
 - `hockey-smash-sprite-sheet-port.md` — sprite-sheet notes.
 - `GAMEPLAY_POLISH.md` — current gameplay-feel systems and design decisions.
+- `RELEASE_CHECKLIST.md` — automated and manual production release gate.
 
 Historical release details live in `CHANGELOG.md` instead of duplicated planning files. For the playable game and current commands, the root `README.md` is authoritative.

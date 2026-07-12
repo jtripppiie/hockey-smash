@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.3.0 - Professional Release Gate
+
+- Added safe storage helpers so disabled/unavailable local storage cannot prevent startup or mute controls.
+- Added consistent high-contrast keyboard focus treatment.
+- Added one authoritative automated/manual release checklist covering gameplay, controls, accessibility, responsive layout, assets, and metadata.
+- Wired the checklist into contribution guidance and verification.
+
 ## 2.2.2 - Remove Retired Creature Fallbacks
 
 - Removed the legacy creature fallback-selection function from the renderer.

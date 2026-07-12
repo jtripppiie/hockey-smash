@@ -17,6 +17,7 @@ Hockey Smash is a playable static browser game and a learning project. Contribut
 3. Change one tuning value or one focused function.
 4. Run `npm run verify` and `npm run test:browser`.
 5. Play both Daniel and Sofie before committing.
+6. Complete `docs/RELEASE_CHECKLIST.md` for release changes.
 
 ## Design Rules
 

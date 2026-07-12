@@ -12,6 +12,10 @@
         color: #fff8df;
       }
       * { box-sizing: border-box; }
+      :focus-visible {
+        outline: 3px solid #fff27a;
+        outline-offset: 3px;
+      }
       body {
         margin: 0;
         min-height: 100vh;
@@ -896,7 +900,7 @@
             </span>
             <span class="v2-fullscreen__label">Fullscreen</span>
           </button>
-          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v2.2.2</div>
+          <div id="v2-version-badge" class="v2-version-badge" aria-label="Hockey Smash version">v2.3.0</div>
           <div id="v2-hud" class="v2-hud" aria-live="polite">
             <div class="v2-hud__stack">
               <div class="v2-hud__row">
@@ -1017,9 +1021,9 @@
       </section>
     </main>
 
-    <script src="js/games/hockey-smash-world-v2.js?v=2.2.2"></script>
-    <script src="js/games/hockey-smash-renderer-v2.js?v=2.2.2"></script>
-    <script src="js/games/hockey-smash-systems-v2.js?v=2.2.2"></script>
+    <script src="js/games/hockey-smash-world-v2.js?v=2.3.0"></script>
+    <script src="js/games/hockey-smash-renderer-v2.js?v=2.3.0"></script>
+    <script src="js/games/hockey-smash-systems-v2.js?v=2.3.0"></script>
     <script>
       (function () {
         const DESIGN_WIDTH = 1024;
@@ -1097,7 +1101,7 @@
         const World = window.HOCKEY_SMASH_WORLD_V2;
         const Renderer = window.HOCKEY_SMASH_RENDERER_V2;
         const Systems = window.HOCKEY_SMASH_SYSTEMS_V2;
-        const VERSION_FALLBACK = '2.2.2';
+        const VERSION_FALLBACK = '2.3.0';
         const BEST_SCORE_KEY = 'hockey-smash-best-score';
         const SOUND_KEY = 'hockey-smash-sound-muted';
         const debugEnabled = new URLSearchParams(window.location.search).has('debug');
@@ -1117,7 +1121,7 @@
         let lastFrame = performance.now();
         let gameStarted = false;
         let gamePaused = false;
-        let soundMuted = localStorage.getItem(SOUND_KEY) === 'true';
+        let soundMuted = readStorage(SOUND_KEY, 'false') === 'true';
         let audioContext = null;
 
         // The `game` backpack is what we hand to every gameplay system in
@@ -1217,17 +1221,21 @@
         }
 
         function loadBestScore() {
-          try {
-            return Math.max(0, Number.parseInt(localStorage.getItem(BEST_SCORE_KEY) || '0', 10) || 0);
-          } catch (error) {
-            return 0;
-          }
+          return Math.max(0, Number.parseInt(readStorage(BEST_SCORE_KEY, '0'), 10) || 0);
         }
 
         function saveBestScore(score) {
           const best = Math.max(loadBestScore(), Math.max(0, Math.round(score || 0)));
-          try { localStorage.setItem(BEST_SCORE_KEY, String(best)); } catch (error) { /* Storage may be disabled. */ }
+          writeStorage(BEST_SCORE_KEY, String(best));
           return best;
+        }
+
+        function readStorage(key, fallback = '') {
+          try { return localStorage.getItem(key) ?? fallback; } catch (error) { return fallback; }
+        }
+
+        function writeStorage(key, value) {
+          try { localStorage.setItem(key, value); return true; } catch (error) { return false; }
         }
 
         function setPaused(paused) {
@@ -1255,7 +1263,7 @@
           };
           soundButton?.addEventListener('click', () => {
             soundMuted = !soundMuted;
-            localStorage.setItem(SOUND_KEY, String(soundMuted));
+            writeStorage(SOUND_KEY, String(soundMuted));
             sync();
             if (!soundMuted) playSound('start');
           });
